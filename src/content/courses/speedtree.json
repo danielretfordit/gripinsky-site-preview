@@ -1,0 +1,30 @@
+{
+  "title": "SpeedTree",
+  "short": "Создание растений в SpeedTree",
+  "legacyPath": "/speedtree",
+  "status": "active",
+  "type": "course",
+  "price": 9900,
+  "oldPrice": null,
+  "professions": [
+    "Props",
+    "Gamedev",
+    "Environment",
+    "Анимация",
+    "Моделирование"
+  ],
+  "software": [
+    "SPEEDTREE"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "SPEEDTREE",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "614000022312",
+  "cover": "../../assets/courses/speedtree.png"
+}

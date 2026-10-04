@@ -1,0 +1,30 @@
+{
+  "title": "Экстерьерная визуализация PRO",
+  "short": "Архитектурная визуализизация PRO. Экстерьеры",
+  "legacyPath": "/exteriorpro",
+  "status": "active",
+  "type": "course",
+  "price": 32900,
+  "oldPrice": null,
+  "professions": [
+    "Коммерческая Визуализация",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "FOREST PACK",
+    "RAILCLONE",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "cover": "../../assets/courses/exteriorpro.png",
+  "blocks": [],
+  "seo": {
+    "title": "ЭКСТЕРЬЕРЫ PRO",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "702867275371"
+}

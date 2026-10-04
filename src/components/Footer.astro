@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import logo from '../assets/brand/logo.png';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const OLD = 'https://gripinsky.ru';
+const cols = [
+  {
+    title: 'Обучение',
+    links: [
+      { href: '/courses-page/visualization', label: '3D-визуализация' },
+      { href: '/courses-page/interior', label: 'Визуализатор интерьеров' },
+      { href: '/courses-page/exterior', label: 'Экстерьеры и ЖК' },
+      { href: '/courses-page/stocks', label: 'Модели под стоки' },
+      { href: '/courses', label: 'Все курсы' },
+      { href: '/vizualization3_mini', label: 'Бесплатные уроки' },
+    ],
+  },
+  {
+    title: 'Академия',
+    links: [
+      { href: '/gallery', label: 'Работы учеников' },
+      { href: '/otzyvy', label: 'Отзывы и истории' },
+      { href: '/blog', label: 'Блог' },
+      { href: `${OLD}/academy`, label: 'Об академии' },
+      { href: `${OLD}/teachers`, label: 'Педагоги' },
+      { href: `${OLD}/contacts`, label: 'Контакты' },
+    ],
+  },
+  {
+    title: 'Документы',
+    links: [
+      { href: '/oferta', label: 'Договор оферты' },
+      { href: '/politica', label: 'Политика обработки данных' },
+      { href: '/soglasie', label: 'Согласие на обработку данных' },
+      { href: '/yur', label: 'Реквизиты' },
+    ],
+  },
+];
+const social = [
+  { href: site.telegramBot, label: 'Telegram: задать вопрос' },
+  site.telegramChannel && { href: site.telegramChannel, label: 'Telegram-канал' },
+  site.vk && { href: site.vk, label: 'ВКонтакте' },
+  site.youtube && { href: site.youtube, label: 'YouTube' },
+].filter(Boolean) as { href: string; label: string }[];
+const year = new Date().getFullYear();
+---
+<footer class="wrap border-t border-line pb-10 pt-12 text-[15px] text-muted">
+  <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
+    <div class="flex flex-col gap-4">
+      <a href="/" aria-label="На главную"><Image src={logo} alt="GRIPINSKY" width={166} height={22} class="block h-[22px] w-auto" /></a>
+      <p class="m-0 max-w-[280px] leading-relaxed">Онлайн-курсы 3D-визуализации и 3D-графики. Учим думать, а не повторять действия.</p>
+      <a href="#consult" class="link-sea">Бесплатная консультация</a>
+    </div>
+    {cols.map((c) => (
+      <nav aria-label={c.title} class="flex flex-col gap-3">
+        <span class="t-overline">{c.title}</span>
+        {c.links.map((l) => <a href={l.href} class="text-muted hover:text-white">{l.label}</a>)}
+      </nav>
+    ))}
+    <nav aria-label="Связь" class="flex flex-col gap-3">
+      <span class="t-overline">Связь</span>
+      {social.map((l) => <a href={l.href} class="text-muted hover:text-white" rel="noopener">{l.label}</a>)}
+      {site.email && <a href={`mailto:${site.email}`} class="text-muted hover:text-white">{site.email}</a>}
+    </nav>
+  </div>
+  <div class="mt-10 flex flex-col gap-2 border-t border-line pt-6 text-[13px] leading-relaxed md:flex-row md:justify-between">
+    <span>© {year} {site.requisites}</span>
+    <span>{site.certificateNote}</span>
+  </div>
+</footer>

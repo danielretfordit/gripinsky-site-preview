@@ -1,0 +1,30 @@
+{
+  "title": "Стилизованный персонаж",
+  "short": "Стилизованный 3D-персонаж",
+  "legacyPath": "/stylized_character",
+  "status": "active",
+  "type": "course",
+  "price": 24900,
+  "oldPrice": null,
+  "professions": [
+    "Скульпт",
+    "Персонажи",
+    "3d Art",
+    "Gamedev"
+  ],
+  "software": [
+    "ZBRUSH",
+    "MARMOSET"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "СТИЛИЗОВАННЫЙ ПЕРСОНАЖ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "781429095302",
+  "cover": "../../assets/courses/stylized_character.png"
+}

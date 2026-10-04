@@ -1,0 +1,34 @@
+{
+  "title": "Визуализация в Blender",
+  "short": "Визуализация в Blender с нуля до профи",
+  "legacyPath": "/blender",
+  "status": "active",
+  "type": "course",
+  "price": 21900,
+  "oldPrice": null,
+  "professions": [
+    "Props",
+    "Gamedev",
+    "3d Art",
+    "Скульпт",
+    "Персонажи",
+    "Интерьер",
+    "Экстерьер",
+    "Анимация",
+    "Моделирование"
+  ],
+  "software": [
+    "BLENDER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Курс Blender 3D — обучение визуализации, материалам и рендеру с нуля",
+    "description": "Курс по Blender для начинающих: визуализация сцен, работа с материалами, освещение, камеры и рендер. Практика, домашние задания, поддержка кураторов и итоговый проект для портфолио."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "720039856402",
+  "cover": "../../assets/courses/blender.png"
+}

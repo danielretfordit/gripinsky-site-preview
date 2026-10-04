@@ -1,0 +1,22 @@
+{
+  "title": "Интерьеры PRO mini",
+  "short": "Интерьеры PRO mini",
+  "legacyPath": "/interiorpro_mini",
+  "status": "active",
+  "type": "free",
+  "price": 0,
+  "oldPrice": 12900,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ИНТЕРЬЕРЫ PRO mini",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "759706162302",
+  "cover": "../../assets/courses/interiorpro_mini.png"
+}

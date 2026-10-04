@@ -1,0 +1,31 @@
+{
+  "title": "Визуализация в 3ds Max и V-Ray",
+  "short": "Курс Визуализация в 3Ds Max и V-Ray",
+  "legacyPath": "/v-ray",
+  "status": "active",
+  "type": "course",
+  "price": 13900,
+  "oldPrice": null,
+  "professions": [
+    "Gamedev",
+    "Визуализация",
+    "Интерьер",
+    "Экстерьер",
+    "3d Art",
+    "Коммерческая Визуализация"
+  ],
+  "software": [
+    "V-RAY"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ВИЗУАЛИЗАЦИЯ В 3DS MAX И V-RAY",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "747078455282",
+  "cover": "../../assets/courses/v-ray.png"
+}

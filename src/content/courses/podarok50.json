@@ -1,0 +1,22 @@
+{
+  "title": "Подарочный сертификат на 50 000 ₽",
+  "short": "",
+  "legacyPath": "/podarok50",
+  "status": "hidden",
+  "type": "service",
+  "price": 50000,
+  "oldPrice": null,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "547081656622",
+  "cover": "../../assets/courses/podarok50.png"
+}

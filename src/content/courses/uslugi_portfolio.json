@@ -1,0 +1,22 @@
+{
+  "title": "Помощь с портфолио",
+  "short": "Помощь в создании портфолио",
+  "legacyPath": "/uslugi_portfolio",
+  "status": "active",
+  "type": "service",
+  "price": 7500,
+  "oldPrice": null,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПОМОЩЬ В СОЗДАНИИ ПОРТФОЛИО",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "521601758211",
+  "cover": "../../assets/courses/uslugi_portfolio.png"
+}

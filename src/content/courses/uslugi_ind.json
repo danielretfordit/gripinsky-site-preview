@@ -1,0 +1,22 @@
+{
+  "title": "Индивидуальное занятие",
+  "short": "Индивидуальное занятие с педагогом",
+  "legacyPath": "/uslugi_ind",
+  "status": "active",
+  "type": "service",
+  "price": 3500,
+  "oldPrice": null,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ИНДИВИДУАЛЬНЫЕ ЗАНЯТИЯ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "664449725331",
+  "cover": "../../assets/courses/uslugi_ind.png"
+}

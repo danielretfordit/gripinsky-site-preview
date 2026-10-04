@@ -1,0 +1,22 @@
+{
+  "title": "Подарочный сертификат на 20 000 ₽",
+  "short": "",
+  "legacyPath": "/podarok20",
+  "status": "hidden",
+  "type": "service",
+  "price": 20000,
+  "oldPrice": null,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "600927619622",
+  "cover": "../../assets/courses/podarok20.png"
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Marvelous Designer Furniture",
+  "short": "Создание мебели в Marvelous designer Furniture",
+  "legacyPath": "/marvelous",
+  "status": "active",
+  "type": "course",
+  "price": 13900,
+  "oldPrice": null,
+  "professions": [
+    "Визуализация",
+    "Моделирование",
+    "Интерьер",
+    "Стоки",
+    "Gamedev",
+    "Персонажи"
+  ],
+  "software": [
+    "3DS MAX",
+    "MARVELOUS DESIGNER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "MARVELOUS DESIGNER FURNITURE",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "885348874901",
+  "cover": "../../assets/courses/marvelous.png"
+}

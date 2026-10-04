@@ -1,0 +1,30 @@
+{
+  "title": "ART.PRO: художественная подготовка",
+  "short": "Художественная подготовка для 3D визуализаторов",
+  "legacyPath": "/art_pro",
+  "status": "active",
+  "type": "course",
+  "price": 19900,
+  "oldPrice": null,
+  "professions": [
+    "Визуализация",
+    "Персонажи",
+    "3d Art",
+    "Gamedev"
+  ],
+  "software": [
+    "3DS MAX",
+    "ADOBE PHOTOSHOP"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ХУДОЖКА.PRO",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "965302300983",
+  "cover": "../../assets/courses/art_pro.png"
+}

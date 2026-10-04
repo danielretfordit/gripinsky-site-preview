@@ -1,0 +1,30 @@
+{
+  "title": "Визуализация в 3ds Max и Corona. Level 3",
+  "short": "Визуализация в 3Ds Max и Corona renderer. Level 3",
+  "legacyPath": "/vizualization3",
+  "status": "active",
+  "type": "course",
+  "price": 27900,
+  "oldPrice": null,
+  "professions": [
+    "Коммерческая Визуализация",
+    "3d Art",
+    "Интерьер",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Курс визуализации интерьера в 3ds Max + Corona level 3 | Обучение 3D-дизайну для интерьеров",
+    "description": "Научитесь создавать реалистичные 3D-визуализации в 3ds Max и Corona. Практика на интерьерных сценах, настройка света и материалов, коммерческий рендер. Идеально для дизайнеров интерьера в 3D."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "205020560482",
+  "cover": "../../assets/courses/vizualization3.png"
+}

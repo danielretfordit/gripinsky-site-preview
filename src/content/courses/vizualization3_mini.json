@@ -1,0 +1,30 @@
+{
+  "title": "Визуализация в 3ds Max и Corona mini",
+  "short": "Визуализация в 3Ds Max и Corona renderer мини-курс",
+  "legacyPath": "/vizualization3_mini",
+  "status": "active",
+  "type": "free",
+  "price": 0,
+  "oldPrice": 12900,
+  "professions": [
+    "Environment",
+    "Gamedev",
+    "Экстерьер",
+    "3d Art"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ВИЗУАЛИЗАЦИЯ В 3DS MAX И CORONA RENDERER mini",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "181405845292",
+  "cover": "../../assets/courses/vizualization3_mini.png"
+}

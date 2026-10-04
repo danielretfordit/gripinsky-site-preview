@@ -1,0 +1,83 @@
+---
+interface Props { context?: string; submitLabel?: string; id?: string }
+const { context = '', submitLabel = 'Записаться на консультацию', id = 'lead' } = Astro.props;
+---
+<form class="lead-form flex flex-col gap-4" data-lead-form novalidate action="/api/lead" method="post" id={id}>
+  <div class="grid gap-4 sm:grid-cols-2">
+    <div class="flex flex-col gap-2">
+      <label for={`${id}-name`} class="text-[15px] font-semibold">Как к вам обращаться</label>
+      <input id={`${id}-name`} name="name" type="text" class="field" autocomplete="name" required maxlength="80" aria-describedby={`${id}-name-err`} />
+      <span id={`${id}-name-err`} class="field-error hidden text-[13px] text-[#ff8a80]" role="alert">Напишите имя</span>
+    </div>
+    <div class="flex flex-col gap-2">
+      <label for={`${id}-contact`} class="text-[15px] font-semibold">Телефон или ник в Telegram</label>
+      <input id={`${id}-contact`} name="contact" type="text" class="field" autocomplete="tel" required maxlength="80" placeholder="+7… или @ник" aria-describedby={`${id}-contact-err`} />
+      <span id={`${id}-contact-err`} class="field-error hidden text-[13px] text-[#ff8a80]" role="alert">Оставьте телефон или ник, чтобы мы могли ответить</span>
+    </div>
+  </div>
+  <label class="flex cursor-pointer items-start gap-3 text-[14px] leading-snug text-ink-2">
+    <input type="checkbox" name="consent" value="yes" required class="peer sr-only" />
+    <span class="check-box mt-0.5" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+    <span>Даю <a href="/soglasie" class="underline">согласие на обработку персональных данных</a> и принимаю <a href="/politica" class="underline">политику обработки данных</a></span>
+  </label>
+  <span class="consent-error hidden text-[13px] text-[#ff8a80]" role="alert">Нужно согласие, иначе мы не сможем связаться с вами</span>
+  <input type="hidden" name="context" value={context} />
+  <input type="hidden" name="package" value="" />
+  <input type="hidden" name="quiz" value="" />
+  <input type="hidden" name="utm" value="" />
+  <input type="hidden" name="page" value="" />
+  <div class="absolute left-[-9999px]" aria-hidden="true"><label>Не заполняйте <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <button type="submit" class="btn btn-primary btn-lg btn-block">{submitLabel}</button>
+  <div class="lead-status hidden rounded-2xl bg-bg p-6" role="status" aria-live="polite" tabindex="-1">
+    <span class="block text-2xl font-extrabold text-lime">Спасибо! Заявка принята</span>
+    <span class="mt-2 block text-ink-2">Специалист свяжется с вами в течение дня. А пока можно <a href="/vizualization3_mini" class="link">посмотреть бесплатные уроки</a>.</span>
+  </div>
+  <div class="lead-fail hidden rounded-2xl border border-line-strong p-5 text-ink-2" role="alert">
+    Не получилось отправить заявку. Напишите нам в <a href="https://t.me/Academy3D_bot" class="link">Telegram</a>, ответим быстро.
+  </div>
+</form>
+
+<script>
+  import { readUtm } from '../lib/utm';
+  import { reachGoal } from '../lib/analytics';
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-lead-form]')) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = form.elements.namedItem('name') as HTMLInputElement;
+      const contact = form.elements.namedItem('contact') as HTMLInputElement;
+      const consent = form.elements.namedItem('consent') as HTMLInputElement;
+      let ok = true;
+      for (const [input, valid] of [[name, name.value.trim().length > 1], [contact, contact.value.trim().length > 3]] as const) {
+        input.setAttribute('aria-invalid', String(!valid));
+        input.parentElement?.querySelector('.field-error')?.classList.toggle('hidden', valid);
+        if (!valid && ok) { input.focus(); ok = false; }
+      }
+      form.querySelector('.consent-error')?.classList.toggle('hidden', consent.checked);
+      if (!consent.checked) ok = false;
+      if (!ok) return;
+
+      (form.elements.namedItem('utm') as HTMLInputElement).value = JSON.stringify(readUtm());
+      (form.elements.namedItem('page') as HTMLInputElement).value = location.pathname;
+      const pkg = sessionStorage.getItem('gr-package-summary');
+      if (pkg) (form.elements.namedItem('package') as HTMLInputElement).value = pkg;
+      const quiz = sessionStorage.getItem('gr-quiz-summary');
+      if (quiz) (form.elements.namedItem('quiz') as HTMLInputElement).value = quiz;
+
+      const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+        if (!res.ok) throw new Error(String(res.status));
+        form.querySelectorAll(':scope > :not(.lead-status)').forEach((el) => el.classList.add('hidden'));
+        const status = form.querySelector<HTMLElement>('.lead-status')!;
+        status.classList.remove('hidden');
+        status.focus();
+        reachGoal('lead_submit', { place: (form.elements.namedItem('context') as HTMLInputElement).value || location.pathname });
+      } catch {
+        form.querySelector('.lead-fail')?.classList.remove('hidden');
+        btn.disabled = false;
+      }
+    });
+  }
+</script>

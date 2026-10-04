@@ -1,0 +1,22 @@
+{
+  "title": "5 индивидуальных занятий",
+  "short": "Пакет 5 индивидуальных занятий с педагогом",
+  "legacyPath": "/paket_ind5",
+  "status": "active",
+  "type": "package",
+  "price": 15000,
+  "oldPrice": 17500,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ 5 ИНДИВИДУАЛЬНЫХ ЗАНЯТИЙ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "939431455371",
+  "cover": "../../assets/courses/paket_ind5.png"
+}

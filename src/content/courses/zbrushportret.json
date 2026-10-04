@@ -1,0 +1,29 @@
+{
+  "title": "Портрет человека в ZBrush",
+  "short": "Портрет человека. Скульптурная анатомия в ZBrush",
+  "legacyPath": "/zbrushportret",
+  "status": "active",
+  "type": "course",
+  "price": 20900,
+  "oldPrice": null,
+  "professions": [
+    "Скульпт",
+    "Персонажи",
+    "3d Art",
+    "Gamedev"
+  ],
+  "software": [
+    "ZBRUSH"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПОРТРЕТ ЧЕЛОВЕКА. СКУЛЬПТУРНАЯ АНАТОМИЯ В ZBRUSH",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "529241589951",
+  "cover": "../../assets/courses/zbrushportret.png"
+}

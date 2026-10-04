@@ -1,0 +1,28 @@
+{
+  "title": "Интерьерная визуализация PRO",
+  "short": "Архитектурная визуализизация PRO. Интерьеры",
+  "legacyPath": "/interiorpro",
+  "status": "active",
+  "type": "course",
+  "price": 29900,
+  "oldPrice": null,
+  "professions": [
+    "Коммерческая Визуализация",
+    "Интерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ИНТЕРЬЕРЫ PRO",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "192467907361",
+  "cover": "../../assets/courses/interiorpro.png"
+}

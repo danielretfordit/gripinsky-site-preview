@@ -1,0 +1,36 @@
+{
+  "title": "Пакет GameDev: Level 1, 2, ZBrush и текстурирование",
+  "short": "Пакет курсов Gamedev с нуля до PRO",
+  "legacyPath": "/p_gamedev_1-2-zb-t",
+  "status": "active",
+  "type": "package",
+  "price": 99900,
+  "oldPrice": 128500,
+  "professions": [
+    "Props Artist",
+    "Environment Artist",
+    "Level Artist",
+    "Technical Artist",
+    "Gamedev",
+    "3d Art",
+    "Анимация",
+    "Скульпт"
+  ],
+  "software": [
+    "BLENDER",
+    "SUBSTANCE PAINTER",
+    "SUBSTANCE DESIGNER",
+    "ZBRUSH"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ КУРСОВ GAMEDEV. LEVEL 1 + 2 + ZBRUSH + TEXTURING",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "529860485052",
+  "cover": "../../assets/courses/p_gamedev_1-2-zb-t.png"
+}

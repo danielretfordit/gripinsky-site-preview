@@ -1,0 +1,29 @@
+{
+  "title": "GameDev. Level 1",
+  "short": "Gamedev level 1. Props Artist",
+  "legacyPath": "/gamedevlevel1",
+  "status": "active",
+  "type": "course",
+  "price": 21900,
+  "oldPrice": null,
+  "professions": [
+    "Props Artist",
+    "Gamedev",
+    "3d Art"
+  ],
+  "software": [
+    "BLENDER",
+    "SUBSTANCE PAINTER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Онлайн-обучение геймдеву: курс по созданию игр с нуля | GameDev Level 1",
+    "description": "Освойте геймдев с нуля: практический курс GameDev Level 1 научит создавать игры, работать с игровыми движками, понимать геймдизайн и 3D. Пошаговое обучение, разбор ваших проектов, помощь наставника и реальные игровые механики. Идеально для тех, кто хочет"
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "231247328961",
+  "cover": "../../assets/courses/gamedevlevel1.png"
+}

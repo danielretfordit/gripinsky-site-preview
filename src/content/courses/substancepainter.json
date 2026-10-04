@@ -1,0 +1,31 @@
+{
+  "title": "Substance Painter",
+  "short": "Создание 3D-текстур в Substance Painter",
+  "legacyPath": "/substancepainter",
+  "status": "active",
+  "type": "course",
+  "price": 13900,
+  "oldPrice": null,
+  "professions": [
+    "Gamedev",
+    "Текстурирование",
+    "3d Art",
+    "Props",
+    "Environment",
+    "Персонажи"
+  ],
+  "software": [
+    "SUBSTANCE PAINTER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "SUBSTANCE PAINTER",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "316787030081",
+  "cover": "../../assets/courses/substancepainter.png"
+}

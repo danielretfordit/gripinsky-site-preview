@@ -1,0 +1,33 @@
+{
+  "title": "Пакет: уровни 2 и 3 с V-Ray",
+  "short": "Пакет курсов 2+3 уровень + V-Ray. Моделирование и визуализация в 3Ds Max",
+  "legacyPath": "/2-3lvl-vray",
+  "status": "active",
+  "type": "package",
+  "price": 42900,
+  "oldPrice": 53700,
+  "professions": [
+    "Моделирование",
+    "Стоки",
+    "Визуализация",
+    "3d Art",
+    "Интерьер",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER",
+    "V-RAY"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ КУРСОВ 2 + 3 УРОВЕНЬ + V-RAY",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "951756888742",
+  "cover": "../../assets/courses/2-3lvl-vray.png"
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Сложное моделирование в 3ds Max. Level 2",
+  "short": "Моделирование в 3Ds Max. Level 2",
+  "legacyPath": "/modeling2",
+  "status": "active",
+  "type": "course",
+  "price": 11900,
+  "oldPrice": null,
+  "professions": [
+    "Моделирование",
+    "Стоки"
+  ],
+  "software": [
+    "3DS MAX",
+    "KEYSHOT"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "МОДЕЛИРОВАНИЕ В 3DS MAX. LEVEL 2",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "689108162371",
+  "cover": "../../assets/works/chaukina-skorpion.jpg"
+}

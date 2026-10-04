@@ -1,0 +1,32 @@
+{
+  "title": "Нейросети для 3D",
+  "short": "Нейросеть Stable Diffusion",
+  "legacyPath": "/ai",
+  "status": "active",
+  "type": "course",
+  "price": 18900,
+  "oldPrice": null,
+  "professions": [
+    "Gamedev",
+    "Визуализация",
+    "Коммерческая Визуализация",
+    "Интерьер",
+    "Экстерьер",
+    "3d Art",
+    "Постобработка"
+  ],
+  "software": [
+    "STABLE DIFFUSION"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Нейросети для художников и дизайнеров — курс по Stable Diffusion и AI-графике",
+    "description": "Научись использовать нейросети для визуализации, создания арт-проектов и идей. Практика в Stable Diffusion, промпт-инжиниринг и авторские техники от экспертов Gripinsky School."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "699134183742",
+  "cover": "../../assets/courses/ai.png"
+}

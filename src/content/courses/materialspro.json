@@ -1,0 +1,29 @@
+{
+  "title": "Материалы Corona PRO",
+  "short": "Материалы Corona Renderer PRO",
+  "legacyPath": "/materialspro",
+  "status": "active",
+  "type": "course",
+  "price": 27900,
+  "oldPrice": null,
+  "professions": [
+    "Коммерческая Визуализация",
+    "Интерьер",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Материалы Corona в 3ds Max — обучение | CORONA PRO курс",
+    "description": "Курс CORONA PRO: материалы, текстуры и шейдеры в Corona Renderer. Практика, фотореализм и работа с профессиональными сценами."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "106085455011",
+  "cover": "../../assets/courses/materialspro.png"
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Моделирование под стоки",
+  "short": "Моделирование под стоки: 3ddd и другие стоки",
+  "legacyPath": "/3dstock",
+  "status": "active",
+  "type": "course",
+  "price": 19900,
+  "oldPrice": null,
+  "professions": [
+    "Моделирование",
+    "Визуализация",
+    "Интерьер",
+    "Экстерьер",
+    "Коммерческая Визуализация"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "cover": "../../assets/courses/3dstock.png",
+  "blocks": [],
+  "seo": {
+    "title": "МОДЕЛИРОВАНИЕ ПОД СТОКИ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "219586530432"
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Пакет «Текстурирование под GameDev»",
+  "short": "Пакет курсов Текстурирование под gamedev",
+  "legacyPath": "/p_texturegamedev",
+  "status": "active",
+  "type": "package",
+  "price": 36900,
+  "oldPrice": 45600,
+  "professions": [
+    "Текстурирование",
+    "Персонажи",
+    "Скульпт",
+    "Gamedev",
+    "3d Art",
+    "Визуализация",
+    "Environment"
+  ],
+  "software": [
+    "SUBSTANCE PAINTER",
+    "SUBSTANCE DESIGNER",
+    "3DS MAX",
+    "RIZOM UV",
+    "MARMOSET"
+  ],
+  "level": null,
+  "cover": "../../assets/courses/p_texturegamedev.png",
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ КУРСОВ ТЕКСТУРИРОВАНИЕ ПОД GAMEDEV",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "312843624882"
+}

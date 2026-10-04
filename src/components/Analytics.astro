@@ -1,0 +1,10 @@
+---
+// Яндекс Метрика загружается только если аналитика включена флагом PUBLIC_ANALYTICS
+// и посетитель разрешил аналитические cookie. В пилоте флаг выключен.
+---
+<script>
+  import { initAnalytics } from '../lib/analytics';
+  import { captureUtm } from '../lib/utm';
+  captureUtm();
+  initAnalytics();
+</script>

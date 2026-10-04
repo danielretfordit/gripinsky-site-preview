@@ -1,0 +1,28 @@
+{
+  "site": {
+    "brand": "Академия 3D GRIPINSKY",
+    "telegramBot": "https://t.me/Academy3D_bot",
+    "telegramChannel": "https://t.me/gripinsky",
+    "youtube": "https://www.youtube.com/@gripinsky",
+    "vk": "https://vk.com/gripinsky",
+    "yandexMaps": "https://yandex.ru/maps/org/akademiya_3d_yevgeniya_gripinskogo/94110272516/reviews/",
+    "email": "",
+    "phone": "",
+    "stats": {
+      "graduates": "10 000+",
+      "years": "20 лет",
+      "videos": "1 000+",
+      "rating": "5,0",
+      "ratingCount": "",
+      "subscribers": "160 000"
+    },
+    "installment": {
+      "months": 12,
+      "note": "Рассрочка через банк-партнёр. Условия покажем при оформлении. [условия рассрочки уточняются]"
+    },
+    "accessMonths": 12,
+    "requisites": "ИП Грипинский Е. Г. [ИНН и ОГРНИП уточняются]",
+    "certificateNote": "Сертификат академии не является документом об образовании.",
+    "publish": { "requireConsent": false }
+  }
+}

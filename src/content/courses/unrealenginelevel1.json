@@ -1,0 +1,29 @@
+{
+  "title": "Unreal Engine. Level 1",
+  "short": "Unreal Engine. Level 1",
+  "legacyPath": "/unrealenginelevel1",
+  "status": "active",
+  "type": "course",
+  "price": 27900,
+  "oldPrice": null,
+  "professions": [
+    "Environment",
+    "Gamedev",
+    "Экстерьер",
+    "3d Art"
+  ],
+  "software": [
+    "UNREAL ENGINE"
+  ],
+  "level": null,
+  "cover": "../../assets/courses/unrealenginelevel1.png",
+  "blocks": [],
+  "seo": {
+    "title": "Unreal Engine Level 1 — онлайн-курс для начинающих в геймдеве",
+    "description": "Изучите Unreal Engine с нуля: построение локаций, синематики, игровая логика и виртуальные миры. Level 1 — фундамент для геймдизайнеров и разработчиков интерактивного контента."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "682518070871"
+}

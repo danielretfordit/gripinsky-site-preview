@@ -1,0 +1,32 @@
+{
+  "title": "Пакет: 3ds Max и Corona, уровни 1, 2 и 3",
+  "short": "Пакет курсов 1+2+3 уровень. Моделирование и визуализация в 3Ds Max",
+  "legacyPath": "/1-2-3lvl",
+  "status": "active",
+  "type": "package",
+  "price": 40900,
+  "oldPrice": 50700,
+  "professions": [
+    "Моделирование",
+    "Стоки",
+    "Визуализация",
+    "3d Art",
+    "Интерьер",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Пакет курсов 3D GRIPINSKY — обучение 3D-графике, digital-дизайн и карьера",
+    "description": "Пройдите 1, 2 и 3 уровень обучения в Академии 3D GRIPINSKY. Пошаговые курсы 3D-графики помогут развить навыки, освоить 3D-дизайн и визуализацию, начать карьеру 3D-дизайнера."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "742994051181",
+  "cover": "../../assets/courses/1-2-3lvl.png"
+}

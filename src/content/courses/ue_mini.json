@@ -1,0 +1,29 @@
+{
+  "title": "Unreal Engine mini",
+  "short": "Unreal Engine создание окружения мини-курс",
+  "legacyPath": "/ue_mini",
+  "status": "active",
+  "type": "free",
+  "price": 0,
+  "oldPrice": 12900,
+  "professions": [
+    "Environment",
+    "Gamedev",
+    "Экстерьер",
+    "3d Art"
+  ],
+  "software": [
+    "UNREAL ENGINE"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "UNREAL ENGINE mini",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "516755729642",
+  "cover": "../../assets/courses/ue_mini.png"
+}

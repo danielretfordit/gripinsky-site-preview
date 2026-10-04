@@ -1,0 +1,32 @@
+{
+  "title": "Пакет: уровни 2 и 3",
+  "short": "Пакет курсов 2+3 уровень",
+  "legacyPath": "/2-3lvl",
+  "status": "active",
+  "type": "package",
+  "price": 31900,
+  "oldPrice": 39800,
+  "professions": [
+    "Моделирование",
+    "Стоки",
+    "Визуализация",
+    "3d Art",
+    "Интерьер",
+    "Экстерьер"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ КУРСОВ 2 + 3 УРОВЕНЬ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "838517021311",
+  "cover": "../../assets/courses/2-3lvl.png"
+}

@@ -1,0 +1,22 @@
+{
+  "title": "10 индивидуальных занятий",
+  "short": "Пакет 10 индивидуальных занятий с педагогом",
+  "legacyPath": "/paket_ind10",
+  "status": "active",
+  "type": "package",
+  "price": 28000,
+  "oldPrice": 35000,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ 10 ИНДИВИДУАЛЬНЫХ ЗАНЯТИЙ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "135382102621",
+  "cover": "../../assets/courses/paket_ind10.png"
+}

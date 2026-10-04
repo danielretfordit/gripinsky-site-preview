@@ -1,0 +1,32 @@
+{
+  "title": "Масштабные ЖК",
+  "short": "Архитектурная визуализация PRO. Масштабные ЖК",
+  "legacyPath": "/residential_complex",
+  "status": "active",
+  "type": "course",
+  "price": 43900,
+  "oldPrice": null,
+  "professions": [
+    "Коммерческая Визуализация",
+    "Экстерьер",
+    "Жк"
+  ],
+  "software": [
+    "3DS MAX",
+    "FOREST PACK",
+    "RAILCLONE",
+    "CITYSCAPE PRO",
+    "CORONA RENDERER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ЖК",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "812814913722",
+  "cover": "../../assets/courses/residential_complex.png"
+}

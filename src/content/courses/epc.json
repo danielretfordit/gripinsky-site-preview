@@ -1,0 +1,22 @@
+{
+  "title": "EPC",
+  "short": "Environment Per Camera",
+  "legacyPath": "/epc",
+  "status": "active",
+  "type": "plugin",
+  "price": 4000,
+  "oldPrice": 6500,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "EPC",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "371173403662",
+  "cover": "../../assets/courses/epc.png"
+}

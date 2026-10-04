@@ -1,0 +1,34 @@
+{
+  "title": "Визуализация в Blender mini",
+  "short": "Визуализация в Blender мини-курс",
+  "legacyPath": "/blender_mini",
+  "status": "active",
+  "type": "free",
+  "price": 0,
+  "oldPrice": 12900,
+  "professions": [
+    "Props",
+    "Gamedev",
+    "3d Art",
+    "Скульпт",
+    "Персонажи",
+    "Интерьер",
+    "Экстерьер",
+    "Анимация",
+    "Моделирование"
+  ],
+  "software": [
+    "BLENDER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ВИЗУАЛИЗАЦИЯ В BLENDER mini",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "179046321802",
+  "cover": "../../assets/courses/blender_mini.png"
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Пакет ZBrush ABSOLUTE",
+  "short": "Пакет курсов ZBrush ABSOLUTE",
+  "legacyPath": "/p_zbrushabsolute",
+  "status": "active",
+  "type": "package",
+  "price": 49900,
+  "oldPrice": 62600,
+  "professions": [
+    "Персонажи",
+    "Скульпт",
+    "Gamedev",
+    "3d Art",
+    "Props",
+    "Environment"
+  ],
+  "software": [
+    "ZBRUSH"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Пакет курсов ZBrush Absolute — обучение ZBrush с нуля до PRO",
+    "description": "ZBrush Absolute — полный пакет курсов по цифровой 3D-скульптуре: интерфейс, инструменты, анатомия, персонажи и пайплайн. Освой ZBrush с нуля и стань профессионалом."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "750584857221",
+  "cover": "../../assets/courses/p_zbrushabsolute.png"
+}

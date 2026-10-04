@@ -1,15 +1,9 @@
 ---
-import '../styles/global.css';
-import { Font } from 'astro:assets';
+import Base from '../layouts/Base.astro';
 ---
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GRIPINSKY</title>
-    <Font cssVariable="--font-inter-tight" preload />
-  </head>
-  <body style="background:#0D2023;color:#E7E7E7;font-family:var(--font-inter-tight)">
-    <h1>Каркас работает</h1>
-  </body>
-</html>
+<Base title="Академия 3D GRIPINSKY" description="Онлайн-курсы 3D-визуализации">
+  <section class="wrap section">
+    <h1 class="t-display">Каркас <span class="t-accent">работает</span></h1>
+    <p class="t-lead mt-4">Проверка шапки, подвала, формы и cookie-баннера.</p>
+  </section>
+</Base>

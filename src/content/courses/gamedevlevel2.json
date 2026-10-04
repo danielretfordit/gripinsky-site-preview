@@ -1,0 +1,36 @@
+{
+  "title": "GameDev. Level 2",
+  "short": "Gamedev level 2. Environment Artist",
+  "legacyPath": "/gamedevlevel2",
+  "status": "active",
+  "type": "course",
+  "price": 27900,
+  "oldPrice": null,
+  "professions": [
+    "Props Artist",
+    "Environment Artist",
+    "Level Artist",
+    "Technical Artist",
+    "Gamedev",
+    "3d Art",
+    "Анимация",
+    "Скульпт"
+  ],
+  "software": [
+    "BLENDER",
+    "SUBSTANCE PAINTER",
+    "SUBSTANCE DESIGNER",
+    "ZBRUSH"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "GAMEDEV LEVEL 2",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "331905226612",
+  "cover": "../../assets/courses/gamedevlevel2.png"
+}

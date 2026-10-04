@@ -1,0 +1,27 @@
+{
+  "title": "Моделирование в 3ds Max. Level 1",
+  "short": "Моделирование в 3Ds Max. Level 1",
+  "legacyPath": "/modeling1",
+  "status": "active",
+  "type": "course",
+  "price": 10900,
+  "oldPrice": null,
+  "professions": [
+    "Моделирование",
+    "Стоки"
+  ],
+  "software": [
+    "3DS MAX"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Курс 3D Max для дизайнеров интерьера — моделирование с нуля",
+    "description": "Обучение 3ds Max с нуля: 1 уровень курса по моделированию. Освойте 3D Max, создавайте реалистичные сцены и начните карьеру дизайнера интерьера."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "811043932041",
+  "cover": "../../assets/works/akopyan-kreslo.jpg"
+}

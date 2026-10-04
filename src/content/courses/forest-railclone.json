@@ -1,0 +1,30 @@
+{
+  "title": "Пакет Forest Pack + RailClone",
+  "short": "Пакет курсов Forest Pack + RailClone",
+  "legacyPath": "/forest-railclone",
+  "status": "active",
+  "type": "package",
+  "price": 22900,
+  "oldPrice": 27800,
+  "professions": [
+    "Визуализация",
+    "Экстерьер",
+    "Жк"
+  ],
+  "software": [
+    "FOREST PACK",
+    "RAILCLONE",
+    "3DS MAX"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ПАКЕТ КУРСОВ FOREST PACK + RAILCLONE",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "538419835211",
+  "cover": "../../assets/courses/forest-railclone.png"
+}

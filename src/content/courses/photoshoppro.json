@@ -1,0 +1,28 @@
+{
+  "title": "Пакет Adobe Photoshop PRO",
+  "short": "Пакет курсов Adobe Photoshop PRO. С нуля до высот постобработки",
+  "legacyPath": "/photoshoppro",
+  "status": "active",
+  "type": "package",
+  "price": 28900,
+  "oldPrice": 35800,
+  "professions": [
+    "Ретушь",
+    "Постобработка",
+    "Композитинг"
+  ],
+  "software": [
+    "ADOBE PHOTOSHOP"
+  ],
+  "level": null,
+  "cover": "../../assets/courses/photoshoppro.png",
+  "blocks": [],
+  "seo": {
+    "title": "Пакет Курсов Adobe Photoshop PRO — обучение с нуля до профессионального уровня",
+    "description": "Онлайн-курс Photoshop PRO: от базовых техник до профессиональной ретуши, коллажей и постобработки. Практические уроки и проекты для новичков и PRO-уровня."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "219500281381"
+}

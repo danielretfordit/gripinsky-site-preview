@@ -1,0 +1,40 @@
+{
+  "title": "Пакет «Экстерьеры Full Pack»",
+  "short": "Пакет курсов Экстерьеры Full Pack",
+  "legacyPath": "/p_ext_full_pack",
+  "status": "active",
+  "type": "package",
+  "price": 119900,
+  "oldPrice": 151400,
+  "professions": [
+    "Визуализация",
+    "Экстерьер",
+    "Интерьер",
+    "Жк",
+    "Моделирование",
+    "Стоки",
+    "3d Art",
+    "Ретушь",
+    "Постобработка",
+    "Композитинг"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER",
+    "ADOBE PHOTOSHOP",
+    "FOREST PACK",
+    "RAILCLONE",
+    "CITYSCAPE PRO"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Курс экстерьерной визуализации FULL PACK — экстерьеры, Forest Pack, RailClone",
+    "description": "FULL PACK курс экстерьерной визуализации — 3D-рендер экстерьеров, масштабных ЖК, Forest Pack и RailClone. Практические уроки, профессиональный визуализатор."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "220107729442",
+  "cover": "../../assets/courses/p_ext_full_pack.png"
+}

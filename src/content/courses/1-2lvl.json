@@ -1,0 +1,29 @@
+{
+  "title": "Пакет: моделирование в 3ds Max, уровни 1 и 2",
+  "short": "Пакет курсов 1+2 уровень. Моделирование в 3Ds Max",
+  "legacyPath": "/1-2lvl",
+  "status": "active",
+  "type": "package",
+  "price": 19900,
+  "oldPrice": 22800,
+  "professions": [
+    "Моделирование",
+    "Стоки"
+  ],
+  "software": [
+    "3DS MAX",
+    "RIZOM UV",
+    "KEYSHOT"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Пакет курсов 1+2 уровня 3D GRIPINSKY — обучение 3D и digital-дизайну",
+    "description": "Пакет курсов 1 и 2 уровня в Академии 3D GRIPINSKY: пошаговое обучение 3D-графике и digital-дизайну. Освойте ключевые навыки и сделайте первый шаг в карьеру 3D-дизайнера."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "212113187671",
+  "cover": "../../assets/courses/1-2lvl.png"
+}

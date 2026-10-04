@@ -1,0 +1,22 @@
+{
+  "title": "Сопровождение первого проекта",
+  "short": "Сопровождение первого коммерческого проекта",
+  "legacyPath": "/uslugi_skp",
+  "status": "active",
+  "type": "service",
+  "price": 12000,
+  "oldPrice": null,
+  "professions": [],
+  "software": [],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "СОПРОВОЖДЕНИЕ ПЕРВОГО КОММЕРЧЕСКОГО ПРОЕКТА",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "330405854401",
+  "cover": "../../assets/courses/uslugi_skp.png"
+}

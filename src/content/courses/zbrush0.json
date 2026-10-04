@@ -1,0 +1,29 @@
+{
+  "title": "ZBrush с нуля",
+  "short": "ZBrush с 0 до уверенного пользователя",
+  "legacyPath": "/zbrush0",
+  "status": "active",
+  "type": "course",
+  "price": 19900,
+  "oldPrice": null,
+  "professions": [
+    "Скульпт",
+    "Персонажи",
+    "3d Art",
+    "Gamedev"
+  ],
+  "software": [
+    "ZBRUSH"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "ZBRUSH С 0 ДО УВЕРЕННОГО ПОЛЬЗОВАТЕЛЯ",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "774942180691",
+  "cover": "../../assets/courses/zbrush0.png"
+}

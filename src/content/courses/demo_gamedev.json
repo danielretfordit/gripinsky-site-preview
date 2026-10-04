@@ -1,0 +1,29 @@
+{
+  "title": "GameDev mini",
+  "short": "Gamedev мини-курс",
+  "legacyPath": "/demo_gamedev",
+  "status": "active",
+  "type": "free",
+  "price": 0,
+  "oldPrice": 12900,
+  "professions": [
+    "Props Artist",
+    "Gamedev",
+    "3d Art"
+  ],
+  "software": [
+    "BLENDER",
+    "SUBSTANCE PAINTER"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "GAMEDEV mini",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "333243035782",
+  "cover": "../../assets/courses/demo_gamedev.png"
+}

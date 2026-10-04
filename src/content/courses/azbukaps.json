@@ -1,0 +1,28 @@
+{
+  "title": "Азбука Adobe Photoshop",
+  "short": "Азбука Adobe Photoshop. C нуля до уверенного пользователя",
+  "legacyPath": "/azbukaps",
+  "status": "active",
+  "type": "course",
+  "price": 16900,
+  "oldPrice": null,
+  "professions": [
+    "Ретушь",
+    "Постобработка",
+    "Композитинг"
+  ],
+  "software": [
+    "ADOBE PHOTOSHOP"
+  ],
+  "level": null,
+  "blocks": [],
+  "seo": {
+    "title": "Курс Photoshop с нуля — обучение онлайн | Азбука Adobe Photoshop",
+    "description": "Азбука Adobe Photoshop — онлайн курс с нуля. Освойте обработку фото, ретушь и графику. Практика, поддержка и уверенный уровень после обучения."
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "tildaUid": "829315570501",
+  "cover": "../../assets/courses/azbukaps.png"
+}

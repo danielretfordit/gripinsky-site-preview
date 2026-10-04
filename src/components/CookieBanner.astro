@@ -1,0 +1,27 @@
+---
+---
+<div id="cookie-banner" hidden role="region" aria-label="Использование cookie"
+     class="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-[560px] rounded-[20px] border border-line-strong bg-bg-2 p-4 shadow-2xl sm:p-5 sm:inset-x-6 sm:bottom-6 md:left-6 md:right-auto">
+  <p class="m-0 text-[14px] leading-snug text-ink-2 sm:text-[15px] sm:leading-relaxed">
+    Мы используем cookie, чтобы сайт работал, а с вашего согласия ещё и для аналитики (Яндекс Метрика).
+    Подробнее в <a href="/politica" class="underline">политике обработки данных</a>.
+  </p>
+  <div class="mt-3 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+    <button type="button" class="btn btn-primary btn-sm px-3" data-cookie="all">Разрешить</button>
+    <button type="button" class="btn btn-secondary btn-sm px-3" data-cookie="necessary">Только необходимые</button>
+  </div>
+</div>
+
+<script>
+  import { getConsent, setConsent } from '../lib/analytics';
+  const banner = document.getElementById('cookie-banner');
+  if (banner && !getConsent()) {
+    banner.hidden = false;
+    banner.querySelectorAll<HTMLButtonElement>('[data-cookie]').forEach((b) =>
+      b.addEventListener('click', () => {
+        setConsent(b.dataset.cookie === 'all' ? 'all' : 'necessary');
+        banner.hidden = true;
+      }),
+    );
+  }
+</script>
