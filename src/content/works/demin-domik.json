@@ -1,0 +1,13 @@
+{
+  "title": "Домик в лесу",
+  "author": "demin",
+  "image": "../../assets/works/demin-domik.jpg",
+  "alt": "Домик в лесу",
+  "categories": [
+    "ext"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 40
+}

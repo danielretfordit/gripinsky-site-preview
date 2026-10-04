@@ -1,0 +1,17 @@
+{
+  "title": "ИИ в 3D: Лаборатория",
+  "short": "Курс «ИИ в 3D» в группе с датой старта и живым стримом с разбором полного цикла",
+  "legacyPath": "/ai",
+  "landing": "/ai#tariffs",
+  "status": "active",
+  "type": "course",
+  "price": 9900,
+  "oldPrice": null,
+  "professions": ["Визуализация", "Моделирование"],
+  "software": ["3DS MAX"],
+  "level": null,
+  "cover": "../../assets/ai/mesh-scene.jpg",
+  "blocks": [],
+  "seo": { "title": "", "description": "" },
+  "getcourse": { "offerCode": "" }
+}

@@ -39,8 +39,10 @@ if (kind === 'profession') {
 const category = CATEGORIES.find((c) => c.slug === id);
 const list = category ? all.filter((c) => category.match(c.data)).sort((a, b) => (a.data.type === 'free' ? -1 : 0) - (b.data.type === 'free' ? -1 : 0) || a.data.price - b.data.price) : [];
 
-const title = prof ? prof.data.seo.title : (old?.title || `${category!.h1} | GRIPINSKY`);
-const description = prof ? prof.data.seo.description : (old?.description || `${category!.lead} Онлайн-курсы Академии 3D GRIPINSKY с проверкой работ и портфолио.`);
+// Title и description со старых страниц сохраняем (по ним уже есть позиции), но без длинных тире по правилам брифа
+const noDash = (s: string, sep: string) => s.replace(/\s+[—–-]\s+/g, sep);
+const title = prof ? prof.data.seo.title : noDash(old?.title || `${category!.h1} | GRIPINSKY`, ': ');
+const description = prof ? prof.data.seo.description : noDash(old?.description || `${category!.lead} Онлайн-курсы Академии 3D GRIPINSKY с проверкой работ и портфолио.`, ', ');
 const crumbs = prof
   ? [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация', href: '/courses-page/visualization' }, { name: prof.data.title }]
   : [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: category!.name }];

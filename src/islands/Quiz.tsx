@@ -6,7 +6,7 @@ import { reachGoal } from '../lib/analytics';
 import { rub, sp, Check, scrollToId } from './ui';
 
 type Variant = 'viz' | 'home';
-interface Props { cat: Catalog; variant?: Variant; telegramBot: string; gamesHref: string; vizHref: string }
+interface Props { cat: Catalog; variant?: Variant; telegramBot: string; gamesHref: string; vizHref: string; startOpen?: boolean }
 
 type Q = { q: string; o: [string, number | string][] };
 const DIRECTION: Q = { q: 'Что вам интереснее создавать?', o: [['Интерьеры, дома и предметы', 'viz'], ['Игровые миры: предметы, локации, персонажей', 'games'], ['Пока не знаю', 'viz?']] };
@@ -19,14 +19,13 @@ const QS: Q[] = [
 const TN: Record<TariffId, string> = { lite: 'Самостоятельный', opt: 'Оптимальный', mentor: 'Наставничество' };
 const TD: Record<TariffId, string> = { lite: 'все уроки, доступ на год', opt: 'проверка работ и поддержка кураторов 6 месяцев', mentor: 'личный наставник и разборы ваших работ' };
 
-export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, vizHref }: Props) {
-  const open = useStore($quizOpen);
+export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, vizHref, startOpen = false }: Props) {
+  const open = useStore($quizOpen) || startOpen;
   const [dir, setDir] = useState<string | null>(variant === 'home' ? null : 'viz');
   const [answers, setAnswers] = useState<(number | string)[]>([]);
   const qRef = useRef<HTMLHeadingElement>(null);
   const resRef = useRef<HTMLDivElement>(null);
 
-  const questions = variant === 'home' && dir === null ? [DIRECTION] : QS;
   const total = (variant === 'home' ? 1 : 0) + QS.length;
   const answered = (variant === 'home' && dir !== null ? 1 : 0) + answers.length;
   const games = dir === 'games';

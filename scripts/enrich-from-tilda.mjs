@@ -3,7 +3,7 @@
 // Описания автоматически не берём: на страницах Tilda рядом с текстом курса стоят отзывы из чатов,
 // эвристика их не отличает. Описания пишем вручную в Keystatic.
 // Запуск: node scripts/enrich-from-tilda.mjs
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 
 const PAGES = 'docs/tilda/pages';
 const COURSES = 'src/content/courses';
@@ -14,7 +14,6 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
 let changed = 0;
 for (const f of readdirSync(COURSES)) {
-  const id = f.replace(/\.json$/, '');
   const file = `${COURSES}/${f}`;
   const c = JSON.parse(readFileSync(file, 'utf8'));
   const slug = (c.legacyPath || '').slice(1).replace(/\//g, '--');

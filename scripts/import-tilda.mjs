@@ -72,7 +72,7 @@ const TITLES = {
 };
 
 const TYPE = { 'КУРС': 'course', 'ПАКЕТ': 'package', 'ПЛАГИН': 'plugin', 'УСЛУГА': 'service', 'БЕСПЛАТНЫЙ КУРС': 'free' };
-const cap = (s) => s.toLowerCase().replace(/(^|\s|-)([a-zа-яё])/g, (m, a, b) => a + b.toUpperCase());
+const cap = (s) => s.toLowerCase().replace(/(^|\s|-)([a-zа-яё])/g, (_m, a, b) => a + b.toUpperCase());
 const money = (v) => {
   if (v == null || v === '') return null;
   const n = Number(String(v).replace(/\s/g, '').replace(',', '.'));

@@ -1,0 +1,13 @@
+{
+  "title": "Затонувший корабль",
+  "author": "gitsuk",
+  "image": "../../assets/works/gitsuk-korabl.jpg",
+  "alt": "Затонувший корабль под водой",
+  "categories": [
+    "model"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 38
+}

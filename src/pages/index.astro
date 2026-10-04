@@ -1,9 +1,233 @@
 ---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import Faq from '../components/Faq.astro';
+import Quiz from '../islands/Quiz';
+import { getCatalog } from '../lib/catalog';
+import { faqLd } from '../lib/views';
+import { visibleWorks, personMap } from '../lib/people';
+import { rub, sp } from '../lib/format';
+import heroInterior from '../assets/home/hero-interior.jpg';
+import heroGame from '../assets/home/hero-gamepad.jpg';
+import dirExterior from '../assets/home/dir-exterior.jpg';
+import baModel from '../assets/home/ba-model.jpg';
+import baRender from '../assets/home/ba-render.jpg';
+import texture from '../assets/brand/texture.png';
+
+const SOFT = import.meta.glob<{ default: ImageMetadata }>('../assets/software/*.png', { eager: true });
+const soft = (n: string) => SOFT[`../assets/software/${n}.png`].default;
+const SOFT_LIST = [['3dsmax', '3ds Max'], ['corona', 'Corona'], ['vray', 'V-Ray'], ['blender', 'Blender'], ['zbrush', 'ZBrush'], ['unreal', 'Unreal Engine'], ['maya', 'Maya'], ['substance', 'Substance Painter'], ['photoshop', 'Photoshop'], ['forestpack', 'Forest Pack']];
+
+const site = (await getEntry('settings', 'site'))!.data;
+const s = site.stats;
+const cat = await getCatalog();
+const faq = await faqLd('home');
+const people = await personMap();
+const works = (await visibleWorks()).filter((w) => ['cheredin-ulitsa', 'shesterikova-loft', 'gitsuk-korabl', 'bagirov-korabl', 'demin-domik', 'korotovskaya-shale'].includes(w.id));
+const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
+const gameMin = (await getEntry('courses', 'gamedevlevel1'))!.data.price;
+const courseCount = (await getCollection('courses', (c) => c.data.status === 'active' && ['course', 'package'].includes(c.data.type))).length;
+const ai = (await getEntry('courses', 'ai'))!.data;
+const why = [
+  { t: 'Учим думать, а не копировать', d: 'Системный подход вместо набора мастер-классов. Понимаете, почему так, а не просто за какой кнопкой.' },
+  { t: 'Проверка работ педагогами', d: 'В форматах с поддержкой домашние задания проверяют педагоги и отвечают на вопросы в чате полгода.' },
+  { t: 'Пакет под вашу цель', d: 'База, затем профессия и только те доп. курсы, которые нужны именно вам.' },
+  { t: 'Стримы GRIPINSKY TV', d: 'Каждую среду в 18:30 разбираем работы в прямом эфире, вручаем «Рендер дня» и встречаемся с работодателями.' },
+  { t: 'Экосистема, а не просто уроки', d: 'Индивидуальные занятия, наставничество, конкурсы и помощь с портфолио.' },
+  { t: 'Тёплое комьюнити', d: 'Студенты остаются с нами годами, а лучшие выпускники становятся педагогами.' },
+];
+const pay = ['Банковская карта РФ', 'СБП', 'Рассрочка через банк', 'Оплата частями', 'Карта иностранного банка', 'Счёт для юрлиц и ИП'];
 ---
-<Base title="Академия 3D GRIPINSKY" description="Онлайн-курсы 3D-визуализации">
-  <section class="wrap section">
-    <h1 class="t-display">Каркас <span class="t-accent">работает</span></h1>
-    <p class="t-lead mt-4">Проверка шапки, подвала, формы и cookie-баннера.</p>
+<Base
+  title="Онлайн-курсы 3D-графики и визуализации с нуля | Академия 3D GRIPINSKY"
+  description={`Онлайн-курсы 3D-визуализации интерьеров и экстерьеров, моделирования и 3D для игр с нуля. ${s.graduates} выпускников, портфолио за время учёбы, бесплатные уроки и рассрочка.`}
+  jsonLd={[faq]}
+  consultContext="Главная"
+>
+  <section class="wrap relative overflow-hidden pb-14 pt-8 md:pb-20 md:pt-14" aria-labelledby="home-title">
+    <Image src={texture} alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.07]" widths={[768, 1440]} sizes="100vw" />
+    <div class="relative grid items-center gap-10 md:grid-cols-[6fr_5fr] md:gap-12">
+      <div class="flex flex-col gap-5">
+        <span class="t-hand text-sea">Академия 3D GRIPINSKY</span>
+        <h1 id="home-title" class="t-display !text-[clamp(36px,5.6vw,64px)]">Курсы 3D-графики <span class="t-accent block">с нуля до первых заказов</span></h1>
+        <p class="t-lead max-w-[620px]">Онлайн-курсы 3D-визуализации и 3D для игр: пошаговая программа, проверка работ педагогами и портфолио, с которым берут в работу.</p>
+        <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2 sm:flex-row sm:flex-wrap sm:gap-x-7">
+          {['Онлайн, в своём темпе', 'Без опыта и умения рисовать', 'Бесплатные уроки до оплаты'].map((c) => (
+            <li class="flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F8F61A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>{c}</li>
+          ))}
+        </ul>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href="#directions" class="btn btn-primary btn-lg">Выбрать направление</a>
+          <a href="#quiz" class="btn btn-secondary btn-lg">Подобрать курс за 1 минуту</a>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 md:gap-4">
+        <figure class="m-0 flex flex-col gap-2">
+          <Image src={heroInterior} alt="Интерьер, работа ученика в 3ds Max и Corona" widths={[320, 480, 720]} sizes="(min-width: 1024px) 22vw, 50vw" loading="eager" fetchpriority="high" class="aspect-[3/4] w-full rounded-[20px] object-cover" />
+          <figcaption class="t-caption text-muted">3D-визуализация</figcaption>
+        </figure>
+        <figure class="m-0 mt-10 flex flex-col gap-2">
+          <Image src={heroGame} alt="Игровой пропс: геймпад, работа ученика" widths={[320, 480, 720]} sizes="(min-width: 1024px) 22vw, 50vw" loading="eager" class="aspect-[3/4] w-full rounded-[20px] object-cover" />
+          <figcaption class="t-caption text-muted">3D для игр</figcaption>
+        </figure>
+      </div>
+    </div>
+    <dl class="relative mt-10 grid grid-cols-2 gap-6 border-y border-line py-6 md:mt-14 md:grid-cols-4">
+      <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted">выпускников</dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.graduates}</dd></div>
+      <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted">учим по своей системе</dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.years}</dd></div>
+      <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted">видеоуроков в {courseCount} курсах и пакетах</dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.videos}</dd></div>
+      <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted"><a href={site.yandexMaps} class="text-muted hover:text-white" rel="noopener">оценка на Яндекс Картах ↗</a></dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.rating} <span class="text-[15px] tracking-[2px]" aria-label={`из 5`}>★★★★★</span></dd></div>
+    </dl>
+    <ul class="relative m-0 mt-8 flex list-none flex-wrap items-center gap-x-6 gap-y-3 p-0" aria-label="Программы, которым учим">
+      {SOFT_LIST.map(([f, n]) => <li class="flex items-center gap-2 text-[15px] text-ink-2"><Image src={soft(f)} alt="" width={28} height={28} class="h-7 w-7" />{n}</li>)}
+    </ul>
+  </section>
+
+  <section id="directions" class="wrap section" aria-labelledby="dir-title">
+    <div class="mb-8 flex flex-col gap-3">
+      <span class="t-overline">Направления</span>
+      <h2 id="dir-title" class="t-h2" tabindex="-1">Выберите <span class="t-accent">направление</span></h2>
+      <p class="m-0 max-w-[720px] text-ink-2">Внутри направления вы выбираете профессию. Сначала база, затем курс профессии и доп. курсы под вашу цель.</p>
+    </div>
+    <div class="grid gap-5 md:grid-cols-2 md:gap-6">
+      <article class="card lift relative flex flex-col overflow-hidden">
+        <Image src={dirExterior} alt="Экстерьер загородного дома, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[240px] w-full object-cover md:h-[300px]" />
+        <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
+          <h3 class="t-h3 uppercase"><a href="/courses-page/visualization" class="text-ink after:absolute after:inset-0 hover:text-white">3D-визуализация</a></h3>
+          <p class="m-0 text-ink-2">Фотореалистичные интерьеры и экстерьеры в 3ds Max и Corona для дизайнеров и застройщиков.</p>
+          <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Интерьеры', 'Экстерьеры и ЖК', 'Модели для стоков'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
+          <p class="m-0 text-[15px] text-muted">Путь: база (3ds Max, Corona, ИИ), затем профессия</p>
+          <p class="mt-auto m-0 text-[17px]">База от <b>{rub(cat.base.price)}</b> или {sp(Math.ceil(cat.base.price / cat.installmentMonths))}&nbsp;₽/мес</p>
+          <span class="font-semibold text-lime" data-cta>Выбрать профессию →</span>
+        </div>
+      </article>
+      <article class="card lift relative flex flex-col overflow-hidden">
+        <Image src={heroGame} alt="Игровой пропс, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[240px] w-full object-cover md:h-[300px]" />
+        <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
+          <h3 class="t-h3 uppercase"><a href="/courses-page/gamedev" class="text-ink after:absolute after:inset-0 hover:text-white">3D для игр</a></h3>
+          <p class="m-0 text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine.</p>
+          <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Художник по предметам', 'Окружение', 'Персонажи', 'Hard Surface', 'Unreal-художник'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
+          <p class="m-0 text-[15px] text-muted">Путь: визуализация в Blender, затем GameDev Level 1 и специализация</p>
+          <p class="mt-auto m-0 text-[17px]">Курсы от <b>{rub(gameMin)}</b> или {sp(Math.ceil(gameMin / cat.installmentMonths))}&nbsp;₽/мес</p>
+          <span class="font-semibold text-lime" data-cta>Смотреть курсы →</span>
+        </div>
+      </article>
+    </div>
+    <p class="mt-6"><span class="text-muted">Уже знаете 3D?</span> <a href="/courses" class="link">Все {courseCount} курсов и пакетов →</a></p>
+  </section>
+
+  <section id="quiz" class="wrap section-tight" aria-label="Тест: подбор курса">
+    <Quiz client:visible cat={cat} variant="home" startOpen telegramBot={site.telegramBot} gamesHref="/courses-page/gamedev" vizHref="/courses-page/visualization" />
+  </section>
+
+  <section id="works" class="wrap section" aria-labelledby="hw-title">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div class="flex flex-col gap-3">
+        <span class="t-overline">Результаты</span>
+        <h2 id="hw-title" class="t-h2">Работы <span class="t-accent">учеников</span></h2>
+        <p class="m-0 max-w-[720px] text-muted">Эти работы получили «Рендер дня» на стримах GRIPINSKY TV.</p>
+      </div>
+      <a href="/gallery" class="link">Смотреть все работы →</a>
+    </div>
+    <div class="grid gap-5 md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
+      <BeforeAfter class="md:row-span-2" after={baRender} before={baModel} altAfter="Интерьер после визуализации" altBefore="Та же сцена: модель и сетка" caption="Потяните ползунок: модель и финальный рендер одной сцены" />
+      {works.slice(0, 4).map((w) => (
+        <figure class="zoom m-0 flex flex-col gap-2">
+          <div class="h-[220px] overflow-hidden rounded-[20px] md:h-[200px]"><Image src={w.data.image} alt={w.data.alt} widths={[400, 640]} sizes="(min-width: 1024px) 25vw, 100vw" class="h-full w-full object-cover" /></div>
+          <figcaption class="t-small text-muted">{people.get(w.data.author.id)?.name}, {w.data.title.charAt(0).toLowerCase() + w.data.title.slice(1)}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section id="why" class="wrap section" aria-labelledby="why-title">
+    <div class="mb-8 flex flex-col gap-3">
+      <span class="t-overline">Почему GRIPINSKY</span>
+      <h2 id="why-title" class="t-h2">Почему не бесплатный <span class="t-accent">YouTube</span></h2>
+    </div>
+    <ul class="m-0 grid list-none gap-4 p-0 sm:grid-cols-2 md:grid-cols-3">
+      {why.map((w, i) => (
+        <li class="card flex flex-col gap-2 p-6"><span class="text-[28px] font-extrabold leading-none text-sea" aria-hidden="true">0{i + 1}</span><h3 class="t-title">{w.t}</h3><p class="t-small m-0 text-muted">{w.d}</p></li>
+      ))}
+    </ul>
+    <dl class="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
+      {[['1 год', 'доступа ко всем урокам курса'], ['6 месяцев', 'проверки работ в форматах с поддержкой'], ['Свой темп', 'без расписания и дедлайнов'], ['Обновления', 'курсы обновляем по отзывам студентов']].map(([a, b]) => (
+        <div class="flex flex-col-reverse gap-1"><dt class="text-[15px] text-muted">{b}</dt><dd class="m-0 text-[26px] font-extrabold text-lime">{a}</dd></div>
+      ))}
+    </dl>
+  </section>
+
+  <section id="ai" class="wrap section-tight" aria-labelledby="ai-title">
+    <div class="grid gap-6 rounded-[24px] bg-sea-08 p-6 md:grid-cols-[6fr_5fr] md:items-center md:gap-10 md:p-10">
+      <div class="flex flex-col gap-4">
+        <span class="t-overline">Новый курс</span>
+        <h2 id="ai-title" class="t-h2">ИИ в 3D: <span class="t-accent">работайте в разы быстрее</span></h2>
+        <p class="t-hand m-0 text-sea">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+        <p class="m-0 text-ink-2">Нейросети во всём пайплайне: референсы, 3D-модель по фото, ретопология, текстуры и сцена. Рутину отдаёте ИИ, качество доводите сами. Курс входит в «Базу 3D-визуализатора».</p>
+        <div class="flex flex-wrap items-center gap-4"><a href="/ai" class="btn btn-primary">Смотреть курс</a><span class="text-ink-2">от <b class="text-ink">{rub(ai.price)}</b></span></div>
+      </div>
+      <ul class="m-0 grid list-none gap-3 p-0">
+        {[['4 вида', '3D-модель', 'Нейросеть собирает модель по референсам, вы чистите сетку.'], ['1 промпт', 'окружение', 'Модель на сером фоне превращается в готовую сцену.'], ['1 рендер', '4 ракурса', 'Разные ракурсы в том же окружении для портфолио.']].map(([a, b, c]) => (
+          <li class="card flex flex-col gap-1 p-4"><span class="text-[19px] font-extrabold">{a} <span class="text-sea">и</span> {b}</span><span class="t-small text-muted">{c}</span></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="hr-title">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <h2 id="hr-title" class="t-h2">Что говорят <span class="t-accent">ученики</span></h2>
+      <a href="/otzyvy" class="link">Все отзывы и истории →</a>
+    </div>
+    <div class="grid gap-5 md:grid-cols-3">
+      {reviews.map((r) => (
+        <figure class="m-0 flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6">
+          <blockquote class="m-0 text-[17px] leading-normal">{r.data.text}</blockquote>
+          <figcaption class="mt-auto"><b>{r.data.author}</b><span class="block t-small text-muted">{r.data.role}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <section id="about" class="wrap section-tight" aria-labelledby="ha-title">
+    <div class="card grid gap-6 p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:p-9">
+      <span class="flex h-24 w-24 items-center justify-center rounded-full bg-sea-14 text-[28px] font-extrabold" aria-hidden="true">ЕГ</span>
+      <div class="flex flex-col gap-2">
+        <h2 id="ha-title" class="m-0 text-[22px] font-extrabold">Евгений Грипинский и команда педагогов</h2>
+        <p class="m-0 text-ink-2">20 лет назад Евгений создал обучающую систему. Её основа: системный подход к знаниям, высокие стандарты качества и адресная поддержка каждого студента.</p>
+        <p class="t-hand m-0 text-lime">«Основная цель занятий: научить вас думать, а не повторять действия»</p>
+      </div>
+      <a href="https://gripinsky.ru/teachers" class="link whitespace-nowrap">Все педагоги →</a>
+    </div>
+  </section>
+
+  <Faq page="home" title="Вопросы" />
+
+  <section class="wrap section-tight" aria-labelledby="pay-title">
+    <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-10">
+      <h2 id="pay-title" class="t-title shrink-0">Удобная оплата</h2>
+      <ul class="m-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 text-ink-2">{pay.map((p) => <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-sea" aria-hidden="true"></span>{p}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="wrap section-tight" aria-labelledby="start-title">
+    <div class="relative overflow-hidden rounded-[24px] border border-line p-8 text-center md:p-14">
+      <h2 id="start-title" class="t-h2">Начните путь в 3D <span class="t-accent">сегодня</span></h2>
+      <div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+        <a href="/courses-page/visualization" class="btn btn-primary btn-lg">3D-визуализация</a>
+        <a href="/courses-page/gamedev" class="btn btn-secondary btn-lg">3D для игр</a>
+      </div>
+      <p class="mb-0 mt-4"><a href="#consult" class="link">Или бесплатная консультация</a></p>
+    </div>
+  </section>
+
+  <section class="wrap pb-12" aria-labelledby="seo-title">
+    <div class="max-w-[860px] text-[15px] leading-relaxed text-muted">
+      <h2 id="seo-title" class="t-title mb-3 text-ink">Академия 3D GRIPINSKY: онлайн-школа 3D-графики</h2>
+      <p>Онлайн-курсы 3D-моделирования и визуализации для новичков и практикующих специалистов. Учим с нуля профессиям 3D-визуализатора интерьеров и экстерьеров и 3D-художника для игр: от первых шагов в 3ds Max и Blender до портфолио, с которым берут в студии и на коммерческие проекты.</p>
+      <p>В каталоге курсы 3ds Max, Corona и V-Ray, Blender, ZBrush, Maya, Substance Painter и Unreal Engine, а также курс по нейросетям для 3D. В форматах с поддержкой работы проверяют педагоги, а на стримах GRIPINSKY TV мы разбираем работы учеников. Обучение онлайн, в своём темпе, с рассрочкой.</p>
+    </div>
   </section>
 </Base>

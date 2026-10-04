@@ -1,0 +1,45 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import { SITE } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  return (await getCollection('blog', (p) => !p.data.draft)).map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const related = (await Promise.all(post.data.related.map((r) => getEntry('courses', r.id)))).filter(Boolean);
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Блог', href: '/blog' }, { name: post.data.title }];
+const ld = { '@context': 'https://schema.org', '@type': 'Article', headline: post.data.title, description: post.data.description, datePublished: post.data.date.toISOString(), author: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY' }, publisher: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', logo: { '@type': 'ImageObject', url: `${SITE}/logo.png` } } };
+---
+<Base title={`${post.data.title} | Блог GRIPINSKY`} description={post.data.description} breadcrumbs={crumbs} jsonLd={[ld]} consultContext={`Статья: ${post.data.title}`}>
+  <article class="wrap pb-12 pt-5 md:pt-7">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <div class="grid gap-10 md:grid-cols-[8fr_4fr]">
+      <div class="post max-w-[760px]">
+        <time datetime={post.data.date.toISOString()} class="text-[14px] text-muted">{post.data.date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+        <h1 class="t-h2 mb-6 mt-2">{post.data.title}</h1>
+        <Content />
+      </div>
+      {headings.length > 2 && (
+        <nav aria-label="Содержание статьи" class="hidden self-start md:sticky md:top-6 md:block">
+          <span class="t-overline">Содержание</span>
+          <ul class="m-0 mt-3 flex list-none flex-col gap-2 p-0 text-[15px]">{headings.filter((h) => h.depth === 2).map((h) => <li><a href={`#${h.slug}`} class="text-ink-2 hover:text-white">{h.text}</a></li>)}</ul>
+        </nav>
+      )}
+    </div>
+    {related.length > 0 && (
+      <section class="mt-14" aria-labelledby="rel-title">
+        <h2 id="rel-title" class="t-h3 mb-5">Курсы по теме</h2>
+        <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">{related.map((c) => <CourseCard course={c!} />)}</div>
+      </section>
+    )}
+  </article>
+</Base>
+<style is:global>
+  .post h2 { font-size: clamp(22px, 2.4vw, 28px); font-weight: 800; margin: 32px 0 12px; }
+  .post p { margin: 0 0 14px; font-size: 17px; line-height: 1.65; color: var(--color-ink-2); }
+  .post ul { margin: 0 0 14px; padding-left: 22px; color: var(--color-ink-2); line-height: 1.65; }
+</style>

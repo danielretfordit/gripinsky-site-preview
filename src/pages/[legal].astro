@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('legal')).map((d) => ({ params: { legal: d.data.path.slice(1) }, props: { doc: d } }));
+}
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+const crumbs = [{ name: 'Главная', href: '/' }, { name: doc.data.title }];
+---
+<Base title={`${doc.data.title} | Академия 3D GRIPINSKY`} description={`${doc.data.title}. ИП Грипинский Евгений Григорьевич, Академия 3D GRIPINSKY.`} breadcrumbs={crumbs} consult={doc.id === 'yur'} consultContext="Юридическим лицам">
+  <article class="wrap pb-16 pt-5 md:pt-7">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <h1 class="t-h2 mb-6 max-w-[900px]">{doc.data.title}</h1>
+    {doc.data.updated && <p class="mb-8 mt-0 text-[14px] text-muted">{doc.data.updated}</p>}
+    <div class="legal max-w-[860px] text-[16px] leading-relaxed text-ink-2"><Content /></div>
+  </article>
+</Base>
+<style is:global>
+  .legal p { margin: 0 0 12px; white-space: pre-line; }
+  .legal ul { margin: 0 0 12px; padding-left: 22px; }
+  .legal strong { color: var(--color-ink); }
+</style>

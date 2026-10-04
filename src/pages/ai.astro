@@ -1,0 +1,150 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import Checkout from '../islands/Checkout';
+import { rub, sp } from '../lib/format';
+import { SITE } from '../lib/seo';
+import meshRaw from '../assets/ai/mesh-raw.jpg';
+import meshScene from '../assets/ai/mesh-scene.jpg';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const ai = (await getEntry('courses', 'ai'))!.data;
+const lab = (await getEntry('courses', 'ai-lab'))!.data;
+const months = site.installment.months;
+const steps = [
+  { t: 'Генерируешь референсы нейросетью', d: 'Согласованный референс-сет: 4 вида будущей модели за несколько промптов.', tools: 'Nano Banana' },
+  { t: 'Создаёшь 3D-модель по фото', d: 'Нейросеть собирает модель по 4 видам. Первая объёмная модель уже на втором шаге.', tools: 'Hunyuan3D, Tripo3D' },
+  { t: 'Делаешь ретопологию модели', d: 'После нейросети остаются рваные полигоны и лишняя плотность. Автоматическая ретопология в Quad Remesher и доработка в 3ds Max: здесь решает навык художника.', tools: 'Quad Remesher, 3ds Max' },
+  { t: 'Генерируешь текстуры нейросетью', d: 'Текстуры по описанию и ручная доводка до нужного качества.', tools: 'ИИ-текстурирование' },
+  { t: 'Ставишь 3D-модель в интерьер', d: 'Модель на сером фоне за один промпт превращается в готовую сцену с интерьером или локацией.', tools: 'Nano Banana, Claude' },
+  { t: 'Делаешь визуализацию для портфолио', d: 'Из одного рендера 4 ракурса в том же окружении: для портфолио и заказчика.', tools: 'Nano Banana' },
+];
+const faq = [
+  ['Я новичок в 3D. Мне подойдёт?', 'Курс рассчитан на тех, у кого есть базовые навыки 3D. Если вы начинаете с нуля, сначала пройдите моделирование в 3ds Max, уровни 1 и 2, а затем переходите к «ИИ в 3D». Так нейросеть будет ускорять работу, а не подменять понимание формы. А в «Базу 3D-визуализатора» этот курс уже входит.'],
+  ['ИИ же всё делает сам? Заменит ли он 3D-художника?', 'Нет. Нейросеть выдаёт черновик: рваную сетку, ошибки в форме, сырые текстуры. Дальше решает навык художника: ретопология, доводка текстур и материалов, подача. Этому посвящены шаги 3–6.'],
+  ['Я уже умею в 3D. Зачем мне этот курс?', 'Чтобы экономить время на каждом заказе. Референсы, черновая геометрия, текстуры и окружение занимают часы вместо дня. Освоили пайплайн один раз и экономите на каждом следующем проекте.'],
+  ['Нейросети быстро меняются. Знания не устареют?', 'Мы учим принципу пайплайна, а не кнопкам одного сервиса. Когда выходит новая нейросеть, вы встраиваете её в ту же цепочку: референс, 3D-модель, чистая сетка, текстуры, сцена.'],
+  ['Какими нейросетями будем пользоваться?', 'Nano Banana для референсов и окружения, Hunyuan3D и Tripo3D для генерации 3D-модели, Quad Remesher для ретопологии, а также Claude и Генспарк для рабочих задач. Доработку модели делаем в 3ds Max.'],
+  ['Нужна ли ретопология модели после нейросети?', 'Да, почти всегда. Нейросеть выдаёт плотную треугольную сетку, которую неудобно текстурировать и править. На шаге 3 делаете автоматическую ретопологию в Quad Remesher и дорабатываете модель в 3ds Max до чистых квадов.'],
+  ['Чем «Лаборатория» отличается от «Самостоятельно»?', '«Самостоятельно»: все уроки в записи без проверки и поддержки. «Лаборатория»: обучение в группе с датой старта и живым стримом с разбором полного цикла.'],
+];
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: 'ИИ в 3D' }];
+const ld = [
+  { '@context': 'https://schema.org', '@type': 'Course', name: 'ИИ в 3D', description: 'Нейросети для создания 3D-моделей: референсы, 3D-модель по фото, ретопология, текстуры и визуализация.', provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE }, offers: [{ '@type': 'Offer', price: ai.price, priceCurrency: 'RUB' }, { '@type': 'Offer', price: lab.price, priceCurrency: 'RUB' }], hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' } },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
+];
+---
+<Base
+  title="Нейросети для 3D-моделей: курс «ИИ в 3D», 3D-модель по фото | GRIPINSKY"
+  description={`Онлайн-курс «ИИ в 3D»: референсы в нейросетях, 3D-модель по фото в Hunyuan3D и Tripo3D, ретопология, текстуры и визуализация. От ${sp(ai.price)} ₽.`}
+  breadcrumbs={crumbs}
+  jsonLd={ld}
+  consultContext="Курс ИИ в 3D"
+>
+  <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="ai-title">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+      <div class="flex flex-col gap-5">
+        <span class="text-[15px] font-bold tracking-[0.08em] text-sea">Онлайн-курс</span>
+        <h1 id="ai-title" class="t-display">ИИ в 3D: <span class="t-accent">нейросети для 3D-моделей</span></h1>
+        <p class="t-hand m-0 text-sea">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+        <p class="t-lead">Весь пайплайн от референса и 3D-модели по фото до готового рендера в интерьере. Рутину отдаёте ИИ, качество доводите сами и работаете в разы быстрее.</p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <a href="#tariffs" class="btn btn-primary btn-lg">Выбрать тариф, от {rub(ai.price)}</a>
+          <a href="#program" class="btn btn-secondary btn-lg">Программа</a>
+        </div>
+        <p class="m-0 text-[15px] text-ink-2">Курс входит в «Базу 3D-визуализатора». <a href="/courses-page/visualization#base" class="link">Подробнее о базе</a></p>
+      </div>
+      <BeforeAfter after={meshScene} before={meshRaw} altAfter="Модель с чистой сеткой в интерьере" altBefore="Модель с кривой сеткой после генерации" caption="Потяните ползунок: модель после нейросети и она же после доработки в интерьере" />
+    </div>
+  </section>
+
+  <section class="wrap section-tight" aria-labelledby="lose-title">
+    <h2 id="lose-title" class="t-h2 mb-8">Что вы теряете <span class="t-accent">без ИИ</span></h2>
+    <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
+      {[['День вместо часа', 'Референсы, черновая геометрия, текстуры и окружение съедают часы, которые можно потратить на новые заказы.'], ['Конкуренты уже быстрее', 'Студии и фрилансеры ускоряются с ИИ. Кто работает по старинке, проигрывает по срокам и цене.'], ['Один вариант вместо пяти', 'С ИИ на этапе референсов вы показываете заказчику несколько версий и продаёте выбор, поднимая чек.']].map(([t, d]) => (
+        <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">{t}</h3><p class="t-small m-0 text-muted">{d}</p></li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="program" class="wrap section" aria-labelledby="program-title">
+    <div class="mb-8 flex flex-col gap-3">
+      <span class="t-overline">Программа</span>
+      <h2 id="program-title" class="t-h2" tabindex="-1">Каждый шаг: <span class="t-accent">новый навык</span></h2>
+    </div>
+    <ol class="m-0 grid list-none gap-4 p-0 md:grid-cols-2">
+      {steps.map((s, i) => (
+        <li class="card flex flex-col gap-3 p-6">
+          <span class="flex items-center justify-between gap-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-lime text-[18px] font-extrabold text-bg" aria-hidden="true">{i + 1}</span>
+            <span class="text-[13px] font-semibold text-sea">Пайплайн освоен на {Math.round(((i + 1) / steps.length) * 100)}%</span>
+          </span>
+          <h3 class="t-title"><span class="sr-only">Шаг {i + 1}. </span>{s.t}</h3>
+          <p class="t-small m-0 text-ink-2">{s.d}</p>
+          <span class="text-[14px] text-muted">{s.tools}</span>
+        </li>
+      ))}
+    </ol>
+    <p class="mt-6 text-ink-2"><b class="text-ink">Инструменты:</b> Nano Banana, Hunyuan3D, Tripo3D, Quad Remesher, Claude, Генспарк и 3ds Max для доработки.</p>
+  </section>
+
+  <section class="wrap section-tight" aria-labelledby="who-title">
+    <h2 id="who-title" class="t-h2 mb-8">Кому <span class="t-accent">подходит</span></h2>
+    <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-muted">Тот же результат в разы быстрее: больше заказов за то же время.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Новичкам без моделирования</h3><p class="t-small m-0 text-muted">Понятная точка входа, но для сильного результата нужна база. <a href="/modeling1" class="link">Начать с 3ds Max</a>.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Выпускникам академии</h3><p class="t-small m-0 text-muted">Навыки, которые вы умеете руками, теперь делаются быстрее.</p></li>
+    </ul>
+  </section>
+
+  <section id="tariffs" class="wrap section" aria-labelledby="tariffs-title">
+    <h2 id="tariffs-title" class="t-h2 mb-8" tabindex="-1">Стоимость <span class="t-accent">курса</span></h2>
+    <div class="grid gap-5 md:grid-cols-2">
+      <article class="card flex flex-col gap-4 p-6 md:p-8">
+        <h3 class="t-h3">Самостоятельно</h3>
+        <span><b class="text-[34px]">{rub(ai.price)}</b> <span class="text-muted">разовый платёж</span></span>
+        <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
+          <li>Все 6 шагов пайплайна в записи</li><li>Демо-модель для практики</li><li>Доступ 6 месяцев</li><li class="text-muted">Без проверки и поддержки</li>
+        </ul>
+        <button type="button" class="btn btn-secondary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai', name: 'ИИ в 3D: Самостоятельно', price: ai.price })}>Купить</button>
+      </article>
+      <article class="flex flex-col gap-4 rounded-[20px] bg-sea-14 p-6 md:p-8">
+        <span class="chip self-start !bg-bg !text-sea">Популярный</span>
+        <h3 class="t-h3">Лаборатория</h3>
+        <span><b class="text-[34px]">{rub(lab.price)}</b> <span class="text-muted">или {sp(Math.ceil(lab.price / months))}&nbsp;₽/мес</span></span>
+        <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
+          <li>Всё из тарифа «Самостоятельно»</li><li>Обучение в группе с датой старта</li><li>Живой стрим с разбором полного цикла</li><li class="text-muted">Дата старта потока уточняется</li>
+        </ul>
+        <button type="button" class="btn btn-primary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai-lab', name: lab.title, price: lab.price })}>Записаться в поток</button>
+      </article>
+    </div>
+    <p class="mt-4 text-[15px] text-muted">Оплата картой, через СБП, в рассрочку и частями, счёт для юрлиц и ИП.</p>
+  </section>
+
+  <section class="wrap section-tight border-t border-line" aria-labelledby="aifaq-title">
+    <div class="grid gap-10 md:grid-cols-[4fr_8fr]">
+      <h2 id="aifaq-title" class="t-h2">Вопросы <span class="t-accent">о курсе</span></h2>
+      <div class="flex max-w-[820px] flex-col">
+        {faq.map(([q, a]) => (
+          <details class="group border-b border-line py-1">
+            <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[18px] font-bold md:text-[20px]">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-sea transition-transform group-open:rotate-45">+</span></summary>
+            <p class="mb-5 mt-0 text-muted">{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Fragment slot="after-main">
+    <Checkout client:load months={months} telegramBot={site.telegramBot} />
+  </Fragment>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: JSON.parse(b.dataset.buy!) }));
+  }));
+</script>

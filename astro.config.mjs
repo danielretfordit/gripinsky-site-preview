@@ -19,6 +19,8 @@ export default defineConfig({
   trailingSlash: 'never',
   build: { format: 'file' },
   compressHTML: true,
+  // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
+  redirects: { '/courses-page': '/courses' },
   server: { port: 4321, allowedHosts: ['.tuna.am'] },
   image: {
     breakpoints: [480, 768, 1080, 1440, 1920],
