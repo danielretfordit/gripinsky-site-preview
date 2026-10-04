@@ -251,8 +251,9 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         const panel = document.getElementById(t.getAttribute('aria-controls')!);
         if (panel) panel.hidden = !on;
       }
-      if (focus) tab.focus();
-      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (focus) tab.focus({ preventScroll: true });
+      // Видимость активной вкладки в ленте на телефоне: прокручиваем только ленту
+      list.scrollTo({ left: Math.max(0, tab.offsetLeft - 16), behavior: 'smooth' });
     };
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(t));

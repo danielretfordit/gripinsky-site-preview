@@ -13,3 +13,7 @@ node_modules/
 .claude/settings.local.json
 originals/
 *.log
+
+# автотесты
+e2e-report/
+test-results/

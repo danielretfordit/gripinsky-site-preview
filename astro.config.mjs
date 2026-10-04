@@ -22,6 +22,8 @@ export default defineConfig({
   // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
   redirects: { '/courses-page': '/courses' },
   server: { port: 4321, allowedHosts: ['.tuna.am'] },
+  // Панель разработчика Astro подгружает свои модули на лету и мешает стабильной работе dev-сервера
+  devToolbar: { enabled: false },
   image: {
     breakpoints: [480, 768, 1080, 1440, 1920],
   },
@@ -71,5 +73,15 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    // Все браузерные зависимости собираем заранее при старте dev-сервера.
+    // Иначе Vite находит их на лету, пересобирает и отдаёт 504 «Outdated Optimize Dep»:
+    // острова (тест, конструктор, оформление) и админка Keystatic перестают загружаться.
+    optimizeDeps: {
+      include: [
+        'preact', 'preact/hooks', 'preact/jsx-runtime', 'preact/compat',
+        'nanostores', '@nanostores/preact',
+        ...(isDev ? ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime', '@keystatic/core', '@keystatic/core/ui', '@keystatic/astro/ui'] : []),
+      ],
+    },
   },
 });

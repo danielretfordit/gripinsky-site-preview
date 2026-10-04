@@ -24,7 +24,14 @@ const items = [
     for (const e of entries) {
       if (!e.isIntersecting) continue;
       links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${e.target.id}`)));
-      links.find((a) => a.getAttribute('aria-current') === 'true')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      // Прокручиваем только саму ленту подменю по горизонтали, страницу не трогаем
+      const cur = links.find((a) => a.getAttribute('aria-current') === 'true');
+      const row = cur?.closest<HTMLElement>('[data-subnav]');
+      if (cur && row) {
+        const li = cur.parentElement!;
+        const left = li.offsetLeft - (row.clientWidth - li.offsetWidth) / 2;
+        row.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+      }
     }
   }, { rootMargin: '-45% 0px -50% 0px' });
   sections.forEach((s) => io.observe(s));

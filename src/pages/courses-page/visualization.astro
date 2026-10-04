@@ -51,7 +51,7 @@ const courseLd = {
   <Ladder />
 
   <section id="quiz" class="wrap section-tight scroll-mt-16" aria-label="Тест: с чего начать">
-    <Quiz client:visible cat={cat} variant="viz" telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
+    <Quiz client:load cat={cat} variant="viz" telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
   </section>
 
   <BaseStep />
@@ -62,14 +62,14 @@ const courseLd = {
       <h2 id="format-title" class="t-h2" tabindex="-1">Формат: <span class="t-accent">как будете учиться</span></h2>
       <p class="m-0 max-w-[760px] text-ink-2">Программа одна: 230 уроков и доступ на год. Формат решает, сколько помощи вы получите по дороге. Выбранный формат действует для всего пакета.</p>
     </div>
-    <FormatPicker client:visible cat={cat} tariffs={tariffs} trialHref="/vizualization3_mini" />
+    <FormatPicker client:load cat={cat} tariffs={tariffs} trialHref="/vizualization3_mini" />
   </section>
 
   <section id="profession" class="wrap pb-10 pt-16 md:pt-24" aria-labelledby="profession-title">
     <div class="mb-8">
       <StepHeader step={2} chip="После базы" note="учитесь работать за деньги: ТЗ, заказчик, цена" title="Профессия:" accent="кем хотите работать?" id="profession-title" />
     </div>
-    <ProfessionPicker client:visible cat={cat} professions={professions} />
+    <ProfessionPicker client:load cat={cat} professions={professions} />
   </section>
 
   <MoneyOrders />
@@ -80,15 +80,15 @@ const courseLd = {
       <h2 id="package-title" class="t-h2" tabindex="-1">Пакет: <span class="t-accent">соберите свой</span></h2>
       <p class="m-0 max-w-[760px] text-ink-2">Подарок к профессии уже внутри, а ниже курсы, которые усилят портфолио. Итог и рассрочка считаются сразу.</p>
     </div>
-    <PackageSummary client:visible cat={cat} addonTexts={texts.addonTexts} giftTexts={texts.giftTexts} installmentNote={installmentNote} />
+    <PackageSummary client:load cat={cat} addonTexts={texts.addonTexts} giftTexts={texts.giftTexts} installmentNote={installmentNote} />
   </section>
 
   <NoRisk />
   <Faq page="viz" />
 
   <Fragment slot="after-main">
-    <StickyPackageBar client:idle cat={cat} />
-    <Checkout client:idle cat={cat} telegramBot={site.telegramBot} />
+    <StickyPackageBar client:load cat={cat} />
+    <Checkout client:load cat={cat} telegramBot={site.telegramBot} />
   </Fragment>
 </Base>
 
