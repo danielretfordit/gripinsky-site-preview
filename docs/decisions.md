@@ -4,7 +4,7 @@
 - Делаем пилот локально (localhost). Хостинг и способ переключения домена выбираем после пилота.
 - Код в `~/Projects/gripinsky-site` (латиница: путь «сайт GRIPINSKY» с кириллицей ломает инструменты сборки). Папка «сайт GRIPINSKY» остаётся для документов.
 - Стек: Astro 7 + адаптер Node (только `/api/*`), Tailwind 4, Preact-острова, Keystatic. Подробно: `analysis/architecture.md`.
-- Оплата на новых страницах: GetCourse (Robokassa подключена внутри GetCourse) через `/api/checkout`. Режимы `demo | links | api`, в пилоте `demo`. Прямая Robokassa готова как запасной путь. Старые страницы на Tilda работают как есть.
+- Оплата на новых страницах: GetCourse (Robokassa подключена внутри GetCourse) через `/api/checkout`. Режимы `CHECKOUT_MODE`: `demo` (заявка в CRM, в пилоте), `getcourse` (заказ и ссылка на оплату через API GetCourse), `robokassa` (прямая оплата). Прямая Robokassa готова как запасной путь. Старые страницы на Tilda работают как есть.
 - Заявки: своя форма, `/api/lead`, вебхук Bitrix24. Отдельная галочка согласия на обработку ПД.
 - Адреса Tilda сохраняются. Страницы профессий занимают существующие адреса категорий: `/courses-page/interior`, `/courses-page/exterior`, `/courses-page/stocks`. Направление: `/courses-page/visualization`.
 - В пилот входят все улучшения из анализа (P0, P1, P2).
