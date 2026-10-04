@@ -9,14 +9,14 @@
   "professions": [
     "Скульпт",
     "Персонажи",
-    "3d Art",
-    "Gamedev"
+    "3D Art",
+    "GameDev"
   ],
   "software": [
     "ZBRUSH",
     "MARMOSET"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "СТИЛИЗОВАННЫЙ ПЕРСОНАЖ",
@@ -26,5 +26,6 @@
     "offerCode": ""
   },
   "tildaUid": "781429095302",
-  "cover": "../../assets/courses/stylized_character.png"
+  "cover": "../../assets/courses/stylized_character.png",
+  "lessons": 34
 }

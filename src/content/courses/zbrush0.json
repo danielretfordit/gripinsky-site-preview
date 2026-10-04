@@ -9,13 +9,13 @@
   "professions": [
     "Скульпт",
     "Персонажи",
-    "3d Art",
-    "Gamedev"
+    "3D Art",
+    "GameDev"
   ],
   "software": [
     "ZBRUSH"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "ZBRUSH С 0 ДО УВЕРЕННОГО ПОЛЬЗОВАТЕЛЯ",
@@ -25,5 +25,6 @@
     "offerCode": ""
   },
   "tildaUid": "774942180691",
-  "cover": "../../assets/courses/zbrush0.png"
+  "cover": "../../assets/courses/zbrush0.png",
+  "lessons": 36
 }

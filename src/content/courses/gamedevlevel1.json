@@ -8,14 +8,14 @@
   "oldPrice": null,
   "professions": [
     "Props Artist",
-    "Gamedev",
-    "3d Art"
+    "GameDev",
+    "3D Art"
   ],
   "software": [
     "BLENDER",
     "SUBSTANCE PAINTER"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "Онлайн-обучение геймдеву: курс по созданию игр с нуля | GameDev Level 1",
@@ -25,5 +25,6 @@
     "offerCode": ""
   },
   "tildaUid": "231247328961",
-  "cover": "../../assets/courses/gamedevlevel1.png"
+  "cover": "../../assets/courses/gamedevlevel1.png",
+  "lessons": 27
 }

@@ -11,8 +11,8 @@
     "Environment Artist",
     "Level Artist",
     "Technical Artist",
-    "Gamedev",
-    "3d Art",
+    "GameDev",
+    "3D Art",
     "Анимация",
     "Скульпт"
   ],
@@ -22,7 +22,7 @@
     "SUBSTANCE DESIGNER",
     "ZBRUSH"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "ПАКЕТ КУРСОВ GAMEDEV. LEVEL 1 + 2 + ZBRUSH + TEXTURING",

@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { CHECKOUT_MODE } from 'astro:env/server';
 import { getCatalog } from '../../lib/catalog';
-import { quote, quoteBaseOnly, summarize, type Selection, type TariffId, type ProfId } from '../../lib/pricing';
+import { quote, quoteBaseOnly, quoteCourse, summarize, type Quote, type Selection, type TariffId, type ProfId } from '../../lib/pricing';
 import { sendLead } from '../../lib/b24';
 import { createGcOrder } from '../../lib/getcourse';
 import { robokassaReady, robokassaUrl, newInvId } from '../../lib/robokassa';
@@ -25,7 +25,12 @@ export const POST: APIRoute = async ({ request, url }) => {
   const cat = await getCatalog();
   const s = body.selection ?? {};
   const tariff: TariffId = TARIFFS.includes(s.tariff) ? s.tariff : 'opt';
-  const q = body.kind === 'base'
+  let q: Quote;
+  if (body.kind === 'course') {
+    const entry = (await getCollection('courses')).find((x) => x.id === String(s.id ?? ''));
+    if (!entry || entry.data.status !== 'active' || entry.data.price <= 0) return json({ ok: false, error: 'course' }, 422);
+    q = quoteCourse({ id: entry.id, name: entry.data.title, price: entry.data.price }, cat.installmentMonths);
+  } else q = body.kind === 'base'
     ? quoteBaseOnly(cat, tariff)
     : quote(cat, {
         base: s.base !== false,

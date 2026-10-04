@@ -9,15 +9,15 @@
   "professions": [
     "Персонажи",
     "Скульпт",
-    "Gamedev",
-    "3d Art",
+    "GameDev",
+    "3D Art",
     "Props",
     "Environment"
   ],
   "software": [
     "ZBRUSH"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "Пакет курсов ZBrush Absolute — обучение ZBrush с нуля до PRO",

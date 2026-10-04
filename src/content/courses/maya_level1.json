@@ -8,8 +8,8 @@
   "oldPrice": null,
   "professions": [
     "Props",
-    "Gamedev",
-    "3d Art",
+    "GameDev",
+    "3D Art",
     "Скульпт",
     "Персонажи",
     "Интерьер",
@@ -20,7 +20,7 @@
   "software": [
     "MAYA"
   ],
-  "level": null,
+  "level": "Новичок, продвинутый",
   "blocks": [],
   "seo": {
     "title": "Курс Maya Level 1 — обучение 3D-моделированию и анимации | Autodesk Maya",
@@ -30,5 +30,6 @@
     "offerCode": ""
   },
   "tildaUid": "476476818012",
-  "cover": "../../assets/courses/maya_level1.png"
+  "cover": "../../assets/courses/maya_level1.png",
+  "lessons": 43
 }

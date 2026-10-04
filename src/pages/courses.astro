@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CourseCard from '../components/CourseCard.astro';
+import { CATEGORIES, isListed } from '../lib/categories';
+import { SITE } from '../lib/seo';
+import vizImg from '../assets/works/bolshunova-ostrov-1.jpg';
+
+const courses = (await getCollection('courses')).filter((c) => isListed(c.data)).sort((a, b) => {
+  const order = { package: 0, course: 1, free: 2, plugin: 3, service: 4 } as const;
+  return order[a.data.type] - order[b.data.type] || a.data.price - b.data.price;
+});
+const types = [
+  { id: 'all', label: 'Все' },
+  { id: 'course', label: 'Курсы' },
+  { id: 'package', label: 'Пакеты' },
+  { id: 'free', label: 'Бесплатные' },
+  { id: 'service', label: 'Наставник и услуги' },
+];
+const directions = ['Визуализация', 'Интерьер', 'Экстерьер', 'ЖК', 'Моделирование', 'Стоки', 'GameDev', 'Персонажи', 'Скульпт', 'Анимация'];
+const software = ['3DS MAX', 'CORONA RENDERER', 'V-RAY', 'BLENDER', 'ZBRUSH', 'UNREAL ENGINE', 'SUBSTANCE PAINTER', 'ADOBE PHOTOSHOP', 'FOREST PACK'];
+const count = (fn: (c: (typeof courses)[number]) => boolean) => courses.filter(fn).length;
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
+---
+<Base
+  title="Курсы 3D-графики онлайн: 3ds Max, Corona, Blender, ZBrush | GRIPINSKY"
+  description="Каталог онлайн-курсов Академии 3D GRIPINSKY: 3D-визуализация интерьеров и экстерьеров, моделирование, 3D для игр. Бесплатные уроки, рассрочка, проверка работ."
+  breadcrumbs={crumbs}
+  jsonLd={[{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: courses.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + c.data.legacyPath, name: c.data.title })) }]}
+  consultContext="Каталог курсов"
+>
+  <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="catalog-title">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <div class="mb-8 flex flex-col gap-3">
+      <span class="t-overline">Каталог</span>
+      <h1 id="catalog-title" class="t-display">Все курсы <span class="t-accent">академии</span></h1>
+      <p class="t-lead max-w-[760px]">{courses.length} курсов, пакетов и бесплатных мини-курсов по 3D-визуализации, моделированию и 3D для игр.</p>
+    </div>
+
+    <a href="/courses-page/visualization" class="lift mb-10 grid overflow-hidden rounded-[24px] bg-sea-14 text-ink hover:text-ink md:grid-cols-[5fr_7fr]">
+      <Image src={vizImg} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 42vw, 100vw" class="h-[220px] w-full object-cover md:h-full" />
+      <span class="flex flex-col gap-3 p-6 md:p-10">
+        <span class="t-overline">Направление</span>
+        <span class="t-h2">3D-визуализация <span class="t-accent">с нуля до заказов</span></span>
+        <span class="text-ink-2">База в 3ds Max и Corona, затем профессия: интерьеры, экстерьеры и ЖК или модели для стоков. Соберите пакет и сразу увидите цену.</span>
+        <span class="font-semibold text-lime">Подобрать курс →</span>
+      </span>
+    </a>
+
+    <div class="mb-6 flex flex-col gap-4" data-filters>
+      <div role="group" aria-label="Тип" class="flex flex-wrap gap-2">
+        {types.map((t, i) => (
+          <button type="button" data-filter-type={t.id} aria-pressed={i === 0 ? 'true' : 'false'}
+            class="choice min-h-11 !rounded-full px-4 text-[15px] font-semibold">{t.label} <span class="text-muted">{t.id === 'all' ? courses.length : count((c) => c.data.type === t.id || (t.id === 'service' && c.data.type === 'plugin'))}</span></button>
+        ))}
+      </div>
+      <div class="grid gap-3 sm:grid-cols-3">
+        <label class="flex flex-col gap-1.5 text-[14px] font-semibold">Направление
+          <select class="field !min-h-12" data-filter-tag="dir">
+            <option value="">Все направления</option>
+            {directions.map((d) => <option value={d.toLowerCase()}>{d}</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1.5 text-[14px] font-semibold">Программа
+          <select class="field !min-h-12" data-filter-tag="soft">
+            <option value="">Все программы</option>
+            {software.map((s) => <option value={s.toLowerCase()}>{s.replace('3DS MAX', '3ds Max').replace('CORONA RENDERER', 'Corona').replace('ADOBE PHOTOSHOP', 'Photoshop')}</option>)}
+          </select>
+        </label>
+        <label class="flex flex-col gap-1.5 text-[14px] font-semibold">Сортировка
+          <select class="field !min-h-12" data-sort>
+            <option value="default">Сначала пакеты</option>
+            <option value="asc">Цена по возрастанию</option>
+            <option value="desc">Цена по убыванию</option>
+          </select>
+        </label>
+      </div>
+      <p class="m-0 text-[15px] text-muted" aria-live="polite" data-count>Показано: {courses.length}</p>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3" data-grid>
+      {courses.map((c) => <CourseCard course={c} headingLevel="h2" />)}
+    </div>
+    <p class="mt-6 hidden text-muted" data-empty>Таких курсов пока нет. Попробуйте другой фильтр или <a href="#consult" class="link">спросите на консультации</a>.</p>
+
+    <nav aria-label="Разделы каталога" class="mt-14 flex flex-col gap-3">
+      <span class="t-overline">Разделы</span>
+      <ul class="m-0 flex list-none flex-wrap gap-2 p-0">
+        <li><a href="/courses-page/visualization" class="choice inline-flex min-h-11 items-center !rounded-full px-4 text-[15px] text-ink">3D-визуализация</a></li>
+        <li><a href="/courses-page/interior" class="choice inline-flex min-h-11 items-center !rounded-full px-4 text-[15px] text-ink">Интерьеры</a></li>
+        <li><a href="/courses-page/exterior" class="choice inline-flex min-h-11 items-center !rounded-full px-4 text-[15px] text-ink">Экстерьеры</a></li>
+        <li><a href="/courses-page/stocks" class="choice inline-flex min-h-11 items-center !rounded-full px-4 text-[15px] text-ink">Стоки</a></li>
+        {CATEGORIES.map((c) => <li><a href={`/courses-page/${c.slug}`} class="choice inline-flex min-h-11 items-center !rounded-full px-4 text-[15px] text-ink">{c.name}</a></li>)}
+      </ul>
+    </nav>
+  </section>
+</Base>
+
+<script>
+  const root = document.querySelector('[data-filters]')!;
+  const grid = document.querySelector<HTMLElement>('[data-grid]')!;
+  const cards = [...grid.querySelectorAll<HTMLElement>('[data-course]')];
+  const initial = [...cards];
+  let type = 'all';
+  const apply = () => {
+    const dir = (root.querySelector('[data-filter-tag="dir"]') as HTMLSelectElement).value;
+    const soft = (root.querySelector('[data-filter-tag="soft"]') as HTMLSelectElement).value;
+    const sort = (root.querySelector('[data-sort]') as HTMLSelectElement).value;
+    let shown = 0;
+    for (const c of cards) {
+      const tags = c.dataset.tags!.split('|');
+      const okType = type === 'all' || c.dataset.type === type || (type === 'service' && c.dataset.type === 'plugin');
+      const ok = okType && (!dir || tags.includes(dir)) && (!soft || tags.includes(soft));
+      c.hidden = !ok;
+      if (ok) shown++;
+    }
+    const ordered = sort === 'default' ? initial : [...cards].sort((a, b) => (Number(a.dataset.price) - Number(b.dataset.price)) * (sort === 'asc' ? 1 : -1));
+    ordered.forEach((c) => grid.appendChild(c));
+    root.querySelector('[data-count]')!.textContent = `Показано: ${shown}`;
+    document.querySelector('[data-empty]')!.classList.toggle('hidden', shown > 0);
+    const q = new URLSearchParams();
+    if (type !== 'all') q.set('type', type);
+    if (dir) q.set('dir', dir);
+    if (soft) q.set('soft', soft);
+    history.replaceState(null, '', q.toString() ? `?${q}` : location.pathname);
+  };
+  root.querySelectorAll<HTMLButtonElement>('[data-filter-type]').forEach((b) => b.addEventListener('click', () => {
+    type = b.dataset.filterType!;
+    root.querySelectorAll('[data-filter-type]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    apply();
+  }));
+  root.querySelectorAll('select').forEach((s) => s.addEventListener('change', apply));
+  const q = new URLSearchParams(location.search);
+  if (q.get('type')) root.querySelector<HTMLButtonElement>(`[data-filter-type="${q.get('type')}"]`)?.click();
+  if (q.get('dir')) (root.querySelector('[data-filter-tag="dir"]') as HTMLSelectElement).value = q.get('dir')!;
+  if (q.get('soft')) (root.querySelector('[data-filter-tag="soft"]') as HTMLSelectElement).value = q.get('soft')!;
+  if (q.size) apply();
+</script>

@@ -7,9 +7,9 @@
   "price": 43900,
   "oldPrice": null,
   "professions": [
-    "Коммерческая Визуализация",
+    "Коммерческая визуализация",
     "Экстерьер",
-    "Жк"
+    "ЖК"
   ],
   "software": [
     "3DS MAX",
@@ -18,7 +18,7 @@
     "CITYSCAPE PRO",
     "CORONA RENDERER"
   ],
-  "level": null,
+  "level": "Продвинутый",
   "blocks": [
     "Работа с заказчиком",
     "Ландшафты",

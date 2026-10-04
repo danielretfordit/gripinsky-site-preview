@@ -10,8 +10,8 @@
     "Текстурирование",
     "Персонажи",
     "Скульпт",
-    "Gamedev",
-    "3d Art",
+    "GameDev",
+    "3D Art",
     "Визуализация",
     "Environment"
   ],
@@ -22,7 +22,7 @@
     "RIZOM UV",
     "MARMOSET"
   ],
-  "level": null,
+  "level": "Новичок",
   "cover": "../../assets/courses/p_texturegamedev.png",
   "blocks": [],
   "seo": {

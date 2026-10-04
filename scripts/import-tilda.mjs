@@ -107,7 +107,7 @@ const decode = (s) => s
 
 function pageMeta(html) {
   const pick = (re) => { const m = html.match(re); return m ? decode(m[1]) : ''; };
-  const atoms = [...html.matchAll(/class="tn-atom"[^>]*>([\s\S]*?)<\/(?:div|a|h1|h2|h3)>/g)]
+  const atoms = [...html.matchAll(/class=['"]tn-atom['"][^>]*>([\s\S]*?)<\/(?:div|a|h1|h2|h3)>/g)]
     .map((m) => decode(m[1])).filter((t) => t && t.length > 1);
   const blocks = [...html.matchAll(/class="t-(?:title|descr|text|name)[^"]*"[^>]*>([\s\S]*?)<\/div>/g)]
     .map((m) => decode(m[1])).filter((t) => t && t.length > 1);

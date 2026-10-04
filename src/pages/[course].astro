@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CourseCard from '../components/CourseCard.astro';
+import Checkout from '../islands/Checkout';
+import { TYPE_LABEL, courseHref } from '../lib/categories';
+import { personMap } from '../lib/people';
+import { rub, sp } from '../lib/format';
+import { SITE } from '../lib/seo';
+
+// Страницы курсов по старым адресам Tilda (/interiorpro, /1-2-3lvl …).
+// Курсы, которые продаются на другой странице (база), и /ai (своя страница) здесь не создаются.
+export async function getStaticPaths() {
+  const courses = await getCollection('courses');
+  return courses
+    .filter((c) => !c.data.landing && c.id !== 'ai' && c.data.legacyPath.split('/').length === 2)
+    .map((c) => ({ params: { course: c.data.legacyPath.slice(1) }, props: { id: c.id } }));
+}
+
+const { id } = Astro.props;
+const entry = (await getEntry('courses', id))!;
+const c = entry.data;
+const site = (await getEntry('settings', 'site'))!.data;
+const people = await personMap();
+const months = site.installment.months;
+const includes = (await Promise.all(c.includes.map((r) => getEntry('courses', r.id)))).filter(Boolean);
+const teachers = c.teachers.map((t) => people.get(t.id)).filter(Boolean);
+const vizRelated = c.professions.some((p) => ['Визуализация', 'Интерьер', 'Экстерьер', 'ЖК', 'Стоки', 'Коммерческая визуализация'].includes(p));
+const allCourses = await getCollection('courses', (x) => x.data.status === 'active' && x.id !== id);
+const related = (c.related.length
+  ? allCourses.filter((x) => c.related.some((r) => r.id === x.id))
+  : allCourses.filter((x) => x.data.type !== 'service' && x.data.professions.some((p) => c.professions.includes(p)))
+).slice(0, 3);
+const rich = c.blocks.length > 0 || Boolean(c.description);
+const isFree = c.type === 'free' || c.price === 0;
+const hidden = c.status !== 'active';
+
+const title = c.seo.title && !/^[А-ЯЁA-Z0-9 .+\-]+$/.test(c.seo.title) ? c.seo.title : `${c.title}: онлайн-курс | GRIPINSKY`;
+const description = c.seo.description || `${c.title}. ${c.short || c.description || ''} Онлайн-обучение в Академии 3D GRIPINSKY${isFree ? ', бесплатно' : `, ${sp(c.price)} ₽, рассрочка`}.`.replace(/\s+/g, ' ').slice(0, 200);
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, ...(vizRelated ? [{ name: '3D-визуализация', href: '/courses-page/visualization' }] : []), { name: c.title }];
+const ld = {
+  '@context': 'https://schema.org', '@type': 'Course', name: c.title, description: c.description || c.short || c.title,
+  provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE }, inLanguage: 'ru',
+  offers: { '@type': 'Offer', price: c.price, priceCurrency: 'RUB', category: isFree ? 'Free' : 'Paid', url: SITE + c.legacyPath },
+  hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
+};
+const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроков` : null, c.level].filter(Boolean) as string[];
+---
+<Base title={title} description={description} breadcrumbs={crumbs} jsonLd={[ld]} noindex={hidden} consultContext={`Курс: ${c.title}`}>
+  <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="course-title">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <div class="grid gap-8 md:grid-cols-[7fr_5fr] md:gap-12">
+      <div class="flex flex-col gap-5">
+        <span class="flex flex-wrap gap-2">
+          <span class={`chip ${isFree ? 'chip-lime' : ''}`}>{TYPE_LABEL[c.type]}</span>
+          {c.software.map((s) => <span class="chip !bg-transparent !text-muted ring-1 ring-line">{s}</span>)}
+        </span>
+        <h1 id="course-title" class="t-display !text-[clamp(30px,4.4vw,48px)]">{c.title}</h1>
+        {c.short && <p class="t-lead">{c.short}</p>}
+        {meta.length > 0 && <p class="m-0 text-[15px] font-medium text-sea">{meta.join(', ')}</p>}
+        {c.cover && (
+          <div class="overflow-hidden rounded-[20px] bg-surface-2">
+            <Image src={c.cover} alt={`Обложка курса «${c.title}»`} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 55vw, 100vw" loading="eager" class="max-h-[440px] w-full object-cover" />
+          </div>
+        )}
+      </div>
+
+      <aside aria-label="Стоимость" class="flex flex-col gap-4 self-start rounded-[20px] border border-line bg-surface p-6 md:sticky md:top-6">
+        {isFree ? (
+          <>
+            <span class="text-[34px] font-extrabold leading-none text-lime">Бесплатно</span>
+            <span class="text-ink-2">Бесплатный мини-курс: оцените формат и педагога до покупки.</span>
+            <a href={site.telegramBot} class="btn btn-primary btn-lg btn-block">Получить доступ</a>
+          </>
+        ) : (
+          <>
+            <span class="flex items-baseline gap-3">
+              <span class="text-[34px] font-extrabold leading-none">{rub(c.price)}</span>
+              {c.oldPrice && c.oldPrice > c.price && c.type !== 'package' && <s class="text-muted">{rub(c.oldPrice)}</s>}
+            </span>
+            {c.oldPrice && c.oldPrice > c.price && c.type === 'package' && <span class="text-[15px] text-ink-2">Курсы пакета по отдельности стоят {rub(c.oldPrice)}, выгода {rub(c.oldPrice - c.price)}</span>}
+            <span class="text-[15px] text-muted">или {sp(Math.ceil(c.price / months))}&nbsp;₽/мес в рассрочку на {months} мес.</span>
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-buy={JSON.stringify({ kind: 'course', id, name: c.title, price: c.price })}>Купить курс</button>
+            <a href={`${site.telegramBot}?start=installment`} class="btn btn-secondary btn-block">Оформить рассрочку</a>
+          </>
+        )}
+        {c.trial && <a href={c.trial} class="link text-center text-[15px]">Сначала бесплатные уроки →</a>}
+        {vizRelated && !isFree && <a href="/courses-page/visualization#package" class="link-sea text-center text-[14px]">Выгоднее в пакете с базой и подарками</a>}
+        <a href="#consult" class="link text-center text-[15px]">Бесплатная консультация</a>
+      </aside>
+    </div>
+  </section>
+
+  {rich && (
+    <section class="wrap section-tight" aria-labelledby="about-course">
+      <div class="grid gap-10 md:grid-cols-[7fr_5fr] md:gap-12">
+        <div class="flex flex-col gap-5">
+          <h2 id="about-course" class="t-h2">О курсе</h2>
+          {c.description && <p class="m-0 text-[17px] leading-relaxed text-ink-2">{c.description}</p>}
+          {c.outcomes.length > 0 && (
+            <div class="rounded-2xl bg-sea-08 p-5"><b class="text-sea">Результат:</b> {c.outcomes.join(' ')}</div>
+          )}
+          {c.finalProject && <p class="m-0"><b class="text-sea">Итоговый проект:</b> {c.finalProject}</p>}
+          {c.blocks.length > 0 && (
+            <div class="flex flex-col gap-3">
+              <h3 class="t-h3">Программа</h3>
+              <ol class="m-0 grid gap-2 pl-6 text-ink-2 sm:grid-cols-2 sm:gap-x-8">{c.blocks.map((b) => <li>{b}</li>)}</ol>
+            </div>
+          )}
+        </div>
+        {teachers.length > 0 && (
+          <div class="flex flex-col gap-4">
+            <h2 class="t-h3">Педагоги</h2>
+            <ul class="m-0 flex list-none flex-col gap-3 p-0">
+              {teachers.map((t) => <li class="card flex items-center gap-3 p-4"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-sea-14 font-bold" aria-hidden="true">{t!.name.split(' ').map((p) => p[0]).join('')}</span><b>{t!.name}</b></li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {!rich && (
+    <section class="wrap section-tight">
+      <div class="rounded-2xl border border-line p-6 text-ink-2">
+        Подробная программа курса переносится на новый сайт. Пока её можно посмотреть на <a href={`https://gripinsky.ru${c.legacyPath}`} class="link" rel="noopener">прежней странице курса</a> или спросить на консультации.
+      </div>
+    </section>
+  )}
+
+  {includes.length > 0 && (
+    <section class="wrap section-tight" aria-labelledby="includes-title">
+      <h2 id="includes-title" class="t-h2 mb-6">Состав <span class="t-accent">пакета</span></h2>
+      <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">{includes.map((x) => <CourseCard course={x!} />)}</div>
+    </section>
+  )}
+
+  {related.length > 0 && (
+    <section class="wrap section-tight" aria-labelledby="related-title">
+      <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <h2 id="related-title" class="t-h2">Похожие <span class="t-accent">курсы</span></h2>
+        <a href="/courses" class="link">Все курсы →</a>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">{related.map((x) => <CourseCard course={x} />)}</div>
+    </section>
+  )}
+
+  <Fragment slot="after-main">
+    <Checkout client:load months={months} telegramBot={site.telegramBot} />
+  </Fragment>
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: JSON.parse(b.dataset.buy!) }));
+  }));
+</script>

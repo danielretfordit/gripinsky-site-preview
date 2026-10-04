@@ -11,14 +11,14 @@
     "Моделирование",
     "Интерьер",
     "Стоки",
-    "Gamedev",
+    "GameDev",
     "Персонажи"
   ],
   "software": [
     "3DS MAX",
     "MARVELOUS DESIGNER"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "MARVELOUS DESIGNER FURNITURE",
@@ -29,5 +29,6 @@
   },
   "tildaUid": "885348874901",
   "cover": "../../assets/courses/marvelous.png",
-  "description": "Шторы, подушки, покрывала, мягкая мебель и всё, что связано с тканями."
+  "description": "Шторы, подушки, покрывала, мягкая мебель и всё, что связано с тканями.",
+  "lessons": 14
 }

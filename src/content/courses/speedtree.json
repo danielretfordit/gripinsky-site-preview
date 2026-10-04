@@ -8,7 +8,7 @@
   "oldPrice": null,
   "professions": [
     "Props",
-    "Gamedev",
+    "GameDev",
     "Environment",
     "Анимация",
     "Моделирование"
@@ -16,7 +16,7 @@
   "software": [
     "SPEEDTREE"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "SPEEDTREE",
@@ -26,5 +26,6 @@
     "offerCode": ""
   },
   "tildaUid": "614000022312",
-  "cover": "../../assets/courses/speedtree.png"
+  "cover": "../../assets/courses/speedtree.png",
+  "lessons": 12
 }

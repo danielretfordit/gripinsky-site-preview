@@ -14,7 +14,7 @@
   "software": [
     "ADOBE PHOTOSHOP"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "Курс Photoshop с нуля — обучение онлайн | Азбука Adobe Photoshop",
@@ -25,5 +25,6 @@
   },
   "tildaUid": "829315570501",
   "cover": "../../assets/courses/azbukaps.png",
-  "description": "Photoshop с нуля: постобработка рендера, коллажи, подача. Пригодится каждому визуализатору."
+  "description": "Photoshop с нуля: постобработка рендера, коллажи, подача. Пригодится каждому визуализатору.",
+  "lessons": 31
 }

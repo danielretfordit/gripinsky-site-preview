@@ -7,9 +7,9 @@
   "price": 13900,
   "oldPrice": null,
   "professions": [
-    "Gamedev",
+    "GameDev",
     "Текстурирование",
-    "3d Art",
+    "3D Art",
     "Props",
     "Environment",
     "Персонажи"
@@ -17,7 +17,7 @@
   "software": [
     "SUBSTANCE PAINTER"
   ],
-  "level": null,
+  "level": "Новичок, продвинутый",
   "blocks": [],
   "seo": {
     "title": "SUBSTANCE PAINTER",
@@ -27,5 +27,6 @@
     "offerCode": ""
   },
   "tildaUid": "316787030081",
-  "cover": "../../assets/courses/substancepainter.png"
+  "cover": "../../assets/courses/substancepainter.png",
+  "lessons": 18
 }

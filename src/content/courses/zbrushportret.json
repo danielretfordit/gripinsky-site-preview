@@ -9,13 +9,13 @@
   "professions": [
     "Скульпт",
     "Персонажи",
-    "3d Art",
-    "Gamedev"
+    "3D Art",
+    "GameDev"
   ],
   "software": [
     "ZBRUSH"
   ],
-  "level": null,
+  "level": "Продвинутый",
   "blocks": [],
   "seo": {
     "title": "ПОРТРЕТ ЧЕЛОВЕКА. СКУЛЬПТУРНАЯ АНАТОМИЯ В ZBRUSH",
@@ -25,5 +25,6 @@
     "offerCode": ""
   },
   "tildaUid": "529241589951",
-  "cover": "../../assets/courses/zbrushportret.png"
+  "cover": "../../assets/courses/zbrushportret.png",
+  "lessons": 32
 }

@@ -7,17 +7,17 @@
   "price": 13900,
   "oldPrice": null,
   "professions": [
-    "Gamedev",
+    "GameDev",
     "Визуализация",
     "Интерьер",
     "Экстерьер",
-    "3d Art",
-    "Коммерческая Визуализация"
+    "3D Art",
+    "Коммерческая визуализация"
   ],
   "software": [
     "V-RAY"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "ВИЗУАЛИЗАЦИЯ В 3DS MAX И V-RAY",
@@ -27,5 +27,6 @@
     "offerCode": ""
   },
   "tildaUid": "747078455282",
-  "cover": "../../assets/courses/v-ray.png"
+  "cover": "../../assets/courses/v-ray.png",
+  "lessons": 31
 }

@@ -8,14 +8,14 @@
   "oldPrice": null,
   "professions": [
     "Environment",
-    "Gamedev",
+    "GameDev",
     "Экстерьер",
-    "3d Art"
+    "3D Art"
   ],
   "software": [
     "UNREAL ENGINE"
   ],
-  "level": null,
+  "level": "Новичок",
   "cover": "../../assets/courses/unrealenginelevel1.png",
   "blocks": [],
   "seo": {
@@ -25,5 +25,6 @@
   "getcourse": {
     "offerCode": ""
   },
-  "tildaUid": "682518070871"
+  "tildaUid": "682518070871",
+  "lessons": 81
 }

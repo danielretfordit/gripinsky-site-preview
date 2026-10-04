@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import Faq from '../../components/Faq.astro';
+import { CATEGORIES, isListed } from '../../lib/categories';
+import { visibleWorks, personMap } from '../../lib/people';
+import { rub } from '../../lib/format';
+import { SITE } from '../../lib/seo';
+import tildaPages from '../../../docs/tilda/pages.json';
+
+export async function getStaticPaths() {
+  const profs = await getCollection('professions');
+  const profPaths = profs.map((p) => ({ params: { category: p.data.path.split('/').pop()! }, props: { kind: 'profession' as const, id: p.id } }));
+  const taken = new Set(profPaths.map((p) => p.params.category));
+  const catPaths = CATEGORIES.filter((c) => !taken.has(c.slug)).map((c) => ({ params: { category: c.slug }, props: { kind: 'category' as const, id: c.slug } }));
+  return [...profPaths, ...catPaths];
+}
+
+const { kind, id } = Astro.props;
+const all = (await getCollection('courses')).filter((c) => isListed(c.data));
+const old = (tildaPages as Record<string, { title: string; description: string }>)[Astro.url.pathname.replace(/\.html$/, '')];
+
+let prof = null as null | Awaited<ReturnType<typeof getEntry<'professions', string>>>;
+let profCourses: Awaited<ReturnType<typeof getEntry<'courses', string>>>[] = [];
+let gift = null as null | Awaited<ReturnType<typeof getEntry<'courses', string>>>;
+let works: Awaited<ReturnType<typeof visibleWorks>> = [];
+const people = await personMap();
+const base = (await getEntry('courses', 'baza'))!.data;
+if (kind === 'profession') {
+  prof = (await getEntry('professions', id))!;
+  profCourses = await Promise.all(prof.data.courses.map((c) => getEntry('courses', c.course.id)));
+  gift = (await getEntry('courses', prof.data.gift.course.id)) ?? null;
+  const cat = id === 'stock' ? 'model' : id;
+  works = (await visibleWorks()).filter((w) => w.data.categories.includes(cat as 'int')).slice(0, 6);
+}
+const category = CATEGORIES.find((c) => c.slug === id);
+const list = category ? all.filter((c) => category.match(c.data)).sort((a, b) => (a.data.type === 'free' ? -1 : 0) - (b.data.type === 'free' ? -1 : 0) || a.data.price - b.data.price) : [];
+
+const title = prof ? prof.data.seo.title : (old?.title || `${category!.h1} | GRIPINSKY`);
+const description = prof ? prof.data.seo.description : (old?.description || `${category!.lead} Онлайн-курсы Академии 3D GRIPINSKY с проверкой работ и портфолио.`);
+const crumbs = prof
+  ? [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация', href: '/courses-page/visualization' }, { name: prof.data.title }]
+  : [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: category!.name }];
+const minCourse = profCourses.length ? Math.min(...profCourses.map((c) => c!.data.price)) : 0;
+const pkgHref = prof ? `/courses-page/visualization?prof=${id}#package` : '';
+const jsonLd = prof
+  ? profCourses.map((c) => ({
+      '@context': 'https://schema.org', '@type': 'Course', name: c!.data.title, description: c!.data.description ?? c!.data.short,
+      provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE },
+      offers: { '@type': 'Offer', price: c!.data.price, priceCurrency: 'RUB', category: 'Paid' },
+      hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
+    }))
+  : [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: list.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + c.data.legacyPath, name: c.data.title })) }];
+---
+<Base title={title} description={description} breadcrumbs={crumbs} jsonLd={jsonLd} consultContext={prof ? `Профессия: ${prof.data.title}` : `Категория: ${category!.name}`}>
+  {prof ? (
+    <>
+      <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="prof-title">
+        <Breadcrumbs items={crumbs} class="mb-6" />
+        <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+          <div class="flex flex-col gap-5">
+            <span class="text-[15px] font-bold tracking-[0.08em] text-sea">Профессия</span>
+            <h1 id="prof-title" class="t-display">{prof.data.seo.h1}</h1>
+            <p class="t-lead">{prof.data.lead}</p>
+            <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
+              <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>В портфолио: {prof.data.portfolio.toLowerCase()}</li>
+              <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>Работа с заказчиком, ТЗ и ценой проекта</li>
+              {gift && <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>В подарок: {gift.data.title}</li>}
+            </ul>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <a href={pkgHref} class="btn btn-primary btn-lg">Собрать пакет с базой</a>
+              <a href="#program" class="btn btn-secondary btn-lg">Программа</a>
+            </div>
+            <p class="m-0 text-[15px] text-ink-2">Курс профессии от <b class="text-ink">{rub(minCourse)}</b>, вместе с базой от <b class="text-ink">{rub(minCourse + base.price)}</b>. Есть рассрочка.</p>
+          </div>
+          <div class="overflow-hidden rounded-[20px] bg-white">
+            <Image src={prof.data.image} alt={prof.data.imageAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" class="h-[280px] w-full sm:h-[420px]" style={`object-fit:${prof.data.imageFit};object-position:${prof.data.imagePos}`} />
+          </div>
+        </div>
+      </section>
+
+      <section id="program" class="wrap section-tight" aria-labelledby="program-title">
+        <h2 id="program-title" class="t-h2 mb-8">Программа: <span class="t-accent">{profCourses.length > 1 ? 'курсы профессии' : 'курс профессии'}</span></h2>
+        <div class={`grid gap-6 ${profCourses.length > 1 ? 'md:grid-cols-2' : ''}`}>
+          {prof.data.courses.map((pc, i) => {
+            const c = profCourses[i]!.data;
+            return (
+              <article class="card flex flex-col gap-3 p-6 md:p-8">
+                <div class="flex flex-wrap items-baseline justify-between gap-3">
+                  <h3 class="t-h3">{c.title}</h3>
+                  <b class="text-[22px]">{rub(c.price)}</b>
+                </div>
+                <span class="text-[15px] font-medium text-sea">{pc.meta}</span>
+                <p class="m-0 text-ink-2">{pc.description}</p>
+                <p class="m-0"><b class="text-sea">Итог:</b> {pc.final}</p>
+                <ol class="m-0 mt-2 flex flex-col gap-1.5 pl-5 text-ink-2">{pc.blocks.map((b) => <li>{b}</li>)}</ol>
+                <a href={c.legacyPath} class="link mt-2 self-start">Подробнее о курсе →</a>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {works.length > 0 && (
+        <section class="wrap section-tight" aria-labelledby="works-title">
+          <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <h2 id="works-title" class="t-h2">Работы <span class="t-accent">учеников</span></h2>
+            <a href="/gallery" class="link">Вся галерея →</a>
+          </div>
+          <div class="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5">
+            {works.map((w) => (
+              <figure class="m-0 flex flex-col gap-2">
+                <Image src={w.data.image} alt={w.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 33vw, 50vw" class="aspect-[4/3] w-full rounded-2xl object-cover" style={w.data.focus ? `object-position:${w.data.focus}` : ''} />
+                <figcaption class="t-caption text-muted">{people.get(w.data.author.id)?.name}, {w.data.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section class="wrap section-tight" aria-labelledby="path-title">
+        <div class="grid gap-6 rounded-[24px] bg-sea-08 p-6 md:grid-cols-[5fr_7fr] md:items-center md:gap-10 md:p-10">
+          <div class="flex flex-col gap-3">
+            <h2 id="path-title" class="t-h3 uppercase">С чего начать</h2>
+            <p class="m-0 text-ink-2">Если вы ещё не работали в 3ds Max и Corona, начните с базы: без неё курсы профессии будут слишком сложными. Уже уверенно моделируете и делаете рендер? Можно сразу на профессию.</p>
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a href={pkgHref} class="btn btn-primary btn-lg">База + профессия</a>
+            <a href={`/courses-page/visualization?prof=${id}&base=0#package`} class="btn btn-secondary btn-lg">Только профессия</a>
+            <a href="/courses-page/visualization#quiz" class="link self-center">Пройти тест</a>
+          </div>
+        </div>
+      </section>
+
+      <Faq page="viz" />
+    </>
+  ) : (
+    <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="cat-title">
+      <Breadcrumbs items={crumbs} class="mb-6" />
+      <div class="mb-10 flex flex-col gap-3">
+        <span class="t-overline">Каталог</span>
+        <h1 id="cat-title" class="t-display">{category!.h1}</h1>
+        <p class="t-lead max-w-[760px]">{category!.lead}</p>
+      </div>
+      {list.length > 0 ? (
+        <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
+          {list.map((c) => <CourseCard course={c} headingLevel="h2" />)}
+        </div>
+      ) : (
+        <p class="text-muted">Курсы этого раздела скоро появятся. Пока посмотрите <a href="/courses" class="link">все курсы</a>.</p>
+      )}
+      <p class="mt-10"><a href="/courses" class="link">Все курсы академии →</a></p>
+    </section>
+  )}
+</Base>

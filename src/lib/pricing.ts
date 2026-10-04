@@ -170,3 +170,15 @@ export function quoteBaseOnly(cat: Catalog, tariff: TariffId): Quote {
 export function summarize(q: Quote): string {
   return q.lines.filter((l) => l.kind !== 'included').map((l) => l.name).join(' + ') + `; итого ${q.total} ₽`;
 }
+
+/** Отдельный курс или пакет из каталога */
+export function quoteCourse(course: { id: string; name: string; price: number }, months: number): Quote {
+  return {
+    lines: [{ id: course.id, kind: 'item', name: course.name, price: course.price }],
+    total: course.price,
+    monthly: Math.ceil(course.price / months),
+    savings: 0,
+    tariffApplied: false,
+    items: [course.id],
+  };
+}

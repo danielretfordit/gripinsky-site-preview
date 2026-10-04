@@ -8,8 +8,8 @@
   "oldPrice": null,
   "professions": [
     "Props",
-    "Gamedev",
-    "3d Art",
+    "GameDev",
+    "3D Art",
     "Скульпт",
     "Персонажи",
     "Интерьер",
@@ -20,7 +20,7 @@
   "software": [
     "BLENDER"
   ],
-  "level": null,
+  "level": "Новичок",
   "blocks": [],
   "seo": {
     "title": "Курс Blender 3D — обучение визуализации, материалам и рендеру с нуля",
@@ -30,5 +30,6 @@
     "offerCode": ""
   },
   "tildaUid": "720039856402",
-  "cover": "../../assets/courses/blender.png"
+  "cover": "../../assets/courses/blender.png",
+  "lessons": 36
 }

@@ -7,7 +7,7 @@
   "price": 27900,
   "oldPrice": null,
   "professions": [
-    "Коммерческая Визуализация",
+    "Коммерческая визуализация",
     "Интерьер",
     "Экстерьер"
   ],
@@ -15,7 +15,7 @@
     "3DS MAX",
     "CORONA RENDERER"
   ],
-  "level": null,
+  "level": "Продвинутый",
   "blocks": [],
   "seo": {
     "title": "Материалы Corona в 3ds Max — обучение | CORONA PRO курс",
@@ -26,5 +26,6 @@
   },
   "tildaUid": "106085455011",
   "cover": "../../assets/courses/materialspro.png",
-  "description": "Реалистичные материалы, клозапы и предметная визуализация."
+  "description": "Реалистичные материалы, клозапы и предметная визуализация.",
+  "lessons": 84
 }
