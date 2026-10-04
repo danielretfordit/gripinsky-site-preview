@@ -1,0 +1,13 @@
+---
+interface Props { overline?: string; title: string; accent?: string; lead?: string; hand?: string; id?: string; as?: 'h1' | 'h2'; class?: string }
+const { overline, title, accent, lead, hand, id, as: Tag = 'h2', class: cls = '' } = Astro.props;
+---
+<div class={`flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10 ${cls}`}>
+  <div class="flex flex-col gap-3">
+    {overline && <span class="t-overline">{overline}</span>}
+    <Tag id={id} class={Tag === 'h1' ? 't-display' : 't-h2'} tabindex="-1">{title}{accent && <>{' '}<span class="t-accent">{accent}</span></>}</Tag>
+    {lead && <p class="t-body m-0 max-w-[760px] text-muted">{lead}</p>}
+    <slot />
+  </div>
+  {hand && <div class="t-hand text-sea md:text-right" aria-hidden="true">{hand}</div>}
+</div>

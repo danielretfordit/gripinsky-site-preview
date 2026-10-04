@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from 'astro:content';
+interface Props { page: 'viz' | 'home'; title?: string; id?: string }
+const { page, title = 'Вопросы и сомнения', id = 'faq' } = Astro.props;
+const GROUPS = [
+  { id: 'money', label: 'Деньги' },
+  { id: 'start', label: 'Перед стартом' },
+  { id: 'study', label: 'Учёба' },
+  { id: 'after', label: 'После курса' },
+] as const;
+const items = (await getCollection('faq', (f) => f.data.pages.includes(page))).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await render(f)).Content })));
+---
+<section id={id} class="wrap section border-t border-line" aria-labelledby={`${id}-title`}>
+  <div class="grid gap-10 md:grid-cols-[4fr_8fr] md:gap-14">
+    <div class="flex flex-col gap-3 md:sticky md:top-24 md:self-start">
+      <span class="t-overline">Вопросы</span>
+      <h2 id={`${id}-title`} class="t-h2" tabindex="-1">{title}</h2>
+      <p class="m-0 text-muted">Не нашли ответ? <a href="#consult" class="link">Спросите на консультации</a> или в <a href="https://t.me/Academy3D_bot" class="link">Telegram</a>.</p>
+    </div>
+    <div class="flex max-w-[820px] flex-col gap-10">
+      {GROUPS.map((g) => {
+        const list = rendered.filter((r) => r.f.data.group === g.id);
+        return list.length > 0 && (
+          <div class="flex flex-col">
+            <h3 class="t-overline mb-1 !text-[14px]">{g.label}</h3>
+            {list.map(({ f, Content }) => (
+              <details class="faq group border-b border-line py-1">
+                <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[18px] font-bold md:text-[20px]">
+                  {f.data.question}
+                  <span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-sea transition-transform group-open:rotate-45">+</span>
+                </summary>
+                <div class="faq-answer pb-5 text-[16px] leading-relaxed text-muted md:text-[17px]"><Content /></div>
+              </details>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+<style is:global>
+  .faq-answer p { margin: 0 0 10px; }
+  .faq-answer ul { margin: 0 0 10px; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+  .faq-answer strong { color: var(--color-ink); }
+  .faq-answer a { color: var(--color-lime); text-decoration: underline; text-underline-offset: 3px; }
+</style>

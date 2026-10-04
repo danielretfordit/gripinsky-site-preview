@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/viz/Hero.astro';
+import SubNav from '../../components/viz/SubNav.astro';
+import Results from '../../components/viz/Results.astro';
+import About from '../../components/viz/About.astro';
+import Ladder from '../../components/viz/Ladder.astro';
+import BaseStep from '../../components/viz/BaseStep.astro';
+import MoneyOrders from '../../components/viz/MoneyOrders.astro';
+import NoRisk from '../../components/viz/NoRisk.astro';
+import Faq from '../../components/Faq.astro';
+import StepHeader from '../../components/StepHeader.astro';
+import Quiz from '../../islands/Quiz';
+import FormatPicker from '../../islands/FormatPicker';
+import ProfessionPicker from '../../islands/ProfessionPicker';
+import PackageSummary from '../../islands/PackageSummary';
+import StickyPackageBar from '../../islands/StickyPackageBar';
+import Checkout from '../../islands/Checkout';
+import { getEntry } from 'astro:content';
+import { getCatalog } from '../../lib/catalog';
+import { professionViews, tariffViews, professionTexts, faqLd } from '../../lib/views';
+import { SITE } from '../../lib/seo';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const cat = await getCatalog();
+const [professions, tariffs, texts, faq] = await Promise.all([professionViews(), tariffViews(), professionTexts(), faqLd('viz')]);
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
+const installmentNote = site.installment.note.replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();
+const courseLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'База 3D-визуализатора',
+  description: 'Онлайн-курс 3D-визуализации с нуля: моделирование в 3ds Max, рендер в Corona, нейросети в работе. 230 уроков, доступ на год.',
+  provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE },
+  inLanguage: 'ru',
+  offers: { '@type': 'Offer', price: cat.base.price, priceCurrency: 'RUB', category: 'Paid', availability: 'https://schema.org/InStock', url: `${SITE}/courses-page/visualization` },
+  hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'P12M' },
+};
+---
+<Base
+  title="Курсы 3D-визуализации онлайн с нуля: 3ds Max и Corona | GRIPINSKY"
+  description="Курсы 3D-визуализации интерьеров и экстерьеров с нуля: 3ds Max, Corona, ИИ в 3D. Портфолио из 104 моделей и 7 визуализаций, проекты по ТЗ. База от 29 900 ₽, рассрочка."
+  breadcrumbs={crumbs}
+  jsonLd={[courseLd, faq]}
+  consultContext="Направление 3D-визуализация"
+>
+  <Hero crumbs={crumbs} basePrice={cat.base.price} months={cat.installmentMonths} />
+  <SubNav />
+  <Results />
+  <About />
+  <Ladder />
+
+  <section id="quiz" class="wrap section-tight scroll-mt-16" aria-label="Тест: с чего начать">
+    <Quiz client:visible cat={cat} variant="viz" telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
+  </section>
+
+  <BaseStep />
+
+  <section id="base-format" class="wrap pb-16 pt-6 md:pb-24" aria-labelledby="format-title">
+    <div class="mb-7 flex flex-col gap-3">
+      <span class="t-overline">Шаг 1. Формат обучения</span>
+      <h2 id="format-title" class="t-h2" tabindex="-1">Формат: <span class="t-accent">как будете учиться</span></h2>
+      <p class="m-0 max-w-[760px] text-ink-2">Программа одна: 230 уроков и доступ на год. Формат решает, сколько помощи вы получите по дороге. Выбранный формат действует для всего пакета.</p>
+    </div>
+    <FormatPicker client:visible cat={cat} tariffs={tariffs} trialHref="/vizualization3_mini" />
+  </section>
+
+  <section id="profession" class="wrap pb-10 pt-16 md:pt-24" aria-labelledby="profession-title">
+    <div class="mb-8">
+      <StepHeader step={2} chip="После базы" note="учитесь работать за деньги: ТЗ, заказчик, цена" title="Профессия:" accent="кем хотите работать?" id="profession-title" />
+    </div>
+    <ProfessionPicker client:visible cat={cat} professions={professions} />
+  </section>
+
+  <MoneyOrders />
+
+  <section id="package" class="wrap pb-16 pt-10 md:pb-24 md:pt-16" aria-labelledby="package-title">
+    <div class="mb-7 flex flex-col gap-3">
+      <span class="t-overline">Шаг 2. Ваш пакет</span>
+      <h2 id="package-title" class="t-h2" tabindex="-1">Пакет: <span class="t-accent">соберите свой</span></h2>
+      <p class="m-0 max-w-[760px] text-ink-2">Подарок к профессии уже внутри, а ниже курсы, которые усилят портфолио. Итог и рассрочка считаются сразу.</p>
+    </div>
+    <PackageSummary client:visible cat={cat} addonTexts={texts.addonTexts} giftTexts={texts.giftTexts} installmentNote={installmentNote} />
+  </section>
+
+  <NoRisk />
+  <Faq page="viz" />
+
+  <Fragment slot="after-main">
+    <StickyPackageBar client:idle cat={cat} />
+    <Checkout client:idle cat={cat} telegramBot={site.telegramBot} />
+  </Fragment>
+</Base>
+
+<script>
+  import { $quizOpen } from '../../stores/package';
+  import { reachGoal } from '../../lib/analytics';
+  document.querySelectorAll('[data-open-quiz]').forEach((a) => a.addEventListener('click', () => $quizOpen.set(true)));
+  document.querySelectorAll<HTMLElement>('[data-goal]').forEach((a) => a.addEventListener('click', () => reachGoal(a.dataset.goal!)));
+</script>

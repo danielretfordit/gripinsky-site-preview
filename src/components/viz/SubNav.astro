@@ -1,0 +1,31 @@
+---
+const items = [
+  { href: '#works', label: 'Результаты' },
+  { href: '#path', label: 'Как учимся' },
+  { href: '#base', label: 'База' },
+  { href: '#profession', label: 'Профессии' },
+  { href: '#package', label: 'Цены' },
+  { href: '#faq', label: 'Вопросы' },
+];
+---
+<nav aria-label="Разделы страницы" class="sticky top-0 z-30 border-b border-line bg-[rgb(13_32_35/0.94)] backdrop-blur-md">
+  <ul class="wrap snap-row m-0 flex !grid-flow-col list-none gap-1.5 py-2" data-subnav>
+    {items.map((i) => (
+      <li class="!w-auto">
+        <a href={i.href} class="inline-flex min-h-10 items-center whitespace-nowrap rounded-full px-4 text-[15px] font-semibold text-ink-2 hover:text-white aria-[current=true]:bg-sea-14 aria-[current=true]:text-ink">{i.label}</a>
+      </li>
+    ))}
+  </ul>
+</nav>
+<script>
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-subnav] a')];
+  const sections = links.map((a) => document.querySelector(a.getAttribute('href')!)).filter(Boolean) as HTMLElement[];
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      links.forEach((a) => a.setAttribute('aria-current', String(a.getAttribute('href') === `#${e.target.id}`)));
+      links.find((a) => a.getAttribute('aria-current') === 'true')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    }
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  sections.forEach((s) => io.observe(s));
+</script>

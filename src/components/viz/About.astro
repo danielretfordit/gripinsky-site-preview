@@ -1,0 +1,22 @@
+---
+const teachers = [
+  { name: 'Евгений Грипинский', role: 'автор системы обучения' },
+  { name: 'Карина Камола', role: 'Corona, Marvelous, нейросети' },
+  { name: 'Виктор Тверитин', role: 'Экстерьеры PRO' },
+  { name: 'Мария Гохман', role: 'Интерьеры PRO' },
+  { name: 'Иоанн Дмитриев', role: '3D-художник сериала «Пингвин» (HBO)' },
+];
+---
+<section id="about" class="wrap section-tight" aria-labelledby="about-title">
+  <div class="card grid gap-6 p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-8 md:p-9">
+    <span class="flex h-20 w-20 items-center justify-center rounded-full bg-sea-14 text-[26px] font-extrabold text-ink md:h-24 md:w-24" aria-hidden="true">ЕГ</span>
+    <div class="flex flex-col gap-2">
+      <h2 id="about-title" class="m-0 text-[20px] font-extrabold">Евгений Грипинский и команда педагогов-практиков</h2>
+      <p class="t-hand m-0 text-lime">«Основная цель занятий: научить вас думать, а не повторять действия»</p>
+      <ul class="m-0 mt-2 flex list-none flex-wrap gap-2 p-0">
+        {teachers.map((t) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px] text-ink-2"><b class="text-ink">{t.name}</b>, {t.role}</li>)}
+      </ul>
+    </div>
+    <a href="https://gripinsky.ru/teachers" class="link whitespace-nowrap">Все педагоги →</a>
+  </div>
+</section>

@@ -1,0 +1,60 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+import StepHeader from '../StepHeader.astro';
+import icon3ds from '../../assets/brand/icon-3dsmax.png';
+import iconCorona from '../../assets/brand/icon-corona.png';
+import akopyan from '../../assets/works/akopyan-kreslo.jpg';
+import chaukina from '../../assets/works/chaukina-skorpion.jpg';
+import merkulova from '../../assets/works/merkulova-kuhnya.jpg';
+import { rub } from '../../lib/format';
+
+const c = async (id: string) => (await getEntry('courses', id))!.data;
+const [m1, m2, v3, ai] = await Promise.all(['modeling1', 'modeling2', 'vizualization3', 'ai'].map(c));
+const cards = [
+  { stage: 'С нуля', title: 'Моделирование в 3ds Max', img: akopyan, imgAlt: 'Кожаное кресло, модель ученицы', badge: 'Модель ученицы Карины Акопян', icons: [icon3ds], course: m1, gift: null, href: '/modeling1' },
+  { stage: 'Углубляемся', title: 'Сложное моделирование', img: chaukina, imgAlt: 'Кресло в форме скорпиона, модель ученицы', badge: 'Модель ученицы Ирины Чаукиной', icons: [icon3ds], course: m2, gift: 'С базой в подарок: Анимация в 3ds Max', href: '/modeling2' },
+  { stage: 'Финальный рендер', title: 'Визуализация в Corona', img: merkulova, imgAlt: 'Кухня с островом, рендер ученицы', badge: 'Рендер ученицы Оксаны Меркуловой', icons: [icon3ds, iconCorona], course: v3, gift: null, href: '/vizualization3', pos: '50% 55%' },
+];
+---
+<section id="base" class="wrap pb-10 pt-16 md:pt-24" aria-labelledby="base-title">
+  <div class="flex flex-col gap-7">
+    <StepHeader step={1} chip="Старт здесь" note="без базы курсы профессий будут слишком сложными" title="База:" accent="с неё начинают все" id="base-title"
+      lead="Один курс, три этапа: от первого запуска 3ds Max до фотореалистичного рендера в Corona, плюс нейросети в работе. 230 уроков, доступ на год." />
+
+    <div class="snap-row md:!grid md:!grid-flow-row md:!grid-cols-3 md:gap-6">
+      {cards.map((k) => (
+        <article class="card flex flex-col gap-2.5 overflow-hidden pb-6">
+          <div class="relative h-[200px] overflow-hidden sm:h-[240px]">
+            <Image src={k.img} alt={k.imgAlt} widths={[480, 720, 960]} sizes="(min-width: 1024px) 33vw, 85vw" class="h-full w-full object-cover" style={k.pos ? `object-position:${k.pos}` : ''} />
+            <span class="absolute bottom-3 left-3.5 rounded-full bg-[rgb(13_32_35/0.82)] px-2.5 py-1 text-[13px] text-ink-2">{k.badge}</span>
+          </div>
+          <div class="flex flex-1 flex-col gap-3.5 px-5 sm:px-7">
+            <div class="flex items-center justify-between">
+              <span class="text-[14px] font-extrabold uppercase tracking-[0.08em] text-lime">{k.stage}</span>
+              <span class="flex gap-2">{k.icons.map((ic, i) => <Image src={ic} alt={i === 0 ? '3ds Max' : 'Corona Renderer'} width={40} height={40} class="h-10 w-10" />)}</span>
+            </div>
+            <h3 class="t-title text-[22px]">{k.title}</h3>
+            <p class="t-small m-0 text-muted">{k.course.description}</p>
+            <div class="rounded-2xl bg-sea-08 px-4 py-3 text-[15px] leading-snug"><b class="text-sea">Результат:</b> {k.course.outcomes[0].charAt(0).toLowerCase() + k.course.outcomes[0].slice(1)}</div>
+            {k.gift && <span class="flex items-center gap-2 text-[15px] text-ink-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92BABE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>{k.gift}</span>}
+            <span class="text-[14px] font-medium text-sea">{k.course.meta}</span>
+            <details class="mt-auto border-t border-line pt-2">
+              <summary class="inline-flex min-h-11 items-center text-[15px] font-semibold text-lime">Программа курса <span class="details-arrow ml-1.5">↓</span></summary>
+              <ol class="m-0 mt-1 flex flex-col gap-1.5 pl-5 text-[15px] text-ink-2">{k.course.blocks.map((b) => <li>{b}</li>)}</ol>
+              <a href={k.href} class="link mt-2 inline-block text-[15px]">Страница курса →</a>
+            </details>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="flex flex-col gap-3 border-y border-line py-5 sm:flex-row sm:items-center sm:gap-6">
+      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sea-14 text-[18px] font-extrabold text-lime" aria-hidden="true">ИИ</span>
+      <p class="m-0 flex-1 text-ink-2">
+        <b class="text-ink">Курс «ИИ в 3D» входит в базу.</b> 3D-специалист сегодня работает с нейросетями: вы с первого месяца учитесь генерировать референсы, модели, текстуры и окружение.
+        Отдельно курс стоит {rub(ai.price)}. <a href="/ai" class="link">Программа курса</a>
+      </p>
+    </div>
+  </div>
+</section>

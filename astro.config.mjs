@@ -53,7 +53,7 @@ export default defineConfig({
   ],
   env: {
     schema: {
-      CHECKOUT_MODE: envField.enum({ context: 'server', access: 'public', values: ['demo', 'links', 'api'], default: 'demo' }),
+      CHECKOUT_MODE: envField.enum({ context: 'server', access: 'public', values: ['demo', 'getcourse', 'robokassa'], default: 'demo' }),
       GETCOURSE_ACCOUNT: envField.string({ context: 'server', access: 'secret', optional: true }),
       GETCOURSE_API_KEY: envField.string({ context: 'server', access: 'secret', optional: true }),
       ROBOKASSA_LOGIN: envField.string({ context: 'server', access: 'secret', optional: true }),

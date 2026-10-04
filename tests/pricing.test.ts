@@ -90,3 +90,11 @@ test('тест: уверенный и «пока не знаю» пропуск�
   assert.equal(r.unsure, true);
   assert.equal(r.level, 'Уверенный уровень');
 });
+
+import { quoteBaseOnly } from '../src/lib/pricing.ts';
+test('только база: цена формата прибавляется, профессии нет', () => {
+  const q = quoteBaseOnly(cat, 'opt');
+  assert.equal(q.total, 44900);
+  assert.equal(q.monthly, 3742);
+  assert.ok(!q.items.includes('interiorpro'));
+});

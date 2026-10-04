@@ -55,7 +55,7 @@
   a { color: var(--color-lime); text-decoration: none; }
   a:hover { color: #fff; }
   /* Ссылки внутри текста отличаются не только цветом (WCAG 1.4.1) */
-  .prose-links a, p a, li a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .prose-links a, p a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
   button { font-family: inherit; cursor: pointer; color: inherit; }
   img { max-width: 100%; height: auto; }
   summary { list-style: none; cursor: pointer; }

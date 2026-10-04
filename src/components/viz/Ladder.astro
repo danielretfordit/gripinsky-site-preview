@@ -1,0 +1,51 @@
+---
+const steps = [
+  { tag: 'Сейчас', title: 'Нет опыта или есть пробелы', text: 'Учились сами или на других курсах, но до заказов не доходит.', big: '0', bigNote: 'работ в портфолио', href: null },
+  { tag: 'Шаг 1', title: 'База', text: 'Учитесь программам: 3ds Max, Corona, ИИ', href: '#base', num: 1 },
+  { tag: 'Шаг 2', title: 'Профессия', text: 'Учитесь работать за деньги: ТЗ, заказчик, цена', href: '#profession', num: 2 },
+];
+---
+<section id="path" class="wrap section-tight flex flex-col gap-7" aria-labelledby="path-title">
+  <div class="flex flex-col gap-2.5">
+    <span class="t-overline">Путь ученика</span>
+    <h2 id="path-title" class="t-h2" tabindex="-1">Как устроено обучение</h2>
+  </div>
+  <p class="t-hand m-0 max-w-[560px] text-sea">без профессии после базы непонятно, где брать заказы и сколько просить</p>
+
+  <ol class="m-0 grid list-none gap-4 p-0 md:grid-cols-4 md:items-end md:gap-5">
+    <li class="relative flex flex-col gap-4 rounded-3xl border border-line p-6 md:min-h-[250px] md:justify-between" style="background: repeating-linear-gradient(135deg, rgba(231,231,231,0.03) 0 12px, rgba(231,231,231,0.06) 12px 24px);">
+      <span class="flex items-center gap-3"><span class="text-[56px] font-extrabold leading-none text-dim">0</span><span class="text-[15px] leading-tight text-muted">работ<br />в портфолио</span></span>
+      <span class="flex flex-col gap-2"><span class="t-overline">Сейчас</span><span class="text-[20px] font-extrabold leading-tight">Нет опыта или есть пробелы</span><span class="t-small text-muted">Учились сами или на других курсах, но до заказов не доходит.</span></span>
+    </li>
+    {steps.slice(1).map((s, i) => (
+      <li class="md:contents">
+        <a href={s.href!} class={`lift flex flex-col gap-4 rounded-3xl border p-6 text-ink hover:text-ink md:justify-between ${i === 0 ? 'border-[rgb(146_186_190/0.3)] bg-sea-14 md:min-h-[310px]' : 'border-[rgb(146_186_190/0.4)] bg-[rgb(146_186_190/0.24)] md:min-h-[370px]'}`}>
+          <span class={`flex h-12 w-12 items-center justify-center rounded-full border-2 border-lime text-[20px] font-extrabold ${i === 0 ? 'bg-lime text-bg' : 'text-lime'}`} aria-hidden="true">{s.num}</span>
+          <span class="flex flex-col gap-2">
+            <span class="text-[13px] font-extrabold uppercase tracking-[0.1em] text-lime">{s.tag}</span>
+            <span class="text-[24px] font-extrabold uppercase">{s.title}</span>
+            <span class="text-[16px] leading-snug text-ink-2">{s.text}</span>
+            <span class="text-[15px] font-semibold text-lime">Смотреть ↓</span>
+          </span>
+        </a>
+      </li>
+    ))}
+    <li class="flex flex-col gap-5 rounded-3xl bg-[linear-gradient(170deg,rgba(146,186,190,0.28),rgba(146,186,190,0.10))] p-6 md:min-h-[430px] md:justify-between">
+      <span class="flex flex-col gap-2.5">
+        <span class="flex items-center gap-3"><span class="min-w-[96px] text-[52px] font-extrabold leading-none text-lime">104</span><span class="text-[16px]">модели</span></span>
+        <span class="flex items-center gap-3"><span class="min-w-[96px] text-[52px] font-extrabold leading-none text-lime">7</span><span class="text-[16px]">визуализаций</span></span>
+        <ul class="m-0 mt-1 flex list-none flex-col gap-1 p-0 text-[14px] leading-snug text-ink-2">
+          <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>интерьеры: 4 проекта</li>
+          <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>экстерьеры: проект по реальному ТЗ</li>
+          <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>ЖК: проект с генпланом</li>
+          <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>стоки: модель, опубликованная на 3DDD</li>
+        </ul>
+      </span>
+      <span class="flex flex-col gap-2">
+        <span class="text-[13px] font-extrabold uppercase tracking-[0.1em] text-lime">Результат</span>
+        <span class="text-[24px] font-extrabold uppercase leading-tight">Портфолио и первые заказы</span>
+        <span class="t-small text-ink-2">Работы в портфолио, и вы готовы брать заказы.</span>
+      </span>
+    </li>
+  </ol>
+</section>

@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { after: ImageMetadata; before: ImageMetadata; altAfter: string; altBefore: string; caption: string; class?: string }
+const { after, before, altAfter, altBefore, caption, class: cls = '' } = Astro.props;
+const id = `ba-${Math.random().toString(36).slice(2, 8)}`;
+---
+<figure class={`m-0 flex flex-col gap-2.5 ${cls}`}>
+  <div class="ba relative aspect-[4/5] select-none overflow-hidden rounded-[20px] sm:aspect-[4/3] md:aspect-auto md:h-full md:min-h-[440px]" data-ba style="--pos: 50%">
+    <Image src={after} alt={altAfter} widths={[480, 960, 1440]} sizes="(min-width: 1024px) 50vw, 100vw" class="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+    <Image src={before} alt={altBefore} widths={[480, 960, 1440]} sizes="(min-width: 1024px) 50vw, 100vw" class="ba-before pointer-events-none absolute inset-0 h-full w-full object-cover" />
+    <span aria-hidden="true" class="pointer-events-none absolute bottom-0 top-0 w-[3px] -translate-x-1/2 bg-lime" style="left: var(--pos)"></span>
+    <span aria-hidden="true" class="ba-handle pointer-events-none absolute top-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-lime text-lg font-bold text-bg shadow-xl" style="left: var(--pos)">⇆</span>
+    <span class="badge-on-image pointer-events-none absolute left-3.5 top-3.5">Модель</span>
+    <span class="badge-on-image pointer-events-none absolute right-3.5 top-3.5 !text-lime">Рендер</span>
+    <input id={id} type="range" min="0" max="100" value="50" aria-label="Сравнить модель и рендер" aria-valuetext="Модель и рендер поровну"
+      class="absolute inset-0 m-0 h-full w-full cursor-ew-resize opacity-0" style="touch-action: pan-y" />
+  </div>
+  <figcaption class="t-small text-muted">{caption}</figcaption>
+</figure>
+<style>
+  .ba-before { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
+  .ba:has(input:focus-visible) .ba-handle { outline: 2px solid var(--color-sea); outline-offset: 3px; }
+</style>
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>('[data-ba]')) {
+    const input = box.querySelector('input')!;
+    const update = () => {
+      const v = Number(input.value);
+      box.style.setProperty('--pos', `${v}%`);
+      input.setAttribute('aria-valuetext', v < 35 ? 'Больше рендера' : v > 65 ? 'Больше модели' : 'Модель и рендер поровну');
+    };
+    input.addEventListener('input', update);
+  }
+</script>

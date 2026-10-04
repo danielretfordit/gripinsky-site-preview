@@ -1,0 +1,267 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry, render } from 'astro:content';
+import SectionHead from '../SectionHead.astro';
+import BeforeAfter from '../BeforeAfter.astro';
+import { visibleWorks, personMap } from '../../lib/people';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const people = await personMap();
+const works = new Map((await visibleWorks()).map((w) => [w.id, w]));
+const w = (id: string) => works.get(id);
+const featured = ['korotovskaya-shale', 'lapin-dom-u-ozera', 'knyazev-ulitsa'].map(w).filter(Boolean);
+const zaytseva = w('zaytseva-dom-v-lesu');
+const galleryCount = [...works.values()].filter((x) => x.data.inGallery).length;
+
+const stories = (await getCollection('stories', (s) => people.has(s.data.person.id))).sort((a, b) => a.data.order - b.data.order);
+const large = stories.find((s) => s.data.size === 'large');
+const LargeBody = large ? (await render(large)).Content : null;
+const medium = stories.filter((s) => s.data.size === 'medium');
+const small = stories.filter((s) => s.data.size === 'small');
+
+const awards = (await getCollection('awards', (a) => people.has(a.data.person.id))).sort((a, b) => a.data.order - b.data.order);
+const votes = awards.filter((a) => a.data.kind === 'teacher-vote');
+const kings = awards.filter((a) => a.data.kind === 'student');
+const awardStrip = ['filatov-interer', 'budnik-osenniy-dom-1', 'bolshunova-doroga-domoy'].map(w).filter(Boolean);
+const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
+
+const tabs = [
+  { id: 'works', label: 'Работы' },
+  { id: 'stories', label: 'Истории' },
+  { id: 'awards', label: 'Награды' },
+  { id: 'reviews', label: 'Отзывы' },
+];
+const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).join('');
+---
+<section id="works" class="wrap section flex flex-col gap-8" aria-labelledby="works-title">
+  <SectionHead overline="После обучения" title="Результаты выпускников" id="works-title"
+    lead="Кто-то пришёл с нуля, кто-то с опытом. Вот что у них получилось." hand="кем были и кем стали" />
+
+  <div class="snap-row !grid-flow-col !auto-cols-max max-w-full self-start rounded-full bg-surface-2 p-1.5" role="tablist" aria-label="Результаты выпускников" data-tabs>
+    {tabs.map((t, i) => (
+      <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}
+        class="min-h-11 whitespace-nowrap rounded-full border-0 bg-transparent px-5 text-[16px] font-semibold text-ink aria-selected:bg-lime aria-selected:text-bg md:px-6 md:text-[17px]">{t.label}</button>
+    ))}
+  </div>
+
+  <div class="min-h-[560px] md:min-h-[640px]">
+    <!-- Работы -->
+    <div role="tabpanel" id="panel-works" aria-labelledby="tab-works" class="flex flex-col gap-4">
+      <p class="m-0 text-muted">Эти работы получили «Рендер дня», награду за лучшую работу на наших еженедельных стримах GRIPINSKY TV.</p>
+      <div class="grid gap-5 md:grid-cols-[2fr_1fr_1fr] md:grid-rows-2">
+        {zaytseva && zaytseva.data.beforeImage && (
+          <BeforeAfter class="md:row-span-2" after={zaytseva.data.image} before={zaytseva.data.beforeImage}
+            altAfter={zaytseva.data.alt} altBefore="Та же сцена в сером материале"
+            caption={`Потяните ползунок: та же сцена до и после рендера. Работа: ${people.get(zaytseva.data.author.id)?.name}`} />
+        )}
+        {featured.map((x) => x && (
+          <figure class="zoom m-0 flex flex-col gap-2.5">
+            <div class="h-[220px] overflow-hidden rounded-[20px] md:h-[190px]">
+              <Image src={x.data.image} alt={x.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 25vw, 100vw" class="h-full w-full object-cover" style={x.data.focus ? `object-position:${x.data.focus}` : ''} />
+            </div>
+            <figcaption class="t-small text-muted">{people.get(x.data.author.id)?.name}, {x.data.title.toLowerCase().startsWith('«') ? x.data.title : x.data.title.charAt(0).toLowerCase() + x.data.title.slice(1)}</figcaption>
+          </figure>
+        ))}
+        <a href="/gallery" class="card flex min-h-[140px] flex-col justify-center gap-1.5 p-5 text-ink hover:text-ink">
+          <span class="text-[20px] font-extrabold">Все {galleryCount} работ</span>
+          <span class="t-small text-muted">в галерее выпускников и педагогов</span>
+          <span class="t-small font-semibold text-lime">Смотреть галерею →</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Истории -->
+    <div role="tabpanel" id="panel-stories" aria-labelledby="tab-stories" hidden class="flex flex-col gap-10">
+      {large && (
+        <article class="grid gap-6 md:grid-cols-[7fr_5fr] md:gap-8">
+          <div class="flex flex-col gap-3">
+            {large.data.works.slice(0, 1).map((r) => w(r.id) && (
+              <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[640, 960, 1440]} sizes="(min-width: 1024px) 58vw, 100vw" class="h-[260px] w-full rounded-2xl object-cover sm:h-[400px]" />
+            ))}
+            <div class="grid grid-cols-2 gap-3">
+              {large.data.works.slice(1, 3).map((r) => w(r.id) && (
+                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 28vw, 50vw" class="h-[120px] w-full rounded-2xl object-cover sm:h-[170px]" style={w(r.id)!.data.focus ? `object-position:${w(r.id)!.data.focus}` : ''} />
+              ))}
+            </div>
+          </div>
+          <div class="flex flex-col gap-3">
+            <span class="chip chip-lime self-start">{large.data.tag}</span>
+            <h3 class="t-h3 uppercase">{large.data.headline}</h3>
+            <span class="t-small text-sea">{large.data.subtitle}</span>
+            <span class="t-small text-muted">Было: {large.data.before}</span>
+            <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {large.data.after}</span>
+            <blockquote class="t-hand m-0">{large.data.quote}</blockquote>
+            <ul class="m-0 flex list-none flex-col gap-1.5 p-0 text-[15px] text-ink-2">
+              {large.data.highlights.map((h) => <li class="flex gap-2.5"><b class="text-lime" aria-hidden="true">+</b><span>{h}</span></li>)}
+            </ul>
+            {large.data.extraNote && (
+              <div class="mt-1 flex flex-col gap-2.5 rounded-2xl bg-sea-08 p-4">
+                <span class="t-small text-ink">{large.data.extraNote}</span>
+                <div class="grid grid-cols-3 gap-2">
+                  {large.data.extraWorks.map((r) => w(r.id) && (
+                    <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480]} sizes="160px" class="h-[90px] w-full rounded-xl object-cover sm:h-[120px]" />
+                  ))}
+                </div>
+              </div>
+            )}
+            {LargeBody && (
+              <details class="mt-1">
+                <summary class="inline-flex min-h-11 items-center text-[15px] font-bold text-lime">Читать историю целиком <span class="details-arrow ml-1.5">↓</span></summary>
+                <div class="prose-story mt-2 flex flex-col gap-2.5 text-[15px] leading-relaxed text-muted"><LargeBody /></div>
+              </details>
+            )}
+          </div>
+        </article>
+      )}
+
+      <div class="grid gap-5 md:grid-cols-2">
+        {medium.map((s) => (
+          <article class="card flex flex-col gap-3.5 p-4 pb-6">
+            <div class="grid grid-cols-2 gap-2.5">
+              {s.data.works.slice(0, 2).map((r) => w(r.id) && (
+                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 22vw, 50vw" class="h-[160px] w-full rounded-2xl object-cover sm:h-[240px]" />
+              ))}
+            </div>
+            <div class="flex flex-col gap-2.5 px-1.5">
+              <span class="chip self-start">{s.data.tag}</span>
+              <h3 class="m-0 text-[22px] font-extrabold">{s.data.headline}</h3>
+              <span class="t-small -mt-1.5 text-sea">{s.data.subtitle}</span>
+              <span class="t-small text-muted">Было: {s.data.before}</span>
+              <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {s.data.after}</span>
+              {s.data.quote && <blockquote class="t-hand m-0 !text-[24px]">{s.data.quote}</blockquote>}
+              {s.data.courses && <span class="text-[14px] text-muted">{s.data.courses}</span>}
+              <span class="flex flex-wrap gap-x-5 gap-y-2 pt-1 text-[15px] font-semibold">
+                <a href={`/stories/${s.id}`} class="link">История на сайте →</a>
+                {s.data.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="grid gap-5 md:grid-cols-3">
+        {small.map((s) => {
+          const work = s.data.works[0] && w(s.data.works[0].id);
+          const person = people.get(s.data.person.id);
+          return (
+            <article class="card flex flex-col overflow-hidden">
+              {work ? (
+                <div class="relative h-[150px]">
+                  <Image src={work.data.image} alt={work.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 30vw, 100vw" class="h-full w-full object-cover" />
+                  {person?.photo && <Image src={person.photo} alt={person.name} width={112} height={112} class="absolute -bottom-[22px] left-4 h-14 w-14 rounded-full border-[3px] border-bg object-cover" />}
+                </div>
+              ) : (
+                <div class="flex h-[150px] items-end bg-sea-14 px-5 py-4"><blockquote class="t-hand m-0 !text-[24px]">{s.data.quote}</blockquote></div>
+              )}
+              <div class={`flex flex-1 flex-col gap-2.5 p-5 ${work ? 'pt-8' : ''}`}>
+                <span class="chip self-start">{s.data.tag}</span>
+                <h3 class="m-0 text-[20px] font-extrabold">{s.data.headline}</h3>
+                <span class="t-small text-muted">Было: {s.data.before}</span>
+                <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {s.data.after}</span>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Награды -->
+    <div role="tabpanel" id="panel-awards" aria-labelledby="tab-awards" hidden class="flex flex-col gap-10">
+      <div class="grid gap-6 rounded-[24px] bg-sea-08 p-4 sm:p-5 md:grid-cols-[5fr_7fr] md:items-center md:gap-8">
+        <div class="grid grid-cols-2 gap-2.5">
+          {votes.filter((v) => v.data.work && w(v.data.work.id)).map((v) => (
+            <figure class="m-0 flex flex-col gap-1.5">
+              <Image src={w(v.data.work!.id)!.data.image} alt={w(v.data.work!.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 20vw, 50vw" class="h-[200px] w-full rounded-2xl object-cover sm:h-[300px]" />
+              <figcaption class="t-caption text-muted">{people.get(v.data.person.id)?.name}, {w(v.data.work!.id)!.data.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="flex flex-col gap-3.5">
+          <span class="t-overline">Педагоги академии</span>
+          <h3 class="t-h3 uppercase">Первые три места в голосовании <span class="t-accent">«Царь горы»</span></h3>
+          <ol class="m-0 flex list-none flex-col gap-2.5 p-0 text-[15px] text-ink-2">
+            {votes.map((v) => (
+              <li class="flex gap-3"><b class="min-w-[18px] text-[20px] text-lime">{v.data.place}</b><span><b class="text-ink">{people.get(v.data.person.id)?.name}.</b> {v.data.text}</span></li>
+            ))}
+          </ol>
+          <a href="https://3ddd.ru/galleries/cat/3dgora" class="link text-[15px]" rel="noopener">Голосование на 3DDD ↗</a>
+        </div>
+      </div>
+
+      <div class="grid gap-8 md:grid-cols-[4fr_8fr] md:gap-12">
+        <div class="flex flex-col gap-4">
+          <h3 class="t-h3 uppercase">Ученики берут «Царя горы»</h3>
+          <p class="m-0 text-ink-2">«Царь горы» это звание лучшей работы в галерее 3DDD, главного сайта архвиз-визуализаторов. Наши студенты получают его снова и снова, в том числе за коммерческие проекты.</p>
+          <div class="flex flex-col gap-3 border-t border-line pt-3 text-[15px] text-ink-2">
+            <span><b class="text-ink">Партнёры 3DDD.</b> Курс «Моделирование под стоки» создан вместе с 3DDD.</span>
+            <span><b class="text-ink">Педагоги-практики.</b> Иоанн Дмитриев работал 3D-художником над сериалом «Пингвин» (HBO), проект получил VES Awards.</span>
+          </div>
+        </div>
+        <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
+          {kings.map((a) => (
+            <li class="card flex gap-3.5 p-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sea-14 text-[15px] font-bold" aria-hidden="true">{initials(people.get(a.data.person.id)?.name ?? '')}</span>
+              <span class="flex flex-col gap-1">
+                <b class="text-[17px]">{people.get(a.data.person.id)?.name}</b>
+                <span class="text-[15px] font-bold text-lime">{a.data.title}</span>
+                <span class="text-[14px] leading-snug text-muted">{a.data.text}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        {awardStrip.map((x) => x && (
+          <figure class="m-0 flex flex-col gap-2">
+            <Image src={x.data.image} alt={x.data.alt} widths={[480, 720]} sizes="(min-width: 768px) 33vw, 100vw" class="h-[240px] w-full rounded-2xl object-cover sm:h-[300px]" />
+            <figcaption class="text-[14px] text-muted">{people.get(x.data.author.id)?.name}, {x.data.title}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+
+    <!-- Отзывы -->
+    <div role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" hidden class="flex flex-col gap-5">
+      <div class="grid gap-5 md:grid-cols-3 md:gap-6">
+        {reviews.map((r) => (
+          <figure class="m-0 flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6 md:p-7">
+            <span aria-hidden="true" class="text-[44px] font-bold leading-[0.6] text-sea">“</span>
+            <blockquote class="m-0 text-[17px] leading-normal">{r.data.text}</blockquote>
+            <figcaption class="mt-auto flex flex-col gap-0.5"><b class="text-[17px]">{r.data.author}</b><span class="t-small text-muted">{r.data.role}, отзыв из {r.data.source === 'telegram' ? 'Telegram' : r.data.source === 'vk' ? 'ВКонтакте' : 'Яндекс Карт'}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+      <span class="flex flex-wrap gap-x-6 gap-y-2 text-[17px] font-semibold">
+        <a href={site.yandexMaps} class="link" rel="noopener">{site.stats.rating} ★ Все отзывы на Яндекс Картах ↗</a>
+        <a href="/otzyvy" class="link">Все отзывы и истории →</a>
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const list of document.querySelectorAll<HTMLElement>('[data-tabs]')) {
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement, focus = false) => {
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls')!);
+        if (panel) panel.hidden = !on;
+      }
+      if (focus) tab.focus();
+      tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (k) { e.preventDefault(); select(tabs[(i + k + tabs.length) % tabs.length], true); }
+        if (e.key === 'Home') { e.preventDefault(); select(tabs[0], true); }
+        if (e.key === 'End') { e.preventDefault(); select(tabs[tabs.length - 1], true); }
+      });
+    });
+  }
+</script>

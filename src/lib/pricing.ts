@@ -146,3 +146,27 @@ export function quizResult(cat: Catalog, a: QuizAnswers): QuizResult {
   }[level];
   return { level, why, base: skill <= 3, prof, unsure, tariff: a[3], courses };
 }
+
+/** Только база с выбранным форматом (кнопка «Купить только базу») */
+export function quoteBaseOnly(cat: Catalog, tariff: TariffId): Quote {
+  const t = cat.tariffs.find((x) => x.id === tariff) ?? cat.tariffs[0];
+  const lines: Line[] = [
+    { id: cat.base.id, kind: 'item', name: cat.base.name, price: cat.base.price },
+    ...cat.base.included.map((i) => ({ id: i.id, kind: 'included' as const, name: i.name, price: 0, value: i.value })),
+    ...cat.base.gifts.map((g) => ({ id: g.id, kind: 'gift' as const, name: g.name, price: 0, value: g.value })),
+    { id: `tariff:${t.id}`, kind: 'format', name: `Формат: ${t.name}`, price: t.extra },
+  ];
+  const total = cat.base.price + t.extra;
+  const savings = Math.max(0, cat.base.separately - cat.base.price)
+    + cat.base.included.reduce((s, i) => s + (i.value ?? 0), 0)
+    + cat.base.gifts.reduce((s, g) => s + (g.value ?? 0), 0);
+  return {
+    lines, total, monthly: Math.ceil(total / cat.installmentMonths), savings, tariffApplied: true,
+    items: [cat.base.id, ...cat.base.gifts.map((g) => g.id), `tariff:${t.id}`],
+  };
+}
+
+/** Короткое описание пакета для заявки и CRM */
+export function summarize(q: Quote): string {
+  return q.lines.filter((l) => l.kind !== 'included').map((l) => l.name).join(' + ') + `; итого ${q.total} ₽`;
+}

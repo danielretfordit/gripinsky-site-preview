@@ -46,7 +46,7 @@ const social = [
 ].filter(Boolean) as { href: string; label: string }[];
 const year = new Date().getFullYear();
 ---
-<footer class="wrap border-t border-line pb-10 pt-12 text-[15px] text-muted">
+<footer id="site-footer" class="wrap border-t border-line pb-10 pt-12 text-[15px] text-muted">
   <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
     <div class="flex flex-col gap-4">
       <a href="/" aria-label="На главную"><Image src={logo} alt="GRIPINSKY" width={166} height={22} class="block h-[22px] w-auto" /></a>
