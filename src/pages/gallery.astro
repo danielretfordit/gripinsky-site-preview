@@ -1,0 +1,141 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { visibleWorks, personMap } from '../lib/people';
+
+const people = await personMap();
+const works = (await visibleWorks()).filter((w) => w.data.inGallery);
+const CATS = [
+  { id: 'all', label: 'Все' },
+  { id: 'int', label: 'Интерьеры' },
+  { id: 'ext', label: 'Экстерьеры' },
+  { id: 'model', label: 'Модели' },
+  { id: 'mentor', label: 'С наставником' },
+  { id: 'teach', label: 'Работы педагогов' },
+] as const;
+const count = (id: string) => (id === 'all' ? works.length : works.filter((w) => w.data.categories.includes(id as 'int')).length);
+const items = await Promise.all(works.map(async (w) => {
+  const big = await getImage({ src: w.data.image, width: Math.min(1800, w.data.image.width), format: 'webp' });
+  const author = people.get(w.data.author.id)!;
+  return { w, big: big.src, author: author.name, teacher: w.data.categories.includes('teach') };
+}));
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Работы учеников' }];
+const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»', 'tsar-gory': '«Царь горы»', '3ddd-award': '3DDD Award' };
+---
+<Base
+  title="Работы учеников: галерея 3D-визуализаций | GRIPINSKY"
+  description={`Галерея работ учеников и педагогов Академии 3D GRIPINSKY: ${works.length} интерьеров, экстерьеров и моделей. Победители «Рендера дня» и «Царя горы» на 3DDD.`}
+  breadcrumbs={crumbs}
+  consultContext="Галерея"
+>
+  <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="gallery-title">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-3">
+        <span class="t-overline">Галерея</span>
+        <h1 id="gallery-title" class="t-display">Работы <span class="t-accent">учеников</span></h1>
+        <p class="t-lead max-w-[720px]">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
+      </div>
+      <span class="t-hand text-sea" aria-hidden="true">и это только начало</span>
+    </div>
+
+    <div role="group" aria-label="Категории работ" class="snap-row mb-8 !grid-flow-col !auto-cols-max max-w-full self-start" data-gallery-filters>
+      {CATS.map((c, i) => count(c.id) > 0 && (
+        <button type="button" data-cat={c.id} aria-pressed={i === 0 ? 'true' : 'false'}
+          class="choice min-h-11 whitespace-nowrap !rounded-full px-4 text-[15px] font-semibold">{c.label} <span class="text-muted">{count(c.id)}</span></button>
+      ))}
+    </div>
+
+    <ul class="m-0 list-none columns-2 gap-3 p-0 sm:gap-5 md:columns-3" data-gallery>
+      {items.map(({ w, big, author, teacher }, i) => (
+        <li class="mb-3 break-inside-avoid sm:mb-5" data-cats={w.data.categories.join(' ')}>
+          <button type="button" class="zoom group block w-full overflow-hidden rounded-[18px] border-0 bg-bg-2 p-0 text-left" data-open={i}
+            data-full={big} data-title={w.data.title} data-author={author} aria-label={`Открыть крупно: ${w.data.title}, ${author}`}>
+            <Image src={w.data.image} alt={w.data.alt} widths={[360, 560, 800]} sizes="(min-width: 1024px) 33vw, 50vw" class="block h-auto w-full" />
+          </button>
+          <span class="mt-2 flex flex-col px-1 text-[14px] leading-snug">
+            <b class="text-ink">{author}{teacher ? ', педагог' : ''}</b>
+            <span class="text-muted">{w.data.title}</span>
+            {w.data.awards.length > 0 && <span class="text-sea">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-12 grid gap-5 rounded-[24px] bg-sea-08 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+      <span class="flex flex-col gap-1.5"><b class="text-[22px]">Хотите так же?</b><span class="text-ink-2">Начните с базы: моделирование в 3ds Max и рендер в Corona. Тест за 1 минуту подскажет, с какого шага начать.</span></span>
+      <span class="flex flex-col gap-3 sm:flex-row">
+        <a href="/courses-page/visualization#quiz" class="btn btn-primary btn-lg">Подобрать курс</a>
+        <a href="/vizualization3_mini" class="btn btn-secondary btn-lg">Бесплатные уроки</a>
+      </span>
+    </div>
+  </section>
+
+  <dialog id="lightbox" aria-label="Работа крупно" class="m-0 h-[100dvh] max-h-none w-screen max-w-none border-0 bg-[rgb(6_16_18/0.96)] p-0 text-ink backdrop:bg-transparent">
+    <div class="flex h-full flex-col items-center justify-center gap-3 px-3 py-14 sm:px-20">
+      <img alt="" class="max-h-[calc(100dvh-140px)] max-w-full rounded-xl object-contain" data-lb-img />
+      <p class="m-0 flex flex-wrap items-baseline justify-center gap-x-3 text-center"><b data-lb-author></b><span class="text-muted" data-lb-title></span><span class="text-[14px] text-muted" data-lb-count></span></p>
+    </div>
+    <button type="button" class="absolute right-3 top-3 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-bg text-2xl" data-lb-close aria-label="Закрыть">×</button>
+    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(13_32_35/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
+    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(13_32_35/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
+  </dialog>
+</Base>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-gallery]')!;
+  const items = [...grid.querySelectorAll<HTMLLIElement>('li')];
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = dlg.querySelector<HTMLImageElement>('[data-lb-img]')!;
+  let visible: HTMLButtonElement[] = [];
+  let cur = 0;
+  let opener: HTMLElement | null = null;
+
+  const refresh = () => { visible = items.filter((li) => !li.hidden).map((li) => li.querySelector('button')!); };
+  const show = (i: number) => {
+    cur = (i + visible.length) % visible.length;
+    const b = visible[cur];
+    img.src = b.dataset.full!;
+    img.alt = `${b.dataset.title}, ${b.dataset.author}`;
+    dlg.querySelector('[data-lb-author]')!.textContent = b.dataset.author!;
+    dlg.querySelector('[data-lb-title]')!.textContent = b.dataset.title!;
+    dlg.querySelector('[data-lb-count]')!.textContent = `${cur + 1} из ${visible.length}`;
+  };
+
+  document.querySelectorAll<HTMLButtonElement>('[data-gallery-filters] [data-cat]').forEach((btn, _, all) => btn.addEventListener('click', () => {
+    const cat = btn.dataset.cat!;
+    all.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    items.forEach((li) => { li.hidden = cat !== 'all' && !li.dataset.cats!.split(' ').includes(cat); });
+    refresh();
+  }));
+
+  grid.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-open]');
+    if (!b) return;
+    refresh();
+    opener = b;
+    show(visible.indexOf(b));
+    dlg.showModal();
+    document.documentElement.style.overflow = 'hidden';
+  });
+  dlg.querySelector('[data-lb-close]')!.addEventListener('click', () => dlg.close());
+  dlg.querySelector('[data-lb-prev]')!.addEventListener('click', () => show(cur - 1));
+  dlg.querySelector('[data-lb-next]')!.addEventListener('click', () => show(cur + 1));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg || (e.target as HTMLElement).matches('.flex.h-full')) dlg.close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); }
+  });
+  dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; opener?.focus(); });
+
+  // Свайп на телефоне
+  let x0: number | null = null;
+  dlg.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+  dlg.addEventListener('touchend', (e) => {
+    if (x0 == null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) show(cur + (dx < 0 ? 1 : -1));
+    x0 = null;
+  });
+</script>
