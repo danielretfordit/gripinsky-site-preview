@@ -1,0 +1,15 @@
+# build
+dist/
+.astro/
+node_modules/
+
+# секреты
+.env
+.env.*
+!.env.example
+
+# локальное
+.DS_Store
+.claude/settings.local.json
+originals/
+*.log

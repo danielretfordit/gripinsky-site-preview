@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Галерея работ выпускников</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="dc-runtime.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Caveat:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#0D2023;font-family:'Inter Tight',system-ui,sans-serif;color:#E7E7E7}
+a{color:#F8F61A;text-decoration:none}
+a:hover{color:#ffffff}
+button{font-family:inherit;cursor:pointer}
+.gg-item{break-inside:avoid;margin:0 0 20px;position:relative;border-radius:18px;overflow:hidden;cursor:zoom-in;display:block;width:100%;padding:0;border:none;background:#16302F}
+.gg-item img{width:100%;display:block;transition:transform .5s ease}
+.gg-item:hover img{transform:scale(1.04)}
+.gg-cap{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 14px;background:linear-gradient(180deg,rgba(13,32,35,0),rgba(13,32,35,.9));display:flex;flex-direction:column;gap:2px;text-align:left;opacity:0;transition:opacity .25s}
+.gg-item:hover .gg-cap,.gg-item:focus-visible .gg-cap{opacity:1}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</helmet>
+<div style="min-width: 1024px; background: #0D2023; color: #E7E7E7; font-family: 'Inter Tight', system-ui, sans-serif;">
+<header style="height: 88px; box-sizing: border-box; padding: 0 max(64px, calc((100% - 1280px) / 2)); display: flex; align-items: center; gap: 24px; border-bottom: 1px solid rgba(231,231,231,0.12);">
+<img src="images/f86493dd36b3853fa43fd315271eee5d.png" alt="GRIPINSKY" style="height: 26px; width: auto; display: block;">
+<a href="index.html" style="margin-left: auto; font-size: 15px; font-weight: 600; color: #92BABE;">← К направлению «3D-визуализация»</a>
+</header>
+<section style="padding: 64px max(64px, calc((100% - 1280px) / 2)) 96px; display: flex; flex-direction: column; gap: 32px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+<div style="display: flex; flex-direction: column; gap: 12px;"><span style="font-size: 13px; font-weight: 800; color: #92BABE; text-transform: uppercase; letter-spacing: 0.1em;">Галерея</span><h1 style="margin: 0; font-size: 52px; font-weight: 800; line-height: 1.02; text-transform: uppercase;">Работы <span style="color: #F8F61A;">выпускников</span></h1><p style="margin: 0; font-size: 17px; line-height: 1.5; color: #AFAFAF; max-width: 720px;">Рендеры и модели учеников и педагогов академии. Многие из них получили «Рендер дня» на стримах GRIPINSKY TV.</p></div>
+<span style="font-family: 'Caveat', cursive; font-size: 30px; color: #92BABE; white-space: nowrap;">{{countLabel}}</span>
+</div>
+<div role="tablist" aria-label="Категории" style="display: flex; flex-wrap: wrap; gap: 8px; padding: 6px; border-radius: 999px; background: rgba(231,231,231,0.06); align-self: flex-start;">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><button type="button" role="tab" onClick="{{c.pick}}" aria-selected="{{c.pressed}}" style="height: 44px; padding: 0 22px; border-radius: 999px; border: none; background: {{c.bg}}; color: {{c.fg}}; font-size: 16px; font-weight: 700;">{{c.name}} <span style="opacity: 0.6; font-weight: 600;">{{c.n}}</span></button></sc-for>
+</div>
+<div style="columns: 3; column-gap: 20px;">
+<sc-for list="{{items}}" as="w" hint-placeholder-count="9"><button type="button" class="gg-item" onClick="{{w.open}}" aria-label="Открыть: {{w.title}}"><img src="{{w.src}}" alt="{{w.title}}" loading="lazy"><span class="gg-cap"><b style="font-size: 16px; color: #E7E7E7;">{{w.author}}</b><span style="font-size: 14px; color: #D3DCE2;">{{w.title}}</span></span></button></sc-for>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 28px 32px; border-radius: 24px; background: rgba(146,186,190,0.1);">
+<span style="display: flex; flex-direction: column; gap: 4px;"><b style="font-size: 22px; font-weight: 800;">Хотите так же?</b><span style="font-size: 16px; color: #D3DCE2;">Все эти авторы начинали с базы: моделирование в 3ds Max и рендер в Corona.</span></span>
+<a href="index.html" style="height: 52px; padding: 0 28px; display: flex; align-items: center; border-radius: 999px; background: #F8F61A; color: #0D2023; font-size: 17px; font-weight: 800; white-space: nowrap;">Выбрать курс</a>
+</div>
+</section>
+<sc-if value="{{isOpen}}" hint-placeholder-val="{{ false }}"><div role="dialog" aria-label="{{cur.title}}" style="position: fixed; inset: 0; z-index: 50; background: rgba(6,16,18,0.94); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 32px;">
+<button type="button" onClick="{{close}}" aria-label="Закрыть" style="position: absolute; top: 20px; right: 24px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(231,231,231,0.3); background: transparent; color: #E7E7E7; font-size: 24px;">×</button>
+<button type="button" onClick="{{prev}}" aria-label="Предыдущая" style="position: absolute; left: 24px; top: 50%; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(231,231,231,0.3); background: rgba(13,32,35,0.6); color: #E7E7E7; font-size: 22px;">←</button>
+<button type="button" onClick="{{next}}" aria-label="Следующая" style="position: absolute; right: 24px; top: 50%; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgba(231,231,231,0.3); background: rgba(13,32,35,0.6); color: #E7E7E7; font-size: 22px;">→</button>
+<img src="{{cur.src}}" alt="{{cur.title}}" style="max-width: calc(100% - 160px); max-height: calc(100vh - 140px); border-radius: 12px; display: block;">
+<span style="display: flex; gap: 10px; align-items: baseline;"><b style="font-size: 18px;">{{cur.author}}</b><span style="font-size: 15px; color: #AFAFAF;">{{cur.title}}</span></span>
+</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const st = this.state || {};
+    const B = (id) => '/_blob/' + id;
+    const ALL = [
+      { c: 'ext', src: 'images/8b175f6b1fd5b8a1350ac9c457e5b33e.jpg', author: 'Юлия Большунова', title: '«Остров», экстерьер' },
+      { c: 'int', src: 'images/4d4c57c20158f16eae551dc5550d12ac.jpg', author: 'Артём Россошанский', title: 'Гостиная, «Рендер дня»' },
+      { c: 'model', src: 'images/82472afff58638061b60e131c6cec8eb.jpg', author: 'Ирина Чаукина', title: 'Кресло-скорпион, модель' },
+      { c: 'ext', src: 'images/a50708c44d05f545344fe03b40b99f65.jpg', author: 'Анастасия Коротовская', title: 'Шале в горах' },
+      { c: 'int', src: 'images/a67d060708a0fa39c87f3a7ebeb04b3b.jpg', author: 'Оксана Меркулова', title: 'Кухня' },
+      { c: 'mentor', src: 'images/11d482a3d10f6adf3783aeedbd1b3e27.jpg', author: 'Елена Якупова', title: 'Японские ворота, работа с наставником' },
+      { c: 'ext', src: 'images/3aa593e85e3addce92ec4076efc50dc5.jpg', author: 'Юлия Большунова', title: '«Остров», церковь в лесу' },
+      { c: 'ext', src: 'images/4cd85a326f7be066c2574014f277da4c.jpg', author: 'Ольга Зайцева', title: 'Дом в сосновом лесу' },
+      { c: 'ext', src: 'images/f8b0f016e2fd760bb795984ddce41b29.jpg', author: 'Юлия Будник', title: 'Осенний дом, «Царь горы»' },
+      { c: 'ext', src: 'images/2835a2ed7683407d0cca7995de43fa66.jpg', author: 'Юлия Будник', title: 'Осенний дом, другой ракурс' },
+      { c: 'model', src: 'images/9bb106a4bc0764474bda7f44ce7313ba.jpg', author: 'Юлия Будник', title: 'Осенний дом, сцена в сером материале' },
+      { c: 'ext', src: 'images/955eb476fe80ddfdca9257a26debefda.jpg', author: 'Юлия Большунова', title: '«Дорога домой», «Царь горы»' },
+      { c: 'ext', src: 'images/cf90abd7b4b1e5eaf9416b70e623693f.jpg', author: 'Юлия Большунова', title: 'Банный комплекс в горах, коммерческий проект' },
+      { c: 'ext', src: 'images/003954448089b90fe8788439fe145375.jpg', author: 'Юлия Большунова', title: 'Банный комплекс на закате, «Царь горы»' },
+      { c: 'ext', src: 'images/5a322f4167eec762bbd208535f183b8c.jpg', author: 'Юлия Большунова', title: 'Банный комплекс у реки' },
+      { c: 'ext', src: 'images/39224fde905d51cc4aa9022381bb2038.jpg', author: 'Юлия Большунова', title: 'Банный комплекс, вечерний свет' },
+      { c: 'ext', src: 'images/5db990c892ccebdfe0eb0f74118c0849.jpg', author: 'Юлия Большунова', title: 'Банный комплекс, вид со скал' },
+      { c: 'int', src: 'images/ae290d0070f99cf0761938bdd15d8390.jpg', author: 'Дмитрий Филатов', title: 'Интерьер, «Царь горы»' },
+      { c: 'int', src: 'images/dd365f9bc5ad8793442543ae359fe775.jpg', author: 'Светлана Филимонова', title: 'Спальня с золотой стеной' },
+      { c: 'ext', src: 'images/ffb8d7c51e2c498d0953e60f390b217f.jpg', author: 'Антон Лапин', title: 'Дом у озера' },
+      { c: 'model', src: 'images/029f4026638bd72be8ec1213301449a1.jpg', author: 'Карина Акопян', title: 'Кресло, модель' },
+      { c: 'int', src: 'images/522500e36c75196173c15de20e454e6f.jpg', author: 'Руслан Кондратенко', title: 'Интерьер, «Рендер дня»' },
+      { c: 'mentor', src: 'images/a7cb02f73c8b014895ebc9e28aabd769.jpg', author: 'Анна Смирнова', title: 'Сказочное дерево, работа с наставником' },
+      { c: 'ext', src: 'images/8ededbc38624a0e3fa70eff0389b469b.jpg', author: 'Пётр Князев', title: 'Старинная улица' },
+      { c: 'ext', src: 'images/4e4a15585d1d7103f82ee47280de036f.jpg', author: 'Анна Павлова', title: 'Дом в лесу' },
+      { c: 'ext', src: 'images/e7d728f01cce15a1f48355a421a91e73.jpg', author: 'Юлия Большунова', title: '«Остров», берег' },
+      { c: 'model', src: 'images/63718df65ddba7285ea89a06d6a79005.jpg', author: 'Владимир Сорокин', title: '«Шоколадный пирог», «Царь горы»' },
+      { c: 'model', src: 'images/4cba32104484d76b5a48a0a14ae39b05.jpg', author: 'Владимир Сорокин', title: '«Шоколадный пирог», крупный план' },
+      { c: 'teach', src: 'images/a9c77d93ed59472c3286c6ed3d0e1d0c.jpg', author: 'Карина Камола, педагог', title: 'Кухня с куклой, «Царь горы»' },
+      { c: 'teach', src: 'images/a71aa5e76c6457f3a3c2bdad1d77225a.jpg', author: 'Виктор Тверитин, педагог', title: 'Пансионат «Дружба», «Царь горы»' },
+      { c: 'teach', src: 'images/bab22b363c382f027d5f6c45545f2391.jpg', author: 'Виктор Тверитин, педагог', title: '«Итальянская вилла», «Царь горы»' },
+      { c: 'teach', src: 'images/4c592c35094a5075adc35e1dd43135cb.jpg', author: 'Виктор Тверитин, педагог', title: '«Итальянская вилла», лестница к причалу' },
+      { c: 'teach', src: 'images/4b6452d39cc1ca63ec841d664c4384a2.jpg', author: 'Виктор Тверитин, педагог', title: '«Итальянская вилла», сад' },
+      { c: 'teach', src: 'images/20f2bbf68e430f638d23fc3d520c2d1a.jpg', author: 'Виктор Тверитин, педагог', title: '«Отель у Чёрного моря»' },
+      { c: 'teach', src: 'images/adc792f59e30df83f1469eb0e6da58eb.jpg', author: 'Виктор Тверитин, педагог', title: '«Отель у Чёрного моря», с воды' },
+      { c: 'teach', src: 'images/ab839ac2d8a7addf8d7aa725e7b969bf.jpg', author: 'Виктор Тверитин, педагог', title: '«Отель у Чёрного моря», ночь' }
+    ];
+    const CATS = [['all', 'Все'], ['int', 'Интерьеры'], ['ext', 'Экстерьеры'], ['model', 'Модели'], ['mentor', 'С наставником'], ['teach', 'Работы педагогов']];
+    const cat = st.cat || 'all';
+    const list = ALL.filter((w) => cat === 'all' || w.c === cat);
+    const cats = CATS.map(([id, name]) => ({ name, n: id === 'all' ? ALL.length : ALL.filter((w) => w.c === id).length,
+      pressed: id === cat ? 'true' : 'false', bg: id === cat ? '#F8F61A' : 'transparent', fg: id === cat ? '#0D2023' : '#E7E7E7',
+      pick: () => this.setState({ cat: id, open: null }) }));
+    const items = list.map((w, i) => ({ ...w, open: () => this.setState({ open: i }) }));
+    const oi = st.open;
+    const isOpen = oi != null && oi >= 0 && oi < list.length;
+    const cur = isOpen ? list[oi] : { src: '', title: '', author: '' };
+    const n = list.length;
+    return { cats, items, isOpen, cur,
+      countLabel: 'и это только начало',
+      close: () => this.setState({ open: null }),
+      prev: () => this.setState({ open: (oi - 1 + n) % n }),
+      next: () => this.setState({ open: (oi + 1) % n }) };
+  }
+}
+</script>
+</body>
+</html>

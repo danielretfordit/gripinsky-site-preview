@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная — Академия 3D GRIPINSKY</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&amp;family=Caveat:wght@500;600&amp;display=swap">
+<style>
+body{margin:0;background:#0D2023;font-family:'Inter Tight',system-ui,sans-serif;color:#E7E7E7}
+a{color:#F8F61A;text-decoration:none;white-space:nowrap}
+@keyframes grMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes grDraw{from{stroke-dashoffset:420}to{stroke-dashoffset:0}}
+.gr-marquee{display:flex;gap:56px;width:max-content;animation:grMarquee 38s linear infinite}
+.gr-marquee:hover{animation-play-state:paused}
+.gr-underline path{stroke-dasharray:420;stroke-dashoffset:420;animation:grDraw 1.1s .4s ease-out forwards}
+.gr-lift{transition:transform .25s ease,border-color .25s ease}
+.gr-lift:hover{transform:translateY(-6px);border-color:rgba(248,246,26,.45)}
+.gr-work img{transition:transform .5s ease}
+.gr-work:hover img{transform:scale(1.06)}
+.gr-btn{transition:transform .2s ease,filter .2s ease}
+.gr-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+.gr-range{-webkit-appearance:none;appearance:none;background:transparent;cursor:ew-resize}
+.gr-range::-webkit-slider-thumb{-webkit-appearance:none;width:56px;height:56px;border-radius:50%;background:#F8F61A;border:4px solid #0D2023}
+.gr-range::-moz-range-thumb{width:48px;height:48px;border-radius:50%;background:#F8F61A;border:4px solid #0D2023}a:hover{color:#ffffff}
+</style>
+</helmet>
+<div style="position: relative; width: 100%; min-width: 1280px; box-sizing: border-box; background: #0D2023; color: #E7E7E7; font-family: 'Inter Tight', system-ui, sans-serif; display: flex; flex-direction: column;">
+
+<a href="https://t.me/Academy3D_bot" aria-label="Задать вопрос в Telegram" style="position: absolute; right: 32px; top: 890px; z-index: 5; height: 60px; padding: 0 24px 0 18px; display: flex; align-items: center; gap: 10px; background: #92BABE; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.35);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5.1A8 8 0 1 1 21 12z"></path></svg>Есть вопрос? Ответим</a>
+<!-- HEADER -->
+<header style="height: 88px; box-sizing: border-box; padding: 0 64px; display: flex; align-items: center; gap: 32px; border-bottom: 1px solid rgba(231,231,231,0.12);">
+<img src="/_blob/56c5ca8665c7146f27c327506c1a6118" alt="GRIPINSKY" style="height: 26px; width: auto;">
+<nav style="display: flex; gap: 32px; flex-grow: 1; font-size: 16px; font-weight: 500;">
+<a href="#professions" style="color: #E7E7E7;">Направления</a>
+<a href="#catalog" style="color: #E7E7E7;">Все курсы</a>
+<a href="#free" style="color: #E7E7E7;">Бесплатные уроки</a>
+<a href="#about" style="color: #E7E7E7;">Об академии</a>
+</nav>
+<a href="https://t.me/Academy3D_bot" style="height: 48px; display: flex; align-items: center; gap: 8px; color: #E7E7E7; font-weight: 500; font-size: 15px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 4-18 7 6 2 2 6 3-4 5 4z"></path><path d="m9 13 8-6"></path></svg>Задать вопрос</a>
+<a href="#cart" aria-label="Корзина" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #E7E7E7;">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7h12l-1 13H7L6 7z"></path><path d="M9 7a3 3 0 0 1 6 0"></path></svg>
+</a>
+<a href="#quiz" style="height: 48px; padding: 0 24px; display: flex; align-items: center; border: 1.5px solid #F8F61A; border-radius: 999px; color: #F8F61A; font-weight: 600; font-size: 15px;">Подобрать профессию</a>
+</header>
+
+<!-- HERO -->
+<section style="position: relative; overflow: hidden; padding: 88px 80px 72px; display: grid; grid-template-columns: 7fr 5fr; gap: 56px; align-items: center;">
+<img src="/_blob/396c9015a329baeaaee76a8a301d85a0" alt="" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.1; pointer-events: none;">
+<div style="position: relative; display: flex; flex-direction: column; gap: 32px;">
+<div style="font-family: 'Caveat', cursive; font-size: 30px; color: {{accent}};">Академия 3D GRIPINSKY</div>
+<h1 style="margin: 0; font-size: 64px; line-height: 1.02; font-weight: 800; text-transform: uppercase; letter-spacing: -0.01em;">Освойте<br><span style="white-space: nowrap;">3D‑профессию</span><br><span style="position: relative; display: inline-block;">с нуля<svg class="gr-underline" width="300" height="24" viewBox="0 0 300 24" fill="none" aria-hidden="true" style="position: absolute; left: -4px; bottom: -14px; width: 104%;"><path d="M4 16 C 70 6, 150 4, 296 12" stroke="{{accent}}" stroke-width="6" stroke-linecap="round"></path></svg></span></h1>
+<p style="margin: 0; font-size: 21px; line-height: 1.5; color: #D3DCE2; max-width: 560px;">Онлайн-курсы 3D-моделирования и визуализации с нуля: пошаговая программа, проверка каждой работы педагогом и портфолио, с которым берут в работу.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 16px; color: #E7E7E7;">
+<span style="display: flex; align-items: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Онлайн, в своём темпе</span>
+<span style="display: flex; align-items: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Без опыта и умения рисовать</span>
+<span style="display: flex; align-items: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>От [N] часов в неделю</span>
+</div>
+<div style="display: flex; gap: 16px; align-items: center;">
+<a class="gr-btn" href="#professions" style="height: 60px; padding: 0 36px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 18px;">Выбрать направление</a>
+<a href="#quiz" style="height: 60px; padding: 0 32px; display: flex; align-items: center; border: 1.5px solid rgba(231,231,231,0.4); color: #E7E7E7; border-radius: 999px; font-weight: 600; font-size: 18px;">Подобрать за 1 минуту</a>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; padding-top: 24px; border-top: 1px solid rgba(231,231,231,0.12);">
+<div style="display: flex; flex-direction: column; gap: 4px;"><div style="font-size: 32px; font-weight: 800; white-space: nowrap;">{{grads}}</div><div style="font-size: 14px; color: #AFAFAF;">выпускников</div></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><div style="font-size: 32px; font-weight: 800; white-space: nowrap;">{{years}}</div><div style="font-size: 14px; color: #AFAFAF;">авторской системе обучения</div></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><div style="font-size: 32px; font-weight: 800; white-space: nowrap;">{{videos}}</div><div style="font-size: 14px; color: #AFAFAF;">видеоуроков в 34 курсах</div></div>
+<a href="https://yandex.ru/maps/org/akademiya_3d_yevgeniya_gripinskogo/94110272516/reviews/" target="_blank" style="display: flex; flex-direction: column; gap: 4px; color: inherit; min-width: 0;"><div style="display: flex; align-items: baseline; gap: 6px; white-space: nowrap;"><span style="font-size: 32px; font-weight: 800;">{{rating}}</span><span style="font-size: 16px; color: #AFAFAF; font-weight: 600;">из 5</span></div><div style="display: flex; gap: 2px;" aria-label="Оценка 5,0 из 5"><svg width="16" height="16" viewBox="0 0 24 24" fill="{{accent}}" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="{{accent}}" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="{{accent}}" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="{{accent}}" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="{{accent}}" aria-hidden="true"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6-4.9-4.6 6.6-.8z"/></svg></div><div style="font-size: 14px; color: #AFAFAF;">оценка студентов на Яндекс Картах и Азбуке курсов</div></a>
+</div>
+</div>
+<div style="position: relative; height: 540px;">
+<img src="/_blob/c0ef6be211bd5ba0e852e90308a02f20" alt="Интерьер — работа в 3ds Max и Corona" style="position: absolute; left: 0; top: 0; width: 380px; height: 380px; object-fit: cover; border-radius: 24px;">
+<img src="/_blob/2c88912ba53d3cd4f64ee3c47b90ed51" alt="Игровой пропс — геймпад" style="position: absolute; right: 0; bottom: 0; width: 280px; height: 260px; object-fit: cover; border-radius: 24px; border: 6px solid #0D2023;">
+</div>
+</section>
+
+<!-- MARQUEE -->
+<section aria-label="Программы, которые изучают на курсах" style="padding: 28px 0; overflow: hidden; border-top: 1px solid rgba(231,231,231,0.1); border-bottom: 1px solid rgba(231,231,231,0.1);">
+<div class="gr-marquee"><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/0d05241917fb931e0adcefcbf2e643af" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">3ds Max</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/88e76ba82b9aaa6cd102c932d72937d6" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Blender</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/15b581c12018e51729211676d7c6f765" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">ZBrush</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/c746a683ad69b86df4c378cae2f6021b" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Unreal Engine</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/35d8e8ea8d2deb2c977b42f7c1da2016" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Maya</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/6c4d31c8558864282c9dbe265b61e21d" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Corona</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/ef789bb9f0d5c6e6930656883626c789" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Substance Painter</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/724b31fcd6194f0d8e40c4961ed621a4" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">V-Ray</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/bfc88236e7157ad117ac36fe387bdeec" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Photoshop</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/67faea82a40cad4e8b8a085c2bed6763" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Forest Pack</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/0d05241917fb931e0adcefcbf2e643af" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">3ds Max</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/88e76ba82b9aaa6cd102c932d72937d6" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Blender</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/15b581c12018e51729211676d7c6f765" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">ZBrush</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/c746a683ad69b86df4c378cae2f6021b" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Unreal Engine</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/35d8e8ea8d2deb2c977b42f7c1da2016" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Maya</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/6c4d31c8558864282c9dbe265b61e21d" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Corona</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/ef789bb9f0d5c6e6930656883626c789" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Substance Painter</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/724b31fcd6194f0d8e40c4961ed621a4" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">V-Ray</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/bfc88236e7157ad117ac36fe387bdeec" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Photoshop</span></div><div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;"><img src="/_blob/67faea82a40cad4e8b8a085c2bed6763" alt="" style="width: 44px; height: 44px;"><span style="font-size: 20px; font-weight: 600; color: #D3DCE2; white-space: nowrap;">Forest Pack</span></div></div>
+</section>
+
+<!-- PROFESSIONS -->
+<section id="professions" style="padding: 72px 80px; display: flex; flex-direction: column; gap: 40px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase; line-height: 1.05;">Направления в 3D</h2>
+<p style="margin: 0; font-size: 18px; color: #AFAFAF; max-width: 460px; line-height: 1.5;">Выберите направление, а внутри — конкретную профессию. У каждой свой флагманский курс и допы под вашу цель.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;">
+
+<article class="gr-lift" style="display: flex; flex-direction: column; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12); border-radius: 28px; overflow: hidden;">
+<img src="/_blob/c5ed096b55b12b29727704d18f678baa" alt="Экстерьер загородного дома" style="width: 100%; height: 320px; object-fit: cover; display: block;">
+<div style="padding: 36px; display: flex; flex-direction: column; gap: 22px; flex-grow: 1;">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h3 style="margin: 0; font-size: 34px; font-weight: 800; text-transform: uppercase;">3D-визуализация</h3>
+<p style="margin: 0; font-size: 18px; line-height: 1.5; color: #D3DCE2;">Курсы 3D-визуализации интерьеров и экстерьеров в 3ds Max и Corona: фотореалистичные рендеры для дизайнеров и застройщиков.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;"><div style="font-size: 14px; font-weight: 600; color: #AFAFAF; text-transform: uppercase; letter-spacing: 0.06em;">Профессии внутри</div><div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Интерьерный визуализатор</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Экстерьерный визуализатор</span>
+</div></div>
+<div style="display: flex; align-items: center; gap: 10px;"><img src="/_blob/0d05241917fb931e0adcefcbf2e643af" alt="3ds Max" title="3ds Max" style="width: 52px; height: 52px; display: block;"><img src="/_blob/6c4d31c8558864282c9dbe265b61e21d" alt="Corona" title="Corona" style="width: 52px; height: 52px; display: block;"><img src="/_blob/724b31fcd6194f0d8e40c4961ed621a4" alt="V-Ray" title="V-Ray" style="width: 52px; height: 52px; display: block;"><img src="/_blob/67faea82a40cad4e8b8a085c2bed6763" alt="Forest Pack" title="Forest Pack" style="width: 52px; height: 52px; display: block;"><img src="/_blob/bfc88236e7157ad117ac36fe387bdeec" alt="Photoshop" title="Photoshop" style="width: 52px; height: 52px; display: block;"></div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #AFAFAF;">
+<div><span style="color: #E7E7E7; font-weight: 600;">Путь:</span> 3ds Max, уровни 1–3 → Интерьеры PRO или Экстерьеры PRO</div>
+<div><span style="color: #E7E7E7; font-weight: 600;">Срок:</span> [СРОК] · <span style="color: #E7E7E7; font-weight: 600;">Доход:</span> [ВИЛКА ПО HH.RU]</div>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 22px; border-top: 1px solid rgba(231,231,231,0.12);">
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<div style="font-size: 30px; font-weight: 800;">от [X] ₽/мес</div>
+<div style="font-size: 14px; color: #AFAFAF;">в рассрочку · полная цена [ЦЕНА] ₽</div>
+</div>
+<div style="display: flex; gap: 10px;">
+<a class="gr-btn" href="https://claude.ai/artifact/Btc2ufuGSBUr4fE5DCWrea" target="_blank" style="height: 52px; padding: 0 28px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 16px;">Выбрать профессию →</a>
+</div>
+</div>
+</div>
+</article>
+
+<article class="gr-lift" style="display: flex; flex-direction: column; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12); border-radius: 28px; overflow: hidden;">
+<img src="/_blob/2c88912ba53d3cd4f64ee3c47b90ed51" alt="Игровой пропс — геймпад" style="width: 100%; height: 320px; object-fit: cover; display: block;">
+<div style="padding: 36px; display: flex; flex-direction: column; gap: 22px; flex-grow: 1;">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h3 style="margin: 0; font-size: 34px; font-weight: 800; text-transform: uppercase;">3D для игр</h3>
+<p style="margin: 0; font-size: 18px; line-height: 1.5; color: #D3DCE2;">Обучение 3D-моделированию для игр в Blender, ZBrush и Unreal Engine: предметы, локации и персонажи.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;"><div style="font-size: 14px; font-weight: 600; color: #AFAFAF; text-transform: uppercase; letter-spacing: 0.06em;">Профессии внутри</div><div style="display: flex; gap: 8px; flex-wrap: wrap;">
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Художник по предметам</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Художник по окружению</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Художник по персонажам</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Художник по растительности</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Hard Surface</span>
+<span style="padding: 8px 16px; border-radius: 999px; background: rgba(146,186,190,0.18); color: #D3DCE2; font-size: 15px; font-weight: 500;">Unreal-художник</span>
+</div></div>
+<div style="display: flex; align-items: center; gap: 10px;"><img src="/_blob/88e76ba82b9aaa6cd102c932d72937d6" alt="Blender" title="Blender" style="width: 52px; height: 52px; display: block;"><img src="/_blob/35d8e8ea8d2deb2c977b42f7c1da2016" alt="Maya" title="Maya" style="width: 52px; height: 52px; display: block;"><img src="/_blob/15b581c12018e51729211676d7c6f765" alt="ZBrush" title="ZBrush" style="width: 52px; height: 52px; display: block;"><img src="/_blob/ef789bb9f0d5c6e6930656883626c789" alt="Substance Painter" title="Substance Painter" style="width: 52px; height: 52px; display: block;"><img src="/_blob/c746a683ad69b86df4c378cae2f6021b" alt="Unreal Engine" title="Unreal Engine" style="width: 52px; height: 52px; display: block;"></div>
+<div style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #AFAFAF;">
+<div><span style="color: #E7E7E7; font-weight: 600;">Путь:</span> Визуализация в Blender → GameDev Level 1 → специализация</div>
+<div><span style="color: #E7E7E7; font-weight: 600;">Срок:</span> [СРОК] · <span style="color: #E7E7E7; font-weight: 600;">Доход:</span> Junior 70–100 тыс. ₽, Middle 120–200 тыс. ₽</div>
+</div>
+<div style="margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 22px; border-top: 1px solid rgba(231,231,231,0.12);">
+<div style="display: flex; flex-direction: column; gap: 2px;">
+<div style="font-size: 30px; font-weight: 800;">от [X] ₽/мес</div>
+<div style="font-size: 14px; color: #AFAFAF;">в рассрочку · полная цена [ЦЕНА] ₽</div>
+</div>
+<div style="display: flex; gap: 10px;">
+<a class="gr-btn" href="#game" style="height: 52px; padding: 0 28px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 16px;">Выбрать профессию →</a>
+</div>
+</div>
+</div>
+</article>
+
+</div>
+<a href="courses.html" style="white-space: normal; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 28px 36px; border-radius: 20px; border: 1px solid rgba(231,231,231,0.16); color: #E7E7E7;">
+<div style="display: flex; align-items: baseline; gap: 20px;">
+<span style="font-family: 'Caveat', cursive; font-size: 30px; color: {{accent}}; white-space: nowrap;">уже знаете 3D?</span>
+<span style="font-size: 20px; font-weight: 600;">Курсы 3ds Max, Blender, ZBrush, Maya и Substance Painter — 34 курса и пакета по всем направлениям</span>
+</div>
+<span style="font-size: 17px; font-weight: 700; color: {{accent}}; white-space: nowrap;">Все курсы →</span>
+</a>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz" style="padding: 88px 80px 40px; display: flex; flex-direction: column; gap: 40px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<div style="font-family: 'Caveat', cursive; font-size: 30px; color: {{accent}};">не знаете, что выбрать?</div>
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase; line-height: 1.05;">Соберём ваш пакет за 1 минуту</h2>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex-shrink: 0;">
+<div style="display: flex; gap: 6px;"><span style="width: 36px; height: 4px; border-radius: 4px; background: {{accent}};"></span><span style="width: 36px; height: 4px; border-radius: 4px; background: rgba(231,231,231,0.2);"></span><span style="width: 36px; height: 4px; border-radius: 4px; background: rgba(231,231,231,0.2);"></span><span style="width: 36px; height: 4px; border-radius: 4px; background: rgba(231,231,231,0.2);"></span><span style="width: 36px; height: 4px; border-radius: 4px; background: rgba(231,231,231,0.2);"></span></div>
+<div style="font-size: 15px; color: #AFAFAF;">Вопрос 1 из 5 · без звонка менеджера</div>
+</div>
+</div>
+<div style="font-size: 22px; font-weight: 600;">Что вам интереснее создавать?</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+<a href="#quiz-start" style="white-space: normal; position: relative; display: block; height: 340px; border-radius: 24px; overflow: hidden; color: #E7E7E7;">
+<img src="/_blob/c0ef6be211bd5ba0e852e90308a02f20" alt="Интерьер" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; background: linear-gradient(to top, rgba(13,32,35,0.96) 0%, rgba(13,32,35,0.85) 55%, rgba(13,32,35,0) 100%);">
+<div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 24px; font-weight: 700;">Интерьеры и дома</span><span style="font-size: 15px; color: #D3DCE2;">Для дизайнеров и застройщиков</span></div>
+<span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 999px; background: {{accent}}; color: #0D2023; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700;">→</span>
+</div>
+</a>
+<a href="#quiz-start" style="white-space: normal; position: relative; display: block; height: 340px; border-radius: 24px; overflow: hidden; color: #E7E7E7;">
+<img src="/_blob/2c88912ba53d3cd4f64ee3c47b90ed51" alt="Игровой пропс" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 28px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; background: linear-gradient(to top, rgba(13,32,35,0.96) 0%, rgba(13,32,35,0.85) 55%, rgba(13,32,35,0) 100%);">
+<div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 24px; font-weight: 700;">Игровые миры</span><span style="font-size: 15px; color: #D3DCE2;">Предметы, локации, персонажи</span></div>
+<span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 999px; background: {{accent}}; color: #0D2023; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700;">→</span>
+</div>
+</a>
+<a href="#quiz-start" style="white-space: normal; height: 340px; box-sizing: border-box; border-radius: 24px; border: 1.5px solid rgba(231,231,231,0.2); padding: 28px; display: flex; flex-direction: column; justify-content: space-between; color: #E7E7E7;">
+<span style="font-size: 96px; font-weight: 800; line-height: 1; color: rgba(231,231,231,0.14);">?</span>
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;">
+<div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 24px; font-weight: 700;">Пока не знаю</span><span style="font-size: 15px; color: #D3DCE2;">Подскажем по вашим целям и времени</span></div>
+<span style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 999px; border: 1.5px solid {{accent}}; color: {{accent}}; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700;">→</span>
+</div>
+</a>
+</div>
+<div style="font-size: 16px; color: #AFAFAF;">После 5 вопросов покажем профессию, флагманский курс и допы под вашу цель — и сразу цену пакета.</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 28px 36px; border-radius: 20px; background: rgba(146,186,190,0.10); border: 1px solid rgba(146,186,190,0.3);">
+<div style="display: flex; align-items: center; gap: 20px;">
+<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#92BABE" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="14" width="4" height="6" rx="1.5"></rect><rect x="17" y="14" width="4" height="6" rx="1.5"></rect><path d="M19 20c0 1-1.5 2-4 2h-2"></path></svg>
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<span style="font-size: 22px; font-weight: 700;">Бесплатная консультация со специалистом</span>
+<span style="font-size: 16px; color: #D3DCE2;">Разберём вашу цель и опыт, подберём профессию и пакет курсов — 15 минут в звонке или в Telegram</span>
+</div>
+</div>
+<a class="gr-btn" href="#consult" style="flex-shrink: 0; height: 56px; padding: 0 28px; display: flex; align-items: center; background: #92BABE; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 16px;">Записаться на консультацию</a>
+</div>
+
+</section>
+
+<!-- NEW: AI IN 3D -->
+<section id="ai" style="padding: 104px 80px 88px; display: flex; flex-direction: column; gap: 48px; border-top: 1px solid rgba(231,231,231,0.08); border-bottom: 1px solid rgba(231,231,231,0.08);">
+<div style="display: grid; grid-template-columns: 7fr 5fr; gap: 64px; align-items: end;">
+<div style="display: flex; flex-direction: column; gap: 20px;">
+<span style="align-self: flex-start; padding: 6px 14px; border-radius: 999px; background: #92BABE; color: #0D2023; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;">Новый курс · ИИ в 3D</span>
+<h2 style="margin: 0; font-size: 112px; font-weight: 800; text-transform: uppercase; line-height: 0.95; letter-spacing: -0.02em; color: {{accent}};">ИИ<br>или умри</h2>
+</div>
+<div style="display: flex; flex-direction: column; gap: 24px; padding-bottom: 8px;">
+<div style="font-family: 'Caveat', cursive; font-size: 32px; line-height: 1.15; color: #92BABE;">ИИ не заменит 3D-художника. Его заменит художник с ИИ</div>
+<p style="margin: 0; font-size: 18px; line-height: 1.55; color: #D3DCE2;">Курс по нейросетям для 3D: мы уже встроили ИИ в весь пайплайн. Рутину отдаёте ИИ, качество доводите сами и работаете в разы быстрее.</p>
+<div style="display: flex; align-items: center; gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 30px; font-weight: 800; white-space: nowrap;">от 4 900 ₽</span><span style="font-size: 14px; color: #AFAFAF; white-space: nowrap;">Самостоятельно 4 900 ₽ · Лаборатория 9 900 ₽</span></div>
+<a class="gr-btn" href="https://claude.ai/artifact/Pa83A9nADTtAJndFzHXS2G" target="_blank" style="height: 56px; padding: 0 30px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 17px;">Смотреть курс</a>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+<div style="display: flex; flex-direction: column; gap: 18px; padding: 32px; border-radius: 24px; background: rgba(146,186,190,0.10); border: 1px solid rgba(146,186,190,0.25);">
+<div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;"><span style="font-size: 40px; font-weight: 800; line-height: 1;">4 вида</span><span style="font-size: 32px; font-weight: 800; color: {{accent}}; line-height: 1;">→</span><span style="font-size: 40px; font-weight: 800; line-height: 1;">3D-модель</span></div>
+<div style="font-size: 16px; line-height: 1.5; color: #D3DCE2;">Нейросеть собирает модель по референсам, а вы чистите сетку и доводите её до продакшена.</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 18px; padding: 32px; border-radius: 24px; background: rgba(146,186,190,0.10); border: 1px solid rgba(146,186,190,0.25);">
+<div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;"><span style="font-size: 40px; font-weight: 800; line-height: 1;">1 промпт</span><span style="font-size: 32px; font-weight: 800; color: {{accent}}; line-height: 1;">→</span><span style="font-size: 40px; font-weight: 800; line-height: 1;">окружение</span></div>
+<div style="font-size: 16px; line-height: 1.5; color: #D3DCE2;">Голая модель на сером фоне превращается в готовую сцену с интерьером или локацией.</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 18px; padding: 32px; border-radius: 24px; background: rgba(146,186,190,0.10); border: 1px solid rgba(146,186,190,0.25);">
+<div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;"><span style="font-size: 40px; font-weight: 800; line-height: 1;">1 рендер</span><span style="font-size: 32px; font-weight: 800; color: {{accent}}; line-height: 1;">→</span><span style="font-size: 40px; font-weight: 800; line-height: 1;">4 ракурса</span></div>
+<div style="font-size: 16px; line-height: 1.5; color: #D3DCE2;">Из одного изображения получаете разные ракурсы в том же окружении — для портфолио и заказчика.</div>
+</div>
+</div>
+</section>
+
+<!-- WORKS -->
+<section id="works" style="padding: 88px 80px 72px; display: flex; flex-direction: column; gap: 40px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase;">Работы учеников</h2>
+<p style="margin: 0; font-size: 18px; color: #AFAFAF;">Работы выпускников наших курсов 3D — каждая получила премию «Рендер дня» на стримах GRIPINSKY TV</p>
+</div>
+<a href="#gallery" style="font-size: 17px; font-weight: 600;">Смотреть все работы →</a>
+</div>
+<div style="position: relative; height: 560px; border-radius: 24px; overflow: hidden;">
+<img src="/_blob/ea1201f9073f5590d5c5d91934816f31" alt="Сцена до визуализации: модель и сетка" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<img src="/_blob/60a8ba541925a0760c31633e1bff367c" alt="Та же сцена после визуализации" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 0 {{pos}}%);">
+<div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: {{pos}}%; width: 3px; margin-left: -1.5px; background: {{accent}}; pointer-events: none;"></div>
+<span style="position: absolute; left: 20px; top: 20px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; font-weight: 600;">Модель</span>
+<span style="position: absolute; right: 20px; top: 20px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; font-weight: 600;">Финальный рендер</span>
+<label for="gr-slider" style="position: absolute; left: 20px; bottom: 20px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px;">Потяните, чтобы сравнить →</label>
+<input id="gr-slider" class="gr-range" type="range" min="0" max="100" value="{{pos}}" onChange="{{onSlide}}" aria-label="Сравнить модель и финальный рендер" style="position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;">
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: 320px 320px; gap: 20px;">
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 1; grid-row: 1 / span 2;">
+<img src="/_blob/8176881591eefd46a6f80d8a1fa72325" alt="Работа ученика курса 3D — вечерняя улица с трамваем" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Дмитрий Чередин</figcaption>
+</figure>
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 2; grid-row: 1;">
+<img src="/_blob/b60f9bf163a8329cf6f731d134001b9a" alt="Работа ученика курса 3D-визуализации — интерьер кафе в стиле лофт" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Алёна Шестерикова</figcaption>
+</figure>
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 3; grid-row: 1;">
+<img src="/_blob/5b8fae8032075ba4debb43a415ae7508" alt="Работа ученика курса 3D — затонувший корабль" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Елизавета Гицук</figcaption>
+</figure>
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 4; grid-row: 1 / span 2;">
+<img src="/_blob/3502b477d4b588180d2ce9eaa30bd1d7" alt="Работа ученика курса 3D-моделирования — корабль на мели" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Руслан Багиров</figcaption>
+</figure>
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 2; grid-row: 2;">
+<img src="/_blob/6ee8184b6ea5f535c550614357a85156" alt="Работа ученика курса 3D — домик в лесу" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Александр Демин</figcaption>
+</figure>
+<figure class="gr-work" style="margin: 0; position: relative; border-radius: 20px; overflow: hidden; grid-column: 3; grid-row: 2;">
+<img src="/_blob/60a8ba541925a0760c31633e1bff367c" alt="Работа ученика курса 3D-визуализации интерьеров — бетонный интерьер" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+<figcaption style="position: absolute; left: 12px; bottom: 12px; padding: 8px 14px; border-radius: 999px; background: rgba(13,32,35,0.82); font-size: 14px; color: #E7E7E7; white-space: nowrap;">Иван Дежиков</figcaption>
+</figure>
+</div>
+</section>
+
+<!-- WHY US -->
+<section id="why" style="padding: 88px 80px 72px; display: flex; flex-direction: column; gap: 40px;">
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase;">Почему GRIPINSKY</h2>
+<div style="font-family: 'Caveat', cursive; font-size: 28px; color: {{accent}};">и почему не бесплатный YouTube</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"></path><path d="M10 21h4"></path><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Учим думать, а не копировать</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Академический системный подход, а не набор мастер-классов. Понимаете, почему так, а не просто за какой кнопкой.</div>
+</div>
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-4.5-7.8"></path><path d="M21 5 11 15l-3-3"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Каждую работу проверяет педагог</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Домашние задания с развёрнутой обратной связью и ответы на вопросы в чате поддержки — полгода с момента покупки.</div>
+</div>
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><path d="M17.5 14v7M14 17.5h7"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Пакет под вашу цель</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Флагманский курс плюс только те допы, которые нужны именно вам. Не переплачиваете за лишнее.</div>
+</div>
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"></rect><path d="m10 9 4 2-4 2z"></path><path d="M8 21h8"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Стримы GRIPINSKY TV</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Каждую среду в 18:30 — разбор работ в прямом эфире, премия «Рендер дня» и встречи с работодателями.</div>
+</div>
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="m15.5 8.5-2 5-5 2 2-5z"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Экосистема, а не просто уроки</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Индивидуальные занятия, наставничество, конкурсы, помощь с портфолио и даже психологическая поддержка.</div>
+</div>
+<div class="gr-lift" style="display: flex; flex-direction: column; gap: 14px; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); border: 1px solid rgba(231,231,231,0.12);">
+<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20a6.5 6.5 0 0 1 13 0"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7"></path><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"></path></svg>
+<div style="font-size: 22px; font-weight: 700;">Самое тёплое комьюнити в 3D</div>
+<div style="font-size: 16px; line-height: 1.5; color: #AFAFAF;">Студенты остаются с нами годами, а некоторые становятся администраторами сообщества.</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; padding: 28px 36px; border-radius: 20px; border: 1px solid rgba(248,246,26,0.35);">
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 30px; font-weight: 800;">1 год</span><span style="font-size: 15px; color: #AFAFAF;">доступа ко всем урокам курса</span></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 30px; font-weight: 800;">6 месяцев</span><span style="font-size: 15px; color: #AFAFAF;">поддержки и проверки работ педагогами</span></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 30px; font-weight: 800;">Свой темп</span><span style="font-size: 15px; color: #AFAFAF;">без расписания и дедлайнов</span></div>
+<div style="display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 30px; font-weight: 800;">Обновления</span><span style="font-size: 15px; color: #AFAFAF;">курсы обновляем по отзывам студентов — бесплатно</span></div>
+</div>
+<a href="https://gripinsky.ru/osobennosti" style="align-self: flex-start; font-size: 17px; font-weight: 600;">Все особенности академии →</a>
+</section>
+
+<!-- REVIEWS -->
+<section style="padding: 72px 80px; display: flex; flex-direction: column; gap: 40px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase;">Что говорят ученики</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;">
+<figure style="margin: 0; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); display: flex; flex-direction: column; gap: 20px;"><blockquote style="margin: 0; font-size: 20px; line-height: 1.45;">«Теперь я не бездумно делаю работы в 3D — смотрю на задачу, анализирую, думаю».</blockquote><figcaption style="font-size: 15px; color: #AFAFAF;">[Имя ученика] · [курс]</figcaption></figure>
+<figure style="margin: 0; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); display: flex; flex-direction: column; gap: 20px;"><blockquote style="margin: 0; font-size: 20px; line-height: 1.45;">«Даже не пройдя до конца первый уровень, мой уровень моделинга поднялся в разы».</blockquote><figcaption style="font-size: 15px; color: #AFAFAF;">[Имя ученика] · 3ds Max, уровень 1</figcaption></figure>
+<figure style="margin: 0; padding: 32px; border-radius: 20px; background: rgba(231,231,231,0.05); display: flex; flex-direction: column; gap: 20px;"><blockquote style="margin: 0; font-size: 20px; line-height: 1.45;">«Спасибо Евгению Грипинскому, что изменил мою жизнь».</blockquote><figcaption style="font-size: 15px; color: #AFAFAF;">[Имя ученика] · [курс]</figcaption></figure>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="padding: 72px 80px;">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 64px; align-items: center;">
+<div style="height: 420px; border-radius: 24px; background: rgba(231,231,231,0.06); display: flex; align-items: center; justify-content: center; color: #AFAFAF; font-size: 16px;">[Фото Евгения Грипинского]</div>
+<div style="display: flex; flex-direction: column; gap: 24px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase; line-height: 1.05;">Евгений Грипинский и команда педагогов</h2>
+<p style="margin: 0; font-size: 19px; line-height: 1.55; color: #D3DCE2;">20 лет назад Евгений создал обучающую систему, в основе которой — системный подход к знаниям, высокие стандарты качества и адресная поддержка каждого студента.</p>
+<div style="font-family: 'Caveat', cursive; font-size: 34px; line-height: 1.2; color: {{accent}};">«Основная цель занятий — научить вас думать, а не повторять действия»</div>
+<a href="#teachers" style="font-size: 17px; font-weight: 600;">Все педагоги →</a>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section style="padding: 72px 80px; display: grid; grid-template-columns: 1fr 2fr; gap: 64px;">
+<h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase;">Вопросы</h2>
+<div style="display: flex; flex-direction: column;">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Можно ли научиться 3D с нуля?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Какой компьютер нужен для 3D-моделирования?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Сколько часов в неделю нужно заниматься?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Можно ли оплатить в рассрочку?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Сколько длится доступ и поддержка?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Можно ли вернуть деньги?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(231,231,231,0.12); font-size: 20px; font-weight: 600;"><span>Сколько зарабатывает 3D-визуализатор?</span><span style="font-size: 26px; color: {{accent}};">+</span></div>
+</div>
+</section>
+
+<!-- PAYMENT -->
+<section id="payment" style="padding: 40px 80px 0;">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 36px 40px; border-radius: 24px; background: rgba(231,231,231,0.05);">
+<div style="display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;">
+<div style="font-size: 26px; font-weight: 800; text-transform: uppercase;">Удобная оплата</div>
+<div style="font-size: 16px; color: #AFAFAF;">Выберите способ при оформлении</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px;"><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">Банковская карта РФ</span><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">СБП</span><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">Рассрочка без переплат</span><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">Оплата частями (сплит)</span><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">Карта иностранного банка</span><span style="padding: 12px 20px; border-radius: 999px; border: 1px solid rgba(231,231,231,0.2); font-size: 16px; font-weight: 500; white-space: nowrap;">Счёт для юрлиц и ИП</span></div>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<section style="padding: 72px 80px;">
+<div style="padding: 64px; border-radius: 28px; background: rgba(146,186,190,0.12); display: flex; justify-content: space-between; align-items: center; gap: 40px;">
+<div style="display: flex; flex-direction: column; gap: 12px;"><h2 style="margin: 0; font-size: 44px; font-weight: 800; text-transform: uppercase; line-height: 1.05; max-width: 620px;">Начните путь в 3D сегодня</h2><a href="#consult" style="font-size: 17px; font-weight: 600;">Или запишитесь на бесплатную консультацию →</a></div>
+<div style="display: flex; gap: 16px;">
+<a class="gr-btn" href="#buy-viz" style="height: 60px; padding: 0 30px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 17px;">3D-визуализация</a>
+<a class="gr-btn" href="#buy-game" style="height: 60px; padding: 0 30px; display: flex; align-items: center; background: {{accent}}; color: #0D2023; border-radius: 999px; font-weight: 700; font-size: 17px;">3D для игр</a>
+</div>
+</div>
+</section>
+
+<!-- SEO TEXT -->
+<section style="padding: 72px 80px 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; font-size: 16px; line-height: 1.65; color: #AFAFAF;">
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<h2 style="margin: 0; font-size: 22px; font-weight: 700; color: #D3DCE2;">Академия 3D GRIPINSKY — онлайн-школа 3D-графики</h2>
+<p style="margin: 0;">Онлайн-курсы 3D-моделирования и визуализации для новичков и практикующих специалистов. Учим с нуля профессиям 3D-визуализатора интерьеров и экстерьеров и 3D-художника для игр: от первых шагов в 3ds Max и Blender до портфолио, с которым берут в студии и на коммерческие проекты.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<p style="margin: 38px 0 0;">В каталоге — курсы 3ds Max, Corona и V-Ray, Blender, ZBrush, Maya, Substance Painter и Unreal Engine, а также курс по нейросетям для 3D. Каждую работу проверяет педагог, а на стримах GRIPINSKY TV разбираем работы учеников. Обучение онлайн, в своём темпе, с рассрочкой без переплат.</p>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="margin-top: auto; padding: 56px 80px 48px; border-top: 1px solid rgba(231,231,231,0.12); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 40px; font-size: 15px; color: #AFAFAF;">
+<div style="display: flex; flex-direction: column; gap: 16px;">
+<img src="/_blob/56c5ca8665c7146f27c327506c1a6118" alt="GRIPINSKY" style="height: 22px; width: auto; align-self: flex-start;">
+<div>Россия, Москва, Новый Арбат, 34</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;"><div style="color: #E7E7E7; font-weight: 700;">Уже в 3D?</div><a href="#all" style="color: #AFAFAF;">Все курсы и пакеты</a><a href="#archviz" style="color: #AFAFAF;">Архвиз PRO</a><a href="#ai" style="color: #AFAFAF;">Нейросети</a></div>
+<div id="free" style="display: flex; flex-direction: column; gap: 10px;"><div style="color: #E7E7E7; font-weight: 700;">Бесплатно</div><a href="#yt1" style="color: #AFAFAF;">3ds Max для начинающих</a><a href="#yt2" style="color: #AFAFAF;">SDS-моделирование</a><a href="#yt3" style="color: #AFAFAF;">Blender для начинающих</a></div>
+<div style="display: flex; flex-direction: column; gap: 10px;"><div style="color: #E7E7E7; font-weight: 700;">Мы на связи</div><a href="#tg" style="color: #AFAFAF;">Telegram</a><a href="#yt" style="color: #AFAFAF;">YouTube</a><a href="#vk" style="color: #AFAFAF;">VK</a></div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#F8F61A","options":["#F8F61A","#92BABE","#FFBF05"]},"$preview":{"width":1440,"height":8000}}'>
+class Component extends DCLogic {
+componentDidMount() {
+const t0 = Date.now();
+const tick = () => {
+const k = Math.min(1, (Date.now() - t0) / 1400);
+this.setState({ k: k });
+if (k < 1) { this._raf = requestAnimationFrame(tick); }
+};
+this.setState({ k: 0 });
+this._raf = requestAnimationFrame(tick);
+}
+componentWillUnmount() { cancelAnimationFrame(this._raf); }
+renderVals() {
+const st = this.state || {};
+const k = st.k == null ? 1 : st.k;
+const e = 1 - Math.pow(1 - k, 3);
+const sp = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+return {
+accent: this.props.accent ?? '#F8F61A',
+grads: sp(Math.round(10000 * e)) + '+',
+years: Math.round(20 * e) + ' лет',
+videos: sp(Math.round(1000 * e)) + '+',
+rating: (5.0 * e).toFixed(1).replace('.', ','),
+pos: st.pos == null ? 50 : st.pos,
+onSlide: (ev) => this.setState({ pos: Number(ev.target.value) })
+};
+}
+}
+</script>
+</body>
+</html>
