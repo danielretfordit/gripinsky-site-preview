@@ -27,11 +27,11 @@ const current = canonicalPath(Astro.url.pathname);
       ))}
     </nav>
 
-    <a href={site.telegramBot} class="hidden min-h-11 items-center gap-2 whitespace-nowrap text-[15px] font-medium text-ink hover:text-white md:inline-flex">
+    <a href={site.telegramBot} class="hidden min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap text-[15px] font-medium text-ink hover:text-white md:inline-flex" aria-label="Задать вопрос в Telegram">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/></svg>
-      Задать вопрос
+      <span class="hidden lg:inline">Задать вопрос</span>
     </a>
-    <a href="#consult" class="btn btn-secondary btn-sm hidden md:inline-flex">Бесплатная консультация</a>
+    <a href="#consult" class="btn btn-secondary btn-sm hidden md:inline-flex"><span class="lg:hidden">Консультация</span><span class="hidden lg:inline">Бесплатная консультация</span></a>
 
     <div class="ml-auto flex items-center gap-1 md:hidden">
       <a href={site.telegramBot} class="inline-flex h-11 w-11 items-center justify-center rounded-full text-ink" aria-label="Написать в Telegram">
