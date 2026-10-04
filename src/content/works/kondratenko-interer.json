@@ -1,0 +1,13 @@
+{
+  "title": "Интерьер, «Рендер дня»",
+  "author": "kondratenko",
+  "image": "../../assets/works/kondratenko-interer.jpg",
+  "alt": "Интерьер гостиной",
+  "categories": [
+    "int"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 21
+}

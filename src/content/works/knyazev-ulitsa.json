@@ -1,0 +1,13 @@
+{
+  "title": "Старинная улица",
+  "author": "knyazev",
+  "image": "../../assets/works/knyazev-ulitsa.jpg",
+  "alt": "Старинная мощёная улица с фахверковыми домами",
+  "categories": [
+    "ext"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 23
+}

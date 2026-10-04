@@ -1,0 +1,14 @@
+{
+  "title": "Осенний дом, «Царь горы»",
+  "author": "budnik",
+  "image": "../../assets/works/budnik-osenniy-dom-1.jpg",
+  "alt": "Каменный дом среди осенних деревьев",
+  "categories": [
+    "ext"
+  ],
+  "awards": [
+    "tsar-gory"
+  ],
+  "order": 9,
+  "beforeImage": "../../assets/works/budnik-osenniy-dom-model.jpg"
+}

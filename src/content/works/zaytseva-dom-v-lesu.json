@@ -1,0 +1,14 @@
+{
+  "title": "Дом в сосновом лесу",
+  "author": "zaytseva",
+  "image": "../../assets/works/zaytseva-dom-v-lesu.jpg",
+  "alt": "Современный дом в сосновом лесу, финальный рендер",
+  "categories": [
+    "ext"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 8,
+  "beforeImage": "../../assets/works/zaytseva-dom-v-lesu-model.jpg"
+}

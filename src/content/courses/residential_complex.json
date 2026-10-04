@@ -19,7 +19,16 @@
     "CORONA RENDERER"
   ],
   "level": null,
-  "blocks": [],
+  "blocks": [
+    "Работа с заказчиком",
+    "Ландшафты",
+    "Визуализация ЖК",
+    "Продвинутое ландшафтостроение",
+    "Сценарии освещения по временам года",
+    "Основы анимации",
+    "Оптимизация и ускорение",
+    "Развёртки"
+  ],
   "seo": {
     "title": "ЖК",
     "description": ""
@@ -28,5 +37,9 @@
     "offerCode": ""
   },
   "tildaUid": "812814913722",
-  "cover": "../../assets/courses/residential_complex.png"
+  "cover": "../../assets/courses/residential_complex.png",
+  "meta": "8 блоков, 73 видео",
+  "lessons": 73,
+  "description": "Огромные сцены: ЖК, посёлки, кварталы. Оптимизация, перенос геометрии из ArchiCAD в 3ds Max, City Scape PRO.",
+  "finalProject": "Проект с генпланом, озеленением и масштабной застройкой по собственному ТЗ."
 }

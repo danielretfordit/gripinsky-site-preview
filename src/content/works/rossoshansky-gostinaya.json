@@ -1,0 +1,14 @@
+{
+  "title": "Гостиная, «Рендер дня»",
+  "author": "rossoshansky",
+  "image": "../../assets/works/rossoshansky-gostinaya.jpg",
+  "alt": "Светлая гостиная с креслом и журнальным столиком, финальный рендер",
+  "categories": [
+    "int"
+  ],
+  "awards": [
+    "render-dnya"
+  ],
+  "order": 2,
+  "beforeImage": "../../assets/works/rossoshansky-gostinaya-model.jpg"
+}

@@ -1,10 +1,10 @@
 {
-  "title": "Нейросети для 3D",
+  "title": "ИИ в 3D",
   "short": "Нейросеть Stable Diffusion",
   "legacyPath": "/ai",
   "status": "active",
   "type": "course",
-  "price": 18900,
+  "price": 4900,
   "oldPrice": null,
   "professions": [
     "Gamedev",
@@ -28,5 +28,9 @@
     "offerCode": ""
   },
   "tildaUid": "699134183742",
-  "cover": "../../assets/courses/ai.png"
+  "cover": "../../assets/courses/ai.png",
+  "description": "Нейросети в работе 3D-визуализатора: референсы, модели, текстуры и окружение быстрее. Входит в «Базу 3D-визуализатора».",
+  "teachers": [
+    "kamola"
+  ]
 }

@@ -1,0 +1,46 @@
+{
+  "title": "База 3D-визуализатора",
+  "short": "3ds Max, Corona и ИИ в 3D: от первого запуска программы до фотореалистичного рендера",
+  "legacyPath": "/courses-page/visualization",
+  "landing": "/courses-page/visualization#base",
+  "status": "active",
+  "type": "package",
+  "price": 29900,
+  "oldPrice": null,
+  "professions": [
+    "Визуализация",
+    "Интерьер",
+    "Экстерьер",
+    "Моделирование"
+  ],
+  "software": [
+    "3DS MAX",
+    "CORONA RENDERER"
+  ],
+  "level": "Новичок",
+  "cover": "../../assets/works/merkulova-kuhnya.jpg",
+  "lessons": 230,
+  "meta": "3 этапа, 230 уроков, доступ на год",
+  "description": "Один курс, три этапа: от первого запуска 3ds Max до фотореалистичного рендера в Corona, плюс нейросети в работе.",
+  "includes": [
+    "modeling1",
+    "modeling2",
+    "vizualization3",
+    "ai"
+  ],
+  "blocks": [],
+  "seo": {
+    "title": "",
+    "description": ""
+  },
+  "getcourse": {
+    "offerCode": ""
+  },
+  "gifts": [
+    {
+      "id": "anim",
+      "name": "Анимация в 3ds Max",
+      "value": null
+    }
+  ]
+}
