@@ -20,7 +20,13 @@ const types = [
   { id: 'service', label: 'Наставник и услуги' },
 ];
 const directions = ['Визуализация', 'Интерьер', 'Экстерьер', 'ЖК', 'Моделирование', 'Стоки', 'GameDev', 'Персонажи', 'Скульпт', 'Анимация'];
-const software = ['3DS MAX', 'CORONA RENDERER', 'V-RAY', 'BLENDER', 'ZBRUSH', 'UNREAL ENGINE', 'SUBSTANCE PAINTER', 'ADOBE PHOTOSHOP', 'FOREST PACK'];
+const SOFT_NAMES: Record<string, string> = {
+  '3DS MAX': '3ds Max', 'CORONA RENDERER': 'Corona', 'V-RAY': 'V-Ray', 'FOREST PACK': 'Forest Pack', 'RAILCLONE': 'RailClone',
+  'ADOBE PHOTOSHOP': 'Photoshop', 'BLENDER': 'Blender', 'ZBRUSH': 'ZBrush', 'UNREAL ENGINE': 'Unreal Engine', 'MAYA': 'Maya',
+  'SUBSTANCE PAINTER': 'Substance Painter', 'SUBSTANCE DESIGNER': 'Substance Designer', 'MARVELOUS DESIGNER': 'Marvelous Designer', 'CITYSCAPE PRO': 'CityScape PRO',
+};
+// В фильтре только программы, по которым есть курсы
+const software = Object.keys(SOFT_NAMES).filter((s) => courses.some((c) => c.data.software.includes(s)));
 const count = (fn: (c: (typeof courses)[number]) => boolean) => courses.filter(fn).length;
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
 ---
@@ -66,7 +72,7 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
         <label class="flex flex-col gap-1.5 text-[14px] font-semibold">Программа
           <select class="field !min-h-12" data-filter-tag="soft">
             <option value="">Все программы</option>
-            {software.map((s) => <option value={s.toLowerCase()}>{s.replace('3DS MAX', '3ds Max').replace('CORONA RENDERER', 'Corona').replace('ADOBE PHOTOSHOP', 'Photoshop')}</option>)}
+            {software.map((s) => <option value={s.toLowerCase()}>{SOFT_NAMES[s]}</option>)}
           </select>
         </label>
         <label class="flex flex-col gap-1.5 text-[14px] font-semibold">Сортировка
@@ -136,5 +142,5 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
   if (q.get('type')) root.querySelector<HTMLButtonElement>(`[data-filter-type="${q.get('type')}"]`)?.click();
   if (q.get('dir')) (root.querySelector('[data-filter-tag="dir"]') as HTMLSelectElement).value = q.get('dir')!;
   if (q.get('soft')) (root.querySelector('[data-filter-tag="soft"]') as HTMLSelectElement).value = q.get('soft')!;
-  if (q.size) apply();
+  if ([...q.keys()].length) apply();
 </script>

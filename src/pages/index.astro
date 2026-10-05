@@ -18,7 +18,25 @@ import texture from '../assets/brand/texture.png';
 
 const SOFT = import.meta.glob<{ default: ImageMetadata }>('../assets/software/*.png', { eager: true });
 const soft = (n: string) => SOFT[`../assets/software/${n}.png`].default;
-const SOFT_LIST = [['3dsmax', '3ds Max'], ['corona', 'Corona'], ['vray', 'V-Ray'], ['blender', 'Blender'], ['zbrush', 'ZBrush'], ['unreal', 'Unreal Engine'], ['maya', 'Maya'], ['substance', 'Substance Painter'], ['photoshop', 'Photoshop'], ['forestpack', 'Forest Pack']];
+// Программы: иконка, подпись и значение фильтра каталога (/courses?soft=…)
+const SOFTWARE = {
+  '3dsmax': { name: '3ds Max', tag: '3DS MAX' },
+  corona: { name: 'Corona', tag: 'CORONA RENDERER' },
+  vray: { name: 'V-Ray', tag: 'V-RAY' },
+  forestpack: { name: 'Forest Pack', tag: 'FOREST PACK' },
+  photoshop: { name: 'Photoshop', tag: 'ADOBE PHOTOSHOP' },
+  blender: { name: 'Blender', tag: 'BLENDER' },
+  zbrush: { name: 'ZBrush', tag: 'ZBRUSH' },
+  unreal: { name: 'Unreal Engine', tag: 'UNREAL ENGINE' },
+  maya: { name: 'Maya', tag: 'MAYA' },
+  substance: { name: 'Substance Painter', tag: 'SUBSTANCE PAINTER' },
+} as const;
+type SoftId = keyof typeof SOFTWARE;
+const VIZ_SOFT: SoftId[] = ['3dsmax', 'corona', 'vray', 'forestpack', 'photoshop'];
+const GAME_SOFT: SoftId[] = ['blender', 'zbrush', 'unreal', 'maya', 'substance'];
+const listed = await getCollection('courses', (c) => c.data.status === 'active' && ['course', 'package', 'free'].includes(c.data.type));
+const softCount = (id: SoftId) => listed.filter((c) => c.data.software.includes(SOFTWARE[id].tag)).length;
+const softHref = (id: SoftId) => `/courses?soft=${encodeURIComponent(SOFTWARE[id].tag.toLowerCase())}`;
 
 const site = (await getEntry('settings', 'site'))!.data;
 const s = site.stats;
@@ -46,7 +64,7 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
   jsonLd={[faq]}
   consultContext="Главная"
 >
-  <section class="wrap relative overflow-hidden pb-14 pt-8 md:pb-20 md:pt-14" aria-labelledby="home-title">
+  <section class="wrap relative overflow-hidden pb-10 pt-8 md:pb-14 md:pt-14" aria-labelledby="home-title">
     <Image src={texture} alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-[0.07]" widths={[768, 1440]} sizes="100vw" />
     <div class="relative grid items-center gap-10 md:grid-cols-[6fr_5fr] md:gap-12">
       <div class="flex flex-col gap-5">
@@ -80,12 +98,9 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
       <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted">видеоуроков в {courseCount} курсах и пакетах</dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.videos}</dd></div>
       <div class="flex flex-col-reverse gap-1.5"><dt class="text-[15px] text-muted"><a href={site.yandexMaps} class="text-muted hover:text-white" rel="noopener">оценка на Яндекс Картах ↗</a></dt><dd class="m-0 text-[clamp(26px,2.5vw,36px)] font-bold leading-none">{s.rating} <span class="text-[15px] tracking-[2px]" aria-label={`из 5`}>★★★★★</span></dd></div>
     </dl>
-    <ul class="relative m-0 mt-8 flex list-none flex-wrap items-center gap-x-6 gap-y-3 p-0" aria-label="Программы, которым учим">
-      {SOFT_LIST.map(([f, n]) => <li class="flex items-center gap-2 text-[15px] text-ink-2"><Image src={soft(f)} alt="" width={28} height={28} class="h-7 w-7" />{n}</li>)}
-    </ul>
   </section>
 
-  <section id="directions" class="wrap section" aria-labelledby="dir-title">
+  <section id="directions" class="wrap pb-16 pt-6 md:pb-24 md:pt-10" aria-labelledby="dir-title">
     <div class="mb-8 flex flex-col gap-3">
       <span class="t-overline">Направления</span>
       <h2 id="dir-title" class="t-h2" tabindex="-1">Выберите <span class="t-accent">направление</span></h2>
@@ -99,6 +114,11 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
           <p class="m-0 text-ink-2">Фотореалистичные интерьеры и экстерьеры в 3ds Max и Corona для дизайнеров и застройщиков.</p>
           <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Интерьеры', 'Экстерьеры и ЖК', 'Модели для стоков'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
           <p class="m-0 text-[15px] text-muted">Путь: база (3ds Max, Corona, ИИ), затем профессия</p>
+          <ul class="relative z-10 m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Программы направления">
+            {VIZ_SOFT.map((id) => (
+              <li><a href={softHref(id)} class="soft-chip" title={`Курсы ${SOFTWARE[id].name}`}><Image src={soft(id)} alt="" width={24} height={24} class="h-6 w-6 rounded-full" />{SOFTWARE[id].name}</a></li>
+            ))}
+          </ul>
           <p class="mt-auto m-0 text-[17px]">База от <b>{rub(cat.base.price)}</b> или {sp(Math.ceil(cat.base.price / cat.installmentMonths))}&nbsp;₽/мес</p>
           <span class="font-semibold text-lime" data-cta>Выбрать профессию →</span>
         </div>
@@ -110,12 +130,25 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
           <p class="m-0 text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine.</p>
           <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Художник по предметам', 'Окружение', 'Персонажи', 'Hard Surface', 'Unreal-художник'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
           <p class="m-0 text-[15px] text-muted">Путь: визуализация в Blender, затем GameDev Level 1 и специализация</p>
+          <ul class="relative z-10 m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Программы направления">
+            {GAME_SOFT.map((id) => (
+              <li><a href={softHref(id)} class="soft-chip" title={`Курсы ${SOFTWARE[id].name}`}><Image src={soft(id)} alt="" width={24} height={24} class="h-6 w-6 rounded-full" />{SOFTWARE[id].name}</a></li>
+            ))}
+          </ul>
           <p class="mt-auto m-0 text-[17px]">Курсы от <b>{rub(gameMin)}</b> или {sp(Math.ceil(gameMin / cat.installmentMonths))}&nbsp;₽/мес</p>
           <span class="font-semibold text-lime" data-cta>Смотреть курсы →</span>
         </div>
       </article>
     </div>
-    <p class="mt-6"><span class="text-muted">Уже знаете 3D?</span> <a href="/courses" class="link">Все {courseCount} курсов и пакетов →</a></p>
+    <nav aria-label="Курсы по программам" class="mt-8 flex flex-col gap-3 border-t border-line pt-6 md:flex-row md:items-center md:gap-6">
+      <span class="shrink-0 text-[15px] font-semibold text-ink-2">Уже знаете 3D? Курсы по программам:</span>
+      <ul class="m-0 flex list-none flex-wrap gap-2 p-0">
+        {(Object.keys(SOFTWARE) as SoftId[]).filter((id) => softCount(id) > 0).map((id) => (
+          <li><a href={softHref(id)} class="soft-chip">{SOFTWARE[id].name} <span class="text-muted">{softCount(id)}</span></a></li>
+        ))}
+        <li><a href="/courses" class="soft-chip !text-lime">Все {courseCount} →</a></li>
+      </ul>
+    </nav>
   </section>
 
   <section id="quiz" class="wrap section-tight" aria-label="Тест: подбор курса">
@@ -231,3 +264,13 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
     </div>
   </section>
 </Base>
+
+<style>
+  .soft-chip {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px;
+    border-radius: 999px; border: 1px solid var(--color-line-strong); background: var(--color-bg);
+    color: var(--color-ink); font-size: 15px; font-weight: 600; text-decoration: none; white-space: nowrap;
+    transition: border-color .2s ease, background-color .2s ease;
+  }
+  .soft-chip:hover { border-color: var(--color-sea); background: var(--color-sea-14); color: #fff; }
+</style>
