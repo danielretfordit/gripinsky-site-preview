@@ -3,6 +3,7 @@ import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { visibleWorks, personMap } from '../lib/people';
+import { SITE, absUrl, ogHref } from '../lib/seo';
 
 const people = await personMap();
 const works = (await visibleWorks()).filter((w) => w.data.inGallery);
@@ -21,12 +22,19 @@ const items = await Promise.all(works.map(async (w) => {
   return { w, big: big.src, author: author.name, teacher: w.data.categories.includes('teach') };
 }));
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Работы учеников' }];
+// Разметка для Яндекс Картинок: у каждой работы автор (только люди, которых можно показывать)
+const galleryLd = {
+  '@context': 'https://schema.org', '@type': 'ImageGallery', name: 'Работы учеников и педагогов Академии 3D GRIPINSKY', url: `${SITE}/gallery`,
+  image: items.map((i) => ({ '@type': 'ImageObject', contentUrl: absUrl(i.big), name: i.w.data.title, description: i.w.data.alt, creator: { '@type': 'Person', name: i.author }, creditText: i.author })),
+};
 const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»', 'tsar-gory': '«Царь горы»', '3ddd-award': '3DDD Award' };
 ---
 <Base
   title="Работы учеников: галерея 3D-визуализаций | GRIPINSKY"
   description={`Галерея работ учеников и педагогов Академии 3D GRIPINSKY: ${works.length} интерьеров, экстерьеров и моделей. Победители «Рендера дня» и «Царя горы» на 3DDD.`}
   breadcrumbs={crumbs}
+  jsonLd={[galleryLd]}
+  ogImage={ogHref('gallery')}
   consultContext="Галерея"
 >
   <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="gallery-title">

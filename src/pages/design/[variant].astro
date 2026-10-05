@@ -1,0 +1,24 @@
+---
+// Дизайн-прототипы для выбора направления. Только в dev: в сборку не попадают.
+import Base from '../../layouts/Base.astro';
+import ProtoNav from '../../components/design/ProtoNav.astro';
+import ProtoA from '../../components/design/ProtoA.astro';
+import ProtoB from '../../components/design/ProtoB.astro';
+import ProtoC from '../../components/design/ProtoC.astro';
+import { VARIANTS, protoData } from '../../components/design/data';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return VARIANTS.map((v) => ({ params: { variant: v.id } }));
+}
+
+const { variant } = Astro.params;
+const v = VARIANTS.find((x) => x.id === variant)!;
+const d = await protoData();
+---
+<Base title={`Прототип ${v.letter}: ${v.name}`} description={v.idea} noindex consult={false}>
+  {variant === 'a' && <ProtoA d={d} />}
+  {variant === 'b' && <ProtoB d={d} />}
+  {variant === 'c' && <ProtoC d={d} />}
+  <ProtoNav current={variant} slot="after-main" />
+</Base>

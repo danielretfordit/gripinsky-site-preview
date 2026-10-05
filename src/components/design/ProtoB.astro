@@ -1,0 +1,303 @@
+---
+// Вариант B «Галерея»: работы учеников на весь экран как главный визуальный материал,
+// крупная типографика, тонкие линии вместо рамок и подложек, много воздуха.
+import { Image } from 'astro:assets';
+import type { ProtoData } from './data';
+
+interface Props { d: ProtoData }
+const { d } = Astro.props;
+const { stats, prices, rub, sp, pkg, tariffs, galleryCount, kings } = d;
+
+const hero = d.work('bolshunova-ostrov-1')!;
+const steps = [
+  {
+    n: '01', title: 'База', img: d.work('merkulova-kuhnya'), cap: 'работа с курса базы',
+    text: '3ds Max, Corona и нейросети. 230 уроков и доступ на год: от первого запуска программы до фотореалистичного рендера.',
+    fact: [['104', 'модели'], ['7', 'визуализаций']], link: 'Программа базы',
+  },
+  {
+    n: '02', title: 'Профессия', img: d.work('kondratenko-interer'), cap: 'работа с курса профессии',
+    text: 'Интерьеры, экстерьеры или модели для стоков. Учитесь работать по ТЗ, общаться с заказчиком и называть цену.',
+    fact: [['4', 'проекта интерьеров'], ['1', 'проект экстерьера по ТЗ']], link: 'Выбрать профессию',
+  },
+  {
+    n: '03', title: 'Заказы', img: d.work('bolshunova-banya-1'), cap: 'коммерческий проект',
+    text: 'Портфолио, проект по реальному ТЗ и понимание, где искать заказчиков. Лучшие выпускники становятся нашими педагогами.',
+    fact: [[String(kings), 'учеников с «Царём горы»']], link: 'Истории выпускников',
+  },
+];
+const wide = d.work('tveritin-druzhba');
+const pair = d.pick(['kamola-kuhnya', 'shesterikova-loft']);
+const trio = d.pick(['korotovskaya-shale', 'lapin-dom-u-ozera', 'cheredin-ulitsa']);
+const quote = d.reviews.find((r) => r.topic === 'career') ?? d.reviews[0];
+const final = d.work('rossoshansky-gostinaya');
+---
+<div class="pb">
+  <!-- 1. Первый экран: работа ученицы на весь экран -->
+  <section class="pb-hero" aria-labelledby="b-hero">
+    <Image src={hero.image} alt={hero.alt} class="pb-hero__img" widths={[640, 960, 1280, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
+    <div class="pb-hero__shade" aria-hidden="true"></div>
+    <div class="wrap pb-hero__content">
+      <h1 id="b-hero" class="pb-h1">Курсы <span class="pb-nb">3D-визуализации</span> <span class="t-accent">с нуля до заказов</span></h1>
+      <div class="pb-hero__row">
+        <p class="pb-hero__lead">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. В своём темпе, без опыта и умения рисовать.</p>
+        <div class="pb-hero__cta">
+          <a href="#b-steps" class="btn btn-primary btn-lg">Начать с базы</a>
+          <a href="#b-final" class="link">Бесплатные уроки →</a>
+        </div>
+      </div>
+    </div>
+    <p class="pb-credit">{hero.author}, {hero.title}. {hero.award}</p>
+  </section>
+
+  <div class="wrap">
+    <dl class="pb-stats">
+      <div><dd>{stats.graduates}</dd><dt>выпускников</dt></div>
+      <div><dd>{stats.years}</dd><dt>учим по своей системе</dt></div>
+      <div><dd>{stats.rating}</dd><dt>на Яндекс Картах</dt></div>
+      <div><dd>{stats.subscribers}</dd><dt>подписчиков на YouTube</dt></div>
+    </dl>
+  </div>
+
+  <!-- Короткое редакционное вступление -->
+  <section class="wrap pb-sec" aria-label="О школе">
+    <p class="pb-statement">Мы учим не кнопкам, а профессии. <span>От первого запуска 3ds Max до проекта по ТЗ заказчика. Все картинки на этой странице сделали наши ученики.</span></p>
+  </section>
+
+  <!-- 2. Как устроено обучение -->
+  <section id="b-steps" class="wrap pb-sec" aria-labelledby="b-steps-t">
+    <header class="pb-head">
+      <h2 id="b-steps-t" class="pb-h2">Как устроено <span class="t-accent">обучение</span></h2>
+      <p class="t-hand pb-hand" aria-hidden="true">без профессии после базы непонятно, где брать заказы и сколько просить</p>
+    </header>
+    <ol class="pb-steps">
+      {steps.map((s, i) => (
+        <li class={`pb-step ${i % 2 ? 'is-flip' : ''}`}>
+          <span class="pb-step__n" aria-hidden="true">{s.n}</span>
+          <div class="pb-step__text">
+            <h3 class="pb-step__title"><span class="sr-only">Шаг {i + 1}. </span>{s.title}</h3>
+            <p>{s.text}</p>
+            <dl class="pb-step__facts">{s.fact.map(([n, l]) => <div><dd>{n}</dd><dt>{l}</dt></div>)}</dl>
+            <a href="#b-price" class="link">{s.link} →</a>
+          </div>
+          {s.img && (
+            <figure class="pb-step__media">
+              <div class="pb-frame"><Image src={s.img.image} alt={s.img.alt} widths={[480, 800, 1080]} sizes="(min-width: 1024px) 50vw, 100vw" style={`object-position:${s.img.focus}`} /></div>
+              <figcaption>{s.img.author}, {s.cap}</figcaption>
+            </figure>
+          )}
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 3. Работы учеников -->
+  <section id="b-works" class="pb-sec" aria-labelledby="b-works-t">
+    <header class="wrap pb-head pb-head--split">
+      <h2 id="b-works-t" class="pb-h2">Работы <span class="t-accent">учеников</span></h2>
+      <div class="pb-head__side">
+        <p>Всё сделано во время учёбы. {galleryCount} работ в галерее, у {kings} учеников «Царь горы» на 3DDD.</p>
+        <a href="/gallery" class="link">Смотреть галерею →</a>
+      </div>
+    </header>
+    {wide && (
+      <figure class="pb-wide">
+        <Image src={wide.image} alt={wide.alt} widths={[640, 960, 1280]} sizes="100vw" style={`object-position:${wide.focus}`} />
+        <figcaption class="wrap"><b>{wide.author}</b>, {wide.title}{wide.award && <>. {wide.award}</>}</figcaption>
+      </figure>
+    )}
+    <div class="wrap pb-pair">
+      {pair.map((w) => (
+        <figure class="pb-work">
+          <div class="pb-frame"><Image src={w.image} alt={w.alt} widths={[480, 800, 1080]} sizes="(min-width: 1024px) 50vw, 100vw" style={`object-position:${w.focus}`} /></div>
+          <figcaption><b>{w.author}</b>, {w.title}{w.award && <>. {w.award}</>}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="wrap pb-quote">
+      <blockquote class="pb-quote__in">
+        <p>{quote.text}</p>
+        <footer><b>{quote.author}</b>, {quote.role}</footer>
+      </blockquote>
+    </div>
+    <div class="wrap pb-trio">
+      {trio.map((w) => (
+        <figure class="pb-work">
+          <div class="pb-frame"><Image src={w.image} alt={w.alt} widths={[400, 640, 800]} sizes="(min-width: 1024px) 33vw, 100vw" style={`object-position:${w.focus}`} /></div>
+          <figcaption><b>{w.author}</b>, {w.title}{w.award && <>. {w.award}</>}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <!-- 4. Стоимость -->
+  <section id="b-price" class="wrap pb-sec" aria-labelledby="b-price-t">
+    <div class="pb-price">
+      <div class="pb-price__intro">
+        <h2 id="b-price-t" class="pb-h2">Стоимость</h2>
+        <p class="pb-big">от {sp(prices.base)}&nbsp;₽</p>
+        <p class="pb-muted">База: 230 уроков и доступ на год. Или {sp(prices.baseMonthly)}&nbsp;₽ в месяц в рассрочку.</p>
+      </div>
+      <div class="pb-price__list">
+        <p class="t-overline">Формат обучения</p>
+        <ul class="pb-formats">
+          {tariffs.map((t) => (
+            <li>
+              <span class="pb-formats__name">{t.name}{t.badge && <span class="pb-tag">{t.badge}</span>}</span>
+              <span class="pb-formats__short">{t.short}</span>
+              <b class="pb-formats__price">{rub(t.price)}</b>
+            </li>
+          ))}
+        </ul>
+        <div class="pb-pkg">
+          <p class="t-overline">С профессией выгоднее</p>
+          <p class="pb-pkg__line">База в формате «Оптимальный», Интерьеры PRO и Marvelous Designer в подарок</p>
+          <div class="pb-pkg__total">
+            <p><b>{rub(pkg.total)}</b><span>или {sp(pkg.monthly)}&nbsp;₽/мес, выгода {rub(pkg.savings)}</span></p>
+            <a href="#b-final" class="btn btn-primary btn-lg">Собрать пакет</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Финал на работе ученика -->
+  <section id="b-final" class="pb-final" aria-labelledby="b-final-t">
+    {final && <Image src={final.image} alt="" class="pb-final__img" widths={[640, 960, 1200]} sizes="100vw" />}
+    <div class="pb-final__shade" aria-hidden="true"></div>
+    <div class="wrap pb-final__content">
+      <h2 id="b-final-t" class="pb-h2 pb-final__title">Начните с <span class="t-accent">бесплатных уроков</span></h2>
+      <p>Оцените формат и педагога до оплаты. Не знаете, с чего начать? Тест за 1 минуту соберёт пакет и покажет цену.</p>
+      <div class="pb-final__cta">
+        <a href="#" class="btn btn-primary btn-lg">Смотреть бесплатные уроки</a>
+        <a href="#" class="link">Пройти тест →</a>
+      </div>
+    </div>
+    {final && <p class="pb-credit">{final.author}, {final.title}. {final.award}</p>}
+  </section>
+</div>
+
+<style>
+  .pb { --sec: 88px; --gap: 16px; }
+  @media (min-width: 768px) { .pb { --sec: 120px; --gap: 24px; } }
+  @media (min-width: 1280px) { .pb { --sec: 160px; --gap: 32px; } }
+  .pb-sec { padding-top: var(--sec); }
+  .pb-nb { white-space: nowrap; }
+
+  .pb-h1 {
+    margin: 0; font-size: clamp(34px, 6.6vw, 100px); font-weight: 800; line-height: 0.94;
+    letter-spacing: -0.035em; text-transform: uppercase; text-wrap: balance;
+  }
+  .pb-h1 .t-accent { display: block; }
+  .pb-h2 { margin: 0; font-size: clamp(34px, 5.4vw, 80px); font-weight: 800; line-height: 0.98; letter-spacing: -0.03em; text-transform: uppercase; }
+  .pb-muted { margin: 0; color: var(--color-muted); }
+
+  /* Первый экран на всю ширину */
+  .pb-hero { position: relative; min-height: min(calc(100svh - 64px), 760px); display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; }
+  @media (min-width: 768px) { .pb-hero { min-height: min(calc(100svh - 88px), 860px); } }
+  .pb-hero :global(.pb-hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .pb-hero__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(13 32 35 / 0) 30%, rgb(13 32 35 / 0.55) 60%, #0D2023 100%), linear-gradient(90deg, rgb(13 32 35 / 0.45), rgb(13 32 35 / 0) 55%); }
+  .pb-hero__content { display: flex; flex-direction: column; gap: 24px; padding-bottom: 40px; padding-top: 160px; }
+  @media (min-width: 1024px) { .pb-hero__content { gap: 32px; padding-bottom: 64px; } }
+  .pb-hero__row { display: flex; flex-direction: column; gap: 24px; }
+  @media (min-width: 1024px) { .pb-hero__row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 64px; } }
+  .pb-hero__lead { margin: 0; max-width: 520px; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.5; color: var(--color-ink); }
+  .pb-hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+  .pb-hero__cta .link { font-size: 17px; }
+  .pb-credit { position: absolute; right: 20px; top: 16px; margin: 0; max-width: 60%; text-align: right; font-size: 13px; color: rgb(231 231 231 / 0.85); text-shadow: 0 1px 8px rgb(0 0 0 / 0.6); }
+  @media (min-width: 1024px) { .pb-credit { right: max(64px, calc((100% - 1280px) / 2)); top: 24px; } }
+
+  .pb-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; margin: 0; padding: 24px 0 0; }
+  @media (min-width: 768px) { .pb-stats { grid-template-columns: repeat(4, auto); justify-content: space-between; padding-top: 32px; } }
+  .pb-stats div { display: flex; flex-direction: column; gap: 4px; }
+  .pb-stats dd { margin: 0; font-size: 22px; font-weight: 800; }
+  .pb-stats dt { font-size: 14px; color: var(--color-muted); }
+
+  .pb-statement { margin: 0; max-width: 1040px; font-size: clamp(26px, 3.2vw, 46px); font-weight: 700; line-height: 1.18; letter-spacing: -0.015em; text-wrap: pretty; }
+  .pb-statement span { color: var(--color-sea); }
+
+  /* Шаги как журнальные развороты */
+  .pb-head { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+  @media (min-width: 1024px) { .pb-head { margin-bottom: 72px; } }
+  .pb-hand { margin: 0; max-width: 520px; color: var(--color-sea); }
+  .pb-head--split { gap: 20px; }
+  @media (min-width: 1024px) { .pb-head--split { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 64px; } }
+  .pb-head__side { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+  .pb-head__side p { margin: 0; color: var(--color-ink-2); }
+
+  .pb-steps { list-style: none; margin: 0; padding: 0; }
+  .pb-step { display: grid; gap: 20px; padding: 40px 0; border-top: 1px solid var(--color-line); }
+  .pb-step:first-child { padding-top: 32px; }
+  @media (min-width: 1024px) {
+    .pb-step { grid-template-columns: 2fr 4fr 6fr; gap: 32px; padding: 64px 0; align-items: start; }
+    .pb-step.is-flip { grid-template-columns: 2fr 6fr 4fr; }
+    .pb-step.is-flip .pb-step__media { grid-column: 2; grid-row: 1; }
+    .pb-step.is-flip .pb-step__text { grid-column: 3; }
+  }
+  .pb-step__n { font-size: clamp(56px, 7vw, 112px); font-weight: 800; line-height: 0.85; letter-spacing: -0.04em; color: var(--color-sea); }
+  .pb-step__text { display: flex; flex-direction: column; gap: 16px; }
+  .pb-step__title { margin: 0; font-size: clamp(28px, 3vw, 40px); font-weight: 800; line-height: 1.05; }
+  .pb-step__text p { margin: 0; color: var(--color-ink-2); }
+  .pb-step__facts { display: flex; flex-wrap: wrap; gap: 12px 32px; margin: 8px 0; }
+  .pb-step__facts div { display: flex; flex-direction: column; gap: 2px; }
+  .pb-step__facts dd { margin: 0; font-size: 40px; font-weight: 800; line-height: 1; color: var(--color-lime); }
+  .pb-step__facts dt { font-size: 14px; color: var(--color-muted); }
+  .pb-step__media { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .pb-frame { position: relative; overflow: hidden; border-radius: 8px; aspect-ratio: 4 / 3; }
+  .pb-frame :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  figcaption { font-size: 14px; color: var(--color-muted); }
+  figcaption b { color: var(--color-ink); font-weight: 600; }
+
+  /* Галерея */
+  .pb-wide { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .pb-wide :global(img) { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  @media (min-width: 768px) { .pb-wide :global(img) { aspect-ratio: 21 / 9; } }
+  .pb-pair { display: grid; gap: 40px var(--gap); margin-top: 48px; align-items: end; }
+  @media (min-width: 768px) { .pb-pair { grid-template-columns: 7fr 5fr; margin-top: 64px; } }
+  .pb-pair .pb-work:first-child .pb-frame { aspect-ratio: 5 / 4; }
+  .pb-pair .pb-work:last-child .pb-frame { aspect-ratio: 4 / 5; }
+  .pb-work { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .pb-trio { display: grid; grid-template-columns: 1fr 1fr; gap: 32px var(--gap); margin-top: 0; }
+  .pb-trio .pb-work:first-child { grid-column: 1 / -1; }
+  @media (min-width: 768px) { .pb-trio { grid-template-columns: repeat(3, 1fr); } .pb-trio .pb-work:first-child { grid-column: auto; } }
+  .pb-trio .pb-frame { aspect-ratio: 4 / 5; }
+  .pb-quote { padding-top: 72px; padding-bottom: 72px; }
+  @media (min-width: 1024px) { .pb-quote { padding-top: 120px; padding-bottom: 120px; } .pb-quote__in { margin-left: 16.66%; } }
+  .pb-quote__in { margin: 0; display: flex; flex-direction: column; gap: 20px; }
+  .pb-quote p { margin: 0; max-width: 900px; font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+  .pb-quote footer { font-size: 15px; color: var(--color-muted); }
+  .pb-quote footer b { color: var(--color-ink); }
+
+  /* Стоимость: типографика вместо карточек */
+  .pb-price { display: grid; gap: 48px; }
+  @media (min-width: 1024px) { .pb-price { grid-template-columns: 5fr 7fr; gap: 64px; } }
+  .pb-price__intro { display: flex; flex-direction: column; gap: 16px; }
+  .pb-big { margin: 8px 0 0; font-size: clamp(48px, 6vw, 88px); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--color-lime); white-space: nowrap; }
+  .pb-price__list { display: flex; flex-direction: column; gap: 12px; }
+  .pb-formats { list-style: none; margin: 0; padding: 0; }
+  .pb-formats li { display: grid; grid-template-columns: 1fr auto; gap: 4px 24px; padding: 20px 0; border-bottom: 1px solid var(--color-line); }
+  .pb-formats li:first-child { border-top: 1px solid var(--color-line); }
+  .pb-formats__name { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+  .pb-formats__short { grid-column: 1; font-size: 15px; color: var(--color-muted); }
+  .pb-formats__price { grid-row: 1 / 3; grid-column: 2; align-self: center; font-size: 24px; font-weight: 800; white-space: nowrap; }
+  .pb-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-sea); }
+  .pb-pkg { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+  .pb-pkg__line { margin: 0; font-size: clamp(20px, 1.8vw, 24px); font-weight: 600; line-height: 1.35; }
+  .pb-pkg__total { display: flex; flex-direction: column; gap: 20px; margin-top: 8px; }
+  @media (min-width: 768px) { .pb-pkg__total { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .pb-pkg__total p { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .pb-pkg__total b { font-size: 40px; font-weight: 800; line-height: 1; }
+  .pb-pkg__total span { font-size: 15px; color: var(--color-muted); }
+
+  /* Финал */
+  .pb-final { position: relative; margin-top: var(--sec); min-height: 560px; display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; }
+  @media (min-width: 1024px) { .pb-final { min-height: 680px; } }
+  .pb-final :global(.pb-final__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .pb-final__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, #0D2023 0%, rgb(13 32 35 / 0.35) 35%, rgb(13 32 35 / 0.8) 75%, #0D2023 100%); }
+  .pb-final__content { display: flex; flex-direction: column; gap: 20px; padding-bottom: 72px; padding-top: 200px; }
+  .pb-final__title { max-width: 14ch; }
+  .pb-final__content p { margin: 0; max-width: 520px; font-size: 18px; }
+  .pb-final__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 8px; }
+  .pb-final__cta .link { font-size: 17px; }
+  .pb-final .pb-credit { top: auto; bottom: 16px; }
+</style>

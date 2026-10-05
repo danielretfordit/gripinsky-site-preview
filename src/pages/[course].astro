@@ -8,7 +8,7 @@ import Checkout from '../islands/Checkout';
 import { TYPE_LABEL } from '../lib/categories';
 import { personMap } from '../lib/people';
 import { rub, sp } from '../lib/format';
-import { SITE } from '../lib/seo';
+import { courseLd, ogHref, clipText } from '../lib/seo';
 
 // Страницы курсов по старым адресам Tilda (/interiorpro, /1-2-3lvl …).
 // Курсы, которые продаются на другой странице (база), и /ai (своя страница) здесь не создаются.
@@ -37,18 +37,20 @@ const rich = c.blocks.length > 0 || Boolean(c.description);
 const isFree = c.type === 'free' || c.price === 0;
 const hidden = c.status !== 'active';
 
-const title = c.seo.title && !/^[А-ЯЁA-Z0-9 .+\-]+$/.test(c.seo.title) ? c.seo.title : `${c.title}: онлайн-курс | GRIPINSKY`;
-const description = c.seo.description || `${c.title}. ${c.short || c.description || ''} Онлайн-обучение в Академии 3D GRIPINSKY${isFree ? ', бесплатно' : `, ${sp(c.price)} ₽, рассрочка`}.`.replace(/\s+/g, ' ').slice(0, 200);
+// Title со старой страницы оставляем, если он осмысленный; капс из двух слов с Tilda («ИНТЕРЬЕРЫ PRO») заменяем.
+// В seo.description можно писать {price}: подставится цена курса.
+const isCaps = (t: string) => !/[а-яё]/.test(t);
+const title = c.seo.title && !isCaps(c.seo.title) ? c.seo.title : `${c.title}: ${isFree ? 'бесплатный мини-курс' : 'онлайн-курс'} | GRIPINSKY`;
+const lead = (c.description || c.short || '').replace(/\s+/g, ' ').trim().replace(/([^.!?])$/, '$1.');
+const description = c.seo.description
+  ? clipText(c.seo.description.replace(/\{price\}/g, sp(c.price)), 170)
+  : clipText(`${c.title}. ${lead === '.' ? '' : lead} Онлайн-обучение в Академии 3D GRIPINSKY${isFree ? ', бесплатно' : `, ${sp(c.price)} ₽, рассрочка`}.`, 200);
+const og = c.cover ? ogHref(`course-${id}`) : undefined;
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, ...(vizRelated ? [{ name: '3D-визуализация', href: '/courses-page/visualization' }] : []), { name: c.title }];
-const ld = {
-  '@context': 'https://schema.org', '@type': 'Course', name: c.title, description: c.description || c.short || c.title,
-  provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE }, inLanguage: 'ru',
-  offers: { '@type': 'Offer', price: c.price, priceCurrency: 'RUB', category: isFree ? 'Free' : 'Paid', url: SITE + c.legacyPath },
-  hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
-};
+const ld = courseLd({ name: c.title, description: c.description || c.short || c.title, path: c.legacyPath, prices: [c.price], image: og });
 const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроков` : null, c.level].filter(Boolean) as string[];
 ---
-<Base title={title} description={description} breadcrumbs={crumbs} jsonLd={[ld]} noindex={hidden} consultContext={`Курс: ${c.title}`}>
+<Base title={title} description={description} ogImage={og} breadcrumbs={crumbs} jsonLd={[ld]} noindex={hidden} consultContext={`Курс: ${c.title}`}>
   <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="course-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="grid gap-8 md:grid-cols-[7fr_5fr] md:gap-12">
@@ -153,7 +155,6 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
 </Base>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: JSON.parse(b.dataset.buy!) }));
-  }));
+  import { openCheckout } from '../stores/package';
+  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => openCheckout(JSON.parse(b.dataset.buy!))));
 </script>

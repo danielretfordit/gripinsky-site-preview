@@ -253,7 +253,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
       }
       if (focus) tab.focus({ preventScroll: true });
       // Видимость активной вкладки в ленте на телефоне: прокручиваем только ленту
-      list.scrollTo({ left: Math.max(0, tab.offsetLeft - 16), behavior: 'smooth' });
+      list.scrollTo({ left: Math.max(0, tab.offsetLeft - 16), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     };
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(t));

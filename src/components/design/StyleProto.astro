@@ -1,0 +1,422 @@
+---
+// Прототип стилевого направления: та же структура (B Галерея + шаги с ценами и формула пакета из C),
+// разные палитра, шрифты и приёмы. Шрифты локально из @fontsource-variable (без CDN).
+import { Image } from 'astro:assets';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/jetbrains-mono';
+import '@fontsource-variable/playfair-display';
+import '@fontsource-variable/golos-text';
+import '@fontsource-variable/geologica';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/manrope';
+import '@fontsource-variable/unbounded';
+import logo from '../../assets/brand/logo.png';
+import type { StyleDef } from './styles';
+import type { ProtoData } from './data';
+
+interface Props { s: StyleDef; d: ProtoData }
+const { s, d } = Astro.props;
+const { prices, rub, sp, pkg, tariffs, stats, galleryCount, kings, cat } = d;
+
+const hero = d.work('bolshunova-ostrov-1')!;
+const wide = d.work('tveritin-druzhba');
+const trio = d.pick(['kamola-kuhnya', 'korotovskaya-shale', 'shesterikova-loft']);
+const vars = Object.entries(s.vars).map(([k, v]) => `${k}:${v}`).join(';');
+const fmt = pkg.lines.find((l) => l.kind === 'format');
+const steps = [
+  { n: '01', title: 'База', sub: '3ds Max, Corona и ИИ в 3D. 230 уроков, доступ на год', price: `от ${rub(prices.base)}`, active: true },
+  { n: '02', title: 'Профессия', sub: 'Интерьеры, экстерьеры или модели для стоков', price: `от ${rub(prices.profMin)}`, active: false },
+  { n: '03', title: 'Пакет', sub: 'База и профессия вместе, подарок к профессии', price: `от ${rub(prices.pkgMin)}`, active: false },
+];
+const cap = (w: { author: string; title: string; award: string | null }) => `${w.author}, ${w.title}${w.award ? `. ${w.award}` : ''}`;
+---
+<div class="sp" data-style={s.id} style={vars}>
+  <header class="sp-top">
+    <div class="sp-wrap sp-top__in">
+      <a href="/design" class="sp-logo" aria-label="Академия 3D GRIPINSKY"><Image src={logo} alt="GRIPINSKY" width={170} height={23} /></a>
+      <nav class="sp-nav" aria-label="Меню прототипа">
+        <a href="#s-works">Работы учеников</a><a href="#s-steps">Как учимся</a><a href="#s-price">Цены</a><a href="/design">Отзывы</a>
+      </nav>
+      <a href="#s-price" class="sp-btn sp-btn--ghost sp-top__cta">Консультация</a>
+    </div>
+  </header>
+
+  <!-- 1. Первый экран -->
+  {s.hero === 'bleed' ? (
+    <section class="sp-hero" aria-labelledby={`h-${s.id}`}>
+      <Image src={hero.image} alt={hero.alt} class="sp-hero__img" widths={[640, 960, 1280, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
+      <div class="sp-hero__shade" aria-hidden="true"></div>
+      <div class="sp-wrap sp-hero__content">
+        <p class="sp-label sp-hero__kicker">Онлайн-школа 3D-визуализации</p>
+        <h1 id={`h-${s.id}`} class="sp-h1">Курсы <span class="nb">3D-визуализации</span> <span class="sp-h1__acc">с нуля до заказов</span></h1>
+        <div class="sp-hero__row">
+          <p class="sp-lead">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. В своём темпе, без опыта и умения рисовать.</p>
+          <div class="sp-hero__cta">
+            <a href="#s-steps" class="sp-btn">Начать с базы</a>
+            <a href="#s-price" class="sp-link">Бесплатные уроки →</a>
+          </div>
+        </div>
+      </div>
+      <p class="sp-meta sp-hero__meta">
+        <span>Работа ученицы</span><span>{hero.author}, {hero.title}</span><span>3ds Max + Corona</span>{hero.award && <span>{hero.award}</span>}
+      </p>
+    </section>
+  ) : (
+    <section class="sp-wrap sp-frame" aria-labelledby={`h-${s.id}`}>
+      <div class="sp-frame__text">
+        <h1 id={`h-${s.id}`} class="sp-h1">Курсы <span class="nb">3D-визуализации</span> <span class="sp-h1__acc">с нуля до заказов</span></h1>
+        <div class="sp-frame__side">
+          <p class="sp-lead">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. В своём темпе, без опыта и умения рисовать.</p>
+          <div class="sp-hero__cta">
+            <a href="#s-steps" class="sp-btn">Начать с базы</a>
+            <a href="#s-price" class="sp-link">Бесплатные уроки →</a>
+          </div>
+        </div>
+      </div>
+      <figure class="sp-mat">
+        <div class="sp-mat__in"><Image src={hero.image} alt={hero.alt} widths={[640, 960, 1280, 1600]} sizes="(min-width: 1280px) 1180px, 100vw" loading="eager" fetchpriority="high" /></div>
+        <figcaption class="sp-museum"><b>{hero.author}</b><span>{hero.title}, 3ds Max и Corona</span>{hero.award && <span>{hero.award}</span>}</figcaption>
+      </figure>
+    </section>
+  )}
+
+  <!-- 2. Полоса шагов с ценами -->
+  <section id="s-steps" class="sp-wrap sp-steps" aria-label="Путь ученика: три шага">
+    <div class="sp-steps__head">
+      <p class="sp-label">Путь ученика</p>
+      <dl class="sp-stats">
+        <div><dt>выпускников</dt><dd>{stats.graduates}</dd></div>
+        <div><dt>на Яндекс Картах</dt><dd>{stats.rating}</dd></div>
+        <div><dt>учим по своей системе</dt><dd>{stats.years}</dd></div>
+      </dl>
+    </div>
+    <ol class="sp-steps__list">
+      {steps.map((st) => (
+        <li class={st.active ? 'is-active' : ''}>
+          <a href="#s-price">
+            <span class="sp-steps__n" aria-hidden="true">{st.n}</span>
+            <span class="sp-steps__t"><b>{st.title}</b><small>{st.sub}</small></span>
+            <span class="sp-steps__p">{st.price}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 3. Галерея -->
+  <section id="s-works" class="sp-sec" aria-labelledby={`w-${s.id}`}>
+    <header class="sp-wrap sp-head sp-head--split">
+      <h2 id={`w-${s.id}`} class="sp-h2">Работы <span class="sp-h2__acc">учеников</span></h2>
+      <div class="sp-head__side">
+        <p>Всё сделано во время учёбы. {galleryCount} работ в галерее, у {kings} учеников «Царь горы» на 3DDD.</p>
+        <a href="/gallery" class="sp-link">Смотреть галерею →</a>
+      </div>
+    </header>
+    {wide && (
+      <figure class="sp-wide">
+        <div class="sp-wide__img"><Image src={wide.image} alt={wide.alt} widths={[640, 960, 1280]} sizes="100vw" style={`object-position:${wide.focus}`} /></div>
+        <figcaption class="sp-wrap sp-cap">{cap(wide)}</figcaption>
+      </figure>
+    )}
+    <div class="sp-wrap sp-trio">
+      {trio.map((w) => (
+        <figure class="sp-work">
+          <div class="sp-work__img"><Image src={w.image} alt={w.alt} widths={[400, 640, 800]} sizes="(min-width: 1024px) 33vw, 100vw" style={`object-position:${w.focus}`} /></div>
+          <figcaption class="sp-cap">{cap(w)}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <!-- 4. Формат и формула пакета -->
+  <section id="s-price" class="sp-wrap sp-sec" aria-labelledby={`p-${s.id}`}>
+    <header class="sp-head">
+      <p class="sp-label">Цена</p>
+      <h2 id={`p-${s.id}`} class="sp-h2">Пакет: <span class="sp-h2__acc">выберите формат</span></h2>
+      <p class="sp-head__lead">Формат один на весь пакет. От него зависит цена базы, курс профессии стоит одинаково.</p>
+    </header>
+    <div class="sp-plans" role="radiogroup" aria-label="Формат обучения">
+      {tariffs.map((t) => (
+        <div class="sp-plan" role="radio" aria-checked={t.id === 'opt' ? 'true' : 'false'} tabindex={t.id === 'opt' ? 0 : -1}>
+          <span class="sp-plan__top"><span class="sp-plan__dot" aria-hidden="true"></span><b>{t.name}</b>{t.badge && <span class="sp-chip">{t.badge}</span>}</span>
+          <span class="sp-plan__price">{rub(t.price)}</span>
+          <span class="sp-plan__short">{t.short}</span>
+        </div>
+      ))}
+    </div>
+    <div class="sp-sum" aria-label="Ваш пакет">
+      <div class="sp-sum__item"><span>База, «Оптимальный»</span><b>{rub(prices.base + (fmt?.price ?? 0))}</b></div>
+      <span class="sp-sum__op" aria-hidden="true">+</span>
+      <div class="sp-sum__item"><span>Интерьеры PRO</span><b>{rub(cat.professions.int.courses[0].price)}</b></div>
+      <span class="sp-sum__op" aria-hidden="true">+</span>
+      <div class="sp-sum__item"><span>{d.pkgLines.gift}</span><b class="is-gift">в подарок</b></div>
+      <span class="sp-sum__op" aria-hidden="true">=</span>
+      <div class="sp-sum__total"><b>{rub(pkg.total)}</b><span>или {sp(pkg.monthly)}&nbsp;₽/мес, выгода {rub(pkg.savings)}</span></div>
+      <a href="#tile" class="sp-btn">Оформить пакет</a>
+    </div>
+  </section>
+
+  <!-- 5. Стайл-тайл -->
+  <section id="tile" class="sp-wrap sp-sec sp-tile" aria-labelledby={`t-${s.id}`}>
+    <div class="sp-tile__core" id="tile-core">
+      <header class="sp-tile__head">
+        <p class="sp-label">Стиль {s.n} из 4</p>
+        <h2 id={`t-${s.id}`} class="sp-h2">{s.name}</h2>
+        <p class="sp-head__lead">{s.tagline}</p>
+      </header>
+      <ul class="sp-swatches">
+        {s.palette.map((c) => (
+          <li><span class="sp-swatch" style={`background:${c.hex}`}></span><b>{c.name}</b><code>{c.hex}</code><small>{c.role}</small></li>
+        ))}
+      </ul>
+      <div class="sp-specimens">
+        <div class="sp-spec sp-spec--display">
+          <p class="sp-label">Заголовки: {s.fonts.display}, {s.fonts.displayNote}</p>
+          <p class="sp-spec__big">Аа Бб Вв</p>
+          <p class="sp-spec__h2">Работы учеников</p>
+        </div>
+        <div class="sp-spec">
+          <p class="sp-label">Текст: {s.fonts.body}, {s.fonts.bodyNote}</p>
+          <p class="sp-spec__body">Один курс, три этапа: от первого запуска 3ds Max до фотореалистичного рендера в Corona, плюс нейросети в работе. 230 уроков, доступ на год.</p>
+          <p class="sp-label">Подписи: {s.fonts.label}, {s.fonts.labelNote}</p>
+          <p class="sp-meta sp-spec__meta"><span>230 уроков</span><span>104 модели</span><span>от {sp(prices.base)} ₽</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="sp-kit">
+      <a href="#s-price" class="sp-btn">Начать с базы</a>
+      <a href="#s-price" class="sp-btn sp-btn--ghost">Бесплатные уроки</a>
+      <a href="#s-works" class="sp-link">Смотреть работы →</a>
+      <span class="sp-chip">Чаще выбирают</span>
+    </div>
+    <div class="sp-notes">
+      <div><p class="sp-label">Приёмы</p><ul>{s.devices.map((x) => <li>{x}</li>)}</ul></div>
+      <div><p class="sp-label">Для кого</p><p>{s.forWhom}</p></div>
+      <div><p class="sp-label">Риски</p><p>{s.risks}</p></div>
+    </div>
+  </section>
+
+  <footer class="sp-wrap sp-foot">
+    <span>Академия 3D GRIPINSKY</span><span>Прототип стиля {s.n} из 4, тексты и цены настоящие</span>
+  </footer>
+</div>
+
+<style is:global>
+  /* На страницах стилей прячем общую шапку и подвал сайта: у прототипа свои */
+  body:has(.sp) > header, body:has(.sp) > #site-footer { display: none !important; }
+  html:has(.sp[data-style='signal']) { background: #0E1112; }
+  html:has(.sp[data-style='wall']) { background: #F1EFEA; }
+  html:has(.sp[data-style='brass']) { background: #0D2023; }
+  html:has(.sp[data-style='studio']) { background: #16130F; }
+</style>
+
+<style>
+  .sp {
+    --sec: 64px; --head: 24px; --gap: 16px;
+    --h1-size: clamp(31px, 6.6vw, 100px); --h1-case: uppercase; --h2-size: clamp(30px, 4.2vw, 58px);
+    background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+    position: relative; isolation: isolate;
+  }
+  @media (min-width: 768px) { .sp { --sec: 80px; --head: 32px; --gap: 20px; font-size: 17px; } }
+  @media (min-width: 1024px) { .sp { --sec: 96px; --head: 40px; --gap: 24px; } }
+  @media (min-width: 1280px) { .sp { --sec: 112px; } }
+  .sp[data-style='wall'] { --h1-size: clamp(38px, 5.6vw, 84px); --h1-case: none; --h2-size: clamp(28px, 3.8vw, 52px); }
+  .sp[data-style='brass'] { --h1-size: clamp(31px, 6.2vw, 94px); }
+  .sp[data-style='studio'] { --h1-size: clamp(25px, 4.9vw, 74px); --h2-size: clamp(22px, 3.2vw, 44px); }
+
+  .sp-wrap { box-sizing: border-box; width: 100%; padding-inline: 20px; }
+  @media (min-width: 768px) { .sp-wrap { padding-inline: 48px; } }
+  @media (min-width: 1024px) { .sp-wrap { padding-inline: max(64px, calc((100% - 1280px) / 2)); } }
+  .sp-sec { padding-top: var(--sec); }
+  .nb { white-space: nowrap; }
+  .sp a { color: inherit; text-decoration: none; }
+  .sp :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* Типографика */
+  .sp-h1 { margin: 0; font-family: var(--f-display); font-size: var(--h1-size); font-weight: var(--d-weight); line-height: 0.95; letter-spacing: var(--d-track); text-transform: var(--h1-case); text-wrap: balance; }
+  .sp-h1__acc { display: block; color: var(--h1-accent); }
+  .sp-h2 { margin: 0; font-family: var(--f-display); font-size: var(--h2-size); font-weight: var(--h2-weight); line-height: 1; letter-spacing: var(--d-track); text-transform: uppercase; }
+  .sp-h2__acc { color: var(--h1-accent); }
+  .sp-lead { margin: 0; max-width: 520px; font-size: clamp(17px, 1.4vw, 19px); line-height: 1.5; }
+  .sp-label { margin: 0; font-family: var(--f-label); font-size: var(--label-size); font-weight: 600; letter-spacing: var(--label-track); text-transform: var(--label-case); color: var(--muted); }
+  .sp-meta { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 20px; font-family: var(--f-label); font-size: 12px; letter-spacing: var(--label-track); text-transform: uppercase; color: var(--muted); }
+  .sp-cap { margin: 0; font-size: 14px; color: var(--muted); }
+
+  /* Кнопки и ссылки */
+  .sp-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border-radius: var(--r-btn); background: var(--cta-bg); color: var(--cta-ink) !important; font-family: var(--f-body); font-size: 16px; font-weight: 700; white-space: nowrap; border: 1.5px solid transparent; transition: filter .2s ease, transform .2s ease; }
+  .sp-btn:hover { filter: brightness(1.08); }
+  .sp-btn--ghost { background: transparent; color: var(--ink) !important; border-color: var(--line-strong); }
+  .sp-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; border-bottom: 1px solid transparent; }
+  .sp-link:hover { border-bottom-color: currentColor; }
+  .sp-chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-strong); font-family: var(--f-label); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+  /* Шапка прототипа */
+  .sp-top { position: relative; z-index: 5; border-bottom: 1px solid var(--line); }
+  .sp-top__in { display: flex; align-items: center; gap: 32px; min-height: 64px; }
+  @media (min-width: 768px) { .sp-top__in { min-height: 80px; } }
+  .sp-logo :global(img) { display: block; height: 20px; width: auto; }
+  .sp-nav { display: none; gap: 28px; font-size: 15px; }
+  @media (min-width: 1024px) { .sp-nav { display: flex; } }
+  .sp-nav a:hover { color: var(--accent); }
+  .sp-top__cta { margin-left: auto; min-height: 44px; padding: 0 18px; font-size: 15px; }
+
+  /* Первый экран на всю ширину */
+  .sp-hero { position: relative; min-height: min(calc(100svh - 64px), 720px); display: flex; align-items: flex-end; overflow: hidden; isolation: isolate; }
+  @media (min-width: 768px) { .sp-hero { min-height: min(calc(100svh - 80px), 860px); } }
+  .sp-hero :global(.sp-hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .sp-hero__shade { position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 55%, transparent) 0, transparent 20%), linear-gradient(180deg, color-mix(in srgb, var(--bg) 0%, transparent) 25%, color-mix(in srgb, var(--bg) 60%, transparent) 62%, var(--bg) 100%), linear-gradient(90deg, color-mix(in srgb, var(--bg) 50%, transparent), transparent 60%); }
+  .sp-hero__content { display: flex; flex-direction: column; gap: 22px; padding-top: 140px; padding-bottom: 40px; }
+  @media (min-width: 1024px) { .sp-hero__content { gap: 28px; padding-bottom: 56px; } }
+  .sp-hero__kicker { color: var(--ink); opacity: .8; }
+  .sp-hero__row { display: flex; flex-direction: column; gap: 22px; }
+  @media (min-width: 1024px) { .sp-hero__row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 48px; } }
+  .sp-hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+  .sp-hero__meta { position: absolute; top: 20px; right: 20px; left: 20px; justify-content: flex-end; color: color-mix(in srgb, var(--ink) 85%, transparent); text-shadow: 0 1px 10px rgb(0 0 0 / 0.5); }
+  @media (min-width: 1024px) { .sp-hero__meta { right: max(64px, calc((100% - 1280px) / 2)); left: auto; top: 28px; } }
+
+  /* Первый экран «в паспарту» (Белая стена) */
+  .sp-frame { padding-top: 40px; }
+  @media (min-width: 1024px) { .sp-frame { padding-top: 56px; } }
+  .sp-frame__text { display: grid; gap: 28px; align-items: end; }
+  @media (min-width: 1024px) { .sp-frame__text { grid-template-columns: 8fr 4fr; gap: 56px; } }
+  .sp-frame__side { display: flex; flex-direction: column; gap: 24px; }
+  .sp-mat { margin: 32px 0 0; }
+  @media (min-width: 1024px) { .sp-mat { margin-top: 40px; } }
+  .sp-mat__in { background: #FBFAF7; padding: 14px; box-shadow: 0 1px 0 rgb(13 32 35 / 0.06), 0 24px 60px -30px rgb(13 32 35 / 0.35); }
+  @media (min-width: 768px) { .sp-mat__in { padding: 32px; } }
+  .sp-mat__in :global(img) { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  @media (max-width: 767px) { .sp-mat__in :global(img) { aspect-ratio: 4 / 3; } }
+  .sp-museum { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 14px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .sp-museum b { color: var(--ink); font-weight: 600; }
+
+  /* Полоса шагов с ценами */
+  .sp-steps { padding-top: 40px; }
+  @media (min-width: 1024px) { .sp-steps { padding-top: 56px; } }
+  .sp-steps__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px 32px; margin-bottom: 20px; }
+  .sp-stats { display: flex; flex-wrap: wrap; gap: 8px 28px; margin: 0; }
+  .sp-stats div { display: flex; flex-direction: row-reverse; align-items: baseline; gap: 8px; }
+  .sp-stats dd { margin: 0; font-weight: 700; color: var(--ink); }
+  .sp-stats dt { font-size: 14px; color: var(--muted); }
+  .sp-steps__list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--line); }
+  @media (min-width: 1024px) { .sp-steps__list { grid-template-columns: repeat(3, 1fr); } }
+  .sp-steps__list li { border-bottom: 1px solid var(--line); position: relative; }
+  @media (min-width: 1024px) { .sp-steps__list li { border-bottom: 0; } .sp-steps__list li + li { border-left: 1px solid var(--line); } }
+  .sp-steps__list a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 20px 4px; transition: background-color .2s ease; }
+  @media (min-width: 1024px) { .sp-steps__list a { padding: 28px 28px 28px 0; } .sp-steps__list li + li a { padding-left: 28px; } }
+  .sp-steps__list a:hover { background: color-mix(in srgb, var(--ink) 4%, transparent); }
+  .sp-steps__n { font-family: var(--f-label); font-size: 13px; font-weight: 600; color: var(--muted); }
+  .sp-steps__t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .sp-steps__t b { font-family: var(--f-display); font-size: 22px; font-weight: var(--h2-weight); line-height: 1.1; }
+  .sp-steps__t small { font-size: 14px; line-height: 1.35; color: var(--muted); }
+  .sp-steps__p { font-family: var(--f-display); font-size: 18px; font-weight: 700; white-space: nowrap; color: var(--num); }
+  .sp-steps__list li.is-active::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--accent); }
+
+  /* Заголовок секции */
+  .sp-head { display: flex; flex-direction: column; gap: 12px; margin-bottom: var(--head); }
+  .sp-head--split { gap: 20px; }
+  @media (min-width: 1024px) { .sp-head--split { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 64px; } }
+  .sp-head__side { display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
+  .sp-head__side p, .sp-head__lead { margin: 0; color: var(--muted); max-width: 620px; }
+
+  /* Галерея */
+  .sp-wide { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+  .sp-wide__img { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+  @media (min-width: 768px) { .sp-wide__img { aspect-ratio: 21 / 9; } }
+  .sp-wide__img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sp-trio { display: grid; grid-template-columns: 1fr 1fr; gap: 32px var(--gap); margin-top: 40px; }
+  .sp-trio .sp-work:first-child { grid-column: 1 / -1; }
+  @media (min-width: 768px) { .sp-trio { grid-template-columns: repeat(3, 1fr); margin-top: 56px; } .sp-trio .sp-work:first-child { grid-column: auto; } }
+  .sp-work { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .sp-work__img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--r-img); }
+  .sp-trio .sp-work:first-child .sp-work__img { aspect-ratio: 4 / 3; }
+  @media (min-width: 768px) { .sp-trio .sp-work:first-child .sp-work__img { aspect-ratio: 4 / 5; } }
+  .sp-work__img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* Форматы и формула */
+  .sp-plans { display: grid; gap: 12px; }
+  @media (min-width: 1024px) { .sp-plans { grid-template-columns: repeat(3, 1fr); gap: var(--gap); } }
+  .sp-plan { display: flex; flex-direction: column; gap: 6px; padding: 22px; border: 1px solid var(--line-strong); border-radius: var(--r-card); cursor: pointer; }
+  @media (min-width: 1024px) { .sp-plan { padding: 28px; } }
+  .sp-plan[aria-checked='true'] { border: 2px solid var(--sel-line); background: var(--sel-bg); padding: 21px; }
+  @media (min-width: 1024px) { .sp-plan[aria-checked='true'] { padding: 27px; } }
+  .sp-plan__top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 18px; }
+  .sp-plan__dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line-strong); box-sizing: border-box; }
+  .sp-plan[aria-checked='true'] .sp-plan__dot { border: 5px solid var(--accent); }
+  .sp-plan__price { margin-top: 8px; font-family: var(--f-display); font-size: clamp(30px, 2.8vw, 40px); font-weight: var(--h2-weight); line-height: 1; letter-spacing: -0.02em; color: var(--num); }
+  .sp-plan__short { font-size: 15px; color: var(--muted); }
+
+  .sp-sum { margin-top: var(--gap); display: flex; flex-direction: column; gap: 10px; padding: 22px 0 0; border-top: 1px solid var(--line); }
+  @media (min-width: 1024px) { .sp-sum { flex-direction: row; align-items: center; gap: 22px; padding-top: 28px; } }
+  .sp-sum__item { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  @media (min-width: 1024px) { .sp-sum__item { flex: 1 1 0; flex-direction: column; gap: 4px; justify-content: flex-start; min-width: 0; } }
+  .sp-sum__item span { font-size: 15px; color: var(--muted); }
+  .sp-sum__item b { font-size: 20px; white-space: nowrap; }
+  .sp-sum__item .is-gift { color: var(--accent); }
+  .sp[data-style='signal'] .sp-sum__item .is-gift { color: var(--ink); }
+  .sp-sum__op { align-self: center; font-size: 22px; color: var(--muted); }
+  .sp-sum__total { display: flex; flex-direction: column; gap: 4px; padding-top: 10px; }
+  @media (min-width: 1024px) { .sp-sum__total { flex: 1.3 1 0; padding-top: 0; } }
+  .sp-sum__total b { align-self: flex-start; font-family: var(--f-display); font-size: clamp(34px, 3.2vw, 46px); font-weight: var(--h2-weight); line-height: 1.05; letter-spacing: -0.02em; color: var(--num); border-bottom: 2px solid var(--accent); }
+  .sp-sum__total span { font-size: 14px; color: var(--muted); }
+  .sp-sum .sp-btn { margin-top: 8px; }
+  @media (min-width: 1024px) { .sp-sum .sp-btn { margin-top: 0; } }
+
+  /* Стайл-тайл */
+  .sp-tile { padding-bottom: var(--sec); }
+  .sp-tile__core { display: flex; flex-direction: column; gap: 32px; padding-top: 40px; padding-bottom: 16px; border-top: 1px solid var(--line); }
+  .sp-tile__head { display: flex; flex-direction: column; gap: 12px; }
+  .sp-swatches { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+  @media (min-width: 768px) { .sp-swatches { grid-template-columns: repeat(5, 1fr); } }
+  .sp-swatches li { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+  .sp-swatch { display: block; height: 88px; border-radius: var(--r-card); border: 1px solid var(--line-strong); margin-bottom: 8px; }
+  .sp-swatches code { font-family: 'JetBrains Mono Variable', monospace; font-size: 13px; color: var(--ink); }
+  .sp-swatches small { color: var(--muted); line-height: 1.35; }
+  .sp-specimens { display: grid; gap: 32px; }
+  @media (min-width: 1024px) { .sp-specimens { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .sp-spec { display: flex; flex-direction: column; gap: 12px; }
+  .sp-spec__big { margin: 0; white-space: nowrap; font-family: var(--f-display); font-size: clamp(56px, 8vw, 120px); font-weight: var(--d-weight); line-height: 0.9; letter-spacing: var(--d-track); }
+  .sp-spec__h2 { margin: 0; font-family: var(--f-display); font-size: clamp(26px, 2.6vw, 36px); font-weight: var(--h2-weight); text-transform: uppercase; line-height: 1; }
+  .sp-spec__body { margin: 0 0 12px; max-width: 520px; }
+  .sp-kit { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; margin-top: 40px; }
+  .sp-notes { display: grid; gap: 28px; margin-top: 48px; }
+  @media (min-width: 1024px) { .sp-notes { grid-template-columns: 5fr 3fr 3fr; gap: 48px; } }
+  .sp-notes > div { display: flex; flex-direction: column; gap: 10px; }
+  .sp-notes ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .sp-notes p:not(.sp-label) { margin: 0; }
+
+  .sp-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; padding-top: 24px; padding-bottom: 96px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+
+  /* ===== Особенности направлений ===== */
+  /* 1. Графит и сигнал: моно-подписи, лайм только как сигнал */
+  .sp[data-style='signal'] .sp-hero__kicker::before, .sp[data-style='signal'] .sp-steps__head .sp-label::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 10px; background: var(--accent); vertical-align: 1px; }
+  .sp[data-style='signal'] .sp-steps__t b { text-transform: uppercase; font-size: 20px; }
+  .sp[data-style='signal'] .sp-chip { border-radius: 4px; }
+
+  /* 2. Белая стена: логотип тёмный, тень мягкая, кнопки-пилюли */
+  .sp[data-style='wall'] .sp-logo :global(img) { filter: invert(1) brightness(0.25) sepia(0.4) hue-rotate(130deg); }
+  .sp[data-style='wall'] .sp-h1 { font-weight: 500; line-height: 0.98; }
+  .sp[data-style='wall'] .sp-h2 { letter-spacing: 0.01em; }
+  .sp[data-style='wall'] .sp-steps__p, .sp[data-style='wall'] .sp-plan__price { font-weight: 500; }
+  .sp[data-style='wall'] .sp-wide { padding-inline: 20px; }
+  @media (min-width: 768px) { .sp[data-style='wall'] .sp-wide { padding-inline: 48px; } }
+  @media (min-width: 1024px) { .sp[data-style='wall'] .sp-wide { padding-inline: max(64px, calc((100% - 1280px) / 2)); } }
+  .sp[data-style='wall'] .sp-wide figcaption { padding-inline: 0; }
+  .sp[data-style='wall'] .sp-cap { text-transform: uppercase; letter-spacing: 0.06em; font-size: 12px; }
+
+  /* 3. Бирюза и латунь: крупные латунные номера шагов */
+  .sp[data-style='brass'] .sp-steps__n { font-family: var(--f-display); font-size: 34px; font-weight: 700; color: var(--accent); }
+  .sp[data-style='brass'] .sp-wide__img { margin-inline: 20px; border-radius: var(--r-img); }
+  @media (min-width: 768px) { .sp[data-style='brass'] .sp-wide__img { margin-inline: 48px; } }
+  @media (min-width: 1024px) { .sp[data-style='brass'] .sp-wide__img { margin-inline: max(64px, calc((100% - 1280px) / 2)); } }
+  .sp[data-style='brass'] .sp-plan[aria-checked='true'] .sp-plan__dot { border-color: #92BABE; }
+
+  /* 4. Тёплая студия: зерно плёнки, широкий шрифт */
+  .sp[data-style='studio']::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: 0.07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .sp[data-style='studio'] .sp-spec__big { font-size: clamp(44px, 6vw, 92px); }
+  .sp[data-style='studio'] .sp-steps__t b { text-transform: uppercase; font-size: 17px; }
+  .sp[data-style='studio'] .sp-steps__p, .sp[data-style='studio'] .sp-sum__total b, .sp[data-style='studio'] .sp-plan__price { font-family: var(--f-body); font-weight: 800; }
+  .sp[data-style='studio'] .sp-steps__n { color: var(--accent); }
+</style>

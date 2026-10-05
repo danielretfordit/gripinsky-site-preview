@@ -5,7 +5,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import BeforeAfter from '../components/BeforeAfter.astro';
 import Checkout from '../islands/Checkout';
 import { rub, sp } from '../lib/format';
-import { SITE } from '../lib/seo';
+import { courseLd, ogHref } from '../lib/seo';
 import meshRaw from '../assets/ai/mesh-raw.jpg';
 import meshScene from '../assets/ai/mesh-scene.jpg';
 
@@ -32,7 +32,7 @@ const faq = [
 ];
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: 'ИИ в 3D' }];
 const ld = [
-  { '@context': 'https://schema.org', '@type': 'Course', name: 'ИИ в 3D', description: 'Нейросети для создания 3D-моделей: референсы, 3D-модель по фото, ретопология, текстуры и визуализация.', provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE }, offers: [{ '@type': 'Offer', price: ai.price, priceCurrency: 'RUB' }, { '@type': 'Offer', price: lab.price, priceCurrency: 'RUB' }], hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' } },
+  courseLd({ name: 'ИИ в 3D', description: 'Нейросети для создания 3D-моделей: референсы, 3D-модель по фото, ретопология, текстуры и визуализация.', path: '/ai', prices: [ai.price, lab.price], image: ogHref('ai') }),
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
@@ -41,6 +41,7 @@ const ld = [
   description={`Онлайн-курс «ИИ в 3D»: референсы в нейросетях, 3D-модель по фото в Hunyuan3D и Tripo3D, ретопология, текстуры и визуализация. От ${sp(ai.price)} ₽.`}
   breadcrumbs={crumbs}
   jsonLd={ld}
+  ogImage={ogHref('ai')}
   consultContext="Курс ИИ в 3D"
 >
   <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="ai-title">
@@ -144,7 +145,6 @@ const ld = [
 </Base>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: JSON.parse(b.dataset.buy!) }));
-  }));
+  import { openCheckout } from '../stores/package';
+  document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => openCheckout(JSON.parse(b.dataset.buy!))));
 </script>

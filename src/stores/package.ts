@@ -13,6 +13,14 @@ export const $quiz = atom<QuizResult | null>(null);
 /** Открыт ли тест (кнопки «Пройти тест» в первом экране и на развилке) */
 export const $quizOpen = atom(false);
 
+export type CheckoutRequest = { kind: 'package' } | { kind: 'base'; tariff: TariffId } | { kind: 'course'; id: string; name: string; price: number };
+/**
+ * Запрос на оформление («Оформить пакет», «Купить курс»). Атом, а не событие:
+ * если нажать кнопку раньше, чем загрузится остров с диалогом, запрос дождётся его и не потеряется.
+ */
+export const $checkout = atom<CheckoutRequest | null>(null);
+export const openCheckout = (req: CheckoutRequest) => $checkout.set(req);
+
 /** Читает пакет из адреса: /courses-page/visualization?prof=ext&base=0&tariff=lite&c=residential_complex&a=materialspro */
 export function initFromUrl() {
   if (typeof window === 'undefined') return;
@@ -28,6 +36,22 @@ export function initFromUrl() {
   const a = q.get('a');
   if (a) patch.addons = a.split(',');
   if (Object.keys(patch).length) $pkg.set({ ...$pkg.get(), ...patch });
+}
+
+/**
+ * Запускает fn, когда все острова client:load на странице гидратированы.
+ * Пакет из адреса нельзя применять раньше: остров, который гидратируется позже,
+ * получит уже изменённое состояние, его разметка разойдётся с серверной, и Preact соберёт DOM с ошибками.
+ */
+export function afterIslandsHydrated(fn: () => void) {
+  const pending = () => document.querySelector('astro-island[ssr][client="load"]');
+  if (!pending()) { fn(); return; }
+  const mo = new MutationObserver(() => {
+    if (pending()) return;
+    mo.disconnect();
+    fn();
+  });
+  mo.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['ssr'] });
 }
 
 /** Ссылка на собранный пакет (чтобы отправить себе или вернуться позже) */

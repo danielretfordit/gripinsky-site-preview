@@ -48,8 +48,12 @@ test('направление: липкая панель появляется п�
   await expectIslandsHydrated(page);
   const bar = page.locator('astro-island [aria-hidden]').filter({ hasText: 'Ваш пакет' }).first();
   await expect(bar).toHaveAttribute('aria-hidden', 'true');
-  await page.locator('#money').scrollIntoViewIfNeeded();
-  await page.mouse.wheel(0, 200);
+  // Сразу за заголовком профессий. На больших экранах у блока «Заказы» уже видна карточка пакета, и панель там скрыта
+  await page.evaluate(() => {
+    const h = document.getElementById('profession-title')!;
+    window.scrollTo({ top: h.getBoundingClientRect().bottom + window.scrollY + 40, behavior: 'instant' });
+  });
+  await page.mouse.wheel(0, 100);
   await expect(bar).toHaveAttribute('aria-hidden', 'false');
   await page.locator('#package-summary').scrollIntoViewIfNeeded();
   await expect(bar).toHaveAttribute('aria-hidden', 'true');

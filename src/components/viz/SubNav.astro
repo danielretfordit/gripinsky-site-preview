@@ -30,7 +30,7 @@ const items = [
       if (cur && row) {
         const li = cur.parentElement!;
         const left = li.offsetLeft - (row.clientWidth - li.offsetWidth) / 2;
-        row.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+        row.scrollTo({ left: Math.max(0, left), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       }
     }
   }, { rootMargin: '-45% 0px -50% 0px' });

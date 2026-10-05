@@ -17,3 +17,7 @@ originals/
 # автотесты
 e2e-report/
 test-results/
+
+# снимки экрана для дизайн-ревью (пересоздаются скриптами в docs/design/scripts), в git только сводки выбора
+docs/design/shots/*
+!docs/design/shots/styles-overview.png

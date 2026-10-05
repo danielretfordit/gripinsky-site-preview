@@ -6,6 +6,8 @@ import { join } from 'node:path';
 
 const ROOT = 'dist/client';
 const SKIP_PAGES = ['oferta.html', 'politica.html', 'soglasie.html'];
+// Статьи старого блога (/tpost/…) перенесены как авторские тексты; править их или нет, решает заказчица (docs/open-questions.md)
+const SKIP_DIRS = ['/tpost/'];
 const files = [];
 const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); statSync(p).isDirectory() ? walk(p) : f.endsWith('.html') && files.push(p); } };
 walk(ROOT);
@@ -37,7 +39,7 @@ const strip = (html) => html
 
 let errors = 0, warnings = 0;
 for (const f of files) {
-  if (SKIP_PAGES.some((s) => f.endsWith(s))) continue;
+  if (SKIP_PAGES.some((s) => f.endsWith(s)) || SKIP_DIRS.some((d) => f.includes(d))) continue;
   const text = strip(readFileSync(f, 'utf8'));
   for (const r of RULES) {
     const lines = text.split('\n').filter((l) => r.re.test(l));

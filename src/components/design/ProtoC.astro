@@ -1,0 +1,369 @@
+---
+// Вариант C «Продуктовый»: сетка 12 колонок, крупные цены и цифры,
+// путь «База, Профессия, Пакет» как навигация из трёх шагов, заметная рамка выбора формата.
+import { Image } from 'astro:assets';
+import type { ProtoData } from './data';
+
+interface Props { d: ProtoData }
+const { d } = Astro.props;
+const { stats, prices, rub, sp, pkg, pkgLines, tariffs, galleryCount, kings, cat } = d;
+
+const hero = d.work('zaytseva-dom-v-lesu')!;
+const fmt = pkg.lines.find((l) => l.kind === 'format');
+const tOpt = tariffs.find((t) => t.id === 'opt')!;
+const path = [
+  { n: 1, title: 'База', sub: '3ds Max, Corona и ИИ в 3D', price: `от ${rub(prices.base)}`, href: '#c-step-1' },
+  { n: 2, title: 'Профессия', sub: 'Интерьеры, экстерьеры или стоки', price: `от ${rub(prices.profMin)}`, href: '#c-step-2' },
+  { n: 3, title: 'Пакет', sub: 'База и профессия с подарком', price: `от ${rub(prices.pkgMin)}`, href: '#c-price' },
+];
+const steps = [
+  {
+    n: 1, tag: 'Старт здесь', title: 'База', lead: 'Программы и первые работы',
+    checks: ['Моделирование в 3ds Max с нуля', 'Свет, материалы и рендер в Corona', 'Нейросети в работе: курс «ИИ в 3D»'],
+    facts: [['230', 'уроков'], ['1 год', 'доступа'], ['104', 'модели'], ['7', 'визуализаций']],
+    price: rub(prices.base), monthly: `или ${sp(prices.baseMonthly)} ₽/мес`, link: 'Программа базы',
+  },
+  {
+    n: 2, tag: 'После базы', title: 'Профессия', lead: 'Работа за деньги',
+    checks: ['ТЗ, чертежи и общение с заказчиком', 'Сколько стоит работа и как её защитить', 'Проект по реальному ТЗ в портфолио'],
+    facts: [['3', 'профессии'], ['4', 'проекта интерьеров'], ['1', 'проект экстерьера по ТЗ'], ['1', 'курс в подарок']],
+    price: `от ${rub(prices.profMin)}`, monthly: `или от ${sp(Math.ceil(prices.profMin / prices.months))} ₽/мес`, link: 'Выбрать профессию',
+  },
+  {
+    n: 3, tag: 'Выгоднее', title: 'Пакет', lead: 'База и профессия вместе',
+    checks: ['Один формат обучения на весь пакет', 'Подарок к профессии: Marvelous или Forest Pack', 'Рассрочка на всю сумму'],
+    facts: [[sp(pkg.savings), '₽ выгоды с интерьерами'], [String(cat.installmentMonths), 'месяцев рассрочки']],
+    price: `от ${rub(prices.pkgMin)}`, monthly: `или от ${sp(Math.ceil(prices.pkgMin / prices.months))} ₽/мес`, link: 'Собрать пакет',
+  },
+];
+const works = d.pick(['kamola-kuhnya', 'korotovskaya-shale', 'lapin-dom-u-ozera', 'shesterikova-loft', 'knyazev-ulitsa', 'filatov-interer']);
+const money = d.reviews.find((r) => r.topic === 'money');
+---
+<div class="pc">
+  <!-- 1. Первый экран + навигация по шагам -->
+  <section class="wrap pc-hero" aria-labelledby="c-hero">
+    <div class="pc-grid pc-hero__grid">
+      <div class="pc-hero__text">
+        <p class="t-overline">Направление 3D-визуализация</p>
+        <h1 id="c-hero" class="pc-h1">Курсы <span class="pc-nb">3D-визуализации</span> <span class="t-accent">с нуля до заказов</span></h1>
+        <p class="pc-lead">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. Три шага, понятная цена на каждом и рассрочка на {cat.installmentMonths} месяцев.</p>
+        <div class="pc-actions">
+          <a href="#c-step-1" class="btn btn-primary btn-lg">Начать с базы</a>
+          <a href="#c-final" class="btn btn-secondary btn-lg">Подобрать пакет за 1 минуту</a>
+        </div>
+      </div>
+      <figure class="pc-hero__media">
+        <div class="pc-split">
+          <Image src={hero.image} alt={hero.alt} widths={[480, 800]} sizes="(min-width: 1024px) 40vw, 100vw" loading="eager" fetchpriority="high" />
+          {hero.before && <div class="pc-split__before"><Image src={hero.before} alt="Та же сцена: модель в 3ds Max" widths={[480, 800]} sizes="(min-width: 1024px) 40vw, 100vw" loading="eager" /></div>}
+          <span class="pc-split__line" aria-hidden="true"></span>
+          <span class="badge-on-image pc-split__l">Модель</span>
+          <span class="badge-on-image pc-split__r">Рендер</span>
+        </div>
+        <figcaption>{hero.author}, {hero.title}. {hero.award}</figcaption>
+      </figure>
+    </div>
+
+    <ol class="pc-path" aria-label="Путь ученика">
+      {path.map((p) => (
+        <li>
+          <a href={p.href} class="pc-path__link">
+            <span class={`pc-path__n ${p.n === 1 ? 'is-start' : ''}`} aria-hidden="true">{p.n}</span>
+            <span class="pc-path__text"><b><span class="sr-only">Шаг {p.n}. </span>{p.title}</b><small>{p.sub}</small></span>
+            <span class="pc-path__price">{p.price}</span>
+          </a>
+          {p.n < 3 && <svg class="pc-path__chev" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>}
+        </li>
+      ))}
+    </ol>
+
+    <dl class="pc-kpi">
+      <div><dd>{stats.graduates}</dd><dt>выпускников</dt></div>
+      <div><dd>{stats.years}</dd><dt>учим по своей системе</dt></div>
+      <div><dd>{stats.rating}</dd><dt>оценка на Яндекс Картах</dt></div>
+      <div><dd>{stats.subscribers}</dd><dt>подписчиков на YouTube</dt></div>
+    </dl>
+  </section>
+
+  <!-- 2. Шаги -->
+  <section id="c-steps" class="wrap pc-sec" aria-labelledby="c-steps-t">
+    <header class="pc-head">
+      <p class="t-overline">Как устроено обучение</p>
+      <h2 id="c-steps-t" class="t-h2">Три шага: <span class="t-accent">от нуля до заказов</span></h2>
+      <p class="pc-head__lead">Сначала база, потом профессия. Вместе это пакет: дешевле, чем по отдельности, и с подарком к профессии.</p>
+    </header>
+    <ol class="pc-grid pc-steps">
+      {steps.map((s) => (
+        <li id={`c-step-${s.n}`} class="pc-step">
+          <div class="pc-step__top">
+            <span class="pc-step__n" aria-hidden="true">{s.n}</span>
+            <span class="pc-step__tag">{s.tag}</span>
+          </div>
+          <h3 class="pc-step__title"><span class="sr-only">Шаг {s.n}. </span>{s.title}</h3>
+          <p class="pc-step__lead">{s.lead}</p>
+          <ul class="pc-checks">
+            {s.checks.map((c) => <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#92BABE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>{c}</li>)}
+          </ul>
+          <dl class="pc-facts">{s.facts.map(([n, l]) => <div><dd>{n}</dd><dt>{l}</dt></div>)}</dl>
+          <div class="pc-step__foot">
+            <p class="pc-step__price"><b>{s.price}</b><span>{s.monthly}</span></p>
+            <a href="#c-price" class="link">{s.link} →</a>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- 3. Работы -->
+  <section id="c-works" class="wrap pc-sec" aria-labelledby="c-works-t">
+    <div class="pc-grid pc-works">
+      <div class="pc-works__side">
+        <p class="t-overline">Результаты</p>
+        <h2 id="c-works-t" class="t-h2">Работы <span class="t-accent">учеников</span></h2>
+        <dl class="pc-works__kpi">
+          <div><dd>{galleryCount}</dd><dt>работ учеников и педагогов в галерее</dt></div>
+          <div><dd>{kings}</dd><dt>учеников получили «Царя горы» на 3DDD</dt></div>
+        </dl>
+        {money && (
+          <figure class="pc-money">
+            <blockquote>{money.text}</blockquote>
+            <figcaption><b>{money.author}</b>, {money.role}</figcaption>
+          </figure>
+        )}
+        <a href="/gallery" class="link">Вся галерея →</a>
+      </div>
+      <ul class="pc-works__grid">
+        {works.map((w) => (
+          <li>
+            <figure class="pc-work">
+              <div class="pc-work__img"><Image src={w.image} alt={w.alt} widths={[400, 640]} sizes="(min-width: 1024px) 30vw, 50vw" style={`object-position:${w.focus}`} /></div>
+              <figcaption><b>{w.author}</b><span>{w.title}</span></figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Пакет: формат и итог -->
+  <section id="c-price" class="wrap pc-sec" aria-labelledby="c-price-t">
+    <header class="pc-head">
+      <p class="t-overline">Шаг 3. Пакет</p>
+      <h2 id="c-price-t" class="t-h2">Пакет: <span class="t-accent">выберите формат</span></h2>
+      <p class="pc-head__lead">Формат один на весь пакет. От него зависит цена базы, курс профессии стоит одинаково.</p>
+    </header>
+    <div class="pc-grid pc-plans" role="radiogroup" aria-label="Формат обучения">
+      {tariffs.map((t) => (
+        <div class="pc-plan" role="radio" aria-checked={t.id === 'opt' ? 'true' : 'false'} tabindex={t.id === 'opt' ? 0 : -1}>
+          <div class="pc-plan__top">
+            <span class="pc-plan__ind" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg></span>
+            <span class="pc-plan__name">{t.name}</span>
+            {t.badge && <span class="chip">{t.badge}</span>}
+          </div>
+          <p class="pc-plan__price">{rub(t.price)}</p>
+          <p class="pc-plan__m">база, или {sp(Math.ceil(t.price / prices.months))}&nbsp;₽/мес</p>
+          <ul class="pc-plan__list">
+            {t.features.map((f) => (
+              <li class={f.ok ? '' : 'is-no'}>
+                {f.ok
+                  ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92BABE" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                  : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6F8487" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12" /></svg>}
+                {f.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="pc-sum" aria-label="Ваш пакет">
+      <div class="pc-sum__item"><span>{pkgLines.base}, «{tOpt.name}»</span><b>{rub(prices.base + (fmt?.price ?? 0))}</b></div>
+      <span class="pc-sum__op" aria-hidden="true">+</span>
+      <div class="pc-sum__item"><span>{pkgLines.prof}</span><b>{rub(cat.professions.int.courses[0].price)}</b></div>
+      <span class="pc-sum__op" aria-hidden="true">+</span>
+      <div class="pc-sum__item"><span>{pkgLines.gift}</span><b class="is-gift">в подарок</b></div>
+      <span class="pc-sum__op" aria-hidden="true">=</span>
+      <div class="pc-sum__total">
+        <span>Ваш пакет</span>
+        <b>{rub(pkg.total)}</b>
+        <small>или {sp(pkg.monthly)}&nbsp;₽/мес, выгода {rub(pkg.savings)}</small>
+      </div>
+      <a href="#c-final" class="btn btn-primary btn-lg pc-sum__btn">Оформить пакет</a>
+    </div>
+    <p class="pc-sum__note">Пример: база и Интерьеры PRO. Профессию, допы и формат выбирают в конструкторе на странице.</p>
+  </section>
+
+  <!-- 5. Финал: два понятных пути -->
+  <section id="c-final" class="wrap pc-sec" aria-labelledby="c-final-t">
+    <header class="pc-head">
+      <h2 id="c-final-t" class="t-h2">Начните <span class="t-accent">сегодня</span></h2>
+    </header>
+    <div class="pc-grid pc-final">
+      <div class="pc-final__card">
+        <p class="t-overline">Не знаете, с чего начать?</p>
+        <h3 class="pc-final__title">Тест за 1 минуту</h3>
+        <p>4 вопроса, и мы соберём пакет под вашу цель и сразу покажем цену.</p>
+        <a href="#" class="btn btn-primary btn-lg">Пройти тест</a>
+      </div>
+      <div class="pc-final__card">
+        <p class="t-overline">Хотите обсудить с человеком?</p>
+        <h3 class="pc-final__title">Бесплатная консультация</h3>
+        <p>Подберём старт, профессию и формат за 15 минут. Перезвоним или напишем в Telegram.</p>
+        <a href="#" class="btn btn-secondary btn-lg">Записаться</a>
+      </div>
+    </div>
+    <p class="pc-final__trial"><span>Сначала хотите попробовать?</span> <a href="#" class="link">Бесплатные уроки →</a></p>
+  </section>
+</div>
+
+<style>
+  .pc { --sec: 64px; --g: 16px; --pad: 20px; }
+  @media (min-width: 768px) { .pc { --sec: 80px; --g: 24px; --pad: 24px; } }
+  @media (min-width: 1024px) { .pc { --sec: 96px; --pad: 28px; } }
+  @media (min-width: 1280px) { .pc { --sec: 120px; --pad: 32px; } }
+  .pc-sec { padding-top: var(--sec); }
+  .pc > :last-child { padding-bottom: var(--sec); }
+  .pc-nb { white-space: nowrap; }
+
+  /* Сетка 12 колонок */
+  .pc-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--g); }
+  @media (min-width: 768px) { .pc-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .pc-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+
+  .pc-head { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .pc-head__lead { margin: 4px 0 0; max-width: 640px; color: var(--color-ink-2); }
+
+  /* Первый экран */
+  .pc-hero { padding-top: 32px; }
+  @media (min-width: 1024px) { .pc-hero { padding-top: 56px; } }
+  .pc-hero__grid { row-gap: 32px; align-items: center; }
+  .pc-hero__text { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 20px; }
+  .pc-hero__media { grid-column: 1 / -1; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 1024px) { .pc-hero__text { grid-column: 1 / 8; } .pc-hero__media { grid-column: 8 / 13; } }
+  .pc-h1 { margin: 0; font-size: clamp(34px, 4.6vw, 64px); font-weight: 800; line-height: 1; letter-spacing: -0.025em; text-transform: uppercase; }
+  .pc-h1 .t-accent { display: block; }
+  .pc-lead { margin: 0; max-width: 560px; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; color: var(--color-ink-2); }
+  .pc-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  @media (min-width: 480px) { .pc-actions { flex-direction: row; flex-wrap: wrap; } }
+  .pc-split { position: relative; aspect-ratio: 4 / 3; border-radius: 20px; overflow: hidden; }
+  .pc-split :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pc-split__before { position: absolute; inset: 0; clip-path: inset(0 50% 0 0); }
+  .pc-split__line { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--color-lime); }
+  .pc-split__l { position: absolute; left: 12px; top: 12px; }
+  .pc-split__r { position: absolute; right: 12px; top: 12px; }
+  .pc-hero__media figcaption { font-size: 14px; color: var(--color-muted); }
+
+  /* Навигация по шагам */
+  .pc-path { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 12px; }
+  @media (min-width: 1024px) { .pc-path { grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 64px; } }
+  .pc-path li { position: relative; display: flex; }
+  .pc-path li > a { flex: 1; }
+  .pc-path__link {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; min-height: 72px; padding: 16px 20px;
+    border: 1px solid var(--color-line-strong); border-radius: 16px; color: var(--color-ink); transition: background-color .2s ease, border-color .2s ease;
+  }
+  .pc-path__link:hover { color: var(--color-ink); border-color: rgb(231 231 231 / 0.7); background: var(--color-sea-08); }
+  .pc-path__n { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 50%; background: var(--color-sea-14); font-size: 18px; font-weight: 800; }
+  .pc-path__n.is-start { background: var(--color-lime); color: var(--color-bg); }
+  .pc-path__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pc-path__text b { font-size: 18px; }
+  .pc-path__text small { font-size: 14px; color: var(--color-muted); }
+  .pc-path__price { font-size: 16px; font-weight: 800; white-space: nowrap; }
+  .pc-path__chev { display: none; }
+  @media (min-width: 1024px) { .pc-path__chev { display: block; position: absolute; right: -36px; top: 50%; margin-top: -12px; color: var(--color-sea); } }
+
+  .pc-kpi { margin: 40px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+  @media (min-width: 768px) { .pc-kpi { grid-template-columns: repeat(4, 1fr); margin-top: 56px; } }
+  .pc-kpi div { display: flex; flex-direction: column; gap: 6px; }
+  @media (min-width: 768px) { .pc-kpi div { padding-left: 24px; border-left: 1px solid var(--color-line); } .pc-kpi div:first-child { padding-left: 0; border-left: 0; } }
+  .pc-kpi dd { margin: 0; font-size: clamp(30px, 3.6vw, 52px); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .pc-kpi dt { font-size: 15px; color: var(--color-muted); }
+
+  /* Шаги: три карточки по 4 колонки */
+  .pc-steps { list-style: none; margin: 0; padding: 0; }
+  .pc-step { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 14px; padding: var(--pad); border: 1px solid var(--color-line); border-radius: 20px; scroll-margin-top: 96px; }
+  @media (min-width: 1024px) { .pc-step { grid-column: span 4; } }
+  .pc-step__top { display: flex; align-items: center; justify-content: space-between; }
+  .pc-step__n { font-size: 72px; font-weight: 800; line-height: 0.8; letter-spacing: -0.04em; color: var(--color-lime); }
+  .pc-step__tag { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-sea); }
+  .pc-step__title { margin: 8px 0 0; font-size: clamp(28px, 2.6vw, 36px); font-weight: 800; line-height: 1; }
+  .pc-step__lead { margin: -4px 0 0; color: var(--color-ink-2); }
+  .pc-checks { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: var(--color-ink-2); }
+  .pc-checks li { display: flex; gap: 10px; align-items: flex-start; }
+  .pc-checks svg { flex: none; margin-top: 3px; }
+  .pc-facts { margin: 8px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 16px; border-top: 1px solid var(--color-line); }
+  .pc-facts div { display: flex; flex-direction: column; gap: 2px; }
+  .pc-facts dd { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.05; }
+  .pc-facts dt { font-size: 14px; line-height: 1.3; color: var(--color-muted); }
+  .pc-step__foot { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--color-line); display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .pc-step__price { margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .pc-step__price b { font-size: 28px; font-weight: 800; line-height: 1; }
+  .pc-step__price span { font-size: 14px; color: var(--color-muted); }
+
+  /* Работы */
+  .pc-works { row-gap: 40px; }
+  .pc-works__side { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+  @media (min-width: 1024px) { .pc-works__side { grid-column: 1 / 5; } }
+  .pc-works__kpi { margin: 8px 0 0; display: flex; flex-direction: column; gap: 20px; width: 100%; }
+  .pc-works__kpi div { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 16px; padding-top: 16px; border-top: 1px solid var(--color-line); }
+  .pc-works__kpi dd { margin: 0; font-size: 52px; font-weight: 800; line-height: 1; color: var(--color-lime); grid-row: 1; }
+  .pc-works__kpi dt { font-size: 15px; color: var(--color-ink-2); grid-row: 1; grid-column: 2; }
+  .pc-money { margin: 8px 0 0; padding-top: 16px; border-top: 1px solid var(--color-line); display: flex; flex-direction: column; gap: 10px; }
+  .pc-money blockquote { margin: 0; font-size: 17px; line-height: 1.5; }
+  .pc-money figcaption { font-size: 14px; color: var(--color-muted); }
+  .pc-money b { color: var(--color-ink); }
+  .pc-works__grid { grid-column: 1 / -1; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 24px var(--g); }
+  @media (min-width: 1024px) { .pc-works__grid { grid-column: 5 / 13; } }
+  .pc-work { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .pc-work__img { position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; }
+  .pc-work__img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pc-work figcaption { display: flex; flex-direction: column; font-size: 14px; line-height: 1.35; color: var(--color-muted); }
+  .pc-work figcaption b { color: var(--color-ink); font-weight: 600; }
+
+  /* Форматы: заметная рамка выбора без лаймовой обводки */
+  .pc-plans { align-items: stretch; }
+  .pc-plan {
+    grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; padding: var(--pad);
+    border: 1px solid var(--color-line-strong); border-radius: 20px; cursor: pointer; transition: border-color .2s ease, background-color .2s ease;
+  }
+  @media (min-width: 1024px) { .pc-plan { grid-column: span 4; } }
+  .pc-plan:hover { border-color: rgb(231 231 231 / 0.7); }
+  .pc-plan[aria-checked='true'] { border: 2px solid var(--color-ink); background: var(--color-sea-14); padding: calc(var(--pad) - 1px); }
+  .pc-plan__top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .pc-plan__ind { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid var(--color-line-strong); color: transparent; box-sizing: border-box; }
+  .pc-plan[aria-checked='true'] .pc-plan__ind { background: var(--color-lime); border-color: var(--color-lime); color: var(--color-bg); }
+  .pc-plan__name { font-size: 20px; font-weight: 800; }
+  .pc-plan__price { margin: 12px 0 0; font-size: clamp(36px, 3.4vw, 48px); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .pc-plan__m { margin: 0; font-size: 14px; color: var(--color-muted); }
+  .pc-plan__list { list-style: none; margin: 12px 0 0; padding: 16px 0 0; border-top: 1px solid var(--color-line); display: flex; flex-direction: column; gap: 8px; font-size: 15px; color: var(--color-ink-2); }
+  .pc-plan__list li { display: flex; gap: 10px; align-items: flex-start; }
+  .pc-plan__list svg { flex: none; margin-top: 4px; }
+  .pc-plan__list .is-no { color: var(--color-muted); }
+
+  /* Итог пакета: формула вместо таблицы */
+  .pc-sum { margin-top: var(--g); display: flex; flex-direction: column; gap: 8px; padding: var(--pad); border: 1px solid var(--color-line); border-radius: 20px; }
+  @media (min-width: 1024px) { .pc-sum { flex-direction: row; align-items: center; gap: 20px; } }
+  .pc-sum__item { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  @media (min-width: 1024px) { .pc-sum__item { flex: 1 1 0; flex-direction: column; justify-content: flex-start; gap: 6px; min-width: 0; } }
+  .pc-sum__item span { font-size: 15px; color: var(--color-ink-2); }
+  .pc-sum__item b { font-size: 20px; font-weight: 800; white-space: nowrap; }
+  .pc-sum__item .is-gift { color: var(--color-sea); }
+  .pc-sum__op { align-self: center; font-size: 22px; font-weight: 700; line-height: 1; color: var(--color-sea); }
+  .pc-sum__total { display: flex; flex-direction: column; gap: 4px; padding-top: 12px; border-top: 1px solid var(--color-line); }
+  @media (min-width: 1024px) { .pc-sum__total { flex: 1.3 1 0; padding-top: 0; border-top: 0; } }
+  .pc-sum__total span { font-size: 15px; color: var(--color-ink-2); }
+  .pc-sum__total b { font-size: clamp(36px, 3.2vw, 44px); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .pc-sum__total small { font-size: 14px; color: var(--color-sea); }
+  .pc-sum__btn { margin-top: 12px; }
+  @media (min-width: 1024px) { .pc-sum__btn { margin-top: 0; } }
+  .pc-sum__note { margin: 12px 0 0; font-size: 14px; color: var(--color-muted); }
+
+  /* Финал */
+  .pc-final { row-gap: var(--g); }
+  .pc-final__card { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: var(--pad); border: 1px solid var(--color-line); border-radius: 20px; }
+  @media (min-width: 768px) { .pc-final__card { grid-column: span 4; } }
+  @media (min-width: 1024px) { .pc-final__card { grid-column: span 6; padding: 40px; } }
+  .pc-final__title { margin: 0; font-size: clamp(26px, 2.4vw, 34px); font-weight: 800; line-height: 1.1; }
+  .pc-final__card p:not(.t-overline) { margin: 0 0 8px; max-width: 440px; color: var(--color-ink-2); }
+  .pc-final__trial { margin: 24px 0 0; text-align: center; color: var(--color-muted); }
+</style>

@@ -7,6 +7,7 @@ import Faq from '../components/Faq.astro';
 import Quiz from '../islands/Quiz';
 import { getCatalog } from '../lib/catalog';
 import { faqLd } from '../lib/views';
+import { websiteLd } from '../lib/seo';
 import { visibleWorks, personMap } from '../lib/people';
 import { rub, sp, plural } from '../lib/format';
 import heroInterior from '../assets/home/hero-interior.jpg';
@@ -59,7 +60,7 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
 <Base
   title="Онлайн-курсы 3D-графики и визуализации с нуля | Академия 3D GRIPINSKY"
   description={`Онлайн-курсы 3D-визуализации интерьеров и экстерьеров, моделирования и 3D для игр с нуля. ${s.graduates} выпускников, портфолио за время учёбы, бесплатные уроки и рассрочка.`}
-  jsonLd={[faq]}
+  jsonLd={[websiteLd, faq]}
   consultContext="Главная"
 >
   <section class="wrap relative overflow-hidden pb-10 pt-8 md:pb-14 md:pt-14" aria-labelledby="home-title">

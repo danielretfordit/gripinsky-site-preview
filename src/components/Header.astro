@@ -13,6 +13,9 @@ const nav = [
   { href: '/blog', label: 'Блог' },
 ];
 const current = canonicalPath(Astro.url.pathname);
+// На страницах без формы консультации (документы, 404, оплата) ссылка ведёт к форме на главной
+const { consult = true } = Astro.props as { consult?: boolean };
+const consultHref = consult ? '#consult' : '/#consult';
 ---
 <header class="wrap relative z-40 border-b border-line bg-bg">
   <div class="flex h-16 items-center gap-6 md:h-[88px]">
@@ -31,7 +34,7 @@ const current = canonicalPath(Astro.url.pathname);
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/></svg>
       <span class="hidden lg:inline">Задать вопрос</span>
     </a>
-    <a href="#consult" class="btn btn-secondary btn-sm hidden md:inline-flex"><span class="lg:hidden">Консультация</span><span class="hidden lg:inline">Бесплатная консультация</span></a>
+    <a href={consultHref} class="btn btn-secondary btn-sm hidden md:inline-flex"><span class="lg:hidden">Консультация</span><span class="hidden lg:inline">Бесплатная консультация</span></a>
 
     <div class="ml-auto flex items-center gap-1 md:hidden">
       <a href={site.telegramBot} class="inline-flex h-11 w-11 items-center justify-center rounded-full text-ink" aria-label="Написать в Telegram">
@@ -53,7 +56,7 @@ const current = canonicalPath(Astro.url.pathname);
       ))}
     </nav>
     <div class="flex flex-col gap-3 pb-6 pt-4">
-      <a href="#consult" class="btn btn-primary btn-lg btn-block" data-close-menu>Бесплатная консультация</a>
+      <a href={consultHref} class="btn btn-primary btn-lg btn-block" data-close-menu>Бесплатная консультация</a>
       <a href={site.telegramBot} class="btn btn-secondary btn-lg btn-block">Написать в Telegram</a>
     </div>
   </div>

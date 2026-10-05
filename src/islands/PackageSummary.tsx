@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
-import { $pkg, initFromUrl, packageUrl } from '../stores/package';
+import { $pkg, initFromUrl, packageUrl, afterIslandsHydrated, openCheckout } from '../stores/package';
 import { quote, availableAddons, summarize, type Catalog } from '../lib/pricing';
 import { reachGoal } from '../lib/analytics';
 import { rub, sp, Gift, CheckBox } from './ui';
@@ -10,7 +10,7 @@ interface Props { cat: Catalog; addonTexts: Record<string, string>; giftTexts: R
 export default function PackageSummary({ cat, addonTexts, giftTexts, installmentNote }: Props) {
   const pkg = useStore($pkg);
   const [copied, setCopied] = useState(false);
-  useEffect(() => { initFromUrl(); }, []);
+  useEffect(() => { afterIslandsHydrated(initFromUrl); }, []);
 
   const q = quote(cat, pkg);
   const prof = cat.professions[pkg.prof];
@@ -28,10 +28,26 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
   };
   const checkout = () => {
     reachGoal('package_checkout', { sum: q.total, items: q.items.join(',') });
-    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: { kind: 'package' } }));
+    openCheckout({ kind: 'package' });
   };
   const copy = async () => {
-    try { await navigator.clipboard.writeText(packageUrl(pkg)); setCopied(true); setTimeout(() => setCopied(false), 2500); } catch {}
+    const url = packageUrl(pkg);
+    let ok = false;
+    // Clipboard API есть только на https и localhost; по http в локальной сети её нет
+    try { await navigator.clipboard.writeText(url); ok = true; } catch {}
+    if (!ok) {
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { ok = document.execCommand('copy'); } catch {}
+      ta.remove();
+    }
+    if (!ok) { window.prompt('Скопируйте ссылку на пакет', url); return; }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   const courses = q.lines.filter((l) => l.kind === 'item');

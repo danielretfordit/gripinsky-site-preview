@@ -6,6 +6,9 @@ export default defineConfig({
   timeout: 45_000,
   fullyParallel: true,
   workers: 3,
+  // Локально dev-сервер перезагружает открытые страницы, когда в проекте меняются файлы (HMR):
+  // тест, попавший на такую перезагрузку, повторяется один раз и помечается в отчёте как flaky
+  retries: process.env.CI ? 0 : 1,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'e2e-report' }]],
   use: {
     baseURL: process.env.BASE_URL ?? 'http://localhost:4321',

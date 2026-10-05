@@ -50,6 +50,8 @@
     font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    /* Пока виден cookie-баннер, низ страницы (подвал) можно докрутить выше него */
+    padding-bottom: var(--cookie-h, 0px);
   }
   @media (min-width: 768px) {
     body { font-size: 17px; }
@@ -163,6 +165,8 @@
   .check-box svg { opacity: 0; }
   [aria-pressed="true"] .check-box, input:checked + .check-box { background: var(--color-lime); border-color: var(--color-lime); }
   [aria-pressed="true"] .check-box svg, input:checked + .check-box svg { opacity: 1; }
+  /* Сам чекбокс скрыт (sr-only), поэтому фокус с клавиатуры показываем на нарисованном квадрате */
+  input.sr-only:focus-visible + .check-box, input.sr-only:focus-visible + * > .check-box { outline: 2px solid var(--color-sea); outline-offset: 3px; }
 
   /* Поля ввода */
   .field {

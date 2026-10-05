@@ -7,9 +7,19 @@ import markdoc from '@astrojs/markdoc';
 import sitemap from '@astrojs/sitemap';
 import keystatic from '@keystatic/astro';
 import tailwindcss from '@tailwindcss/vite';
+import { readdirSync, readFileSync } from 'node:fs';
 
 // Keystatic (админка контента) нужна только при локальной работе: в продакшен-сборку не попадает.
 const isDev = process.argv.includes('dev');
+
+// Страницы скрытых курсов собираются с noindex (например, /podarok5): в sitemap их быть не должно
+const hiddenCoursePaths = new Set(
+  readdirSync('src/content/courses')
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(`src/content/courses/${f}`, 'utf8')))
+    .filter((c) => c.status !== 'active')
+    .map((c) => c.legacyPath),
+);
 
 export default defineConfig({
   site: 'https://gripinsky.ru',
@@ -20,7 +30,8 @@ export default defineConfig({
   build: { format: 'file' },
   compressHTML: true,
   // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
-  redirects: { '/courses-page': '/courses' },
+  // Лента новостей Tilda (/news) переехала в блог; сами статьи остались по адресам /tpost/…
+  redirects: { '/courses-page': '/courses', '/news': '/blog' },
   server: { port: 4321, allowedHosts: ['.tuna.am'] },
   // Панель разработчика Astro подгружает свои модули на лету и мешает стабильной работе dev-сервера
   devToolbar: { enabled: false },
@@ -31,7 +42,7 @@ export default defineConfig({
     preact({ include: ['**/islands/**'] }),
     markdoc(),
     sitemap({
-      filter: (page) => !page.includes('/oplata/') && !page.includes('/keystatic'),
+      filter: (page) => !page.includes('/oplata/') && !page.includes('/keystatic') && !hiddenCoursePaths.has(new URL(page).pathname.replace(/\/$/, '')),
     }),
     ...(isDev ? [react({ exclude: ['**/islands/**'] }), keystatic()] : []),
   ],

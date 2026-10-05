@@ -1,0 +1,104 @@
+---
+// Индекс дизайн-прототипов: /design. Только в dev, в сборку не попадает.
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ProtoNav from '../../components/design/ProtoNav.astro';
+import { VARIANTS, protoData } from '../../components/design/data';
+import { STYLES } from '../../components/design/styles';
+import '@fontsource-variable/onest';
+import '@fontsource-variable/playfair-display';
+import '@fontsource-variable/geologica';
+import '@fontsource-variable/unbounded';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return [{ params: { index: undefined } }];
+}
+
+const d = await protoData();
+const covers: Record<string, string> = { a: 'rossoshansky-gostinaya', b: 'bolshunova-ostrov-1', c: 'zaytseva-dom-v-lesu' };
+const notes: Record<string, string[]> = {
+  a: ['Тот же порядок блоков и те же компоненты', 'Один ритм отступов: 112, 96, 64 px', 'Лайм только на H1, главной кнопке и цифрах'],
+  b: ['Работа ученика на весь первый экран', 'Шаги как журнальные развороты с номерами', 'Цены текстом и линиями, без карточек'],
+  c: ['Путь «База, Профессия, Пакет» сразу под первым экраном', 'Крупные цены и цифры, сетка 12 колонок', 'Выбор формата с заметной рамкой выбора'],
+};
+---
+<Base title="Прототипы дизайна: три варианта" description="Три направления дизайна сайта Академии 3D GRIPINSKY для выбора" noindex consult={false}>
+  <section class="wrap di">
+    <p class="t-overline">Для обсуждения</p>
+    <h1 class="t-h2">Три варианта <span class="t-accent">дизайна</span></h1>
+    <p class="di__lead">Все три сделаны на настоящих работах учеников, ценах и цифрах сайта. В каждом одни и те же блоки: первый экран, как устроено обучение, работы учеников, цена и пакет, финальный призыв. Сравнивайте впечатление и понятность, тексты можно поправить в любом варианте.</p>
+    <ul class="di__list">
+      {VARIANTS.map((v) => {
+        const w = d.work(covers[v.id]);
+        return (
+          <li class="di__item">
+            <a href={`/design/${v.id}`} class="di__link">
+              {w && <span class="di__img"><Image src={w.image} alt="" widths={[480, 800]} sizes="(min-width: 1024px) 33vw, 100vw" /></span>}
+              <span class="di__body">
+                <span class="di__letter">Вариант {v.letter}</span>
+                <span class="di__name">{v.name}</span>
+                <span class="di__idea">{v.idea}</span>
+                <ul class="di__notes">{notes[v.id].map((n) => <li>{n}</li>)}</ul>
+                <span class="di__for">{v.for}</span>
+                <span class="link" data-cta>Открыть прототип →</span>
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+    <p class="di__foot">Переключаться между вариантами можно кнопками A, B, C внизу экрана. Проверьте каждый вариант и на телефоне.</p>
+
+    <p class="t-overline di__sep">Шаг 2: стиль</p>
+    <h2 class="t-h2">Четыре <span class="t-accent">стиля</span></h2>
+    <p class="di__lead">Структура выбрана: B «Галерея» с полосой шагов и формулой пакета из C. Теперь выбираем палитру и шрифты. В каждом стиле первый экран, шаги с ценами, галерея, цена и стайл-тайл с цветами и шрифтами.</p>
+    <ul class="di__styles">
+      {STYLES.map((st) => (
+        <li>
+          <a href={`/design/style-${st.n}`} class="di__style" style={`--b:${st.vars['--bg']};--i:${st.vars['--ink']};--a:${st.vars['--accent']};--f:${st.vars['--f-display']}`}>
+            <span class="di__style-n">Стиль {st.n}{st.keepsLime ? ', лайм остаётся' : ''}</span>
+            <span class="di__style-name">{st.name}</span>
+            <span class="di__style-sw">{st.palette.map((c) => <span style={`background:${c.hex}`} title={`${c.name} ${c.hex}`}></span>)}</span>
+            <span class="di__style-f">{[...new Set([st.fonts.display, st.fonts.body, st.fonts.label])].join(' + ')}</span>
+            <span class="di__style-t">{st.tagline}</span>
+            <span class="di__style-go">Открыть стиль →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <ProtoNav slot="after-main" />
+</Base>
+
+<style>
+  .di { padding-top: 48px; padding-bottom: 112px; display: flex; flex-direction: column; gap: 16px; }
+  @media (min-width: 1024px) { .di { padding-top: 72px; } }
+  .di__lead { margin: 0 0 24px; max-width: 720px; color: var(--color-ink-2); }
+  .di__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; }
+  @media (min-width: 1024px) { .di__list { grid-template-columns: repeat(3, 1fr); } }
+  .di__link { display: flex; flex-direction: column; height: 100%; border: 1px solid var(--color-line); border-radius: 20px; overflow: hidden; color: var(--color-ink); transition: border-color .2s ease; }
+  .di__link:hover { color: var(--color-ink); border-color: var(--color-line-strong); }
+  .di__img { position: relative; display: block; aspect-ratio: 16 / 10; }
+  .di__img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .di__body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 28px; }
+  .di__letter { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-sea); }
+  .di__name { font-size: 28px; font-weight: 800; line-height: 1.1; }
+  .di__idea { color: var(--color-ink-2); }
+  .di__notes { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--color-muted); }
+  .di__for { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--color-line); font-size: 15px; color: var(--color-ink-2); }
+  .di__foot { margin: 24px 0 0; font-size: 15px; color: var(--color-muted); }
+  .di__sep { margin-top: 96px; }
+  .di__styles { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; }
+  @media (min-width: 768px) { .di__styles { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1280px) { .di__styles { grid-template-columns: repeat(4, 1fr); } }
+  .di__style { display: flex; flex-direction: column; gap: 12px; height: 100%; padding: 28px; border-radius: 20px; background: var(--b); color: var(--i); border: 1px solid rgb(231 231 231 / 0.16); }
+  .di__style:hover { color: var(--i); }
+  .di__style-n { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: .7; }
+  .di__style-name { font-family: var(--f); font-size: 30px; font-weight: 700; line-height: 1.05; text-transform: uppercase; }
+  .di__style-sw { display: flex; gap: 6px; }
+  .di__style-sw span { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgb(128 128 128 / 0.4); }
+  .di__style-f { font-size: 14px; opacity: .8; }
+  .di__style-t { font-size: 15px; line-height: 1.45; }
+  .di__style-go { margin-top: auto; padding-top: 12px; font-weight: 700; color: var(--a); }
+</style>

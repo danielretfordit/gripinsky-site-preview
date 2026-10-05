@@ -1,0 +1,20 @@
+---
+// Стилевые направления: /design/style-1 … /design/style-4. Только в dev, в сборку не попадают.
+import Base from '../../layouts/Base.astro';
+import StyleProto from '../../components/design/StyleProto.astro';
+import ProtoNav from '../../components/design/ProtoNav.astro';
+import { STYLES } from '../../components/design/styles';
+import { protoData } from '../../components/design/data';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return STYLES.map((s) => ({ params: { n: String(s.n) } }));
+}
+
+const s = STYLES.find((x) => String(x.n) === Astro.params.n)!;
+const d = await protoData();
+---
+<Base title={`Стиль ${s.n}: ${s.name}`} description={s.tagline} noindex consult={false}>
+  <StyleProto s={s} d={d} />
+  <ProtoNav group="style" current={`style-${s.n}`} slot="after-main" />
+</Base>

@@ -8,7 +8,7 @@ import Faq from '../../components/Faq.astro';
 import { CATEGORIES, isListed } from '../../lib/categories';
 import { visibleWorks, personMap } from '../../lib/people';
 import { rub } from '../../lib/format';
-import { SITE } from '../../lib/seo';
+import { SITE, courseLd, ogHref, clipText } from '../../lib/seo';
 import tildaPages from '../../../docs/tilda/pages.json';
 
 export async function getStaticPaths() {
@@ -42,22 +42,18 @@ const list = category ? all.filter((c) => category.match(c.data)).sort((a, b) =>
 // Title и description со старых страниц сохраняем (по ним уже есть позиции), но без длинных тире по правилам брифа
 const noDash = (s: string, sep: string) => s.replace(/\s+[—–-]\s+/g, sep);
 const title = prof ? prof.data.seo.title : noDash(old?.title || `${category!.h1} | GRIPINSKY`, ': ');
-const description = prof ? prof.data.seo.description : noDash(old?.description || `${category!.lead} Онлайн-курсы Академии 3D GRIPINSKY с проверкой работ и портфолио.`, ', ');
+// Описания Tilda обрезаны на 255 знаках посреди слова: оставляем целые предложения до 160 знаков, без эмодзи
+const description = prof ? prof.data.seo.description : clipText(noDash(old?.description || `${category!.lead} Онлайн-курсы Академии 3D GRIPINSKY с проверкой работ и портфолио.`, ', ').replace(/[\p{Extended_Pictographic}\uFE0F]/gu, ''));
 const crumbs = prof
   ? [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация', href: '/courses-page/visualization' }, { name: prof.data.title }]
   : [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: category!.name }];
 const minCourse = profCourses.length ? Math.min(...profCourses.map((c) => c!.data.price)) : 0;
 const pkgHref = prof ? `/courses-page/visualization?prof=${id}#package` : '';
 const jsonLd = prof
-  ? profCourses.map((c) => ({
-      '@context': 'https://schema.org', '@type': 'Course', name: c!.data.title, description: c!.data.description ?? c!.data.short,
-      provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE },
-      offers: { '@type': 'Offer', price: c!.data.price, priceCurrency: 'RUB', category: 'Paid' },
-      hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
-    }))
+  ? profCourses.map((c) => courseLd({ name: c!.data.title, description: c!.data.description ?? c!.data.short, path: c!.data.legacyPath, prices: [c!.data.price], image: c!.data.cover ? ogHref(`course-${c!.id}`) : undefined }))
   : [{ '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: list.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: SITE + c.data.legacyPath, name: c.data.title })) }];
 ---
-<Base title={title} description={description} breadcrumbs={crumbs} jsonLd={jsonLd} consultContext={prof ? `Профессия: ${prof.data.title}` : `Категория: ${category!.name}`}>
+<Base title={title} description={description} ogImage={prof ? ogHref(`prof-${id}`) : undefined} breadcrumbs={crumbs} jsonLd={jsonLd} consultContext={prof ? `Профессия: ${prof.data.title}` : `Категория: ${category!.name}`}>
   {prof ? (
     <>
       <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="prof-title">
@@ -154,7 +150,7 @@ const jsonLd = prof
       ) : (
         <p class="text-muted">Курсы этого раздела скоро появятся. Пока посмотрите <a href="/courses" class="link">все курсы</a>.</p>
       )}
-      <p class="mt-10"><a href="/courses" class="link">Все курсы академии →</a></p>
+      <p class="mt-10"><a href="/courses" class="link tap">Все курсы академии →</a></p>
     </section>
   )}
 </Base>

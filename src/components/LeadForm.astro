@@ -18,7 +18,7 @@ const { context = '', submitLabel = 'Записаться на консульт�
   <label class="flex cursor-pointer items-start gap-3 text-[14px] leading-snug text-ink-2">
     <input type="checkbox" name="consent" value="yes" required class="peer sr-only" />
     <span class="check-box mt-0.5" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
-    <span>Даю <a href="/soglasie" class="underline">согласие на обработку персональных данных</a> и принимаю <a href="/politica" class="underline">политику обработки данных</a></span>
+    <span>Даю <a href="/soglasie" class="underline" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаю <a href="/politica" class="underline" target="_blank" rel="noopener">политику обработки данных</a></span>
   </label>
   <span class="consent-error hidden text-[13px] text-[#ff8a80]" role="alert">Нужно согласие, иначе мы не сможем связаться с вами</span>
   <input type="hidden" name="context" value={context} />
@@ -54,6 +54,8 @@ const { context = '', submitLabel = 'Записаться на консульт�
         if (!valid && ok) { input.focus(); ok = false; }
       }
       form.querySelector('.consent-error')?.classList.toggle('hidden', consent.checked);
+      consent.setAttribute('aria-invalid', String(!consent.checked));
+      if (!consent.checked && ok) consent.focus();
       if (!consent.checked) ok = false;
       if (!ok) return;
 

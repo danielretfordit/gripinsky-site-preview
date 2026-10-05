@@ -1,7 +1,7 @@
 ---
 ---
 <div id="cookie-banner" hidden role="region" aria-label="Использование cookie"
-     class="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-[560px] rounded-[20px] border border-line-strong bg-bg-2 p-4 shadow-2xl sm:p-5 sm:inset-x-6 sm:bottom-6 md:left-6 md:right-auto">
+     class="fixed inset-x-3 bottom-[calc(0.75rem+var(--sticky-bar-h,0px))] z-[60] mx-auto max-w-[560px] rounded-[20px] border border-line-strong bg-bg-2 p-4 shadow-2xl sm:p-5 sm:inset-x-6 sm:bottom-[calc(1.5rem+var(--sticky-bar-h,0px))] md:left-6 md:right-auto">
   <p class="m-0 text-[14px] leading-snug text-ink-2 sm:text-[15px] sm:leading-relaxed">
     Мы используем cookie, чтобы сайт работал, а с вашего согласия ещё и для аналитики (Яндекс Метрика).
     Подробнее в <a href="/politica" class="underline">политике обработки данных</a>.
@@ -17,10 +17,26 @@
   const banner = document.getElementById('cookie-banner');
   if (banner && !getConsent()) {
     banner.hidden = false;
+    // Сколько места снизу занимает баннер: столько же оставляем при прокрутке к якорю и переходе фокуса (scroll-padding-bottom)
+    const root = document.documentElement;
+    const measure = () => {
+      const h = banner.hidden ? '0px' : `${Math.max(0, Math.round(window.innerHeight - banner.getBoundingClientRect().top))}px`;
+      if (root.style.getPropertyValue('--cookie-h') !== h) root.style.setProperty('--cookie-h', h);
+    };
+    // Панель пакета меняет --sticky-bar-h на <html>, баннер при этом поднимается: пересчитываем
+    const ro = new ResizeObserver(measure);
+    ro.observe(banner);
+    window.addEventListener('resize', measure);
+    const mo = new MutationObserver(measure);
+    mo.observe(root, { attributes: true, attributeFilter: ['style'] });
     banner.querySelectorAll<HTMLButtonElement>('[data-cookie]').forEach((b) =>
       b.addEventListener('click', () => {
         setConsent(b.dataset.cookie === 'all' ? 'all' : 'necessary');
         banner.hidden = true;
+        ro.disconnect();
+        mo.disconnect();
+        window.removeEventListener('resize', measure);
+        root.style.setProperty('--cookie-h', '0px');
       }),
     );
   }

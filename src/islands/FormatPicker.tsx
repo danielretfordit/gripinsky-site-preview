@@ -1,5 +1,5 @@
 import { useStore } from '@nanostores/preact';
-import { $pkg } from '../stores/package';
+import { $pkg, openCheckout } from '../stores/package';
 import { basePrice, quoteBaseOnly, type Catalog, type TariffId } from '../lib/pricing';
 import { reachGoal } from '../lib/analytics';
 import { rub, sp, Check, Cross, onRadioKeys, scrollToId } from './ui';
@@ -17,7 +17,7 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
   const buyBase = () => {
     const q = quoteBaseOnly(cat, cur.id);
     reachGoal('base_buy_click', { tariff: cur.id, sum: q.total });
-    window.dispatchEvent(new CustomEvent('gr:checkout', { detail: { kind: 'base', tariff: cur.id } }));
+    openCheckout({ kind: 'base', tariff: cur.id });
   };
 
   return (

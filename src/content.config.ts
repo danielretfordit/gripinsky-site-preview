@@ -228,6 +228,8 @@ const blog = defineCollection({
     cover: image().nullish(),
     coverAlt: z.string().nullish(),
     related: z.array(reference('courses')).default([]),
+    /** Адрес статьи на Tilda (/tpost/…): перенесённая статья собирается по нему */
+    legacyPath: z.string().nullish(),
     draft: z.boolean().default(false),
   }),
 });

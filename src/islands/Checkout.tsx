@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { $pkg } from '../stores/package';
-import { quote, quoteBaseOnly, quoteCourse, type Catalog, type Quote, type Selection, type TariffId } from '../lib/pricing';
+import { $pkg, $checkout, type CheckoutRequest } from '../stores/package';
+import { quote, quoteBaseOnly, quoteCourse, type Catalog, type Quote, type Selection } from '../lib/pricing';
 import { reachGoal } from '../lib/analytics';
 import { readUtm } from '../lib/utm';
 import { rub, sp, CheckBox } from './ui';
 
 interface Props { cat?: Catalog; months?: number; telegramBot: string }
-type Detail = { kind: 'package' } | { kind: 'base'; tariff: TariffId } | { kind: 'course'; id: string; name: string; price: number };
+type Detail = CheckoutRequest;
 type Status = 'form' | 'sending' | 'demo' | 'error';
 
 /** Оформление заказа: состав, контакты, согласие. Сумму считает сервер по тем же правилам. */
@@ -18,17 +18,15 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [consent, setConsent] = useState(false);
 
-  useEffect(() => {
-    const open = (e: Event) => {
-      setDetail((e as CustomEvent<Detail>).detail ?? { kind: 'package' });
-      setSel($pkg.get());
-      setStatus('form');
-      setErrors({});
-      ref.current?.showModal();
-    };
-    window.addEventListener('gr:checkout', open);
-    return () => window.removeEventListener('gr:checkout', open);
-  }, []);
+  useEffect(() => $checkout.subscribe((req) => {
+    if (!req) return;
+    $checkout.set(null);
+    setDetail(req);
+    setSel($pkg.get());
+    setStatus('form');
+    setErrors({});
+    if (ref.current && !ref.current.open) ref.current.showModal();
+  }), []);
 
   const q: Quote | null = detail.kind === 'course' ? quoteCourse(detail, cat?.installmentMonths ?? months)
     : !cat ? null : detail.kind === 'base' ? quoteBaseOnly(cat, detail.tariff) : quote(cat, sel);
@@ -45,8 +43,10 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
       consent: !consent,
     };
     setErrors(errs);
-    if (Object.values(errs).some(Boolean)) {
-      form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+    // Фокус на первое поле с ошибкой. Атрибуты aria-invalid ещё старые (Preact перерисует позже), поэтому ищем по имени
+    const first = (['name', 'email', 'phone', 'consent'] as const).find((k) => errs[k]);
+    if (first) {
+      form.querySelector<HTMLElement>(first === 'consent' ? 'input[type="checkbox"]' : `[name="${first}"]`)?.focus();
       return;
     }
     setStatus('sending');
@@ -75,7 +75,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
 
   return (
     <dialog ref={ref} aria-labelledby="checkout-title"
-      class="m-auto w-[min(640px,calc(100vw-24px))] max-h-[calc(100dvh-24px)] overflow-y-auto rounded-[24px] border border-line-strong bg-bg-2 p-0 text-ink backdrop:bg-[rgb(6_16_18/0.8)]"
+      class="m-auto w-[min(640px,calc(100vw-24px))] max-h-[calc(100dvh-24px)] overflow-y-auto overscroll-contain rounded-[24px] border border-line-strong bg-bg-2 p-0 text-ink backdrop:bg-[rgb(6_16_18/0.8)]"
       onClick={(e) => { if (e.target === ref.current) close(); }}>
       <div class="flex flex-col gap-5 p-5 sm:p-8">
         <div class="flex items-start justify-between gap-4">

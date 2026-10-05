@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import BlogPost from '../../components/BlogPost.astro';
+
+// Статьи, перенесённые из блога Tilda: адреса /tpost/<slug> сохраняются, чтобы не терять позиции и внешние ссылки
+export async function getStaticPaths() {
+  return (await getCollection('blog', (p) => !p.data.draft && Boolean(p.data.legacyPath?.startsWith('/tpost/'))))
+    .map((p) => ({ params: { slug: p.data.legacyPath!.slice('/tpost/'.length) }, props: { post: p } }));
+}
+const { post } = Astro.props;
+---
+<BlogPost post={post} />

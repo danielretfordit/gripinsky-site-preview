@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
-import { $pkg } from '../stores/package';
+import { $pkg, openCheckout } from '../stores/package';
 import { quote, type Catalog } from '../lib/pricing';
 import { rub, sp } from './ui';
 
@@ -37,18 +37,30 @@ export default function StickyPackageBar({ cat }: Props) {
   }, []);
 
   const visible = past && !blocked;
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // Высота видимой панели для остальных фиксированных слоёв (cookie-баннер встаёт над ней)
+  // и для scroll-padding-bottom: фокус и якоря не уходят под панель
+  useEffect(() => {
+    const root = document.documentElement;
+    const set = () => root.style.setProperty('--sticky-bar-h', visible && barRef.current ? `${barRef.current.offsetHeight}px` : '0px');
+    set();
+    const ro = new ResizeObserver(set);
+    if (barRef.current) ro.observe(barRef.current);
+    return () => { ro.disconnect(); root.style.setProperty('--sticky-bar-h', '0px'); };
+  }, [visible, sheet]);
   const q = quote(cat, pkg);
   const prof = cat.professions[pkg.prof];
   const title = [pkg.base ? 'База' : null, ...q.lines.filter((l) => l.kind === 'item' && l.id !== 'baza').map((l) => l.name)].filter(Boolean).join(' + ');
   const tariff = cat.tariffs.find((t) => t.id === pkg.tariff)!;
-  const checkout = () => window.dispatchEvent(new CustomEvent('gr:checkout', { detail: { kind: 'package' } }));
+  const checkout = () => openCheckout({ kind: 'package' });
 
   return (
-    <div aria-hidden={!visible} inert={!visible}
+    <div ref={barRef} aria-hidden={!visible} inert={!visible}
       class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(13_32_35/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {sheet && (
-        <div class="wrap max-h-[50vh] overflow-y-auto border-b border-line py-4" id="sticky-sheet">
+        <div class="wrap max-h-[50vh] overflow-y-auto overscroll-contain border-b border-line py-4" id="sticky-sheet">
           <span class="t-overline">Состав пакета</span>
           <ul class="m-0 mt-2 flex list-none flex-col gap-1.5 p-0 text-[15px]">
             {q.lines.map((l) => (

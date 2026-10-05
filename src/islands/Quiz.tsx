@@ -32,12 +32,20 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
   const done = games || answers.length === QS.length;
   const cur = variant === 'home' && dir === null ? DIRECTION : QS[answers.length];
 
+  // Фокус переносим только после действий посетителя. На главной тест открыт сразу,
+  // и перенос фокуса при загрузке уводил клавиатуру и экранный диктор в середину страницы
+  const touched = useRef(false);
+  const wasOpen = useRef(open);
   useEffect(() => {
-    if (!open) return;
+    // Тест открыли кнопкой «Пройти тест» или ссылкой в первом экране: это тоже действие посетителя
+    if (open && !wasOpen.current) touched.current = true;
+    wasOpen.current = open;
+    if (!open || !touched.current) return;
     (done ? resRef.current : qRef.current)?.focus({ preventScroll: true });
   }, [answers.length, dir, open, done]);
 
   const pick = (v: number | string) => {
+    touched.current = true;
     if (answered === 0) reachGoal('test_start', { variant });
     if (variant === 'home' && dir === null) { setDir(String(v)); if (v === 'games') reachGoal('test_complete', { result: 'games' }); return; }
     const next = [...answers, v];
@@ -45,10 +53,11 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
     if (next.length === QS.length) reachGoal('test_complete', { variant, prof: String(next[2]), tariff: String(next[3]) });
   };
   const back = () => {
+    touched.current = true;
     if (answers.length) setAnswers(answers.slice(0, -1));
     else if (variant === 'home') setDir(null);
   };
-  const reset = () => { setAnswers([]); setDir(variant === 'home' ? null : 'viz'); };
+  const reset = () => { touched.current = true; setAnswers([]); setDir(variant === 'home' ? null : 'viz'); };
 
   if (!open) {
     if (variant === 'home') {
@@ -87,12 +96,15 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
     price = q.total; monthly = q.monthly;
   }
 
-  const apply = () => {
+  /** toPackage = false: ссылка сама ведёт к консультации, пакет только применяем, без прокрутки и переноса фокуса */
+  const apply = (toPackage = true) => {
     if (!result) return;
     $pkg.set({ base: result.base, prof: result.prof, courses: result.courses, addons: [], tariff: result.tariff });
     $quiz.set(result);
     try { sessionStorage.setItem('gr-quiz-summary', `${result.level}; ${cat.professions[result.prof].title}${result.unsure ? ' (не уверен)' : ''}; ${TN[result.tariff]}`); } catch {}
     reachGoal('test_apply', { prof: result.prof, base: result.base, tariff: result.tariff });
+    // «Подобрать со специалистом»: подборка уйдёт в заявку, ссылка сама ведёт к форме на этой же странице
+    if (!toPackage) return;
     if (variant === 'home') {
       const q = new URLSearchParams({ prof: result.prof, tariff: result.tariff });
       if (!result.base) q.set('base', '0');
@@ -102,7 +114,6 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
       return;
     }
     scrollToId('package');
-    document.getElementById('package-summary')?.classList.add('flash');
   };
   const tgStart = result ? `quiz_${result.prof}_${result.base ? 'b' : 'n'}_${result.tariff}` : 'quiz';
 
@@ -169,11 +180,11 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
             <div class="flex flex-wrap items-center gap-3">
               {result.unsure ? (
                 <>
-                  <a href="#consult" class="btn btn-primary btn-lg" onClick={apply}>Подобрать со специалистом</a>
-                  <button type="button" class="btn btn-secondary btn-lg" onClick={apply}>Показать пакет ↓</button>
+                  <a href="#consult" class="btn btn-primary btn-lg" onClick={() => apply(false)}>Подобрать со специалистом</a>
+                  <button type="button" class="btn btn-secondary btn-lg" onClick={() => apply()}>Показать пакет ↓</button>
                 </>
               ) : (
-                <button type="button" class="btn btn-primary btn-lg" onClick={apply}>Показать пакет и цену ↓</button>
+                <button type="button" class="btn btn-primary btn-lg" onClick={() => apply()}>Показать пакет и цену ↓</button>
               )}
               <a href={`${telegramBot}?start=${tgStart}`} class="link" onClick={() => reachGoal('tg_click', { place: 'quiz' })}>Сохранить подборку в Telegram</a>
               <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-sea">Пройти заново</button>

@@ -19,29 +19,25 @@ import Checkout from '../../islands/Checkout';
 import { getEntry } from 'astro:content';
 import { getCatalog } from '../../lib/catalog';
 import { professionViews, tariffViews, professionTexts, faqLd } from '../../lib/views';
-import { SITE } from '../../lib/seo';
+import { courseLd } from '../../lib/seo';
 
 const site = (await getEntry('settings', 'site'))!.data;
 const cat = await getCatalog();
 const [professions, tariffs, texts, faq] = await Promise.all([professionViews(), tariffViews(), professionTexts(), faqLd('viz')]);
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
 const installmentNote = site.installment.note.replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();
-const courseLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Course',
+const baseLd = courseLd({
   name: 'База 3D-визуализатора',
   description: 'Онлайн-курс 3D-визуализации с нуля: моделирование в 3ds Max, рендер в Corona, нейросети в работе. 230 уроков, доступ на год.',
-  provider: { '@type': 'Organization', name: 'Академия 3D GRIPINSKY', sameAs: SITE },
-  inLanguage: 'ru',
-  offers: { '@type': 'Offer', price: cat.base.price, priceCurrency: 'RUB', category: 'Paid', availability: 'https://schema.org/InStock', url: `${SITE}/courses-page/visualization` },
-  hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseWorkload: 'P12M' },
-};
+  path: '/courses-page/visualization',
+  prices: [cat.base.price],
+});
 ---
 <Base
   title="Курсы 3D-визуализации онлайн с нуля: 3ds Max и Corona | GRIPINSKY"
   description="Курсы 3D-визуализации интерьеров и экстерьеров с нуля: 3ds Max, Corona, ИИ в 3D. Портфолио из 104 моделей и 7 визуализаций, проекты по ТЗ. База от 29 900 ₽, рассрочка."
   breadcrumbs={crumbs}
-  jsonLd={[courseLd, faq]}
+  jsonLd={[baseLd, faq]}
   consultContext="Направление 3D-визуализация"
 >
   <Hero crumbs={crumbs} basePrice={cat.base.price} months={cat.installmentMonths} />

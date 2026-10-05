@@ -2,11 +2,12 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { postHref } from '../../lib/blog';
 const posts = (await getCollection('blog', (p) => !p.data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Блог' }];
 const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-<Base title="Блог Академии 3D GRIPINSKY: 3D-визуализация, заказы, компьютер" description="Статьи о 3D-визуализации: какой нужен компьютер, где брать заказы, как выбрать профессию в 3D." breadcrumbs={crumbs} consultContext="Блог">
+<Base title="Блог Академии 3D GRIPINSKY: статьи о 3D, новости программ, интервью" description="Статьи о 3D-визуализации и моделировании, новости 3ds Max, Corona, Blender и других программ, интервью с педагогами, итоги конкурсов и встреч академии." breadcrumbs={crumbs} consultContext="Блог">
   <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="blog-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <h1 id="blog-title" class="t-display mb-10">Блог <span class="t-accent">академии</span></h1>
@@ -14,7 +15,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 
       {posts.map((p) => (
         <li class="card lift relative flex flex-col gap-3 p-6 md:p-8">
           <time datetime={p.data.date.toISOString()} class="text-[14px] text-muted">{fmt(p.data.date)}</time>
-          <h2 class="t-h3"><a href={`/blog/${p.id}`} class="text-ink after:absolute after:inset-0 hover:text-white">{p.data.title}</a></h2>
+          <h2 class="t-h3"><a href={postHref(p)} class="text-ink after:absolute after:inset-0 hover:text-white">{p.data.title}</a></h2>
           <p class="m-0 text-ink-2">{p.data.description}</p>
           <span class="mt-auto font-semibold text-lime" data-cta>Читать →</span>
         </li>
