@@ -17,7 +17,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 
           <time datetime={p.data.date.toISOString()} class="text-[14px] text-muted">{fmt(p.data.date)}</time>
           <h2 class="t-h3"><a href={postHref(p)} class="text-ink after:absolute after:inset-0 hover:text-white">{p.data.title}</a></h2>
           <p class="m-0 text-ink-2">{p.data.description}</p>
-          <span class="mt-auto font-semibold text-lime" data-cta>Читать →</span>
+          <span class="mt-auto font-semibold text-ink" data-cta>Читать →</span>
         </li>
       ))}
     </ul>

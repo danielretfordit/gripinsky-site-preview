@@ -1,10 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Hero from '../../components/viz/Hero.astro';
+import HeroWork from '../../components/HeroWork.astro';
+import PathStrip from '../../components/PathStrip.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import SubNav from '../../components/viz/SubNav.astro';
 import Results from '../../components/viz/Results.astro';
-import About from '../../components/viz/About.astro';
-import Ladder from '../../components/viz/Ladder.astro';
 import BaseStep from '../../components/viz/BaseStep.astro';
 import MoneyOrders from '../../components/viz/MoneyOrders.astro';
 import NoRisk from '../../components/viz/NoRisk.astro';
@@ -20,11 +20,27 @@ import { getEntry } from 'astro:content';
 import { getCatalog } from '../../lib/catalog';
 import { professionViews, tariffViews, professionTexts, faqLd } from '../../lib/views';
 import { courseLd } from '../../lib/seo';
+import { workViews } from '../../lib/works';
+import { rub, sp } from '../../lib/format';
 
 const site = (await getEntry('settings', 'site'))!.data;
 const cat = await getCatalog();
 const [professions, tariffs, texts, faq] = await Promise.all([professionViews(), tariffViews(), professionTexts(), faqLd('viz')]);
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
+const wv = await workViews();
+const hero = wv.work('bolshunova-banya-1') ?? wv.work('bolshunova-ostrov-1')!;
+const profMin = Math.min(...Object.values(cat.professions).flatMap((p) => p.courses.map((c) => c.price)));
+const steps = [
+  { n: '01', title: 'База', sub: '3ds Max, Corona и ИИ в 3D, 230 уроков', price: `от ${rub(cat.base.price)}`, href: '#base' },
+  { n: '02', title: 'Профессия', sub: 'Интерьеры, экстерьеры или модели для стоков', price: `от ${rub(profMin)}`, href: '#profession' },
+  { n: '03', title: 'Пакет', sub: 'База и профессия вместе, подарок к профессии', price: `от ${rub(cat.base.price + profMin)}`, href: '#package' },
+];
+const st = site.stats;
+const stats = [
+  { value: st.graduates, label: 'выпускников' },
+  { value: st.rating, label: 'на Яндекс Картах', href: site.yandexMaps },
+  { value: '104 + 7', label: 'моделей и визуализаций в портфолио' },
+];
 const installmentNote = site.installment.note.replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();
 const baseLd = courseLd({
   name: 'База 3D-визуализатора',
@@ -40,29 +56,37 @@ const baseLd = courseLd({
   jsonLd={[baseLd, faq]}
   consultContext="Направление 3D-визуализация"
 >
-  <Hero crumbs={crumbs} basePrice={cat.base.price} months={cat.installmentMonths} />
+  <HeroWork work={hero} kicker="Направление" id="hero-title">
+    <Breadcrumbs slot="top" items={crumbs} class="[text-shadow:0_1px_8px_rgb(0_0_0/0.6)] [&_a]:!text-ink-2 [&_li]:!text-ink-2" />
+    <h1 slot="title" id="hero-title" class="t-hero">Курсы <span class="whitespace-nowrap">3D-визуализации</span> <span class="t-accent block">с нуля до заказов</span></h1>
+    <p slot="lead" class="t-lead m-0 max-w-[540px] !text-ink">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. С нуля или чтобы закрыть пробелы, если вы уже работаете в 3D.</p>
+    <Fragment slot="cta">
+      <a href="#base" class="btn btn-primary btn-lg">Начать с базы</a>
+      <a href="/vizualization3_mini" class="link tap" data-goal="trial_click">Бесплатные уроки →</a>
+    </Fragment>
+  </HeroWork>
+  <PathStrip label="Как учимся: три шага" steps={steps} stats={stats} />
+  <p class="wrap mt-5 text-[15px] text-muted">База от {rub(cat.base.price)} или {sp(Math.ceil(cat.base.price / cat.installmentMonths))}&nbsp;₽/мес в рассрочку. Не знаете, с чего начать? <a href="#quiz" class="link" data-open-quiz>Тест за 1 минуту</a></p>
   <SubNav />
   <Results />
-  <About />
-  <Ladder />
 
-  <section id="quiz" class="wrap section-tight scroll-mt-16" aria-label="Тест: с чего начать">
+  <section id="quiz" class="wrap section scroll-mt-16" aria-label="Тест: с чего начать">
     <Quiz client:load cat={cat} variant="viz" telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
   </section>
 
   <BaseStep />
 
-  <section id="base-format" class="wrap pb-16 pt-6 md:pb-24" aria-labelledby="format-title">
-    <div class="mb-7 flex flex-col gap-3">
-      <span class="t-overline">Шаг 1. Формат обучения</span>
+  <section id="base-format" class="wrap subsection" aria-labelledby="format-title">
+    <div class="head">
+      <p class="t-overline m-0">Шаг 01. Формат обучения</p>
       <h2 id="format-title" class="t-h2" tabindex="-1">Формат: <span class="t-accent">как будете учиться</span></h2>
-      <p class="m-0 max-w-[760px] text-ink-2">Программа одна: 230 уроков и доступ на год. Формат решает, сколько помощи вы получите по дороге. Выбранный формат действует для всего пакета.</p>
+      <p class="text-ink-2">Программа одна: 230 уроков и доступ на год. Формат решает, сколько помощи вы получите по дороге. Выбранный формат действует для всего пакета.</p>
     </div>
     <FormatPicker client:load cat={cat} tariffs={tariffs} trialHref="/vizualization3_mini" />
   </section>
 
-  <section id="profession" class="wrap pb-10 pt-16 md:pt-24" aria-labelledby="profession-title">
-    <div class="mb-8">
+  <section id="profession" class="wrap section" aria-labelledby="profession-title">
+    <div class="mb-[var(--space-head)]">
       <StepHeader step={2} chip="После базы" note="учитесь работать за деньги: ТЗ, заказчик, цена" title="Профессия:" accent="кем хотите работать?" id="profession-title" />
     </div>
     <ProfessionPicker client:load cat={cat} professions={professions} />
@@ -70,11 +94,11 @@ const baseLd = courseLd({
 
   <MoneyOrders />
 
-  <section id="package" class="wrap pb-16 pt-10 md:pb-24 md:pt-16" aria-labelledby="package-title">
-    <div class="mb-7 flex flex-col gap-3">
-      <span class="t-overline">Шаг 2. Ваш пакет</span>
+  <section id="package" class="wrap subsection" aria-labelledby="package-title">
+    <div class="head">
+      <p class="t-overline m-0">Шаг 03. Ваш пакет</p>
       <h2 id="package-title" class="t-h2" tabindex="-1">Пакет: <span class="t-accent">соберите свой</span></h2>
-      <p class="m-0 max-w-[760px] text-ink-2">Подарок к профессии уже внутри, а ниже курсы, которые усилят портфолио. Итог и рассрочка считаются сразу.</p>
+      <p class="text-ink-2">Подарок к профессии уже внутри, а ниже курсы, которые усилят портфолио. Итог и рассрочка считаются сразу.</p>
     </div>
     <PackageSummary client:load cat={cat} addonTexts={texts.addonTexts} giftTexts={texts.giftTexts} installmentNote={installmentNote} />
   </section>

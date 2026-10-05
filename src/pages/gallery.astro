@@ -45,7 +45,7 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
         <h1 id="gallery-title" class="t-display">Работы <span class="t-accent">учеников</span></h1>
         <p class="t-lead max-w-[720px]">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
       </div>
-      <span class="t-hand text-sea" aria-hidden="true">и это только начало</span>
+      <span class="t-quote text-muted" aria-hidden="true">и это только начало</span>
     </div>
 
     <div role="group" aria-label="Категории работ" class="snap-row mb-8 !grid-flow-col !auto-cols-max max-w-full self-start" data-gallery-filters>
@@ -58,20 +58,20 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
     <ul class="m-0 list-none columns-2 gap-3 p-0 sm:gap-5 md:columns-3" data-gallery>
       {items.map(({ w, big, author, teacher }, i) => (
         <li class="mb-3 break-inside-avoid sm:mb-5" data-cats={w.data.categories.join(' ')}>
-          <button type="button" class="zoom group block w-full overflow-hidden rounded-[18px] border-0 bg-bg-2 p-0 text-left" data-open={i}
+          <button type="button" class="zoom group block w-full overflow-hidden rounded-card border-0 bg-bg-2 p-0 text-left" data-open={i}
             data-full={big} data-title={w.data.title} data-author={author} aria-label={`Открыть крупно: ${w.data.title}, ${author}`}>
             <Image src={w.data.image} alt={w.data.alt} widths={[360, 560, 800]} sizes="(min-width: 1024px) 33vw, 50vw" class="block h-auto w-full" />
           </button>
           <span class="mt-2 flex flex-col px-1 text-[14px] leading-snug">
             <b class="text-ink">{author}{teacher ? ', педагог' : ''}</b>
             <span class="text-muted">{w.data.title}</span>
-            {w.data.awards.length > 0 && <span class="text-sea">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
+            {w.data.awards.length > 0 && <span class="text-muted">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
           </span>
         </li>
       ))}
     </ul>
 
-    <div class="mt-12 grid gap-5 rounded-[24px] bg-sea-08 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+    <div class="mt-12 grid gap-5 rounded-card bg-surface p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
       <span class="flex flex-col gap-1.5"><b class="text-[22px]">Хотите так же?</b><span class="text-ink-2">Начните с базы: моделирование в 3ds Max и рендер в Corona. Тест за 1 минуту подскажет, с какого шага начать.</span></span>
       <span class="flex flex-col gap-3 sm:flex-row">
         <a href="/courses-page/visualization#quiz" class="btn btn-primary btn-lg">Подобрать курс</a>
@@ -86,8 +86,8 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
       <p class="m-0 flex flex-wrap items-baseline justify-center gap-x-3 text-center"><b data-lb-author></b><span class="text-muted" data-lb-title></span><span class="text-[14px] text-muted" data-lb-count></span></p>
     </div>
     <button type="button" class="absolute right-3 top-3 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-bg text-2xl" data-lb-close aria-label="Закрыть">×</button>
-    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(13_32_35/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
-    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(13_32_35/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
+    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(14_17_18/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
+    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(14_17_18/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
   </dialog>
 </Base>
 

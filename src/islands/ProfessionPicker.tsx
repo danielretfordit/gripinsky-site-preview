@@ -36,7 +36,7 @@ export default function ProfessionPicker({ cat, professions }: Props) {
         <span><b class="text-ink">Уже знаю 3ds Max и Corona.</b> Базу пропускаю, выбираю только профессию.</span>
       </label>
       {!pkg.base && (
-        <p class="-mt-4 m-0 rounded-2xl bg-sea-08 px-4 py-3 text-[15px] text-ink-2">
+        <p class="-mt-4 m-0 rounded-2xl bg-surface px-4 py-3 text-[15px] text-ink-2">
           Без базы курсы PRO будут сложными, если вы ещё не уверенно моделируете и не делаете рендер в Corona. Сомневаетесь? <a href="#quiz" class="link">Пройдите тест</a>.
         </p>
       )}
@@ -52,7 +52,7 @@ export default function ProfessionPicker({ cat, professions }: Props) {
                 class="h-[72px] w-[72px] rounded-xl bg-white md:absolute md:inset-0 md:h-full md:w-full md:rounded-none"
                 style={{ objectFit: p.image.fit, objectPosition: p.image.pos, opacity: on ? 1 : 0.85 }} />
               <span class="hidden md:absolute md:inset-0 md:block md:bg-[linear-gradient(180deg,rgba(13,32,35,0)_30%,rgba(13,32,35,0.92))]" />
-              <span class={`absolute right-3 top-3 hidden items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-semibold md:inline-flex ${on ? 'bg-lime text-bg' : 'bg-[rgb(231_231_231/0.85)] text-bg'}`}>
+              <span class={`absolute right-3 top-3 hidden items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-semibold md:inline-flex ${on ? 'bg-ink text-bg' : 'bg-[rgb(236_236_230/0.85)] text-bg'}`}>
                 {on ? <><Check size={12} /> выбрано</> : 'выбрать'}
               </span>
               <span class="flex flex-col gap-0.5 md:absolute md:bottom-3.5 md:left-[18px] md:right-[18px]">
@@ -75,7 +75,7 @@ export default function ProfessionPicker({ cat, professions }: Props) {
             const on = active.has(c.id);
             const multi = cur.courses.length > 1;
             return (
-              <div key={c.id} class={`flex flex-col gap-2 border-l-[3px] py-2 pl-5 ${on ? 'border-sea' : 'border-line'}`} style={{ opacity: on ? 1 : 0.7 }}>
+              <div key={c.id} class={`flex flex-col gap-2 border-l-[3px] py-2 pl-5 ${on ? 'border-ink' : 'border-line'}`} style={{ opacity: on ? 1 : 0.7 }}>
                 {multi && (
                   <label class="mb-1 inline-flex min-h-11 cursor-pointer items-center gap-2.5 self-start text-[15px] font-semibold">
                     <input type="checkbox" class="sr-only" checked={on} disabled={on && active.size === 1} onChange={() => toggleCourse(c.id)} />
@@ -88,9 +88,9 @@ export default function ProfessionPicker({ cat, professions }: Props) {
                   <span class="whitespace-nowrap text-[19px] font-extrabold">{rub(c.price)}</span>
                 </div>
                 <span class="text-[15px] leading-normal text-ink-2">{c.description}</span>
-                <span class="text-[15px]"><b class="text-sea">Итог:</b> {c.final}</span>
+                <span class="text-[15px]"><b class="text-muted">Итог:</b> {c.final}</span>
                 <details>
-                  <summary class="inline-flex min-h-11 items-center text-[15px] font-semibold text-lime">Программа: {c.meta} <span class="details-arrow ml-1.5">↓</span></summary>
+                  <summary class="inline-flex min-h-11 items-center text-[15px] font-semibold text-ink">Программа: {c.meta} <span class="details-arrow ml-1.5">↓</span></summary>
                   <ol class="m-0 mt-1 grid gap-1.5 pl-5 text-[15px] text-ink-2">
                     {c.blocks.map((b) => <li key={b}>{b}</li>)}
                   </ol>

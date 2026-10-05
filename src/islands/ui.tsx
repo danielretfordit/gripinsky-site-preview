@@ -30,7 +30,7 @@ export function Gift({ size = 18 }: { size?: number }) {
 
 export function CheckBox({ on }: { on: boolean }) {
   return (
-    <span class={`check-box ${on ? '!border-lime !bg-lime' : ''}`} aria-hidden="true">
+    <span class={`check-box ${on ? '!border-ink !bg-ink' : ''}`} aria-hidden="true">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" style={{ opacity: on ? 1 : 0 }}>
         <path d="M20 6 9 17l-5-5" />
       </svg>

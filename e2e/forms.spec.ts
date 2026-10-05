@@ -35,6 +35,7 @@ test.describe('покупка курса', () => {
   }
 
   test('«Купить курс» нажали до загрузки диалога: оформление всё равно открывается', async ({ page }) => {
+    test.skip(!!process.env.BASE_URL && !process.env.BASE_URL.includes(':4321'), 'задержку загрузки острова можно смоделировать только на dev-сервере (в сборке у файлов хэши)');
     // Задерживаем загрузку острова оформления, как на медленном телефоне
     await page.route(/\/src\/islands\/Checkout\.tsx/, async (route) => { await new Promise((r) => setTimeout(r, 2500)); await route.continue(); });
     await page.goto('/interiorpro', { waitUntil: 'domcontentloaded' });
@@ -92,7 +93,7 @@ test.describe('FAQ', () => {
   for (const path of ['/courses-page/visualization', '/', '/ai', '/courses-page/interior']) {
     test(`${path}: вопросы открываются и закрываются, страница не прыгает`, async ({ page }) => {
       await page.goto(path);
-      const items = page.locator('details:has(> summary .text-sea), details.faq');
+      const items = page.locator('details.faq');
       const n = await items.count();
       expect(n).toBeGreaterThan(2);
       for (let i = 0; i < Math.min(n, 4); i++) {

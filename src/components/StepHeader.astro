@@ -2,17 +2,12 @@
 interface Props { step: number; chip: string; note?: string; title: string; accent: string; lead?: string; id?: string }
 const { step, chip, note, title, accent, lead, id } = Astro.props;
 ---
-<div class="grid grid-cols-[auto_1fr] items-center gap-4 sm:gap-7">
-  <span class="flex h-16 w-16 flex-col items-center justify-center rounded-full bg-lime leading-none text-bg sm:h-[88px] sm:w-[88px]" aria-hidden="true">
-    <span class="text-[11px] font-extrabold uppercase tracking-[0.08em] sm:text-[12px]">Шаг</span>
-    <span class="text-[30px] font-extrabold sm:text-[40px]">{step}</span>
-  </span>
-  <div class="flex flex-col gap-2.5">
-    <span class="flex flex-wrap items-center gap-x-3 gap-y-1">
-      <span class="chip !bg-transparent !text-lime ring-[1.5px] ring-lime">{chip}</span>
-      {note && <span class="text-[15px] text-muted">{note}</span>}
-    </span>
-    <h2 id={id} class="t-h2" tabindex="-1"><span class="sr-only">Шаг {step}. </span>{title} <span class="t-accent">{accent}</span></h2>
-  </div>
-  {lead && <p class="col-span-2 m-0 max-w-[820px] text-ink-2 sm:col-start-2 sm:col-span-1">{lead}</p>}
+<div class="head !mb-0">
+  <p class="m-0 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+    <span class="t-overline">Шаг {String(step).padStart(2, '0')}</span>
+    <span class="chip">{chip}</span>
+    {note && <span class="text-[15px] text-muted">{note}</span>}
+  </p>
+  <h2 id={id} class="t-h2" tabindex="-1"><span class="sr-only">Шаг {step}. </span>{title} <span class="t-accent">{accent}</span></h2>
+  {lead && <p class="t-lead max-w-[720px]">{lead}</p>}
 </div>

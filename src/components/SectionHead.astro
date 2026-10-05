@@ -9,5 +9,5 @@ const { overline, title, accent, lead, hand, id, as: Tag = 'h2', class: cls = ''
     {lead && <p class="t-body m-0 max-w-[760px] text-muted">{lead}</p>}
     <slot />
   </div>
-  {hand && <div class="t-hand text-sea md:text-right" aria-hidden="true">{hand}</div>}
+  {hand && <p class="t-overline m-0 max-w-[360px] md:text-right" aria-hidden="true">{hand}</p>}
 </div>

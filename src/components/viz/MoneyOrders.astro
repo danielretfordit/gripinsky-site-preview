@@ -8,23 +8,23 @@ const channels = [
   { title: '3D-стоки', text: 'Модель делается один раз и продаётся годами. Курс «Моделирование под стоки» создан вместе с 3DDD.' },
 ];
 ---
-<section id="money" class="wrap section-tight" aria-labelledby="money-title">
+<section id="money" class="wrap subsection" aria-labelledby="money-title">
   <div class="grid gap-8 md:grid-cols-[5fr_7fr] md:gap-12">
     <div class="flex flex-col gap-4">
-      <span class="t-overline">После обучения</span>
+      <p class="t-overline m-0">После обучения</p>
       <h2 id="money-title" class="t-h2">Заказы: <span class="t-accent">где их брать</span></h2>
       <p class="m-0 text-ink-2">Профессия учит не только рендеру, но и работе за деньги: как найти заказчика, сколько просить и как защитить проект.</p>
       {kazakov && (
-        <figure class="m-0 mt-2 flex flex-col gap-3 rounded-[20px] bg-sea-08 p-6">
-          <blockquote class="m-0 text-[17px] leading-normal">{kazakov.text}</blockquote>
+        <figure class="m-0 mt-2 flex flex-col gap-3 border-t border-line pt-5">
+          <blockquote class="t-quote m-0 !text-[19px]">{kazakov.text}</blockquote>
           <figcaption class="t-small text-muted"><b class="text-ink">{kazakov.author}</b>, {kazakov.role}</figcaption>
         </figure>
       )}
     </div>
-    <ul class="m-0 grid list-none gap-4 p-0 sm:grid-cols-2">
+    <ul class="m-0 grid list-none gap-x-[var(--gap-grid)] gap-y-8 p-0 sm:grid-cols-2">
       {channels.map((c, i) => (
-        <li class="card flex flex-col gap-2 p-5">
-          <span class="text-[28px] font-extrabold leading-none text-sea" aria-hidden="true">0{i + 1}</span>
+        <li class="flex flex-col gap-2 border-t border-line pt-5">
+          <span class="t-mono text-[13px] text-muted" aria-hidden="true">0{i + 1}</span>
           <h3 class="t-title">{c.title}</h3>
           <p class="t-small m-0 text-muted">{c.text}</p>
         </li>

@@ -27,18 +27,17 @@ const SOURCE = { telegram: 'Telegram', yandex: 'Яндекс Карты', vk: '�
       <h1 id="reviews-title" class="t-display">Отзывы <span class="t-accent">и истории</span></h1>
       <p class="t-lead max-w-[760px]">Что говорят ученики и кем они стали после обучения. Больше отзывов на <a href={site.yandexMaps} class="link" rel="noopener">Яндекс Картах</a>, там у академии оценка {site.stats.rating}.</p>
     </div>
-    <div class="grid gap-5 md:grid-cols-3 md:gap-6">
+    <div class="grid gap-x-[var(--gap-grid)] gap-y-10 md:grid-cols-3">
       {reviews.map((r) => (
-        <figure class="m-0 flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6 md:p-7">
-          <span aria-hidden="true" class="text-[44px] font-bold leading-[0.6] text-sea">“</span>
-          <blockquote class="m-0 text-[17px] leading-normal">{r.data.text}</blockquote>
+        <figure class="m-0 flex flex-col gap-5 border-t border-line pt-6">
+          <blockquote class="t-quote m-0 !text-[19px]">{r.data.text}</blockquote>
           <figcaption class="mt-auto flex flex-col gap-0.5"><b class="text-[17px]">{r.data.author}</b><span class="t-small text-muted">{r.data.role}, отзыв из {SOURCE[r.data.source]}</span></figcaption>
         </figure>
       ))}
     </div>
   </section>
 
-  <section class="wrap section-tight" aria-labelledby="stories-title">
+  <section class="wrap section" aria-labelledby="stories-title">
     <h2 id="stories-title" class="t-h2 mb-8">Истории <span class="t-accent">выпускников</span></h2>
     <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
       {stories.map((s) => {
@@ -46,12 +45,12 @@ const SOURCE = { telegram: 'Telegram', yandex: 'Яндекс Карты', vk: '�
         return (
           <article class="card lift relative flex flex-col overflow-hidden">
             {w ? <Image src={w.data.image} alt={w.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 33vw, 100vw" class="h-[200px] w-full object-cover" />
-               : <div class="flex h-[200px] items-end bg-sea-14 p-5"><span class="t-hand">{s.data.quote}</span></div>}
+               : <div class="flex h-[200px] items-end bg-surface-2 p-5"><span class="t-quote">{s.data.quote}</span></div>}
             <div class="flex flex-1 flex-col gap-2.5 p-5">
               <span class="chip self-start">{s.data.tag}</span>
               <h3 class="m-0 text-[20px] font-extrabold"><a href={`/stories/${s.id}`} class="text-ink after:absolute after:inset-0">{people.get(s.data.person.id)?.name}</a></h3>
               <span class="t-small text-muted">Было: {s.data.before}</span>
-              <span class="font-semibold leading-snug"><span class="text-sea">Стало:</span> {s.data.after}</span>
+              <span class="font-semibold leading-snug"><span class="text-muted">Стало:</span> {s.data.after}</span>
             </div>
           </article>
         );
@@ -59,12 +58,12 @@ const SOURCE = { telegram: 'Telegram', yandex: 'Яндекс Карты', vk: '�
     </div>
   </section>
 
-  <section class="wrap section-tight" aria-labelledby="kings-title">
+  <section class="wrap section" aria-labelledby="kings-title">
     <h2 id="kings-title" class="t-h2 mb-3">«Царь горы» <span class="t-accent">у наших учеников</span></h2>
     <p class="mb-8 mt-0 max-w-[760px] text-ink-2">Звание лучшей работы в галерее 3DDD, главного сайта архвиз-визуализаторов.</p>
     <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 md:grid-cols-3">
       {awards.map((a) => (
-        <li class="card flex flex-col gap-1 p-5"><b class="text-[17px]">{people.get(a.data.person.id)?.name}</b><span class="font-bold text-lime">{a.data.title}</span><span class="t-small text-muted">{a.data.text}</span></li>
+        <li class="card flex flex-col gap-1 p-5"><b class="text-[17px]">{people.get(a.data.person.id)?.name}</b><span class="font-bold text-ink">{a.data.title}</span><span class="t-small text-muted">{a.data.text}</span></li>
       ))}
     </ul>
   </section>

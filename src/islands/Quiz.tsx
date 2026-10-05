@@ -70,13 +70,13 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
     }
     return (
       <div class="grid gap-4 md:grid-cols-2">
-        <div class="flex flex-col gap-3 rounded-[20px] bg-sea-08 p-6 md:p-7">
+        <div class="flex flex-col gap-3 border-t border-line pt-6">
           <span class="t-overline">Вы у нас впервые</span>
           <span class="t-title text-[24px]">Не знаете, с чего начать?</span>
           <span class="text-ink-2">Тест за 1 минуту: подберём курсы и сразу покажем цену пакета.</span>
           <button type="button" class="btn btn-primary btn-lg mt-1 self-start" onClick={() => $quizOpen.set(true)}>Пройти тест</button>
         </div>
-        <div class="flex flex-col gap-3 rounded-[20px] border border-line p-6 md:p-7">
+        <div class="flex flex-col gap-3 border-t border-line pt-6">
           <span class="t-overline">Уже знаете 3ds Max и Corona</span>
           <span class="t-title text-[24px]">Сразу к профессии</span>
           <span class="text-ink-2">Пропустите базу и выберите профессию и курсы PRO.</span>
@@ -118,14 +118,14 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
   const tgStart = result ? `quiz_${result.prof}_${result.base ? 'b' : 'n'}_${result.tariff}` : 'quiz';
 
   return (
-    <div class="grid gap-8 rounded-[24px] bg-sea-08 p-6 sm:p-8 md:grid-cols-[5fr_7fr] md:gap-12 md:p-11">
+    <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[5fr_7fr] md:gap-12 md:pt-10">
       <div class="flex flex-col gap-3">
-        <span class="text-[15px] font-bold text-sea">Тест на 1 минуту</span>
+        <span class="t-overline t-signal">Тест на 1 минуту</span>
         <h2 class="t-h2">Подберём ваш старт</h2>
         <p class="m-0 text-ink-2">Ответьте на {total} {total >= 5 ? 'вопросов' : 'вопроса'}, и мы определим ваш уровень, подскажем курсы и сразу посчитаем пакет.</p>
         <div class="mt-2 flex gap-1.5" role="progressbar" aria-label="Прогресс теста" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done ? total : answered}>
           {Array.from({ length: total }, (_, k) => (
-            <span class={`h-1.5 flex-1 rounded ${k < (done ? total : answered) ? 'bg-lime' : 'bg-[rgb(231_231_231/0.18)]'}`} />
+            <span class={`h-1.5 flex-1 rounded ${k < (done ? total : answered) ? 'bg-lime' : 'bg-[rgb(236_236_230/0.18)]'}`} />
           ))}
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
               ))}
             </div>
             {answered > 0 && (
-              <button type="button" onClick={back} class="min-h-11 self-start border-0 bg-transparent px-0 text-[15px] font-semibold text-sea">Назад</button>
+              <button type="button" onClick={back} class="min-h-11 self-start border-0 bg-transparent px-0 text-[15px] font-semibold text-muted">Назад</button>
             )}
           </>
         )}
@@ -150,12 +150,12 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
         {done && games && (
           <div ref={resRef} tabIndex={-1} class="flex flex-col gap-4 outline-none">
             <span class="t-overline">Ваше направление</span>
-            <span class="text-[30px] font-extrabold text-lime">3D для игр</span>
+            <span class="text-[30px] font-extrabold text-ink">3D для игр</span>
             <span class="text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine. Направление пока живёт на прежнем сайте академии.</span>
             <div class="flex flex-wrap items-center gap-3">
               <a href={gamesHref} class="btn btn-primary btn-lg">Смотреть курсы для игр</a>
               <a href="#consult" class="link">Бесплатная консультация</a>
-              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-sea">Пройти заново</button>
+              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-muted">Пройти заново</button>
             </div>
           </div>
         )}
@@ -163,9 +163,9 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
         {done && result && (
           <div ref={resRef} tabIndex={-1} class="flex flex-col gap-4 outline-none">
             <span class="t-overline">Ваш уровень</span>
-            <span class="text-[30px] font-extrabold leading-tight text-lime">{result.level}</span>
+            <span class="text-[30px] font-extrabold leading-tight text-ink">{result.level}</span>
             <span class="text-ink-2">{result.why}</span>
-            <div class="flex flex-col gap-2.5 rounded-2xl bg-bg p-5">
+            <div class="flex flex-col gap-2.5 rounded-card border border-line p-5">
               <span class="t-overline">Рекомендуем</span>
               {result.base && <Row t="База 3D-визуализатора" d="3ds Max, Corona и ИИ в 3D" />}
               {cat.professions[result.prof].courses.map((c) => (
@@ -187,7 +187,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
                 <button type="button" class="btn btn-primary btn-lg" onClick={() => apply()}>Показать пакет и цену ↓</button>
               )}
               <a href={`${telegramBot}?start=${tgStart}`} class="link" onClick={() => reachGoal('tg_click', { place: 'quiz' })}>Сохранить подборку в Telegram</a>
-              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-sea">Пройти заново</button>
+              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-muted">Пройти заново</button>
             </div>
           </div>
         )}
@@ -199,7 +199,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
 function Row({ t, d }: { t: string; d: string }) {
   return (
     <span class="flex gap-2.5 leading-snug">
-      <Check size={18} class="mt-0.5 shrink-0 text-lime" />
+      <Check size={18} class="mt-0.5 shrink-0 text-ink" />
       <span><b>{t}:</b> <span class="text-muted">{d}</span></span>
     </span>
   );

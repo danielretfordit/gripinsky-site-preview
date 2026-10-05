@@ -57,7 +57,7 @@ export default function StickyPackageBar({ cat }: Props) {
 
   return (
     <div ref={barRef} aria-hidden={!visible} inert={!visible}
-      class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(13_32_35/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+      class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(14_17_18/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {sheet && (
         <div class="wrap max-h-[50vh] overflow-y-auto overscroll-contain border-b border-line py-4" id="sticky-sheet">
@@ -75,7 +75,7 @@ export default function StickyPackageBar({ cat }: Props) {
       <div class="wrap flex min-h-16 items-center gap-3 py-2 md:gap-5">
         <button type="button" onClick={() => setSheet(!sheet)} aria-expanded={sheet} aria-controls="sticky-sheet"
           class="flex min-w-0 flex-1 flex-col items-start border-0 bg-transparent p-0 text-left">
-          <span class="whitespace-nowrap text-[12px] font-bold uppercase tracking-[0.08em] text-sea">Ваш пакет<span class="hidden sm:inline">{q.tariffApplied ? `, ${tariff.name}` : ''}</span> <span aria-hidden="true">{sheet ? '▾' : '▴'}</span></span>
+          <span class="whitespace-nowrap t-overline">Ваш пакет<span class="hidden sm:inline">{q.tariffApplied ? `, ${tariff.name}` : ''}</span> <span aria-hidden="true">{sheet ? '▾' : '▴'}</span></span>
           <span class="w-full truncate text-[15px] font-semibold md:text-[17px]">{title || prof.title}</span>
         </button>
         <span class="flex flex-col items-end" aria-live="polite">

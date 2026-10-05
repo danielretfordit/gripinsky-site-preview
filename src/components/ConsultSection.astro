@@ -1,22 +1,20 @@
 ---
-import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
-import texture from '../assets/brand/texture.png';
 import LeadForm from './LeadForm.astro';
 
 interface Props { context?: string }
 const { context = '' } = Astro.props;
 const site = (await getEntry('settings', 'site'))!.data;
 ---
-<section id="consult" class="wrap pb-16 pt-4 md:pb-24" aria-labelledby="consult-title">
-  <div class="relative grid gap-8 overflow-hidden rounded-[20px] bg-sea-14 p-6 sm:p-10 md:grid-cols-[5fr_6fr] md:items-center md:gap-12 md:p-14">
-    <Image src={texture} alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-10" widths={[768, 1440]} sizes="100vw" />
-    <div class="relative flex flex-col gap-3">
+<section id="consult" class="wrap section" aria-labelledby="consult-title">
+  <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[5fr_6fr] md:gap-16 md:pt-12">
+    <div class="flex flex-col gap-3">
+      <p class="t-overline t-signal m-0">Консультация</p>
       <h2 id="consult-title" class="t-h2">Поможем выбрать за 15 минут</h2>
       <p class="t-lead">Бесплатная консультация: подберём старт, профессию и формат обучения. Перезвоним или напишем в течение дня.</p>
       <p class="t-small m-0 text-muted">Удобнее сразу в мессенджере? <a href={site.telegramBot} class="link">Напишите в Telegram</a>{site.vk && <> или <a href={site.vk} class="link">ВКонтакте</a></>}.</p>
     </div>
-    <div class="relative">
+    <div>
       <LeadForm context={context} />
     </div>
   </div>

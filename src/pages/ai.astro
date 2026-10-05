@@ -48,9 +48,9 @@ const ld = [
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
       <div class="flex flex-col gap-5">
-        <span class="text-[15px] font-bold tracking-[0.08em] text-sea">Онлайн-курс</span>
+        <span class="t-overline t-signal">Онлайн-курс</span>
         <h1 id="ai-title" class="t-display">ИИ в 3D: <span class="t-accent">нейросети для <span class="whitespace-nowrap">3D-моделей</span></span></h1>
-        <p class="t-hand m-0 text-sea">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+        <p class="t-quote m-0 text-muted">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
         <p class="t-lead">Весь пайплайн от референса и 3D-модели по фото до готового рендера в интерьере. Рутину отдаёте ИИ, качество доводите сами и работаете в разы быстрее.</p>
         <div class="flex flex-col gap-3 sm:flex-row">
           <a href="#tariffs" class="btn btn-primary btn-lg">Выбрать тариф, от {rub(ai.price)}</a>
@@ -62,7 +62,7 @@ const ld = [
     </div>
   </section>
 
-  <section class="wrap section-tight" aria-labelledby="lose-title">
+  <section class="wrap section" aria-labelledby="lose-title">
     <h2 id="lose-title" class="t-h2 mb-8">Что вы теряете <span class="t-accent">без ИИ</span></h2>
     <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
       {[['День вместо часа', 'Референсы, черновая геометрия, текстуры и окружение съедают часы, которые можно потратить на новые заказы.'], ['Конкуренты уже быстрее', 'Студии и фрилансеры ускоряются с ИИ. Кто работает по старинке, проигрывает по срокам и цене.'], ['Один вариант вместо пяти', 'С ИИ на этапе референсов вы показываете заказчику несколько версий и продаёте выбор, поднимая чек.']].map(([t, d]) => (
@@ -80,8 +80,8 @@ const ld = [
       {steps.map((s, i) => (
         <li class="card flex flex-col gap-3 p-6">
           <span class="flex items-center justify-between gap-3">
-            <span class="flex h-11 w-11 items-center justify-center rounded-full bg-lime text-[18px] font-extrabold text-bg" aria-hidden="true">{i + 1}</span>
-            <span class="text-[13px] font-semibold text-sea">Пайплайн освоен на {Math.round(((i + 1) / steps.length) * 100)}%</span>
+            <span class="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong font-mono text-[15px] font-medium text-ink" aria-hidden="true">{i + 1}</span>
+            <span class="text-[13px] font-semibold text-muted">Пайплайн освоен на {Math.round(((i + 1) / steps.length) * 100)}%</span>
           </span>
           <h3 class="t-title"><span class="sr-only">Шаг {i + 1}. </span>{s.t}</h3>
           <p class="t-small m-0 text-ink-2">{s.d}</p>
@@ -92,7 +92,7 @@ const ld = [
     <p class="mt-6 text-ink-2"><b class="text-ink">Инструменты:</b> Nano Banana, Hunyuan3D, Tripo3D, Quad Remesher, Claude, Генспарк и 3ds Max для доработки.</p>
   </section>
 
-  <section class="wrap section-tight" aria-labelledby="who-title">
+  <section class="wrap section" aria-labelledby="who-title">
     <h2 id="who-title" class="t-h2 mb-8">Кому <span class="t-accent">подходит</span></h2>
     <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
       <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-muted">Тот же результат в разы быстрее: больше заказов за то же время.</p></li>
@@ -112,8 +112,8 @@ const ld = [
         </ul>
         <button type="button" class="btn btn-secondary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai', name: 'ИИ в 3D: Самостоятельно', price: ai.price })}>Купить</button>
       </article>
-      <article class="flex flex-col gap-4 rounded-[20px] bg-sea-14 p-6 md:p-8">
-        <span class="chip self-start !bg-bg !text-sea">Популярный</span>
+      <article class="flex flex-col gap-4 rounded-card bg-surface-2 p-6 md:p-8">
+        <span class="chip self-start !bg-bg !text-muted">Популярный</span>
         <h3 class="t-h3">Лаборатория</h3>
         <span><b class="text-[34px]">{rub(lab.price)}</b> <span class="text-muted">или {sp(Math.ceil(lab.price / months))}&nbsp;₽/мес</span></span>
         <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
@@ -125,13 +125,13 @@ const ld = [
     <p class="mt-4 text-[15px] text-muted">Оплата картой, через СБП, в рассрочку и частями, счёт для юрлиц и ИП.</p>
   </section>
 
-  <section class="wrap section-tight border-t border-line" aria-labelledby="aifaq-title">
+  <section class="wrap section" aria-labelledby="aifaq-title">
     <div class="grid gap-10 md:grid-cols-[4fr_8fr]">
       <h2 id="aifaq-title" class="t-h2">Вопросы <span class="t-accent">о курсе</span></h2>
       <div class="flex max-w-[820px] flex-col">
         {faq.map(([q, a]) => (
-          <details class="group border-b border-line py-1">
-            <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[18px] font-bold md:text-[20px]">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-sea transition-transform group-open:rotate-45">+</span></summary>
+          <details class="faq group border-b border-line py-1">
+            <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[18px] font-bold md:text-[20px]">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span></summary>
             <p class="mb-5 mt-0 text-muted">{a}</p>
           </details>
         ))}

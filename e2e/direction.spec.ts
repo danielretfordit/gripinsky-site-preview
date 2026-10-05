@@ -24,7 +24,7 @@ async function answerQuiz(page: Page, labels: string[]) {
 
 test.describe('подменю разделов', () => {
   const targets: [string, string][] = [
-    ['Результаты', '#works-title'], ['Как учимся', '#path-title'], ['База', '#base-title'],
+    ['Результаты', '#works-title'], ['База', '#base-title'],
     ['Профессии', '#profession-title'], ['Цены', '#package-title'], ['Вопросы', '#faq-title'],
   ];
   for (const [label, heading] of targets) {

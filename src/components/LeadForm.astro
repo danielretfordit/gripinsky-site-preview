@@ -26,10 +26,10 @@ const { context = '', submitLabel = 'Записаться на консульт�
   <input type="hidden" name="quiz" value="" />
   <input type="hidden" name="utm" value="" />
   <input type="hidden" name="page" value="" />
-  <div class="absolute left-[-9999px]" aria-hidden="true"><label>Не заполняйте <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="sr-only" aria-hidden="true" inert><label>Не заполняйте <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
   <button type="submit" class="btn btn-primary btn-lg btn-block">{submitLabel}</button>
   <div class="lead-status hidden rounded-2xl bg-bg p-6" role="status" aria-live="polite" tabindex="-1">
-    <span class="block text-2xl font-extrabold text-lime">Спасибо! Заявка принята</span>
+    <span class="block text-2xl font-extrabold text-ink">Спасибо! Заявка принята</span>
     <span class="mt-2 block text-ink-2">Специалист свяжется с вами в течение дня. А пока можно <a href="/vizualization3_mini" class="link">посмотреть бесплатные уроки</a>.</span>
   </div>
   <div class="lead-fail hidden rounded-2xl border border-line-strong p-5 text-ink-2" role="alert">

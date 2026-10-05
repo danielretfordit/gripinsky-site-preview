@@ -16,13 +16,13 @@ const filters = [c.type, ...c.professions, ...c.software].join('|').toLowerCase(
   </div>
   <div class="flex flex-1 flex-col gap-2.5 p-5">
     <span class="flex flex-wrap gap-1.5">
-      <span class={`chip ${c.type === 'free' ? 'chip-lime' : ''}`}>{TYPE_LABEL[c.type]}</span>
+      <span class={`chip ${c.type === 'free' ? 'chip-solid' : ''}`}>{TYPE_LABEL[c.type]}</span>
       {c.level && <span class="chip !bg-transparent !text-muted ring-1 ring-line">{c.level}</span>}
     </span>
     <H class="t-title"><a href={href} class="text-ink after:absolute after:inset-0 hover:text-white">{c.title}</a></H>
     {c.short && <p class="t-small m-0 line-clamp-3 text-muted">{c.short}</p>}
     <span class="mt-auto flex items-baseline gap-2 pt-2">
-      {c.price > 0 ? <b class="text-[20px]">{rub(c.price)}</b> : <b class="text-[20px] text-lime">Бесплатно</b>}
+      {c.price > 0 ? <b class="text-[20px]">{rub(c.price)}</b> : <b class="text-[20px] text-ink">Бесплатно</b>}
       {c.oldPrice && c.oldPrice > c.price && (c.type === 'package'
         ? <span class="text-[14px] text-muted">по отдельности {rub(c.oldPrice)}</span>
         : <s class="text-[14px] text-muted">{rub(c.oldPrice)}</s>)}

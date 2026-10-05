@@ -75,7 +75,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
 
   return (
     <dialog ref={ref} aria-labelledby="checkout-title"
-      class="m-auto w-[min(640px,calc(100vw-24px))] max-h-[calc(100dvh-24px)] overflow-y-auto overscroll-contain rounded-[24px] border border-line-strong bg-bg-2 p-0 text-ink backdrop:bg-[rgb(6_16_18/0.8)]"
+      class="m-auto w-[min(640px,calc(100vw-24px))] max-h-[calc(100dvh-24px)] overflow-y-auto overscroll-contain rounded-card border border-line-strong bg-bg-2 p-0 text-ink backdrop:bg-[rgb(6_16_18/0.8)]"
       onClick={(e) => { if (e.target === ref.current) close(); }}>
       <div class="flex flex-col gap-5 p-5 sm:p-8">
         <div class="flex items-start justify-between gap-4">

@@ -60,13 +60,13 @@ const jsonLd = prof
         <Breadcrumbs items={crumbs} class="mb-6" />
         <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
           <div class="flex flex-col gap-5">
-            <span class="text-[15px] font-bold tracking-[0.08em] text-sea">Профессия</span>
+            <span class="t-overline t-signal">Профессия</span>
             <h1 id="prof-title" class="t-display">{prof.data.seo.h1}</h1>
             <p class="t-lead">{prof.data.lead}</p>
             <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
-              <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>В портфолио: {prof.data.portfolio.toLowerCase()}</li>
-              <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>Работа с заказчиком, ТЗ и ценой проекта</li>
-              {gift && <li class="flex gap-2"><b class="text-lime" aria-hidden="true">+</b>В подарок: {gift.data.title}</li>}
+              <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>В портфолио: {prof.data.portfolio.toLowerCase()}</li>
+              <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>Работа с заказчиком, ТЗ и ценой проекта</li>
+              {gift && <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>В подарок: {gift.data.title}</li>}
             </ul>
             <div class="flex flex-col gap-3 sm:flex-row">
               <a href={pkgHref} class="btn btn-primary btn-lg">Собрать пакет с базой</a>
@@ -74,13 +74,13 @@ const jsonLd = prof
             </div>
             <p class="m-0 text-[15px] text-ink-2">Курс профессии от <b class="text-ink">{rub(minCourse)}</b>, вместе с базой от <b class="text-ink">{rub(minCourse + base.price)}</b>. Есть рассрочка.</p>
           </div>
-          <div class="overflow-hidden rounded-[20px] bg-white">
+          <div class="overflow-hidden rounded-card bg-white">
             <Image src={prof.data.image} alt={prof.data.imageAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" class="h-[280px] w-full sm:h-[420px]" style={`object-fit:${prof.data.imageFit};object-position:${prof.data.imagePos}`} />
           </div>
         </div>
       </section>
 
-      <section id="program" class="wrap section-tight" aria-labelledby="program-title">
+      <section id="program" class="wrap section" aria-labelledby="program-title">
         <h2 id="program-title" class="t-h2 mb-8">Программа: <span class="t-accent">{profCourses.length > 1 ? 'курсы профессии' : 'курс профессии'}</span></h2>
         <div class={`grid gap-6 ${profCourses.length > 1 ? 'md:grid-cols-2' : ''}`}>
           {prof.data.courses.map((pc, i) => {
@@ -91,9 +91,9 @@ const jsonLd = prof
                   <h3 class="t-h3">{c.title}</h3>
                   <b class="text-[22px]">{rub(c.price)}</b>
                 </div>
-                <span class="text-[15px] font-medium text-sea">{pc.meta}</span>
+                <span class="text-[15px] font-medium text-muted">{pc.meta}</span>
                 <p class="m-0 text-ink-2">{pc.description}</p>
-                <p class="m-0"><b class="text-sea">Итог:</b> {pc.final}</p>
+                <p class="m-0"><b class="text-muted">Итог:</b> {pc.final}</p>
                 <ol class="m-0 mt-2 flex flex-col gap-1.5 pl-5 text-ink-2">{pc.blocks.map((b) => <li>{b}</li>)}</ol>
                 <a href={c.legacyPath} class="link mt-2 self-start">Подробнее о курсе →</a>
               </article>
@@ -103,7 +103,7 @@ const jsonLd = prof
       </section>
 
       {works.length > 0 && (
-        <section class="wrap section-tight" aria-labelledby="works-title">
+        <section class="wrap section" aria-labelledby="works-title">
           <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
             <h2 id="works-title" class="t-h2">Работы <span class="t-accent">учеников</span></h2>
             <a href="/gallery" class="link">Вся галерея →</a>
@@ -119,8 +119,8 @@ const jsonLd = prof
         </section>
       )}
 
-      <section class="wrap section-tight" aria-labelledby="path-title">
-        <div class="grid gap-6 rounded-[24px] bg-sea-08 p-6 md:grid-cols-[5fr_7fr] md:items-center md:gap-10 md:p-10">
+      <section class="wrap section" aria-labelledby="path-title">
+        <div class="grid gap-6 rounded-card bg-surface p-6 md:grid-cols-[5fr_7fr] md:items-center md:gap-10 md:p-10">
           <div class="flex flex-col gap-3">
             <h2 id="path-title" class="t-h3 uppercase">С чего начать</h2>
             <p class="m-0 text-ink-2">Если вы ещё не работали в 3ds Max и Corona, начните с базы: без неё курсы профессии будут слишком сложными. Уже уверенно моделируете и делаете рендер? Можно сразу на профессию.</p>

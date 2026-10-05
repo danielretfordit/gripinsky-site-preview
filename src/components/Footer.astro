@@ -53,7 +53,7 @@ const { consult = true } = Astro.props as { consult?: boolean };
     <div class="flex flex-col gap-4">
       <a href="/" aria-label="На главную"><Image src={logo} alt="GRIPINSKY" width={166} height={22} class="block h-[22px] w-auto" /></a>
       <p class="m-0 max-w-[280px] leading-relaxed">Онлайн-курсы 3D-визуализации и 3D-графики. Учим думать, а не повторять действия.</p>
-      <a href={consult ? '#consult' : '/#consult'} class="link-sea">Бесплатная консультация</a>
+      <a href={consult ? '#consult' : '/#consult'} class="link-muted">Бесплатная консультация</a>
     </div>
     {cols.map((c) => (
       <nav aria-label={c.title} class="flex flex-col gap-3">

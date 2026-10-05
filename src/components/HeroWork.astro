@@ -1,0 +1,46 @@
+---
+// Первый экран: работа ученика на всю ширину, заголовок поверх неё, сверху «метаданные рендера»
+import { Image } from 'astro:assets';
+import type { WorkView } from '../lib/works';
+
+interface Props { work: WorkView; kicker: string; id: string; class?: string }
+const { work, kicker, id, class: cls = '' } = Astro.props;
+---
+<section class={`hero ${cls}`} aria-labelledby={id}>
+  <Image src={work.image} alt={work.alt} class="hero__img" style={`object-position:${work.focus}`}
+    widths={[640, 960, 1280, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
+  <div class="hero__shade" aria-hidden="true"></div>
+  <p class="t-meta hero__meta">
+    <span class="max-md:hidden">Из галереи учеников</span><span>{work.author}, {work.title}</span>{work.soft && <span>{work.soft}</span>}{work.award && <span>{work.award}</span>}
+  </p>
+  <div class="wrap hero__content">
+    <slot name="top" />
+    <p class="t-overline t-signal m-0 !text-ink/80">{kicker}</p>
+    <slot name="title" />
+    <div class="hero__row">
+      <slot name="lead" />
+      <div class="hero__cta"><slot name="cta" /></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; isolation: isolate; display: flex; align-items: flex-end; overflow: hidden; min-height: min(calc(100svh - 64px), 720px); }
+  @media (min-width: 768px) { .hero { min-height: min(calc(100svh - 72px), 860px); } }
+  .hero :global(.hero__img) { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
+  .hero__shade {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgb(14 17 18 / 0.55) 0, transparent 22%),
+      linear-gradient(180deg, transparent 28%, rgb(14 17 18 / 0.62) 62%, var(--color-bg) 100%),
+      linear-gradient(90deg, rgb(14 17 18 / 0.5), transparent 62%);
+  }
+  .hero__content { display: flex; flex-direction: column; gap: 22px; padding-top: 140px; padding-bottom: 40px; }
+  @media (min-width: 1024px) { .hero__content { gap: 28px; padding-bottom: 56px; } }
+  .hero__row { display: flex; flex-direction: column; gap: 22px; }
+  @media (min-width: 1024px) { .hero__row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 48px; } }
+  .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
+  .hero__meta { position: absolute; top: 20px; left: 20px; right: 20px; justify-content: flex-end; color: rgb(236 236 230 / 0.85); text-shadow: 0 1px 10px rgb(0 0 0 / 0.5); }
+  @media (max-width: 767px) { .hero__meta { justify-content: flex-start; } }
+  @media (min-width: 1024px) { .hero__meta { top: 28px; left: auto; right: max(64px, calc((100% - 1280px) / 2)); } }
+</style>

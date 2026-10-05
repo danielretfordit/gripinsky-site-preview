@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { noCookieBanner, collectErrors, expectIslandsHydrated, waitScrollEnd, headingClearOfSticky } from './helpers';
 
-// Главная: кнопки первого экрана, тест подбора (все ветки), слайдер
+// Главная: кнопки первого экрана, полоса шагов, выбор по программе, тест подбора (все ветки)
 let errors: string[];
 test.beforeEach(async ({ page }) => {
   await noCookieBanner(page);
@@ -66,11 +66,25 @@ test('ветка «Пока не знаю»: «Подобрать со спец�
   expect(await page.evaluate(() => sessionStorage.getItem('gr-quiz-summary'))).toContain('не уверен');
 });
 
-test('слайдер до/после на главной', async ({ page }) => {
-  const input = page.locator('[data-ba] input');
-  await input.focus();
-  await page.keyboard.press('Home');
-  await expect(input).toHaveValue('0');
-  await page.keyboard.press('ArrowRight');
-  await expect(input).toHaveValue('1');
+test('полоса шагов под первым экраном: три шага с ценами ведут к разделам направления', async ({ page }) => {
+  const strip = page.getByRole('region', { name: 'Путь в 3D-визуализации' });
+  const steps = strip.getByRole('listitem');
+  await expect(steps).toHaveCount(3);
+  for (const [i, hash] of [[0, '#base'], [1, '#profession'], [2, '#package']] as const) {
+    await expect(steps.nth(i).getByRole('link')).toHaveAttribute('href', `/courses-page/visualization${hash}`);
+    await expect(steps.nth(i)).toContainText(/от\s\d[\d\s]*₽/);
+  }
+  await steps.first().getByRole('link').click();
+  await expect(page).toHaveURL(/\/courses-page\/visualization#base$/);
+});
+
+test('«По программе»: плитка программы открывает каталог с фильтром', async ({ page }) => {
+  await page.getByRole('tab', { name: 'По программе' }).click();
+  const tile = page.locator('#pick-soft a').first();
+  const href = await tile.getAttribute('href');
+  expect(href).toMatch(/^\/courses\?soft=/);
+  await tile.click();
+  // Каталог переписывает адрес через URLSearchParams (пробел становится «+»): сравниваем значение фильтра
+  await expect.poll(() => new URL(page.url()).searchParams.get('soft')).toBe(new URL(href!, 'http://x').searchParams.get('soft'));
+  await expect(page).toHaveURL(/\/courses\?/);
 });

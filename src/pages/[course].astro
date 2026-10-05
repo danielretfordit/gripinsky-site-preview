@@ -56,23 +56,23 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
     <div class="grid gap-8 md:grid-cols-[7fr_5fr] md:gap-12">
       <div class="flex flex-col gap-5">
         <span class="flex flex-wrap gap-2">
-          <span class={`chip ${isFree ? 'chip-lime' : ''}`}>{TYPE_LABEL[c.type]}</span>
+          <span class={`chip ${isFree ? 'chip-solid' : ''}`}>{TYPE_LABEL[c.type]}</span>
           {c.software.map((s) => <span class="chip !bg-transparent !text-muted ring-1 ring-line">{s}</span>)}
         </span>
         <h1 id="course-title" class="t-display !text-[clamp(30px,4.4vw,48px)]">{c.title}</h1>
         {c.short && <p class="t-lead">{c.short}</p>}
-        {meta.length > 0 && <p class="m-0 text-[15px] font-medium text-sea">{meta.join(', ')}</p>}
+        {meta.length > 0 && <p class="m-0 text-[15px] font-medium text-muted">{meta.join(', ')}</p>}
         {c.cover && (
-          <div class="overflow-hidden rounded-[20px] bg-surface-2">
+          <div class="overflow-hidden rounded-card bg-surface-2">
             <Image src={c.cover} alt={`Обложка курса «${c.title}»`} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 55vw, 100vw" loading="eager" class="max-h-[440px] w-full object-cover" />
           </div>
         )}
       </div>
 
-      <aside aria-label="Стоимость" class="flex flex-col gap-4 self-start rounded-[20px] border border-line bg-surface p-6 md:sticky md:top-6">
+      <aside aria-label="Стоимость" class="flex flex-col gap-4 self-start rounded-card border border-line bg-surface p-6 md:sticky md:top-6">
         {isFree ? (
           <>
-            <span class="text-[34px] font-extrabold leading-none text-lime">Бесплатно</span>
+            <span class="text-[34px] font-extrabold leading-none text-ink">Бесплатно</span>
             <span class="text-ink-2">Бесплатный мини-курс: оцените формат и педагога до покупки.</span>
             <a href={site.telegramBot} class="btn btn-primary btn-lg btn-block">Получить доступ</a>
           </>
@@ -89,22 +89,22 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
           </>
         )}
         {c.trial && <a href={c.trial} class="link text-center text-[15px]">Сначала бесплатные уроки →</a>}
-        {vizRelated && !isFree && <a href="/courses-page/visualization#package" class="link-sea text-center text-[14px]">Выгоднее в пакете с базой и подарками</a>}
+        {vizRelated && !isFree && <a href="/courses-page/visualization#package" class="link-muted text-center text-[14px]">Выгоднее в пакете с базой и подарками</a>}
         <a href="#consult" class="link text-center text-[15px]">Бесплатная консультация</a>
       </aside>
     </div>
   </section>
 
   {rich && (
-    <section class="wrap section-tight" aria-labelledby="about-course">
+    <section class="wrap section" aria-labelledby="about-course">
       <div class="grid gap-10 md:grid-cols-[7fr_5fr] md:gap-12">
         <div class="flex flex-col gap-5">
           <h2 id="about-course" class="t-h2">О курсе</h2>
           {c.description && <p class="m-0 text-[17px] leading-relaxed text-ink-2">{c.description}</p>}
           {c.outcomes.length > 0 && (
-            <div class="rounded-2xl bg-sea-08 p-5"><b class="text-sea">Результат:</b> {c.outcomes.join(' ')}</div>
+            <div class="rounded-2xl bg-surface p-5"><b class="text-muted">Результат:</b> {c.outcomes.join(' ')}</div>
           )}
-          {c.finalProject && <p class="m-0"><b class="text-sea">Итоговый проект:</b> {c.finalProject}</p>}
+          {c.finalProject && <p class="m-0"><b class="text-muted">Итоговый проект:</b> {c.finalProject}</p>}
           {c.blocks.length > 0 && (
             <div class="flex flex-col gap-3">
               <h3 class="t-h3">Программа</h3>
@@ -116,7 +116,7 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
           <div class="flex flex-col gap-4">
             <h2 class="t-h3">Педагоги</h2>
             <ul class="m-0 flex list-none flex-col gap-3 p-0">
-              {teachers.map((t) => <li class="card flex items-center gap-3 p-4"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-sea-14 font-bold" aria-hidden="true">{t!.name.split(' ').map((p) => p[0]).join('')}</span><b>{t!.name}</b></li>)}
+              {teachers.map((t) => <li class="card flex items-center gap-3 p-4"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 font-bold" aria-hidden="true">{t!.name.split(' ').map((p) => p[0]).join('')}</span><b>{t!.name}</b></li>)}
             </ul>
           </div>
         )}
@@ -125,7 +125,7 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
   )}
 
   {!rich && (
-    <section class="wrap section-tight">
+    <section class="wrap section">
       <div class="rounded-2xl border border-line p-6 text-ink-2">
         Подробная программа курса переносится на новый сайт. Пока её можно посмотреть на <a href={`https://gripinsky.ru${c.legacyPath}`} class="link" rel="noopener">прежней странице курса</a> или спросить на консультации.
       </div>
@@ -133,14 +133,14 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
   )}
 
   {includes.length > 0 && (
-    <section class="wrap section-tight" aria-labelledby="includes-title">
+    <section class="wrap section" aria-labelledby="includes-title">
       <h2 id="includes-title" class="t-h2 mb-6">Состав <span class="t-accent">пакета</span></h2>
       <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">{includes.map((x) => <CourseCard course={x!} />)}</div>
     </section>
   )}
 
   {related.length > 0 && (
-    <section class="wrap section-tight" aria-labelledby="related-title">
+    <section class="wrap section" aria-labelledby="related-title">
       <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
         <h2 id="related-title" class="t-h2">Похожие <span class="t-accent">курсы</span></h2>
         <a href="/courses" class="link">Все курсы →</a>

@@ -55,8 +55,8 @@ test.describe('мобильное меню', () => {
 });
 
 test.describe('шапка, подвал, крошки', () => {
-  test('ссылки шапки на планшете и компьютере', async ({ page }) => {
-    test.skip(isMobile(page), 'на телефоне меню');
+  test('ссылки шапки на ноутбуке и компьютере', async ({ page }) => {
+    test.skip(page.viewportSize()!.width < 1024, 'до 1024 px вместо меню в шапке кнопка «Открыть меню»');
     await page.goto('/');
     const nav = page.getByRole('navigation', { name: 'Основное меню' });
     for (const label of ['3D-визуализация', 'Все курсы', 'Работы учеников', 'Отзывы', 'Блог']) {

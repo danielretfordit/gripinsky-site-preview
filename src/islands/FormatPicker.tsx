@@ -35,7 +35,7 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
                   <span class="flex flex-wrap items-baseline gap-x-2 text-[19px] font-extrabold">
                     {t.name}
                     <span class="text-[15px] font-medium text-muted">{t.sub}</span>
-                    {t.badge && <span class="chip ml-1 !bg-sea-14 !text-sea">{t.badge}</span>}
+                    {t.badge && <span class="chip ml-1 !bg-surface-2 !text-muted">{t.badge}</span>}
                   </span>
                   <span class="text-[15px] text-ink-2">{t.short}</span>
                 </span>
@@ -44,10 +44,10 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
             );
           })}
         </div>
-        <a href={trialHref} class="link-sea self-start text-[15px]">Сначала попробовать: бесплатные уроки →</a>
+        <a href={trialHref} class="link-muted self-start text-[15px]">Сначала попробовать: бесплатные уроки →</a>
       </div>
 
-      <aside aria-label="База 3D-визуализатора" class="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6">
+      <aside aria-label="База 3D-визуализатора" class="flex flex-col gap-4 rounded-card border border-line bg-surface p-6">
         <div class="flex flex-col gap-1">
           <span class="text-[17px] font-bold">{cat.base.name}</span>
           <span class="t-overline">Формат: {cur.name}</span>
@@ -55,7 +55,7 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
         <ul class="m-0 flex list-none flex-col gap-2 p-0">
           {cur.features.map((f) => (
             <li key={f.text} class="flex items-start gap-2.5 text-[15px] leading-snug text-ink-2">
-              <span class={`mt-0.5 shrink-0 ${f.ok ? 'text-sea' : 'text-muted'}`}>{f.ok ? <Check /> : <Cross />}</span>
+              <span class={`mt-0.5 shrink-0 ${f.ok ? 'text-muted' : 'text-muted'}`}>{f.ok ? <Check /> : <Cross />}</span>
               {f.text}
             </li>
           ))}

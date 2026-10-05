@@ -49,21 +49,21 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Inter Tight',
-      cssVariable: '--font-inter-tight',
-      weights: [400, 500, 600, 700, 800],
+      name: 'Onest',
+      cssVariable: '--font-onest',
+      weights: ['400 800'],
       styles: ['normal'],
       subsets: ['latin', 'cyrillic'],
       fallbacks: ['system-ui', 'sans-serif'],
     },
     {
       provider: fontProviders.fontsource(),
-      name: 'Caveat',
-      cssVariable: '--font-caveat',
-      weights: [500, 600],
+      name: 'JetBrains Mono',
+      cssVariable: '--font-jetbrains-mono',
+      weights: [400, 500],
       styles: ['normal'],
       subsets: ['latin', 'cyrillic'],
-      fallbacks: ['cursive'],
+      fallbacks: ['ui-monospace', 'monospace'],
     },
   ],
   env: {

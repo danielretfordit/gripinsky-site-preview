@@ -31,20 +31,27 @@ const tabs = [
   { id: 'awards', label: 'Награды' },
   { id: 'reviews', label: 'Отзывы' },
 ];
+const teachers = [
+  { name: 'Евгений Грипинский', role: 'автор системы обучения' },
+  { name: 'Карина Камола', role: 'Corona, Marvelous, нейросети' },
+  { name: 'Виктор Тверитин', role: 'Экстерьеры PRO' },
+  { name: 'Мария Гохман', role: 'Интерьеры PRO' },
+  { name: 'Иоанн Дмитриев', role: '3D-художник сериала «Пингвин» (HBO)' },
+];
 const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).join('');
 ---
 <section id="works" class="wrap section flex flex-col gap-8" aria-labelledby="works-title">
   <SectionHead overline="После обучения" title="Результаты выпускников" id="works-title"
     lead="Кто-то пришёл с нуля, кто-то с опытом. Вот что у них получилось." hand="кем были и кем стали" />
 
-  <div class="snap-row !grid-flow-col !auto-cols-max max-w-full self-start rounded-full bg-surface-2 p-1.5" role="tablist" aria-label="Результаты выпускников" data-tabs>
+  <div class="snap-row !grid-flow-col !auto-cols-max max-w-full self-start rounded-[6px] border border-line p-1" role="tablist" aria-label="Результаты выпускников" data-tabs>
     {tabs.map((t, i) => (
       <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}
-        class="min-h-11 whitespace-nowrap rounded-full border-0 bg-transparent px-5 text-[16px] font-semibold text-ink aria-selected:bg-lime aria-selected:text-bg md:px-6 md:text-[17px]">{t.label}</button>
+        class="min-h-11 whitespace-nowrap rounded-[4px] border-0 bg-transparent px-4 text-[15px] font-semibold text-ink aria-selected:bg-ink aria-selected:text-bg md:px-5 md:text-[16px]">{t.label}</button>
     ))}
   </div>
 
-  <div class="min-h-[560px] md:min-h-[640px]">
+  <div>
     <!-- Работы -->
     <div role="tabpanel" id="panel-works" aria-labelledby="tab-works" class="flex flex-col gap-4">
       <p class="m-0 text-muted">Эти работы получили «Рендер дня», награду за лучшую работу на наших еженедельных стримах GRIPINSKY TV.</p>
@@ -56,7 +63,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         )}
         {featured.map((x) => x && (
           <figure class="zoom m-0 flex flex-col gap-2.5">
-            <div class="h-[220px] overflow-hidden rounded-[20px] md:h-[190px]">
+            <div class="h-[220px] overflow-hidden rounded-card md:h-[190px]">
               <Image src={x.data.image} alt={x.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 25vw, 100vw" class="h-full w-full object-cover" style={x.data.focus ? `object-position:${x.data.focus}` : ''} />
             </div>
             <figcaption class="t-small text-muted">{people.get(x.data.author.id)?.name}, {x.data.title.toLowerCase().startsWith('«') ? x.data.title : x.data.title.charAt(0).toLowerCase() + x.data.title.slice(1)}</figcaption>
@@ -65,7 +72,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         <a href="/gallery" class="card flex min-h-[140px] flex-col justify-center gap-1.5 p-5 text-ink hover:text-ink">
           <span class="text-[20px] font-extrabold">Все {galleryCount} работ</span>
           <span class="t-small text-muted">в галерее выпускников и педагогов</span>
-          <span class="t-small font-semibold text-lime">Смотреть галерею →</span>
+          <span class="t-small font-semibold text-ink">Смотреть галерею →</span>
         </a>
       </div>
     </div>
@@ -85,17 +92,17 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
             </div>
           </div>
           <div class="flex flex-col gap-3">
-            <span class="chip chip-lime self-start">{large.data.tag}</span>
+            <span class="chip chip-solid self-start">{large.data.tag}</span>
             <h3 class="t-h3 uppercase">{large.data.headline}</h3>
-            <span class="t-small text-sea">{large.data.subtitle}</span>
+            <span class="t-small text-muted">{large.data.subtitle}</span>
             <span class="t-small text-muted">Было: {large.data.before}</span>
-            <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {large.data.after}</span>
-            <blockquote class="t-hand m-0">{large.data.quote}</blockquote>
+            <span class="text-[17px] font-semibold leading-snug"><span class="text-muted">Стало:</span> {large.data.after}</span>
+            <blockquote class="t-quote m-0">{large.data.quote}</blockquote>
             <ul class="m-0 flex list-none flex-col gap-1.5 p-0 text-[15px] text-ink-2">
-              {large.data.highlights.map((h) => <li class="flex gap-2.5"><b class="text-lime" aria-hidden="true">+</b><span>{h}</span></li>)}
+              {large.data.highlights.map((h) => <li class="flex gap-2.5"><b class="text-ink" aria-hidden="true">+</b><span>{h}</span></li>)}
             </ul>
             {large.data.extraNote && (
-              <div class="mt-1 flex flex-col gap-2.5 rounded-2xl bg-sea-08 p-4">
+              <div class="mt-1 flex flex-col gap-2.5 border-t border-line pt-4">
                 <span class="t-small text-ink">{large.data.extraNote}</span>
                 <div class="grid grid-cols-3 gap-2">
                   {large.data.extraWorks.map((r) => w(r.id) && (
@@ -106,7 +113,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
             )}
             {LargeBody && (
               <details class="mt-1">
-                <summary class="inline-flex min-h-11 items-center text-[15px] font-bold text-lime">Читать историю целиком <span class="details-arrow ml-1.5">↓</span></summary>
+                <summary class="inline-flex min-h-11 items-center text-[15px] font-bold text-ink">Читать историю целиком <span class="details-arrow ml-1.5">↓</span></summary>
                 <div class="prose-story mt-2 flex flex-col gap-2.5 text-[15px] leading-relaxed text-muted"><LargeBody /></div>
               </details>
             )}
@@ -125,10 +132,10 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
             <div class="flex flex-col gap-2.5 px-1.5">
               <span class="chip self-start">{s.data.tag}</span>
               <h3 class="m-0 text-[22px] font-extrabold">{s.data.headline}</h3>
-              <span class="t-small -mt-1.5 text-sea">{s.data.subtitle}</span>
+              <span class="t-small -mt-1.5 text-muted">{s.data.subtitle}</span>
               <span class="t-small text-muted">Было: {s.data.before}</span>
-              <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {s.data.after}</span>
-              {s.data.quote && <blockquote class="t-hand m-0 !text-[24px]">{s.data.quote}</blockquote>}
+              <span class="text-[17px] font-semibold leading-snug"><span class="text-muted">Стало:</span> {s.data.after}</span>
+              {s.data.quote && <blockquote class="t-quote m-0 !text-[24px]">{s.data.quote}</blockquote>}
               {s.data.courses && <span class="text-[14px] text-muted">{s.data.courses}</span>}
               <span class="flex flex-wrap gap-x-5 gap-y-2 pt-1 text-[15px] font-semibold">
                 <a href={`/stories/${s.id}`} class="link">История на сайте →</a>
@@ -151,13 +158,13 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
                   {person?.photo && <Image src={person.photo} alt={person.name} width={112} height={112} class="absolute -bottom-[22px] left-4 h-14 w-14 rounded-full border-[3px] border-bg object-cover" />}
                 </div>
               ) : (
-                <div class="flex h-[150px] items-end bg-sea-14 px-5 py-4"><blockquote class="t-hand m-0 !text-[24px]">{s.data.quote}</blockquote></div>
+                <div class="flex h-[150px] items-end bg-surface-2 px-5 py-4"><blockquote class="t-quote m-0 !text-[24px]">{s.data.quote}</blockquote></div>
               )}
               <div class={`flex flex-1 flex-col gap-2.5 p-5 ${work ? 'pt-8' : ''}`}>
                 <span class="chip self-start">{s.data.tag}</span>
                 <h3 class="m-0 text-[20px] font-extrabold">{s.data.headline}</h3>
                 <span class="t-small text-muted">Было: {s.data.before}</span>
-                <span class="text-[17px] font-semibold leading-snug"><span class="text-sea">Стало:</span> {s.data.after}</span>
+                <span class="text-[17px] font-semibold leading-snug"><span class="text-muted">Стало:</span> {s.data.after}</span>
               </div>
             </article>
           );
@@ -167,7 +174,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
 
     <!-- Награды -->
     <div role="tabpanel" id="panel-awards" aria-labelledby="tab-awards" hidden class="flex flex-col gap-10">
-      <div class="grid gap-6 rounded-[24px] bg-sea-08 p-4 sm:p-5 md:grid-cols-[5fr_7fr] md:items-center md:gap-8">
+      <div class="grid gap-6 border-t border-line pt-6 md:grid-cols-[5fr_7fr] md:items-center md:gap-8">
         <div class="grid grid-cols-2 gap-2.5">
           {votes.filter((v) => v.data.work && w(v.data.work.id)).map((v) => (
             <figure class="m-0 flex flex-col gap-1.5">
@@ -181,7 +188,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
           <h3 class="t-h3 uppercase">Первые три места в голосовании <span class="t-accent">«Царь горы»</span></h3>
           <ol class="m-0 flex list-none flex-col gap-2.5 p-0 text-[15px] text-ink-2">
             {votes.map((v) => (
-              <li class="flex gap-3"><b class="min-w-[18px] text-[20px] text-lime">{v.data.place}</b><span><b class="text-ink">{people.get(v.data.person.id)?.name}.</b> {v.data.text}</span></li>
+              <li class="flex gap-3"><b class="min-w-[18px] text-[20px] text-ink">{v.data.place}</b><span><b class="text-ink">{people.get(v.data.person.id)?.name}.</b> {v.data.text}</span></li>
             ))}
           </ol>
           <a href="https://3ddd.ru/galleries/cat/3dgora" class="link text-[15px]" rel="noopener">Голосование на 3DDD ↗</a>
@@ -199,11 +206,11 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         </div>
         <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2">
           {kings.map((a) => (
-            <li class="card flex gap-3.5 p-4">
-              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sea-14 text-[15px] font-bold" aria-hidden="true">{initials(people.get(a.data.person.id)?.name ?? '')}</span>
+            <li class="flex gap-3.5 border-t border-line pt-4">
+              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line-strong font-mono text-[13px]" aria-hidden="true">{initials(people.get(a.data.person.id)?.name ?? '')}</span>
               <span class="flex flex-col gap-1">
                 <b class="text-[17px]">{people.get(a.data.person.id)?.name}</b>
-                <span class="text-[15px] font-bold text-lime">{a.data.title}</span>
+                <span class="t-overline !text-ink-2">{a.data.title}</span>
                 <span class="text-[14px] leading-snug text-muted">{a.data.text}</span>
               </span>
             </li>
@@ -225,8 +232,8 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
     <div role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" hidden class="flex flex-col gap-5">
       <div class="grid gap-5 md:grid-cols-3 md:gap-6">
         {reviews.map((r) => (
-          <figure class="m-0 flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6 md:p-7">
-            <span aria-hidden="true" class="text-[44px] font-bold leading-[0.6] text-sea">“</span>
+          <figure class="m-0 flex flex-col gap-4 border-t border-line pt-6">
+            <span aria-hidden="true" class="text-[44px] font-bold leading-[0.6] text-muted">“</span>
             <blockquote class="m-0 text-[17px] leading-normal">{r.data.text}</blockquote>
             <figcaption class="mt-auto flex flex-col gap-0.5"><b class="text-[17px]">{r.data.author}</b><span class="t-small text-muted">{r.data.role}, отзыв из {r.data.source === 'telegram' ? 'Telegram' : r.data.source === 'vk' ? 'ВКонтакте' : 'Яндекс Карт'}</span></figcaption>
           </figure>
@@ -236,6 +243,19 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         <a href={site.yandexMaps} class="link" rel="noopener">{site.stats.rating} ★ Все отзывы на Яндекс Картах ↗</a>
         <a href="/otzyvy" class="link">Все отзывы и истории →</a>
       </span>
+    </div>
+  </div>
+
+  <div id="about" class="mt-6 grid gap-6 border-t border-line pt-8 md:grid-cols-[4fr_8fr] md:gap-12" aria-labelledby="about-title">
+    <div class="flex flex-col gap-3">
+      <h3 id="about-title" class="t-title">Евгений Грипинский и&nbsp;педагоги-практики</h3>
+      <p class="t-quote m-0">«Основная цель занятий: научить вас думать, а не повторять действия»</p>
+    </div>
+    <div class="flex flex-col gap-4">
+      <ul class="m-0 grid list-none gap-x-[var(--gap-grid)] gap-y-3 p-0 sm:grid-cols-2">
+        {teachers.map((t) => <li class="flex flex-col"><b>{t.name}</b><span class="t-small text-muted">{t.role}</span></li>)}
+      </ul>
+      <a href="https://gripinsky.ru/teachers" class="link tap self-start">Все педагоги →</a>
     </div>
   </div>
 </section>

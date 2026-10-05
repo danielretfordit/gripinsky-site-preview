@@ -6,7 +6,7 @@ import { OG_W, OG_H } from './seo';
 // Картинки для превью ссылок в Telegram, VK и поиске: 1200×630, фирменный фон, логотип и работа.
 // Собираются при сборке в /og/<key>.jpg (src/pages/og/[key].jpg.ts).
 
-const BG = '#0D2023';
+const BG = '#0E1112';
 const LIME = '#F8F61A';
 
 /** cover: снимок во всю ширину; contain: картинка на светлом фоне карточкой справа */
@@ -23,7 +23,7 @@ async function logoLayer(left: number) {
   const logo = await sharp(srcPath(logoImg)).resize({ width }).png().toBuffer();
   const h = Math.round((width * logoImg.height) / logoImg.width);
   const top = Math.round(OG_H / 2 - h / 2 - 8);
-  const bar = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="6"><rect width="64" height="6" rx="3" fill="${LIME}"/></svg>`);
+  const bar = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="6"><rect width="64" height="6" fill="${LIME}"/></svg>`);
   return [
     { input: logo, left, top },
     { input: bar, left, top: top + h + 22 },
