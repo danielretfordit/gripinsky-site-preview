@@ -8,7 +8,7 @@ import Quiz from '../islands/Quiz';
 import { getCatalog } from '../lib/catalog';
 import { faqLd } from '../lib/views';
 import { visibleWorks, personMap } from '../lib/people';
-import { rub, sp } from '../lib/format';
+import { rub, sp, plural } from '../lib/format';
 import heroInterior from '../assets/home/hero-interior.jpg';
 import heroGame from '../assets/home/hero-gamepad.jpg';
 import dirExterior from '../assets/home/dir-exterior.jpg';
@@ -32,8 +32,6 @@ const SOFTWARE = {
   substance: { name: 'Substance Painter', tag: 'SUBSTANCE PAINTER' },
 } as const;
 type SoftId = keyof typeof SOFTWARE;
-const VIZ_SOFT: SoftId[] = ['3dsmax', 'corona', 'vray', 'forestpack', 'photoshop'];
-const GAME_SOFT: SoftId[] = ['blender', 'zbrush', 'unreal', 'maya', 'substance'];
 const listed = await getCollection('courses', (c) => c.data.status === 'active' && ['course', 'package', 'free'].includes(c.data.type));
 const softCount = (id: SoftId) => listed.filter((c) => c.data.software.includes(SOFTWARE[id].tag)).length;
 const softHref = (id: SoftId) => `/courses?soft=${encodeURIComponent(SOFTWARE[id].tag.toLowerCase())}`;
@@ -101,54 +99,58 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
   </section>
 
   <section id="directions" class="wrap pb-16 pt-6 md:pb-24 md:pt-10" aria-labelledby="dir-title">
-    <div class="mb-8 flex flex-col gap-3">
-      <span class="t-overline">Направления</span>
-      <h2 id="dir-title" class="t-h2" tabindex="-1">Выберите <span class="t-accent">направление</span></h2>
-      <p class="m-0 max-w-[720px] text-ink-2">Внутри направления вы выбираете профессию. Сначала база, затем курс профессии и доп. курсы под вашу цель.</p>
+    <div class="mb-6 flex flex-col gap-3">
+      <span class="t-overline">Направления и программы</span>
+      <h2 id="dir-title" class="t-h2" tabindex="-1">Выберите <span class="t-accent">курс</span></h2>
+      <p class="m-0 max-w-[680px] text-ink-2">Начните с направления, если выбираете профессию. Или сразу найдите курсы по программе, если уже знаете, что нужно.</p>
     </div>
-    <div class="grid gap-5 md:grid-cols-2 md:gap-6">
+
+    <div role="tablist" aria-label="Способ выбора курса" class="mb-6 inline-flex max-w-full gap-1 rounded-full bg-surface-2 p-1.5" data-pick-tabs>
+      <button type="button" role="tab" id="pick-tab-dir" aria-controls="pick-dir" aria-selected="true" tabindex="0"
+        class="min-h-11 rounded-full border-0 bg-transparent px-5 text-[16px] font-semibold text-ink aria-selected:bg-lime aria-selected:text-bg">По направлению</button>
+      <button type="button" role="tab" id="pick-tab-soft" aria-controls="pick-soft" aria-selected="false" tabindex="-1"
+        class="min-h-11 rounded-full border-0 bg-transparent px-5 text-[16px] font-semibold text-ink aria-selected:bg-lime aria-selected:text-bg">По программе</button>
+    </div>
+
+    <div role="tabpanel" id="pick-dir" aria-labelledby="pick-tab-dir" class="grid gap-5 md:grid-cols-2 md:gap-6">
       <article class="card lift relative flex flex-col overflow-hidden">
-        <Image src={dirExterior} alt="Экстерьер загородного дома, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[240px] w-full object-cover md:h-[300px]" />
+        <Image src={dirExterior} alt="Экстерьер загородного дома, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[220px] w-full object-cover md:h-[280px]" />
         <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
           <h3 class="t-h3 uppercase"><a href="/courses-page/visualization" class="text-ink after:absolute after:inset-0 hover:text-white">3D-визуализация</a></h3>
           <p class="m-0 text-ink-2">Фотореалистичные интерьеры и экстерьеры в 3ds Max и Corona для дизайнеров и застройщиков.</p>
-          <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Интерьеры', 'Экстерьеры и ЖК', 'Модели для стоков'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
-          <p class="m-0 text-[15px] text-muted">Путь: база (3ds Max, Corona, ИИ), затем профессия</p>
-          <ul class="relative z-10 m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Программы направления">
-            {VIZ_SOFT.map((id) => (
-              <li><a href={softHref(id)} class="soft-chip" title={`Курсы ${SOFTWARE[id].name}`}><Image src={soft(id)} alt="" width={24} height={24} class="h-6 w-6 rounded-full" />{SOFTWARE[id].name}</a></li>
-            ))}
-          </ul>
+          <p class="m-0 text-[15px] text-muted">Профессии: интерьеры, экстерьеры и ЖК, модели для стоков. Путь: база (3ds Max, Corona, ИИ), затем профессия.</p>
           <p class="mt-auto m-0 text-[17px]">База от <b>{rub(cat.base.price)}</b> или {sp(Math.ceil(cat.base.price / cat.installmentMonths))}&nbsp;₽/мес</p>
           <span class="font-semibold text-lime" data-cta>Выбрать профессию →</span>
         </div>
       </article>
       <article class="card lift relative flex flex-col overflow-hidden">
-        <Image src={heroGame} alt="Игровой пропс, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[240px] w-full object-cover md:h-[300px]" />
+        <Image src={heroGame} alt="Игровой пропс, работа ученика" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" class="h-[220px] w-full object-cover md:h-[280px]" />
         <div class="flex flex-1 flex-col gap-4 p-6 md:p-8">
           <h3 class="t-h3 uppercase"><a href="/courses-page/gamedev" class="text-ink after:absolute after:inset-0 hover:text-white">3D для игр</a></h3>
           <p class="m-0 text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine.</p>
-          <ul class="m-0 flex list-none flex-wrap gap-2 p-0">{['Художник по предметам', 'Окружение', 'Персонажи', 'Hard Surface', 'Unreal-художник'].map((p) => <li class="rounded-full bg-surface-2 px-3 py-1.5 text-[14px]">{p}</li>)}</ul>
-          <p class="m-0 text-[15px] text-muted">Путь: визуализация в Blender, затем GameDev Level 1 и специализация</p>
-          <ul class="relative z-10 m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Программы направления">
-            {GAME_SOFT.map((id) => (
-              <li><a href={softHref(id)} class="soft-chip" title={`Курсы ${SOFTWARE[id].name}`}><Image src={soft(id)} alt="" width={24} height={24} class="h-6 w-6 rounded-full" />{SOFTWARE[id].name}</a></li>
-            ))}
-          </ul>
+          <p class="m-0 text-[15px] text-muted">Профессии: художник по предметам, окружению и персонажам, Hard Surface, Unreal-художник.</p>
           <p class="mt-auto m-0 text-[17px]">Курсы от <b>{rub(gameMin)}</b> или {sp(Math.ceil(gameMin / cat.installmentMonths))}&nbsp;₽/мес</p>
           <span class="font-semibold text-lime" data-cta>Смотреть курсы →</span>
         </div>
       </article>
     </div>
-    <nav aria-label="Курсы по программам" class="mt-8 flex flex-col gap-3 border-t border-line pt-6 md:flex-row md:items-center md:gap-6">
-      <span class="shrink-0 text-[15px] font-semibold text-ink-2">Уже знаете 3D? Курсы по программам:</span>
-      <ul class="m-0 flex list-none flex-wrap gap-2 p-0">
+
+    <div role="tabpanel" id="pick-soft" aria-labelledby="pick-tab-soft" hidden>
+      <ul class="m-0 grid list-none grid-cols-2 gap-3 p-0 sm:grid-cols-3 md:grid-cols-5">
         {(Object.keys(SOFTWARE) as SoftId[]).filter((id) => softCount(id) > 0).map((id) => (
-          <li><a href={softHref(id)} class="soft-chip">{SOFTWARE[id].name} <span class="text-muted">{softCount(id)}</span></a></li>
+          <li>
+            <a href={softHref(id)} class="soft-tile">
+              <Image src={soft(id)} alt="" width={40} height={40} loading="eager" class="h-10 w-10 rounded-full" />
+              <b class="text-[16px] text-ink">{SOFTWARE[id].name}</b>
+              <span class="text-[14px] text-muted">{softCount(id)} {plural(softCount(id), ['курс', 'курса', 'курсов'])}</span>
+              <span class="mt-auto text-[14px] font-semibold text-lime">Смотреть →</span>
+            </a>
+          </li>
         ))}
-        <li><a href="/courses" class="soft-chip !text-lime">Все {courseCount} →</a></li>
       </ul>
-    </nav>
+    </div>
+
+    <p class="mt-6"><span class="text-muted">Знаете, что ищете?</span> <a href="/courses" class="link">Все {courseCount} курсов и пакетов →</a></p>
   </section>
 
   <section id="quiz" class="wrap section-tight" aria-label="Тест: подбор курса">
@@ -252,7 +254,7 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
         <a href="/courses-page/visualization" class="btn btn-primary btn-lg">3D-визуализация</a>
         <a href="/courses-page/gamedev" class="btn btn-secondary btn-lg">3D для игр</a>
       </div>
-      <p class="mb-0 mt-4"><a href="#consult" class="link">Или бесплатная консультация</a></p>
+      <p class="mb-0 mt-4"><a href="#consult" class="link tap">Или бесплатная консультация</a></p>
     </div>
   </section>
 
@@ -265,12 +267,23 @@ const pay = ['Банковская карта РФ', 'СБП', 'Рассрочк
   </section>
 </Base>
 
-<style>
-  .soft-chip {
-    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px 0 10px;
-    border-radius: 999px; border: 1px solid var(--color-line-strong); background: var(--color-bg);
-    color: var(--color-ink); font-size: 15px; font-weight: 600; text-decoration: none; white-space: nowrap;
-    transition: border-color .2s ease, background-color .2s ease;
-  }
-  .soft-chip:hover { border-color: var(--color-sea); background: var(--color-sea-14); color: #fff; }
-</style>
+<script>
+  // Переключатель «По направлению / По программе»; #programs в адресе сразу открывает программы
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-pick-tabs] [role="tab"]')];
+  const select = (tab: HTMLButtonElement, focus = false) => {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')!)!.hidden = !on;
+    }
+    if (focus) tab.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); select(tabs[(i + 1) % tabs.length], true); }
+    });
+  });
+  if (location.hash === '#programs') select(tabs[1]);
+</script>
