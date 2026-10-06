@@ -11,6 +11,9 @@ import { readdirSync, readFileSync } from 'node:fs';
 
 // Keystatic (админка контента) нужна только при локальной работе: в продакшен-сборку не попадает.
 const isDev = process.argv.includes('dev');
+const githubPagesSite = process.env.GITHUB_PAGES_SITE;
+const githubPagesBase = process.env.GITHUB_PAGES_BASE;
+
 
 // Страницы скрытых курсов собираются с noindex (например, /podarok5): в sitemap их быть не должно
 const hiddenCoursePaths = new Set(
@@ -22,7 +25,8 @@ const hiddenCoursePaths = new Set(
 );
 
 export default defineConfig({
-  site: 'https://gripinsky.ru',
+  site: githubPagesSite || 'https://gripinsky.ru',
+  ...(githubPagesBase ? { base: githubPagesBase } : {}),
   output: 'static',
   adapter: node({ mode: 'standalone' }),
   // Адреса как на Tilda: без слэша на конце (/interiorpro, /courses-page/visualization)
