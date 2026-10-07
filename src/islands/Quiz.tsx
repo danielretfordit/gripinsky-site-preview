@@ -1,3 +1,4 @@
+import { sitePath } from '../lib/deployment';
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
 import { $pkg, $quiz, $quizOpen } from '../stores/package';
@@ -110,7 +111,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
       if (!result.base) q.set('base', '0');
       const c = Object.entries(result.courses).filter(([, v]) => v).map(([k]) => k);
       if (c.length) q.set('c', c.join(','));
-      location.href = `${vizHref}?${q.toString()}#package`;
+      location.href = `${sitePath(vizHref)}?${q.toString()}#package`;
       return;
     }
     scrollToId('package');
@@ -153,7 +154,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
             <span class="text-[30px] font-extrabold text-ink">3D для игр</span>
             <span class="text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine. Направление пока живёт на прежнем сайте академии.</span>
             <div class="flex flex-wrap items-center gap-3">
-              <a href={gamesHref} class="btn btn-primary btn-lg">Смотреть курсы для игр</a>
+              <a href={sitePath(gamesHref)} class="btn btn-primary btn-lg">Смотреть курсы для игр</a>
               <a href="#consult" class="link">Бесплатная консультация</a>
               <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-muted">Пройти заново</button>
             </div>

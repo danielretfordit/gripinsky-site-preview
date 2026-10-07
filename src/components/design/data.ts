@@ -4,7 +4,7 @@ import { getCollection, getEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { visibleWorks, personMap } from '../../lib/people';
 import { getCatalog } from '../../lib/catalog';
-import { quote, basePrice } from '../../lib/pricing';
+import { quote, basePrice, baseSeparately } from '../../lib/pricing';
 import { sp } from '../../lib/format';
 
 export interface ProtoWork {
@@ -80,7 +80,7 @@ export async function protoData() {
     prices: {
       base: cat.base.price,
       baseMonthly: Math.ceil(cat.base.price / m),
-      separately: cat.base.separately,
+      separately: baseSeparately(cat, 'chat'),
       profMin,
       pkgMin,
       months: m,

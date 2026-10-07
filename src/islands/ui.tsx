@@ -53,15 +53,16 @@ export function scrollToId(id: string, focus = true) {
 /** Ручная навигация стрелками внутри radiogroup (roving tabindex) */
 export function onRadioKeys(e: KeyboardEvent, ids: string[], current: string, pick: (id: string) => void) {
   const keys: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
-  let i = ids.indexOf(current);
+  const target = e.currentTarget as HTMLElement;
+  let i = ids.indexOf(target.dataset.value ?? current);
   if (e.key in keys) i = (i + keys[e.key] + ids.length) % ids.length;
   else if (e.key === 'Home') i = 0;
   else if (e.key === 'End') i = ids.length - 1;
   else return;
   e.preventDefault();
   pick(ids[i]);
-  const group = (e.currentTarget as HTMLElement).closest('[role="radiogroup"]');
-  requestAnimationFrame(() => group?.querySelector<HTMLElement>(`[data-value="${ids[i]}"]`)?.focus());
+  const group = target.closest('[role="radiogroup"]');
+  group?.querySelector<HTMLElement>(`[data-value="${ids[i]}"]`)?.focus({ preventScroll: true });
 }
 
 export function Overline({ children }: { children: ComponentChildren }) {

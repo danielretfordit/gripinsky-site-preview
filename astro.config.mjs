@@ -7,10 +7,13 @@ import markdoc from '@astrojs/markdoc';
 import sitemap from '@astrojs/sitemap';
 import keystatic from '@keystatic/astro';
 import tailwindcss from '@tailwindcss/vite';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { loadEnv } from 'vite';
 
 // Keystatic (админка контента) нужна только при локальной работе: в продакшен-сборку не попадает.
 const isDev = process.argv.includes('dev');
+const configEnv = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+const isIndexable = (process.env.PUBLIC_INDEXABLE ?? configEnv.PUBLIC_INDEXABLE ?? 'false') === 'true';
 const githubPagesSite = process.env.GITHUB_PAGES_SITE;
 const githubPagesBase = process.env.GITHUB_PAGES_BASE;
 
@@ -22,6 +25,15 @@ const hiddenCoursePaths = new Set(
     .map((f) => JSON.parse(readFileSync(`src/content/courses/${f}`, 'utf8')))
     .filter((c) => c.status !== 'active')
     .map((c) => c.legacyPath),
+);
+const seoNoindexPaths = new Set(
+  existsSync('src/content/page-seo')
+    ? readdirSync('src/content/page-seo')
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync('src/content/page-seo/' + f, 'utf8')))
+      .filter((p) => p.noindex)
+      .map((p) => p.route.replace(/\/+$/, '') || '/')
+    : [],
 );
 
 export default defineConfig({
@@ -46,7 +58,11 @@ export default defineConfig({
     preact({ include: ['**/islands/**'] }),
     markdoc(),
     sitemap({
-      filter: (page) => !page.includes('/oplata/') && !page.includes('/keystatic') && !hiddenCoursePaths.has(new URL(page).pathname.replace(/\/$/, '')),
+      filter: (page) => {
+        const pathname = new URL(page).pathname.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
+        return isIndexable && !page.includes('/oplata/') && !page.includes('/keystatic')
+          && !hiddenCoursePaths.has(pathname) && !seoNoindexPaths.has(pathname);
+      },
     }),
     ...(isDev ? [react({ exclude: ['**/islands/**'] }), keystatic()] : []),
   ],

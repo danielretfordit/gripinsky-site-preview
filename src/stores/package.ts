@@ -1,3 +1,4 @@
+import { sitePath } from '../lib/deployment';
 import { map, atom } from 'nanostores';
 import type { Selection, ProfId, TariffId, QuizResult } from '../lib/pricing';
 
@@ -63,5 +64,5 @@ export function packageUrl(sel: Selection): string {
   const c = Object.entries(sel.courses ?? {}).filter(([, v]) => v).map(([k]) => k);
   if (c.length) q.set('c', c.join(','));
   if (sel.addons.length) q.set('a', sel.addons.join(','));
-  return `${location.origin}/courses-page/visualization?${q.toString()}#package`;
+  return `${location.origin}${sitePath('/courses-page/visualization')}?${q.toString()}#package`;
 }

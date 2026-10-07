@@ -37,13 +37,12 @@ const rich = c.blocks.length > 0 || Boolean(c.description);
 const isFree = c.type === 'free' || c.price === 0;
 const hidden = c.status !== 'active';
 
-// Title со старой страницы оставляем, если он осмысленный; капс из двух слов с Tilda («ИНТЕРЬЕРЫ PRO») заменяем.
-// В seo.description можно писать {price}: подставится цена курса.
-const isCaps = (t: string) => !/[а-яё]/.test(t);
-const title = c.seo.title && !isCaps(c.seo.title) ? c.seo.title : `${c.title}: ${isFree ? 'бесплатный мини-курс' : 'онлайн-курс'} | GRIPINSKY`;
+// SEO-поля выводятся в том виде, в котором сохранены в записи.
+// В seo.description можно писать {price}: подставится актуальная цена курса.
+const title = c.seo.title || `${c.title}: ${isFree ? 'бесплатный мини-курс' : 'онлайн-курс'} | GRIPINSKY`;
 const lead = (c.description || c.short || '').replace(/\s+/g, ' ').trim().replace(/([^.!?])$/, '$1.');
 const description = c.seo.description
-  ? clipText(c.seo.description.replace(/\{price\}/g, sp(c.price)), 170)
+  ? c.seo.description.replace(/\{price\}/g, sp(c.price))
   : clipText(`${c.title}. ${lead === '.' ? '' : lead} Онлайн-обучение в Академии 3D GRIPINSKY${isFree ? ', бесплатно' : `, ${sp(c.price)} ₽, рассрочка`}.`, 200);
 const og = c.cover ? ogHref(`course-${id}`) : undefined;
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, ...(vizRelated ? [{ name: '3D-визуализация', href: '/courses-page/visualization' }] : []), { name: c.title }];
@@ -101,6 +100,12 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
         <div class="flex flex-col gap-5">
           <h2 id="about-course" class="t-h2">О курсе</h2>
           {c.description && <p class="m-0 text-[17px] leading-relaxed text-ink-2">{c.description}</p>}
+          {c.forWhom.length > 0 && (
+            <div class="flex flex-col gap-3">
+              <h3 class="t-h3">Для кого курс</h3>
+              <ul class="m-0 list-disc space-y-2 pl-5 text-ink-2">{c.forWhom.map((item) => <li>{item}</li>)}</ul>
+            </div>
+          )}
           {c.outcomes.length > 0 && (
             <div class="rounded-2xl bg-surface p-5"><b class="text-muted">Результат:</b> {c.outcomes.join(' ')}</div>
           )}

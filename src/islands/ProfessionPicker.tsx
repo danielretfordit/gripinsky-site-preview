@@ -1,3 +1,4 @@
+import { sitePath } from '../lib/deployment';
 import { useStore } from '@nanostores/preact';
 import { $pkg } from '../stores/package';
 import { activeCourseIds, type Catalog, type ProfId } from '../lib/pricing';
@@ -68,7 +69,7 @@ export default function ProfessionPicker({ cat, professions }: Props) {
         <div class="flex flex-col gap-4">
           <p class="m-0 text-[19px] leading-normal">{cur.lead}</p>
           <span class="text-[15px] text-muted">В портфолио: <b class="text-ink">{cur.portfolio}</b></span>
-          <a href={cur.path} class="link text-[15px]">Подробнее о профессии →</a>
+          <a href={sitePath(cur.path)} class="link text-[15px]">Подробнее о профессии →</a>
         </div>
         <div class={`grid gap-6 ${cur.courses.length > 1 ? 'md:grid-cols-2' : ''}`}>
           {cur.courses.map((c) => {
@@ -94,7 +95,7 @@ export default function ProfessionPicker({ cat, professions }: Props) {
                   <ol class="m-0 mt-1 grid gap-1.5 pl-5 text-[15px] text-ink-2">
                     {c.blocks.map((b) => <li key={b}>{b}</li>)}
                   </ol>
-                  <a href={c.href} class="link mt-2 inline-block text-[15px]">Страница курса →</a>
+                  <a href={sitePath(c.href)} class="link mt-2 inline-block text-[15px]">Страница курса →</a>
                 </details>
                 {multi && on && active.size === 1 && <span class="text-[13px] text-muted">Хотя бы один курс профессии остаётся в пакете</span>}
               </div>

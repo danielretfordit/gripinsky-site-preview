@@ -31,3 +31,19 @@ npm run preview      # собранный сайт на http://localhost:4322
 ## Документы
 
 `docs/HANDOFF.md` (бриф), `docs/analysis/` (UX/UI, маркетинг и SEO, архитектура), `docs/decisions.md`, `docs/open-questions.md`, `docs/url-map.md`.
+
+
+## Промежуточная публикация на GitHub Pages
+
+Адрес просмотра: https://gripinskya-bit.github.io/gripinsky-site/
+
+Push в main запускает .github/workflows/deploy-pages.yml. Публикуется только dist/client. Сайт для просмотра закрыт от индексации. Выбор курсов, фильтры, тест и расчёт пакета работают в браузере. Формы заявок и оплата обозначены как демонстрационные: GitHub Pages не запускает серверные API. Админка Keystatic остаётся доступной локально.
+
+Для локальной сборки в таком же режиме:
+
+```bash
+GITHUB_PAGES_SITE=https://gripinskya-bit.github.io GITHUB_PAGES_BASE=/gripinsky-site PUBLIC_STATIC_PREVIEW=true PUBLIC_INDEXABLE=false PUBLIC_ANALYTICS=false npm run build
+GITHUB_PAGES_BASE=/gripinsky-site node scripts/prepare-github-pages.mjs
+```
+
+Файл version.json в публикации содержит SHA опубликованного коммита. Настройки боевого домена не меняются.

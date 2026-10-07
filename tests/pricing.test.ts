@@ -1,14 +1,27 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { quote, basePrice, activeCourseIds, availableAddons, quizResult, type Catalog } from '../src/lib/pricing.ts';
+import { quote, basePrice, activeCourseIds, availableAddons, quizResult, selfPriceRule, type Catalog } from '../src/lib/pricing.ts';
 
 // Те же цены, что в src/content (каталог Tilda + решения в docs/decisions.md)
 const cat: Catalog = {
   base: {
-    id: 'baza', name: 'База 3D-визуализатора', price: 29900, separately: 10900 + 11900 + 27900,
+    id: 'baza', name: 'База 3D-визуализатора', price: 29900,
+    parts: ['modeling1', 'modeling2', 'vizualization3'],
     included: [{ id: 'ai', name: 'ИИ в 3D', value: 4900 }],
     gifts: [{ id: 'anim', name: 'Анимация в 3ds Max', value: null }],
   },
+  courses: Object.fromEntries([
+    ['modeling1', 'Моделирование в 3ds Max. Level 1', 10900] as const,
+    ['modeling2', 'Моделирование в 3ds Max. Level 2', 11900] as const,
+    ['vizualization3', 'Визуализация в 3ds Max и Corona. Level 3', 27900] as const,
+    ['interiorpro', 'Интерьеры PRO', 29900] as const,
+    ['exteriorpro', 'Экстерьеры PRO', 32900] as const,
+    ['residential_complex', 'Масштабные ЖК', 43900] as const,
+    ['3dstock', 'Моделирование под стоки', 19900] as const,
+    ['materialspro', 'Материалы Corona PRO', 27900] as const,
+    ['ai', 'ИИ в 3D', 4900] as const,
+  ].map(([id, name, price]) => [id, { id, name, price, selfPrice: selfPriceRule(price) }])),
+  tiers: [{ min: 2, pct: 15 }, { min: 3, pct: 20 }, { min: 4, pct: 22 }],
   tariffs: [
     { id: 'lite', name: 'Самостоятельный', extra: 0 },
     { id: 'opt', name: 'Оптимальный', extra: 15000 },
@@ -39,8 +52,8 @@ test('цена базы по форматам: 29 900 / 44 900 / 69 900', () => 
   assert.deepEqual(['lite', 'opt', 'mentor'].map((t) => basePrice(cat, t as 'lite')), [29900, 44900, 69900]);
 });
 
-test('форматы в пакете: Самостоятельный 59 800, Наставничество 99 800', () => {
-  assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'lite' }).total, 59800);
+test('форматы в пакете: Самостоятельный 49 800, Наставничество 99 800', () => {
+  assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'lite' }).total, 49800);
   assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'mentor' }).total, 99800);
 });
 
@@ -62,18 +75,18 @@ test('последний курс профессии снять нельзя', (
 
 test('ИИ в 3D входит в базу: с базой его нельзя докупить, без базы можно', () => {
   assert.ok(!availableAddons(cat, { prof: 'int', base: true }).some((a) => a.id === 'ai'));
-  assert.equal(quote(cat, { base: true, prof: 'int', addons: ['ai'], tariff: 'lite' }).total, 59800);
-  assert.equal(quote(cat, { base: false, prof: 'int', addons: ['ai'], tariff: 'lite' }).total, 34800);
+  assert.equal(quote(cat, { base: true, prof: 'int', addons: ['ai'], tariff: 'lite' }).total, 49800);
+  assert.equal(quote(cat, { base: false, prof: 'int', addons: ['ai'], tariff: 'lite' }).total, 19380);
 });
 
 test('доп. курс без подтверждённой цены не продаётся', () => {
   assert.ok(!availableAddons(cat, { prof: 'int', base: false }).some((a) => a.id === 'post'));
-  assert.equal(quote(cat, { base: false, prof: 'int', addons: ['post'], tariff: 'lite' }).total, 29900);
+  assert.equal(quote(cat, { base: false, prof: 'int', addons: ['post'], tariff: 'lite' }).total, 19900);
 });
 
 test('выгода считается только из реальных цен', () => {
-  // 50 700 − 29 900 = 20 800 за базу, + ИИ 4 900, + Marvelous 13 900; у анимации цены нет
-  assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'opt' }).savings, 39600);
+  // 50 700 по отдельности, 44 900 за базу с форматом; ИИ и Marvelous идут бонусом.
+  assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'opt' }).savings, 24600);
 });
 
 test('тест: новичок в экстерьерах получает базу и оба курса профессии', () => {

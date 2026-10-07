@@ -1,8 +1,14 @@
 ---
+import { STATIC_PREVIEW } from '../lib/deployment';
 interface Props { context?: string; submitLabel?: string; id?: string }
 const { context = '', submitLabel = 'Записаться на консультацию', id = 'lead' } = Astro.props;
 ---
-<form class="lead-form flex flex-col gap-4" data-lead-form novalidate action="/api/lead" method="post" id={id}>
+{STATIC_PREVIEW ? (
+  <div class="flex flex-col gap-3 border border-line p-6" role="note">
+    <h3 class="t-title m-0">Консультация в демоверсии</h3>
+    <p class="m-0 text-ink-2">Это промежуточная версия сайта для просмотра. Форма заявки будет доступна после подключения CRM.</p>
+  </div>
+) : <form class="lead-form flex flex-col gap-4" data-lead-form novalidate action="/api/lead" method="post" id={id}>
   <div class="grid gap-4 sm:grid-cols-2">
     <div class="flex flex-col gap-2">
       <label for={`${id}-name`} class="text-[15px] font-semibold">Как к вам обращаться</label>
@@ -35,7 +41,7 @@ const { context = '', submitLabel = 'Записаться на консульт�
   <div class="lead-fail hidden rounded-2xl border border-line-strong p-5 text-ink-2" role="alert">
     Не получилось отправить заявку. Напишите нам в <a href="https://t.me/Academy3D_bot" class="link">Telegram</a>, ответим быстро.
   </div>
-</form>
+</form>}
 
 <script>
   import { readUtm } from '../lib/utm';

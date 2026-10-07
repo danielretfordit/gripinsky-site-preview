@@ -1,8 +1,10 @@
 ---
 import '../styles/global.css';
+import { STATIC_PREVIEW } from '../lib/deployment';
 import { Font } from 'astro:assets';
 import { PUBLIC_INDEXABLE } from 'astro:env/client';
 import { getEntry } from 'astro:content';
+import { getPageSeo } from '../lib/page-seo';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
@@ -26,9 +28,12 @@ interface Props {
 
 const { title, description, ogImage, ogType = 'website', breadcrumbs, jsonLd = [], noindex = false, consult = true, consultContext = '' } = Astro.props;
 const site = (await getEntry('settings', 'site'))!.data;
-const canonical = canonicalUrl(Astro.url.pathname);
-const robots = !PUBLIC_INDEXABLE || noindex ? 'noindex, nofollow' : 'index, follow';
-const og = absUrl(ogImage ?? ogHref('default'));
+const routeSeo = await getPageSeo(Astro.url.pathname);
+const resolvedTitle = routeSeo?.title || title;
+const resolvedDescription = routeSeo?.description || description;
+const canonical = routeSeo?.canonical || canonicalUrl(Astro.url.pathname);
+const robots = !PUBLIC_INDEXABLE || noindex || routeSeo?.noindex ? 'noindex, nofollow' : 'index, follow';
+const og = absUrl(routeSeo?.ogImage || ogImage || ogHref('default'));
 const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadcrumbs)] : []), ...jsonLd];
 ---
 <!doctype html>
@@ -36,8 +41,8 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{resolvedTitle}</title>
+    <meta name="description" content={resolvedDescription} />
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={robots} />
     <meta name="yandex-verification" content={YANDEX_VERIFICATION} />
@@ -46,8 +51,8 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:site_name" content="Академия 3D GRIPINSKY" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={resolvedTitle} />
+    <meta property="og:description" content={resolvedDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={og} />
     <meta property="og:image:type" content="image/jpeg" />
@@ -61,6 +66,7 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
   </head>
   <body>
     <a class="skip-link" href="#main">К содержанию</a>
+    {STATIC_PREVIEW && <div class="border-b border-line bg-surface px-5 py-2 text-center text-[13px] text-ink-2" role="note">Промежуточная версия сайта. Заявки и оплата пока не подключены.</div>}
     <Header consult={consult} />
     <main id="main" tabindex="-1" class="flex-1">
       <slot />

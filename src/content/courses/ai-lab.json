@@ -6,6 +6,7 @@
   "status": "active",
   "type": "course",
   "price": 9900,
+  "selfPrice": 9900,
   "oldPrice": null,
   "professions": ["Визуализация", "Моделирование"],
   "software": ["3DS MAX"],

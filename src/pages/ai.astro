@@ -14,17 +14,17 @@ const ai = (await getEntry('courses', 'ai'))!.data;
 const lab = (await getEntry('courses', 'ai-lab'))!.data;
 const months = site.installment.months;
 const steps = [
-  { t: 'Генерируешь референсы нейросетью', d: 'Согласованный референс-сет: 4 вида будущей модели за несколько промптов.', tools: 'Nano Banana' },
-  { t: 'Создаёшь 3D-модель по фото', d: 'Нейросеть собирает модель по 4 видам. Первая объёмная модель уже на втором шаге.', tools: 'Hunyuan3D, Tripo3D' },
-  { t: 'Делаешь ретопологию модели', d: 'После нейросети остаются рваные полигоны и лишняя плотность. Автоматическая ретопология в Quad Remesher и доработка в 3ds Max: здесь решает навык художника.', tools: 'Quad Remesher, 3ds Max' },
-  { t: 'Генерируешь текстуры нейросетью', d: 'Текстуры по описанию и ручная доводка до нужного качества.', tools: 'ИИ-текстурирование' },
-  { t: 'Ставишь 3D-модель в интерьер', d: 'Модель на сером фоне за один промпт превращается в готовую сцену с интерьером или локацией.', tools: 'Nano Banana, Claude' },
-  { t: 'Делаешь визуализацию для портфолио', d: 'Из одного рендера 4 ракурса в том же окружении: для портфолио и заказчика.', tools: 'Nano Banana' },
+  { t: 'Генерируешь референсы нейросетью', d: 'Собираешь согласованный набор из четырёх видов будущей модели и выбираешь направление до начала моделирования.', result: 'Набор референсов по четырём видам', tools: 'Nano Banana' },
+  { t: 'Создаёшь 3D-модель по фото', d: 'Получаешь черновую модель по референсам и переходишь от плоского изображения к объёмной форме.', result: 'Черновая 3D-модель по фото', tools: 'Hunyuan3D, Tripo3D' },
+  { t: 'Делаешь ретопологию модели', d: 'После генерации проверяешь плотность и геометрию, очищаешь сетку в Quad Remesher и дорабатываешь её в 3ds Max.', result: 'Чистая сетка для дальнейшей работы', tools: 'Quad Remesher, 3ds Max' },
+  { t: 'Генерируешь и доводишь текстуры', d: 'Создаёшь текстуры по описанию и вручную приводишь их к нужному виду.', result: 'Текстуры и материалы модели', tools: 'ИИ-текстурирование' },
+  { t: 'Ставишь модель в окружение', d: 'Размещаешь модель в интерьерной сцене или подходящей локации и проверяешь, как она читается в контексте.', result: 'Модель в готовой сцене', tools: 'Nano Banana, Claude' },
+  { t: 'Готовишь визуализацию для портфолио', d: 'Собираешь подачу модели в четырёх ракурсах для портфолио и обсуждения с заказчиком.', result: 'Четыре ракурса одной модели', tools: 'Nano Banana' }
 ];
 const faq = [
   ['Я новичок в 3D. Мне подойдёт?', 'Курс рассчитан на тех, у кого есть базовые навыки 3D. Если вы начинаете с нуля, сначала пройдите моделирование в 3ds Max, уровни 1 и 2, а затем переходите к «ИИ в 3D». Так нейросеть будет ускорять работу, а не подменять понимание формы. А в «Базу 3D-визуализатора» этот курс уже входит.'],
   ['ИИ же всё делает сам? Заменит ли он 3D-художника?', 'Нет. Нейросеть выдаёт черновик: рваную сетку, ошибки в форме, сырые текстуры. Дальше решает навык художника: ретопология, доводка текстур и материалов, подача. Этому посвящены шаги 3–6.'],
-  ['Я уже умею в 3D. Зачем мне этот курс?', 'Чтобы экономить время на каждом заказе. Референсы, черновая геометрия, текстуры и окружение занимают часы вместо дня. Освоили пайплайн один раз и экономите на каждом следующем проекте.'],
+  ['Я уже умею в 3D. Зачем мне этот курс?', 'Чтобы добавлять нейросети к черновым этапам: подбору референсов, первичной геометрии, текстурам и окружению. Результат всё равно проходит вашу проверку и доработку.'],
   ['Нейросети быстро меняются. Знания не устареют?', 'Мы учим принципу пайплайна, а не кнопкам одного сервиса. Когда выходит новая нейросеть, вы встраиваете её в ту же цепочку: референс, 3D-модель, чистая сетка, текстуры, сцена.'],
   ['Какими нейросетями будем пользоваться?', 'Nano Banana для референсов и окружения, Hunyuan3D и Tripo3D для генерации 3D-модели, Quad Remesher для ретопологии, а также Claude и Генспарк для рабочих задач. Доработку модели делаем в 3ds Max.'],
   ['Нужна ли ретопология модели после нейросети?', 'Да, почти всегда. Нейросеть выдаёт плотную треугольную сетку, которую неудобно текстурировать и править. На шаге 3 делаете автоматическую ретопологию в Quad Remesher и дорабатываете модель в 3ds Max до чистых квадов.'],
@@ -49,9 +49,9 @@ const ld = [
     <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
       <div class="flex flex-col gap-5">
         <span class="t-overline t-signal">Онлайн-курс</span>
-        <h1 id="ai-title" class="t-display">ИИ в 3D: <span class="t-accent">нейросети для <span class="whitespace-nowrap">3D-моделей</span></span></h1>
+        <h1 id="ai-title" class="t-display normal-case">ИИ в 3D: <span class="t-accent">нейросети для <span class="whitespace-nowrap">3D-моделей</span></span></h1>
         <p class="t-quote m-0 text-muted">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
-        <p class="t-lead">Весь пайплайн от референса и 3D-модели по фото до готового рендера в интерьере. Рутину отдаёте ИИ, качество доводите сами и работаете в разы быстрее.</p>
+        <p class="t-lead">Весь пайплайн: от референса и 3D-модели по фото до рендера в интерьере. Нейросети помогают с черновыми этапами, а вы проверяете геометрию и доводите результат в 3ds Max.</p>
         <div class="flex flex-col gap-3 sm:flex-row">
           <a href="#tariffs" class="btn btn-primary btn-lg">Выбрать тариф, от {rub(ai.price)}</a>
           <a href="#program" class="btn btn-secondary btn-lg">Программа</a>
@@ -63,41 +63,54 @@ const ld = [
   </section>
 
   <section class="wrap section" aria-labelledby="lose-title">
-    <h2 id="lose-title" class="t-h2 mb-8">Что вы теряете <span class="t-accent">без ИИ</span></h2>
+    <div class="head"><span class="t-overline">Рабочий процесс</span><h2 id="lose-title" class="t-h2 normal-case">Какие этапы можно <span class="t-accent">ускорить с ИИ</span></h2></div>
     <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
-      {[['День вместо часа', 'Референсы, черновая геометрия, текстуры и окружение съедают часы, которые можно потратить на новые заказы.'], ['Конкуренты уже быстрее', 'Студии и фрилансеры ускоряются с ИИ. Кто работает по старинке, проигрывает по срокам и цене.'], ['Один вариант вместо пяти', 'С ИИ на этапе референсов вы показываете заказчику несколько версий и продаёте выбор, поднимая чек.']].map(([t, d]) => (
-        <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">{t}</h3><p class="t-small m-0 text-muted">{d}</p></li>
+      {[['Меньше повторяющейся рутины', 'Подготовка референсов, черновой геометрии, текстур и окружения может занимать меньше времени. Финальный результат всё равно проверяет художник.'], ['Быстрее проверять идеи', 'Сравните несколько вариантов референса до того, как начнёте собирать финальную сцену.'], ['Больше вариантов для обсуждения', 'На этапе референсов покажите заказчику несколько направлений и выберите подходящее до моделирования.']].map(([t, d]) => (
+        <li class="ai-benefit"><h3 class="t-title">{t}</h3><p class="t-small m-0 text-ink-2">{d}</p></li>
       ))}
     </ul>
   </section>
 
   <section id="program" class="wrap section" aria-labelledby="program-title">
-    <div class="mb-8 flex flex-col gap-3">
-      <span class="t-overline">Программа</span>
-      <h2 id="program-title" class="t-h2" tabindex="-1">Каждый шаг: <span class="t-accent">новый навык</span></h2>
-    </div>
-    <ol class="m-0 grid list-none gap-4 p-0 md:grid-cols-2">
-      {steps.map((s, i) => (
-        <li class="card flex flex-col gap-3 p-6">
-          <span class="flex items-center justify-between gap-3">
-            <span class="flex h-11 w-11 items-center justify-center rounded-full border border-line-strong font-mono text-[15px] font-medium text-ink" aria-hidden="true">{i + 1}</span>
-            <span class="text-[13px] font-semibold text-muted">Пайплайн освоен на {Math.round(((i + 1) / steps.length) * 100)}%</span>
-          </span>
-          <h3 class="t-title"><span class="sr-only">Шаг {i + 1}. </span>{s.t}</h3>
-          <p class="t-small m-0 text-ink-2">{s.d}</p>
-          <span class="text-[14px] text-muted">{s.tools}</span>
-        </li>
-      ))}
+    <div class="head"><span class="t-overline">Программа: шесть этапов</span><h2 id="program-title" class="t-h2 normal-case" tabindex="-1">От референса <span class="t-accent">до подачи в портфолио</span></h2><p class="t-lead">Каждый шаг добавляет навык и приводит к следующей части пайплайна.</p></div>
+    <ol class="ai-roadmap">
+      {steps.map((s, i) => {
+        const progress = Math.round(((i + 1) / steps.length) * 100);
+        return (
+          <li class="ai-roadmap__step">
+            <div class="ai-roadmap__progress">
+              <span class="ai-roadmap__number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="t-overline">{progress}%</span>
+              <div class="ai-roadmap__track" role="progressbar" aria-label={`Пайплайн после этапа ${i + 1}`} aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100"><span style={`width:${progress}%`}></span></div>
+            </div>
+            <div class="ai-roadmap__copy"><span class="t-overline">Этап {String(i + 1).padStart(2, '0')}</span><h3>{s.t}</h3><p>{s.d}</p></div>
+            <div class="ai-roadmap__result"><span class="t-overline">Результат этапа</span><p>{s.result}</p><span class="ai-roadmap__tools">{s.tools}</span></div>
+          </li>
+        );
+      })}
     </ol>
-    <p class="mt-6 text-ink-2"><b class="text-ink">Инструменты:</b> Nano Banana, Hunyuan3D, Tripo3D, Quad Remesher, Claude, Генспарк и 3ds Max для доработки.</p>
+    <p class="ai-tools"><b>Инструменты пайплайна</b><span>Nano Banana, Hunyuan3D, Tripo3D, Quad Remesher, Claude, Генспарк и 3ds Max</span></p>
+  </section>
+
+  <section class="wrap section ai-outcomes" aria-labelledby="outcomes-title">
+    <div class="ai-outcomes__head">
+      <span class="t-overline">Результаты обучения</span>
+      <h2 id="outcomes-title" class="t-h2 normal-case">Что можно <span class="t-accent">добавить в портфолио</span></h2>
+      <p class="t-lead">Финальный проект объединяет этапы курса: от исходной модели до готовой подачи.</p>
+    </div>
+    <ol class="ai-outcomes__list">
+      <li><span class="ai-outcomes__n">01</span><div><h3>Модель с чистой сеткой</h3><p>Геометрия, которую можно проверять и дорабатывать в 3ds Max.</p></div></li>
+      <li><span class="ai-outcomes__n">02</span><div><h3>Материалы и текстуры</h3><p>Текстуры после генерации и ручной доводки под выбранную модель.</p></div></li>
+      <li><span class="ai-outcomes__n">03</span><div><h3>Сцена и четыре ракурса</h3><p>Модель в окружении и серия изображений для портфолио или обсуждения с заказчиком.</p></div></li>
+    </ol>
   </section>
 
   <section class="wrap section" aria-labelledby="who-title">
     <h2 id="who-title" class="t-h2 mb-8">Кому <span class="t-accent">подходит</span></h2>
     <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
-      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-muted">Тот же результат в разы быстрее: больше заказов за то же время.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-muted">Подключите нейросети к привычному пайплайну и сохраните ручной контроль над геометрией и подачей.</p></li>
       <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Новичкам без моделирования</h3><p class="t-small m-0 text-muted">Понятная точка входа, но для сильного результата нужна база. <a href="/modeling1" class="link">Начать с 3ds Max</a>.</p></li>
-      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Выпускникам академии</h3><p class="t-small m-0 text-muted">Навыки, которые вы умеете руками, теперь делаются быстрее.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Выпускникам академии</h3><p class="t-small m-0 text-muted">Добавьте новые инструменты к навыкам моделирования и визуализации, которые уже используете.</p></li>
     </ul>
   </section>
 
@@ -117,9 +130,9 @@ const ld = [
         <h3 class="t-h3">Лаборатория</h3>
         <span><b class="text-[34px]">{rub(lab.price)}</b> <span class="text-muted">или {sp(Math.ceil(lab.price / months))}&nbsp;₽/мес</span></span>
         <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
-          <li>Всё из тарифа «Самостоятельно»</li><li>Обучение в группе с датой старта</li><li>Живой стрим с разбором полного цикла</li><li class="text-muted">Дата старта потока уточняется</li>
+          <li>Всё из тарифа «Самостоятельно»</li><li>Обучение в группе</li><li>Живой стрим с разбором полного цикла</li><li class="text-muted">Уточните дату ближайшего потока</li>
         </ul>
-        <button type="button" class="btn btn-primary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai-lab', name: lab.title, price: lab.price })}>Записаться в поток</button>
+        <button type="button" class="btn btn-primary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai-lab', name: lab.title, price: lab.price })}>Выбрать «Лабораторию»</button>
       </article>
     </div>
     <p class="mt-4 text-[15px] text-muted">Оплата картой, через СБП, в рассрочку и частями, счёт для юрлиц и ИП.</p>
@@ -143,6 +156,51 @@ const ld = [
     <Checkout client:load months={months} telegramBot={site.telegramBot} />
   </Fragment>
 </Base>
+
+<style>
+  .ai-benefit { padding: 20px 0 0; border-top: 1px solid var(--color-line); }
+  .ai-benefit h3 { margin: 0 0 8px; }
+  .ai-roadmap { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-line); }
+  .ai-roadmap__step {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 12px 18px;
+    padding: 22px 0 24px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .ai-roadmap__progress { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .ai-roadmap__number { color: var(--color-ink); font-size: 27px; font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
+  .ai-roadmap__progress .t-overline { font-size: 12px; }
+  .ai-roadmap__track { width: 100%; height: 2px; margin-top: 2px; background: rgb(236 236 230 / .14); }
+  .ai-roadmap__track span { display: block; height: 100%; background: var(--color-lime); }
+  .ai-roadmap__copy, .ai-roadmap__result { min-width: 0; }
+  .ai-roadmap__copy { display: flex; flex-direction: column; gap: 8px; }
+  .ai-roadmap__copy > .t-overline, .ai-roadmap__result > .t-overline { font-size: 12px; }
+  .ai-roadmap__copy h3 { margin: 0; font-size: clamp(20px, 2.1vw, 28px); font-weight: 700; line-height: 1.16; letter-spacing: -.02em; }
+  .ai-roadmap__copy p { max-width: 660px; margin: 0; color: var(--color-ink-2); line-height: 1.5; }
+  .ai-roadmap__result { grid-column: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .ai-roadmap__result p { margin: 0; color: var(--color-ink); font-weight: 650; line-height: 1.4; }
+  .ai-roadmap__tools { color: var(--color-muted); font-family: var(--font-mono); font-size: 12px; line-height: 1.4; }
+  .ai-tools { display: flex; flex-direction: column; gap: 6px; margin: 20px 0 0; color: var(--color-muted); font-size: 14px; }
+  .ai-tools b { color: var(--color-ink-2); font-weight: 600; }
+  .ai-outcomes__head { display: flex; max-width: 760px; flex-direction: column; gap: 12px; }
+  .ai-outcomes__list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: var(--space-head) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--color-line); }
+  .ai-outcomes__list li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--color-line); }
+  .ai-outcomes__n { color: var(--color-muted); font-family: var(--font-mono); font-size: 13px; }
+  .ai-outcomes__list h3 { margin: 0 0 5px; font-size: 18px; font-weight: 700; }
+  .ai-outcomes__list p { margin: 0; color: var(--color-ink-2); font-size: 15px; line-height: 1.45; }
+  @media (min-width: 768px) {
+    .ai-roadmap__step { grid-template-columns: 112px minmax(0, 1.5fr) minmax(190px, .7fr); gap: 32px; padding: 28px 0; }
+    .ai-roadmap__progress { gap: 9px; }
+    .ai-roadmap__number { font-size: 36px; }
+    .ai-roadmap__result { grid-column: auto; align-self: center; padding-left: 24px; border-left: 1px solid var(--color-line); }
+    .ai-tools { flex-direction: row; flex-wrap: wrap; gap: 6px 24px; }
+    .ai-outcomes__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+    .ai-outcomes__list li { grid-template-columns: 36px minmax(0, 1fr); align-content: start; gap: 14px; padding: 22px 18px 20px 0; border-bottom: 0; }
+    .ai-outcomes__list li + li { border-left: 1px solid var(--color-line); padding-left: 20px; }
+    .ai-outcomes__list h3 { font-size: 20px; }
+  }
+</style>
 
 <script>
   import { openCheckout } from '../stores/package';

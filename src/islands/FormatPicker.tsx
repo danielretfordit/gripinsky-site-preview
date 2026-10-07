@@ -1,6 +1,7 @@
+import { sitePath } from '../lib/deployment';
 import { useStore } from '@nanostores/preact';
 import { $pkg, openCheckout } from '../stores/package';
-import { basePrice, quoteBaseOnly, type Catalog, type TariffId } from '../lib/pricing';
+import { basePrice, baseSeparately, quoteBaseOnly, supportOf, type Catalog, type TariffId } from '../lib/pricing';
 import { reachGoal } from '../lib/analytics';
 import { rub, sp, Check, Cross, onRadioKeys, scrollToId } from './ui';
 
@@ -12,6 +13,9 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
   const ids = tariffs.map((t) => t.id);
   const cur = tariffs.find((t) => t.id === pkg.tariff) ?? tariffs[0];
   const price = basePrice(cat, cur.id);
+  // Честный якорь: те же курсы по отдельности с той же поддержкой
+  const support = supportOf(cur.id);
+  const separately = baseSeparately(cat, support);
   const pick = (id: TariffId) => { $pkg.setKey('tariff', id); reachGoal('tariff_select', { id }); };
 
   const buyBase = () => {
@@ -44,7 +48,7 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
             );
           })}
         </div>
-        <a href={trialHref} class="link-muted self-start text-[15px]">Сначала попробовать: бесплатные уроки →</a>
+        <a href={sitePath(trialHref)} class="link-muted self-start text-[15px]">Сначала попробовать: бесплатные уроки →</a>
       </div>
 
       <aside aria-label="База 3D-визуализатора" class="flex flex-col gap-4 rounded-card border border-line bg-surface p-6">
@@ -63,7 +67,7 @@ export default function FormatPicker({ cat, tariffs, trialHref }: Props) {
         <div class="flex flex-col gap-1 border-t border-line pt-4" aria-live="polite">
           <span class="text-[36px] font-extrabold leading-none">{rub(price)}</span>
           <span class="text-[15px] text-muted">или {sp(Math.ceil(price / cat.installmentMonths))}&nbsp;₽/мес в рассрочку на {cat.installmentMonths} мес.</span>
-          <span class="text-[14px] text-muted">По отдельности курсы базы стоят {rub(cat.base.separately)}, «ИИ в 3D» входит бесплатно</span>
+          {separately > price && <span class="text-[14px] text-muted">По отдельности курсы базы {support === 'self' ? 'без поддержки' : 'с поддержкой'} стоят {rub(separately)}, «ИИ в 3D» входит бесплатно</span>}
         </div>
         <button type="button" class="btn btn-primary btn-lg btn-block" onClick={() => scrollToId('profession')}>Добавить профессию ↓</button>
         <button type="button" class="btn btn-secondary btn-block" onClick={buyBase}>Купить только базу</button>

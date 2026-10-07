@@ -1,5 +1,5 @@
 import { getCollection, getEntry } from 'astro:content';
-import type { Catalog, ProfId, TariffId } from './pricing';
+import { selfPriceRule, type Catalog, type ProfId, type TariffId } from './pricing';
 
 /** Собирает данные для расчёта пакета из коллекций контента (только на сервере / при сборке) */
 export async function getCatalog(): Promise<Catalog> {
@@ -12,8 +12,12 @@ export async function getCatalog(): Promise<Catalog> {
   };
   const base = course('baza');
   const includedIds = base.includes.map((r) => r.id);
-  // «ИИ в 3D» входит в базу бонусом; остальные курсы базы дают честный якорь «по отдельности»
-  const separately = includedIds.filter((id) => id !== 'ai').reduce((s, id) => s + course(id).price, 0);
+
+  // Курсы, которые продаются по отдельности и собираются в набор: цена с чатом поддержки и без поддержки
+  const setCourses = Object.fromEntries(
+    [...courses].filter(([, c]) => c.type === 'course' && c.status === 'active' && c.price > 0)
+      .map(([id, c]) => [id, { id, name: c.title, price: c.price, selfPrice: c.selfPrice ?? selfPriceRule(c.price) }]),
+  );
 
   const tariffs = (await getCollection('tariffs'))
     .sort((a, b) => a.data.order - b.data.order)
@@ -39,12 +43,15 @@ export async function getCatalog(): Promise<Catalog> {
       id: 'baza',
       name: base.title,
       price: base.price,
-      separately,
+      // «ИИ в 3D» входит в базу бонусом; остальные курсы базы дают честный якорь «по отдельности»
+      parts: includedIds.filter((id) => id !== 'ai'),
       included: includedIds.filter((id) => id === 'ai').map((id) => ({ id, name: course(id).title, value: course(id).price || null })),
       gifts: base.gifts,
     },
     tariffs,
     professions,
+    courses: setCourses,
+    tiers: [...site.bundle.tiers].sort((a, b) => a.min - b.min),
     installmentMonths: site.installment.months,
   };
 }

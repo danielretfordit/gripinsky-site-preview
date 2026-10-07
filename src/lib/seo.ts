@@ -2,7 +2,9 @@ export const SITE = 'https://gripinsky.ru';
 
 /** Путь без `.html`, `/index` и слэша на конце (адреса как на Tilda) */
 export function canonicalPath(pathname: string): string {
-  let p = pathname.replace(/\.html$/, '').replace(/\/index$/, '/');
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const route = base && (pathname === base || pathname.startsWith(base + '/')) ? pathname.slice(base.length) || '/' : pathname;
+  let p = route.replace(/\.html$/, '').replace(/\/index$/, '/');
   if (p.length > 1) p = p.replace(/\/+$/, '');
   return p || '/';
 }

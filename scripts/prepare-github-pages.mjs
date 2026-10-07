@@ -23,12 +23,21 @@ async function visit(directory) {
       await visit(filename);
     } else if (entry.isFile() && entry.name.endsWith('.html')) {
       const html = await readFile(filename, 'utf8');
-      const rewritten = html.replace(/\b(href|src|action)=(['"])(.*?)\2/g, (match, attr, quote, value) => {
+      let rewritten = html.replace(/\b(href|src|action)=(['"])(.*?)\2/g, (_match, attr, quote, value) => {
         return `${attr}=${quote}${rewriteUrl(value)}${quote}`;
       });
+      // Astro redirects use a meta refresh in static output.
+      rewritten = rewritten.replace(/<meta\b[^>]*http-equiv=["']refresh["'][^>]*>/gi, (tag) =>
+        tag.replace(/(content=["'][^"']*?url=)([^"']+)/i, (_match, prefix, url) => prefix + rewriteUrl(url)));
       if (rewritten !== html) await writeFile(filename, rewritten);
     }
   }
 }
 
 await visit(root);
+await writeFile(path.join(root, '.nojekyll'), '');
+await writeFile(path.join(root, 'version.json'), JSON.stringify({
+  commit: process.env.GITHUB_SHA || 'local-preview',
+  builtAt: new Date().toISOString(),
+  mode: 'static-preview',
+}) + '\n');

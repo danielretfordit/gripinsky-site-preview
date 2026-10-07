@@ -128,6 +128,9 @@
   /* Секции разделяются воздухом сверху; последний блок страницы получает такой же отступ снизу */
   .section { padding-top: var(--space-section); }
   .subsection { padding-top: var(--space-sub); }
+  /* Anchor navigation starts at content, excluding the section spacing above it. */
+  .section[id] { scroll-margin-top: calc(-1 * var(--space-section)); }
+  .subsection[id] { scroll-margin-top: calc(-1 * var(--space-sub)); }
   main > :last-child { padding-bottom: var(--space-section); }
   .head { display: flex; flex-direction: column; gap: 12px; margin-bottom: var(--space-head); }
   .head > p { max-width: 640px; margin: 0; }

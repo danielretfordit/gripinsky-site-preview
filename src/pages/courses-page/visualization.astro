@@ -1,7 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import HeroWork from '../../components/HeroWork.astro';
-import PathStrip from '../../components/PathStrip.astro';
+import StatsRibbon from '../../components/StatsRibbon.astro';
+import LearningLadder from '../../components/viz/LearningLadder.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import SubNav from '../../components/viz/SubNav.astro';
 import Results from '../../components/viz/Results.astro';
@@ -29,17 +30,13 @@ const [professions, tariffs, texts, faq] = await Promise.all([professionViews(),
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
 const wv = await workViews();
 const hero = wv.work('bolshunova-banya-1') ?? wv.work('bolshunova-ostrov-1')!;
-const profMin = Math.min(...Object.values(cat.professions).flatMap((p) => p.courses.map((c) => c.price)));
-const steps = [
-  { n: '01', title: 'База', sub: '3ds Max, Corona и ИИ в 3D, 230 уроков', price: `от ${rub(cat.base.price)}`, href: '#base' },
-  { n: '02', title: 'Профессия', sub: 'Интерьеры, экстерьеры или модели для стоков', price: `от ${rub(profMin)}`, href: '#profession' },
-  { n: '03', title: 'Пакет', sub: 'База и профессия вместе, подарок к профессии', price: `от ${rub(cat.base.price + profMin)}`, href: '#package' },
-];
 const st = site.stats;
 const stats = [
   { value: st.graduates, label: 'выпускников' },
-  { value: st.rating, label: 'на Яндекс Картах', href: site.yandexMaps },
-  { value: '104 + 7', label: 'моделей и визуализаций в портфолио' },
+  { value: st.years, label: 'учим по авторской системе' },
+  { value: st.videos, label: 'видеоуроков' },
+  { value: st.rating, label: 'оценка на Яндекс Картах', href: site.yandexMaps },
+  { value: st.subscribers, label: 'подписчиков на YouTube', href: site.youtube },
 ];
 const installmentNote = site.installment.note.replace(/\s*\[[^\]]*\]\s*/g, ' ').trim();
 const baseLd = courseLd({
@@ -65,12 +62,13 @@ const baseLd = courseLd({
       <a href="/vizualization3_mini" class="link tap" data-goal="trial_click">Бесплатные уроки →</a>
     </Fragment>
   </HeroWork>
-  <PathStrip label="Как учимся: три шага" steps={steps} stats={stats} />
+  <StatsRibbon stats={stats} />
   <p class="wrap mt-5 text-[15px] text-muted">База от {rub(cat.base.price)} или {sp(Math.ceil(cat.base.price / cat.installmentMonths))}&nbsp;₽/мес в рассрочку. Не знаете, с чего начать? <a href="#quiz" class="link" data-open-quiz>Тест за 1 минуту</a></p>
   <SubNav />
   <Results />
+  <LearningLadder />
 
-  <section id="quiz" class="wrap section scroll-mt-16" aria-label="Тест: с чего начать">
+  <section id="quiz" class="wrap section" aria-label="Тест: с чего начать">
     <Quiz client:load cat={cat} variant="viz" telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
   </section>
 

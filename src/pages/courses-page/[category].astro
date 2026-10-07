@@ -8,7 +8,7 @@ import Faq from '../../components/Faq.astro';
 import { CATEGORIES, isListed } from '../../lib/categories';
 import { visibleWorks, personMap } from '../../lib/people';
 import { rub } from '../../lib/format';
-import { SITE, courseLd, ogHref, clipText } from '../../lib/seo';
+import { SITE, courseLd, ogHref, clipText, canonicalPath } from '../../lib/seo';
 import tildaPages from '../../../docs/tilda/pages.json';
 
 export async function getStaticPaths() {
@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 
 const { kind, id } = Astro.props;
 const all = (await getCollection('courses')).filter((c) => isListed(c.data));
-const old = (tildaPages as Record<string, { title: string; description: string }>)[Astro.url.pathname.replace(/\.html$/, '')];
+const old = (tildaPages as Record<string, { title: string; description: string }>)[canonicalPath(Astro.url.pathname)];
 
 let prof = null as null | Awaited<ReturnType<typeof getEntry<'professions', string>>>;
 let profCourses: Awaited<ReturnType<typeof getEntry<'courses', string>>>[] = [];

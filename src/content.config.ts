@@ -29,6 +29,10 @@ const settings = defineCollection({
       note: z.string(),
     }),
     accessMonths: z.number().int().positive(),
+    /** Свой набор курсов: ступени скидки за количество (от min курсов скидка pct %) */
+    bundle: z.object({
+      tiers: z.array(z.object({ min: z.number().int().min(2), pct: z.number().min(0).max(50) })).min(1),
+    }).default({ tiers: [{ min: 2, pct: 15 }, { min: 3, pct: 20 }, { min: 4, pct: 22 }] }),
     requisites: z.string(),
     certificateNote: z.string(),
     publish: z.object({
@@ -147,6 +151,8 @@ const courses = defineCollection({
     type: z.enum(COURSE_TYPES),
     /** Текущая цена в рублях; 0 у бесплатных */
     price: z.number().int().nonnegative(),
+    /** Цена без поддержки (цена price включает чат поддержки). Пусто: на треть дешевле, до …900 ₽ */
+    selfPrice: z.number().int().positive().nullish(),
     /** Только реальная прежняя цена. Придуманные «старые» цены не указываем */
     oldPrice: z.number().int().positive().nullable().default(null),
     professions: z.array(z.string()).default([]),
@@ -244,4 +250,16 @@ const legal = defineCollection({
   }),
 });
 
-export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, blog, legal };
+const pageSeo = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/page-seo' }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    route: z.string().trim().regex(/^\/(?!\/)[^?#]*$/).refine((route) => route === '/' || !route.endsWith('/'), 'Укажите путь без слеша в конце'),
+    description: z.string().trim().min(1),
+    canonical: z.union([z.literal(''), z.url()]).default(''),
+    noindex: z.boolean().default(false),
+    ogImage: z.union([z.literal(''), z.url(), z.string().startsWith('/')]).default(''),
+  }),
+});
+
+export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, blog, legal, pageSeo };

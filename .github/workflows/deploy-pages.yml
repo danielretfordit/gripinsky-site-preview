@@ -18,13 +18,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      PUBLIC_STATIC_PREVIEW: 'true'
+      PUBLIC_INDEXABLE: 'false'
+      PUBLIC_ANALYTICS: 'false'
+      CHECKOUT_MODE: demo
       GITHUB_PAGES_SITE: https://${{ github.repository_owner }}.github.io
       GITHUB_PAGES_BASE: ${{ github.event.repository.name == format('{0}.github.io', github.repository_owner) && '' || format('/{0}', github.event.repository.name) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24.21.0
           cache: npm
       - run: npm ci
       - run: npm run build

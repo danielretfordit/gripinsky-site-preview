@@ -12,6 +12,15 @@ walk(ROOT);
 
 const dec = (s) => s?.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 const meta = (html, re) => dec(html.match(re)?.[1]);
+const pageSeoByRoute = new Map();
+const seoDir = 'src/content/page-seo';
+if (existsSync(seoDir)) {
+  for (const name of readdirSync(seoDir).filter((f) => f.endsWith('.json'))) {
+    const record = JSON.parse(readFileSync(join(seoDir, name), 'utf8'));
+    if (pageSeoByRoute.has(record.route)) throw new Error('Повторяется SEO-маршрут ' + record.route);
+    pageSeoByRoute.set(record.route, record);
+  }
+}
 const errors = [], warns = [];
 const err = (u, m) => errors.push(`${u}: ${m}`);
 const warn = (u, m) => warns.push(`${u}: ${m}`);
@@ -34,7 +43,8 @@ for (const f of files) {
   if (!title) err(url, 'нет title');
   if (!desc) err(url, 'нет description');
   if (h1 !== 1) err(url, `H1: ${h1}, нужен один`);
-  if (canon !== SITE + url) err(url, `canonical ${canon} не совпадает с адресом`);
+  const expectedCanonical = pageSeoByRoute.get(url)?.canonical || SITE + url;
+  if (canon !== expectedCanonical) err(url, 'canonical ' + canon + ' не совпадает с ожидаемым ' + expectedCanonical);
   if (!og) err(url, 'нет og:image');
   else if (og.startsWith(SITE) && !existsSync(join(ROOT, og.slice(SITE.length)))) err(url, `og:image ${og.slice(SITE.length)} не найден в сборке`);
   for (const [, json] of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {

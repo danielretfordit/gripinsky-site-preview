@@ -5,6 +5,14 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const ROOT = 'dist/client';
+// Legacy Title is preserved only when it matches the archive for the same route.
+const legacyPages = JSON.parse(readFileSync('docs/tilda/pages.json', 'utf8'));
+const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#(?:39|x27);/gi, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+const preserveLegacyTitle = (html, file) => {
+  const route = file.slice(ROOT.length).replace(/\.html$/, '').replace(/^\/index$/, '/');
+  return html.replace(/<title>([\s\S]*?)<\/title>/, (tag, title) =>
+    decode(title) === legacyPages[route]?.title ? '' : tag);
+};
 const SKIP_PAGES = ['oferta.html', 'politica.html', 'soglasie.html'];
 // Статьи старого блога (/tpost/…) перенесены как авторские тексты; править их или нет, решает заказчица (docs/open-questions.md)
 const SKIP_DIRS = ['/tpost/'];
@@ -40,7 +48,7 @@ const strip = (html) => html
 let errors = 0, warnings = 0;
 for (const f of files) {
   if (SKIP_PAGES.some((s) => f.endsWith(s)) || SKIP_DIRS.some((d) => f.includes(d))) continue;
-  const text = strip(readFileSync(f, 'utf8'));
+  const text = strip(preserveLegacyTitle(readFileSync(f, 'utf8'), f));
   for (const r of RULES) {
     const lines = text.split('\n').filter((l) => r.re.test(l));
     r.re.lastIndex = 0;

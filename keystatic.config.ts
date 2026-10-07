@@ -15,6 +15,7 @@ export default config({
       'Доказательства': ['works', 'awards', 'stories', 'reviews', 'people'],
       'Тексты': ['faq', 'blog', 'legal'],
       'Настройки': ['settings'],
+      'SEO страниц': ['pageSeo'],
     },
   },
   singletons: {
@@ -45,6 +46,12 @@ export default config({
           note: fields.text({ label: 'Условия рассрочки', multiline: true }),
         }, { label: 'Рассрочка' }),
         accessMonths: fields.integer({ label: 'Доступ к урокам, мес.', defaultValue: 12, validation: { isRequired: true, min: 1 } }),
+        bundle: fields.object({
+          tiers: fields.array(fields.object({
+            min: fields.integer({ label: 'От курсов в наборе', validation: { isRequired: true, min: 2 } }),
+            pct: fields.integer({ label: 'Скидка, %', validation: { isRequired: true, min: 0, max: 50 } }),
+          }), { label: 'Ступени скидки', itemLabel: (p) => `${p.fields.min.value} курса: ${p.fields.pct.value}%` }),
+        }, { label: 'Скидка за набор курсов' }),
         requisites: fields.text({ label: 'Реквизиты в подвале' }),
         certificateNote: fields.text({ label: 'Примечание о сертификате' }),
         publish: fields.object({
@@ -54,6 +61,21 @@ export default config({
     }),
   },
   collections: {
+    pageSeo: collection({
+      label: 'SEO страниц',
+      path: 'src/content/page-seo/*',
+      format: { data: 'json' },
+      slugField: 'title',
+      columns: ['route', 'title', 'noindex'],
+      schema: {
+        title: fields.slug({ name: { label: 'Title страницы' }, slug: { label: 'Ключ записи' } }),
+        route: fields.text({ label: 'Путь страницы', description: 'Точный адрес, например /courses или /courses-page/blender. Без домена и слеша в конце.', validation: { isRequired: true } }),
+        description: fields.text({ label: 'Description', description: 'Краткое описание страницы для поисковой выдачи, обычно 120–160 знаков.', multiline: true }),
+        canonical: fields.text({ label: 'Canonical URL', description: 'Оставьте пустым, чтобы каноническим был адрес страницы. Заполняйте только при осознанном объединении дублей.' }),
+        noindex: fields.checkbox({ label: 'Закрыть страницу от индексации', defaultValue: false }),
+        ogImage: fields.text({ label: 'Изображение для соцсетей', description: 'Пусто — используется изображение шаблона. Иначе укажите путь вида /og/catalog.jpg или полный URL.' }),
+      },
+    }),
     courses: collection({
       label: 'Курсы и пакеты',
       path: 'src/content/courses/*',
@@ -68,6 +90,7 @@ export default config({
         status: fields.select({ label: 'Статус', options: [{ label: 'Продаётся', value: 'active' }, { label: 'Скрыт', value: 'hidden' }, { label: 'Архив', value: 'archive' }], defaultValue: 'active' }),
         type: fields.select({ label: 'Тип', options: [{ label: 'Курс', value: 'course' }, { label: 'Пакет', value: 'package' }, { label: 'Плагин', value: 'plugin' }, { label: 'Услуга', value: 'service' }, { label: 'Бесплатный', value: 'free' }], defaultValue: 'course' }),
         price: fields.integer({ label: 'Цена, ₽', validation: { isRequired: true, min: 0 } }),
+        selfPrice: fields.integer({ label: 'Цена без чата поддержки, ₽', description: 'Пусто: рассчитывается по правилу цены без поддержки.', validation: { min: 1 } }),
         oldPrice: fields.integer({ label: 'Прежняя цена, ₽ (только если реально была)' }),
         professions: fields.array(fields.text({ label: 'Профессия' }), { label: 'Профессии', itemLabel: (p) => p.value }),
         software: fields.array(fields.text({ label: 'Программа' }), { label: 'Программы', itemLabel: (p) => p.value }),

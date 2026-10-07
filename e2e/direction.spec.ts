@@ -24,7 +24,7 @@ async function answerQuiz(page: Page, labels: string[]) {
 
 test.describe('подменю разделов', () => {
   const targets: [string, string][] = [
-    ['Результаты', '#works-title'], ['База', '#base-title'],
+    ['Результаты', '#works-title'], ['Путь ученика', '#path-title'], ['База', '#base-title'],
     ['Профессии', '#profession-title'], ['Цены', '#package-title'], ['Вопросы', '#faq-title'],
   ];
   for (const [label, heading] of targets) {
@@ -268,6 +268,7 @@ test.describe('формат обучения', () => {
   test('«Купить только базу» открывает оформление базы', async ({ page }) => {
     await page.getByRole('radio', { name: /Наставничество/ }).click();
     const aside = page.getByRole('complementary', { name: 'База 3D-визуализатора' });
+    await expect(aside.locator('[aria-live] span').first()).toHaveText(/69\s*900\s*₽/);
     const price = num(await aside.locator('[aria-live] span').first().textContent());
     await aside.getByRole('button', { name: 'Купить только базу' }).click();
     const dlg = page.getByRole('dialog');

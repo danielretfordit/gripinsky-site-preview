@@ -1,3 +1,4 @@
+import { STATIC_PREVIEW, sitePath } from '../lib/deployment';
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { $pkg, $checkout, type CheckoutRequest } from '../stores/package';
 import { quote, quoteBaseOnly, quoteCourse, type Catalog, type Quote, type Selection } from '../lib/pricing';
@@ -34,6 +35,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
 
   const submit = async (e: Event) => {
     e.preventDefault();
+    if (STATIC_PREVIEW) return;
     const form = e.currentTarget as HTMLFormElement;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
     const errs = {
@@ -79,7 +81,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
       onClick={(e) => { if (e.target === ref.current) close(); }}>
       <div class="flex flex-col gap-5 p-5 sm:p-8">
         <div class="flex items-start justify-between gap-4">
-          <h2 id="checkout-title" class="t-h3">{status === 'demo' ? 'Заявка принята' : detail.kind === 'course' ? 'Оформление курса' : 'Оформление пакета'}</h2>
+          <h2 id="checkout-title" class="t-h3">{STATIC_PREVIEW ? 'Ваш выбор в демоверсии' : status === 'demo' ? 'Заявка принята' : detail.kind === 'course' ? 'Оформление курса' : 'Оформление пакета'}</h2>
           <button type="button" onClick={close} aria-label="Закрыть" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line-strong bg-transparent text-xl">×</button>
         </div>
 
@@ -96,7 +98,12 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
           </div>
         </div>}
 
-        {status === 'demo' ? (
+        {STATIC_PREVIEW ? (
+          <div class="flex flex-col gap-4" role="status">
+            <p class="m-0 text-ink-2">Это промежуточная версия для просмотра. Состав и стоимость можно проверить, оформление заказа и оплата здесь пока не подключены.</p>
+            <button type="button" class="btn btn-secondary" onClick={close}>Продолжить просмотр</button>
+          </div>
+        ) : status === 'demo' ? (
           <div class="flex flex-col gap-3" role="status">
             <p class="m-0 text-ink-2">Это пилотная версия сайта: онлайн-оплата подключается после настройки GetCourse. Мы получили состав заказа и ваши контакты, менеджер свяжется с вами и пришлёт ссылку на оплату.</p>
             <div class="flex flex-wrap gap-3">
@@ -114,7 +121,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
             <label class="flex cursor-pointer items-start gap-3 text-[14px] leading-snug text-ink-2">
               <input type="checkbox" class="sr-only" checked={consent} onChange={() => setConsent(!consent)} aria-invalid={errors.consent} />
               <span class="mt-0.5"><CheckBox on={consent} /></span>
-              <span>Даю <a href="/soglasie" class="underline" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href="/oferta" class="underline" target="_blank">договор оферты</a></span>
+              <span>Даю <a href={sitePath('/soglasie')} class="underline" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href={sitePath('/oferta')} class="underline" target="_blank">договор оферты</a></span>
             </label>
             {errors.consent && <span class="text-[13px] text-[#ff8a80]" role="alert">Без согласия мы не сможем оформить заказ</span>}
             <button type="submit" class="btn btn-primary btn-lg btn-block" disabled={status === 'sending'}>{status === 'sending' ? 'Отправляем…' : 'Перейти к оплате'}</button>
