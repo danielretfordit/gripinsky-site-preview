@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { personMap, visibleWorks } from '../lib/people';
+const people=await personMap();
+const works=await visibleWorks();
+const uploaded=(await getCollection('works',w=>people.has(w.data.author.id) && w.id.startsWith('import-') && !!w.data.reviewQuote)).sort((a,b)=>Number(a.data.isProcessImage)-Number(b.data.isProcessImage)||a.data.order-b.data.order);
+const seen=new Set<string>();
+const pairs=uploaded.filter(w=>{const key=w.data.author.id+'|'+w.data.reviewQuote;if(seen.has(key))return false;seen.add(key);return true;});
+const pairedReviews=pairs.map(w=>({id:`review-${w.id}`,work:w.data.isProcessImage ? undefined : w,data:{source:'site',quote:w.data.reviewQuote,text:'',author:people.get(w.data.author.id)?.name ?? '',role:w.data.categories.includes('mentor')?'Работа с наставником':'Ученик академии',mentor:w.data.categories.includes('mentor')}}));
+const screenshotReviews=(await getCollection('reviews',r=>r.data.source==='telegram' && !r.id.startsWith('import-') && !!r.data.quote && (!r.data.person || people.has(r.data.person.id)))).sort((a,b)=>a.data.order-b.data.order).map(r=>({id:r.id,work:undefined as (typeof works)[number]|undefined,data:{...r.data,mentor:/наставник/i.test(r.data.quote ?? '')}}));
+const reviews=[...screenshotReviews,...pairedReviews];
+const reviewWork = (r: (typeof reviews)[number]) => r.work;
+
+---
+<div data-review-wall>
+ <div class="review-filters" role="group" aria-label="Формат обучения"><button class="choice" data-review-source="all" aria-pressed="true">Все отзывы</button><button class="choice" data-review-source="mentor" aria-pressed="false">Работа с наставником</button></div>
+ <div class="review-wall">{reviews.map(r=>{const work=reviewWork(r);return <figure id={r.id} class:list={['review-card',{'review-card--work':!!work}]} data-review-kind={r.data.mentor ? 'mentor' : 'site'}>
+ {work && <Image src={work.data.image} alt={work.data.alt} widths={[400,640,800]} sizes="(min-width:768px) 25vw,100vw" class="review-artwork" />}
+ <div class="review-copy"><blockquote class="t-body">{r.data.quote ? `«${r.data.quote}»` : r.data.text}</blockquote><figcaption><b class="t-title">{r.data.author}</b><span class="t-small text-muted">{r.data.role}</span></figcaption></div>
+ </figure>})}</div>
+ <button class="btn btn-secondary" type="button" data-reviews-more hidden>Показать ещё отзывы</button>
+ <p class="t-small text-muted review-count" data-reviews-count aria-live="polite"></p>
+</div>
+<style>
+ .review-card--work { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start; }
+ .review-artwork { display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:2px; }
+ .review-copy { display:flex;flex-direction:column;gap:20px;min-width:0; }
+ .review-card.review-card--work { display:grid; }
+ @media(max-width:767px){.review-card.review-card--work{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.review-wall{grid-template-columns:1fr !important}}
+ @media(max-width:420px){.review-card.review-card--work{grid-template-columns:1fr}.review-artwork{aspect-ratio:4/3;max-height:260px}}
+ .review-filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px}.review-filters button{min-height:44px;padding:10px 16px}.review-wall{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-bottom:32px}.review-card{margin:0;display:flex;flex-direction:column;gap:20px;padding:24px 0;border-top:1px solid var(--color-line);scroll-margin-top:100px}.review-card[hidden]{display:none}.review-card blockquote{margin:0;color:var(--color-ink-2);overflow-wrap:anywhere}.review-card figcaption{display:flex;flex-direction:column;gap:8px;margin-top:auto}.review-card>a{align-self:flex-start}.review-count{margin-top:16px}@media(max-width:1023px){.review-wall{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}}@media(max-width:560px){.review-wall{grid-template-columns:1fr;gap:12px}.review-filters{gap:8px}.review-filters button{padding:10px 12px}}
+</style>
+<script>
+for(const root of document.querySelectorAll<HTMLElement>('[data-review-wall]')){
+ const cards=[...root.querySelectorAll<HTMLElement>('[data-review-kind]')];const more=root.querySelector<HTMLButtonElement>('[data-reviews-more]')!;const buttons=[...root.querySelectorAll<HTMLButtonElement>('[data-review-source]')];let source='all',limit=6;
+ const apply=()=>{const matching=cards.filter(c=>source==='all'||c.dataset.reviewKind===source);cards.forEach(c=>c.hidden=true);matching.slice(0,limit).forEach(c=>c.hidden=false);more.hidden=matching.length<=limit;root.querySelector('[data-reviews-count]')!.textContent=`Показано ${Math.min(limit,matching.length)} из ${matching.length}`;};
+ buttons.forEach(b=>b.addEventListener('click',()=>{source=b.dataset.reviewSource!;limit=6;buttons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));apply();}));more.addEventListener('click',()=>{limit+=6;apply();});const target=cards.find(c=>`#${c.id}`===location.hash);if(target)limit=Math.max(limit,cards.indexOf(target)+1);apply();if(target)requestAnimationFrame(()=>target.scrollIntoView());
+}
+</script>

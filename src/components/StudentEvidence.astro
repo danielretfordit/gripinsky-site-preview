@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { work: {beforeImage?: ImageMetadata | null; image: ImageMetadata; alt: string; reviewText?: string; reviewQuote?: string; processImages?: ImageMetadata[]; videos?: string[]} }
+const {work}=Astro.props;
+---
+{work.reviewQuote && <blockquote class="school-quote t-body">«{work.reviewQuote}»</blockquote>}
+{(work.beforeImage || work.processImages?.length || work.videos?.length) && <details class="evidence">
+  <summary class="t-small">Материалы работы</summary>
+  {work.beforeImage && <figure><Image src={work.beforeImage} alt={`Сермат: ${work.alt}`} widths={[480, 800]} sizes="(min-width: 768px) 33vw, 100vw" /><figcaption class="t-overline">Сермат</figcaption></figure>}
+  {work.processImages?.map(image => <figure><Image src={image} alt={`Сермат из проекта: ${work.alt}`} widths={[480,800]} sizes="(min-width: 768px) 33vw, 100vw" /><figcaption class="t-overline">Сермат из проекта</figcaption></figure>)}
+  {work.videos?.map(src => <video controls preload="none" src={src} aria-label={`Видео проекта: ${work.alt}`}></video>)}
+</details>}
+<style>
+ .school-quote{margin:16px 0;overflow-wrap:anywhere;color:var(--color-ink-2)}
+ .evidence{border-top:1px solid var(--color-line);margin-top:12px;padding-block:12px}.evidence summary{cursor:pointer;color:var(--color-ink-2);min-height:32px}.evidence figure{margin:16px 0}.evidence img,.evidence video{width:100%;height:auto;border-radius:2px}.evidence figcaption{margin-top:8px}.evidence blockquote{margin:16px 0;white-space:pre-line;overflow-wrap:anywhere}
+</style>

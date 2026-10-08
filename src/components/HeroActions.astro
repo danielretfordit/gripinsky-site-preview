@@ -1,0 +1,18 @@
+---
+interface Props {
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref: string;
+  secondaryLabel: string;
+  secondaryGoal?: string;
+}
+const { primaryHref, primaryLabel, secondaryHref, secondaryLabel, secondaryGoal } = Astro.props;
+---
+<div class="hero-actions">
+  <a href={primaryHref} class="btn btn-primary btn-lg">{primaryLabel} <span aria-hidden="true">↗</span></a>
+  <a href={secondaryHref} class="btn btn-secondary btn-lg" data-goal={secondaryGoal}>{secondaryLabel} <span aria-hidden="true">→</span></a>
+</div>
+<style>
+  .hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; max-width:100%; }
+  @media(max-width:560px) { .hero-actions { align-items:flex-start; flex-direction:column; } }
+</style>

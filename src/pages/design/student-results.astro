@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import StudentProof from '../../components/StudentProof.astro';
+import GraduateHighlights from '../../components/GraduateHighlights.astro';
+---
+<Base title="Работы, награды и отзывы | GRIPINSKY" description="Работы с цитатами и сравнение сермата с рендером" noindex consult={false}>
+<section class="wrap section"><p class="t-overline">Выбранное оформление</p><h1 class="t-display">Результат и голос ученика</h1><p class="t-lead">Крупные работы с короткой цитатой об академии и сравнение сермата с финальным рендером.</p><nav class="proof-links t-small"><a class="link" href="/gallery">Все работы →</a><a class="link" href="/otzyvy#kings-title">«Цари горы» →</a><a class="link" href="/otzyvy#stories-title">Истории выпускников →</a><a class="link" href="/otzyvy">Отдельно отзывы →</a></nav></section>
+<section class="wrap section"><StudentProof /><GraduateHighlights compact /></section>
+</Base>
+<style>.proof-links{display:flex;flex-wrap:wrap;gap:24px;margin-top:32px}.proof-links a{min-height:44px;display:inline-flex;align-items:center}</style>

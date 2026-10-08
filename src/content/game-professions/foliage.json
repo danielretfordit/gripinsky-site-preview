@@ -1,0 +1,37 @@
+{
+  "title": "Foliage Artist",
+  "short": "Художник по растительности",
+  "lead": "Создавайте деревья и растительность для игровых сцен.",
+  "courses": [
+    "blender",
+    "speedtree"
+  ],
+  "trials": [
+    "blender_mini",
+    "demo_gamedev"
+  ],
+  "addons": [
+    {
+      "course": "art_pro",
+      "text": "Композиция, свет, цвет и выразительная подача работы."
+    },
+    {
+      "course": "azbukaps",
+      "text": "Photoshop с нуля для обработки изображений и подачи проекта."
+    },
+    {
+      "course": "zbrush0",
+      "text": "Основы скульптинга и детализации моделей в ZBrush."
+    },
+    {
+      "course": "substancepainter",
+      "text": "Текстуры и материалы для игровых моделей.",
+      "alternative": "p_texturegamedev"
+    },
+    {
+      "course": "unrealenginelevel1",
+      "text": "Сборка сцены, освещение и работа в игровом движке."
+    }
+  ],
+  "order": 4
+}

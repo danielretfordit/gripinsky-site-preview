@@ -1,0 +1,218 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import island from '../../../assets/works/bolshunova-ostrov-1.jpg';
+import bath from '../../../assets/works/bolshunova-banya-1.jpg';
+import interior from '../../../assets/works/bugaeva-interior.jpg';
+import aiScene from '../../../assets/ai/mesh-scene.jpg';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['a', 'b'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = Astro.params.variant === 'b' ? 'b' : 'a';
+const isB = variant === 'b';
+const steps = [
+  { n: '01', title: 'Сейчас', text: 'Выбираете цель и уровень подготовки.' },
+  { n: '02', title: 'База', text: 'Осваиваете моделирование и визуализацию.' },
+  { n: '03', title: 'Профессия', text: 'Работаете над проектами выбранного направления.' },
+  { n: '04', title: 'Портфолио', text: 'Собираете работы, которые можно показать заказчику.' },
+];
+---
+<Base title={isB ? 'Типографика Б | Предпросмотр GRIPINSKY' : 'Типографика А | Предпросмотр GRIPINSKY'} description="Два локальных варианта типографики и ритма" noindex consult={false}>
+  <div class:list={['type-system', isB ? 'type-system--b' : 'type-system--a']}>
+    <header class="ts-intro wrap">
+      <p class="ts-overline">Дизайн-предпросмотр / единая система текста</p>
+      <div class="ts-intro-row">
+        <div>
+          <h1>Типографика <span>{isB ? 'Б' : 'А'}</span></h1>
+          <p>{isB ? 'Выразительный масштаб и изображения. Единая шкала текста и предсказуемый ритм.' : 'Строгая редакционная сетка. Единая шкала текста и предсказуемый ритм.'}</p>
+        </div>
+        <nav aria-label="Выбор варианта">
+          <a href="/design/type-system/a" aria-current={!isB ? 'page' : undefined}>А · Строгий</a>
+          <a href="/design/type-system/b" aria-current={isB ? 'page' : undefined}>Б · Выразительный</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="ts-hero" aria-labelledby="ts-home-title">
+        <Image src={island} alt="«Остров», работа ученицы Юлии Большуновой" widths={[640, 960, 1280, 1600]} sizes="100vw" class="ts-hero-img" loading="eager" />
+        <div class="wrap ts-hero-copy">
+          <p class="ts-overline ts-signal">01 / Главная</p>
+          <h2 id="ts-home-title" class="ts-display">Курсы 3D-графики <span>с нуля до заказов</span></h2>
+          <p class="ts-lead">Визуализация интерьеров и экстерьеров, 3D для игр и нейросети в работе. В своём темпе, без опыта и умения рисовать.</p>
+          <a href="/courses" class="ts-action">Выбрать направление</a>
+        </div>
+      </section>
+
+      <section class="wrap ts-section" aria-labelledby="ts-catalog-title">
+        <div class="ts-head">
+          <p class="ts-overline">02 / Каталог</p>
+          <h2 id="ts-catalog-title" class="ts-h2">Все курсы <span>академии</span></h2>
+          <p class="ts-lead">Выберите курсы и соберите свой пакет. Корзина сохранит выбор и автоматически рассчитает скидку.</p>
+        </div>
+        <div class="ts-feature">
+          <div class="ts-feature-copy">
+            <p class="ts-overline">Направление</p>
+            <h3>3D-визуализация <span>с нуля до заказов</span></h3>
+            <p class="ts-body">База в 3ds Max и Corona, затем профессия: интерьеры, экстерьеры и ЖК или модели для стоков. Соберите пакет и сразу увидите цену.</p>
+            <a href="/courses-page/visualization" class="ts-link">Подобрать курс →</a>
+          </div>
+          <Image src={bath} alt="«Баня», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" class="ts-feature-image" loading="eager" />
+        </div>
+      </section>
+
+      <section class="wrap ts-section" aria-labelledby="ts-path-title">
+        <div class="ts-head">
+          <p class="ts-overline">03 / Направление</p>
+          <h2 id="ts-path-title" class="ts-h2">От первого объекта <span>к портфолио</span></h2>
+          <p class="ts-lead">Показываем, что изучаете по дороге и как база соединяется с выбранной профессией.</p>
+        </div>
+        <ol class="ts-steps">
+          {steps.map((step) => <li><span class="ts-meta">{step.n} / 04</span><h3>{step.title}</h3><p>{step.text}</p></li>)}
+        </ol>
+      </section>
+
+      <section class="wrap ts-section" aria-labelledby="ts-ai-title">
+        <div class="ts-head">
+          <p class="ts-overline">04 / Онлайн-курс</p>
+          <h2 id="ts-ai-title" class="ts-h2">ИИ в 3D: <span>нейросети для 3D-моделей</span></h2>
+          <p class="ts-lead">Весь пайплайн: от референса и 3D-модели по фото до рендера в интерьере. Нейросети помогают с черновыми этапами, а вы проверяете геометрию и доводите результат в 3ds Max.</p>
+        </div>
+        <div class="ts-ai-row">
+          <p class="ts-quote">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+          <figure><Image src={aiScene} alt="3D-модель в интерьере после доработки" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" /><figcaption class="ts-meta">Модель после доработки в интерьере</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="wrap ts-section" aria-labelledby="ts-gallery-title">
+        <div class="ts-head">
+          <p class="ts-overline">05 / Галерея</p>
+          <h2 id="ts-gallery-title" class="ts-h2">Работы <span>учеников</span></h2>
+          <p class="ts-lead">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
+        </div>
+        <div class="ts-gallery">
+          <figure><Image src={island} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" /><figcaption><strong>Юлия Большунова</strong><span class="ts-meta">Остров</span></figcaption></figure>
+          <figure><Image src={interior} alt="Интерьер, работа ученицы академии" widths={[480, 800]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" /><figcaption><strong>Работа ученицы</strong><span class="ts-meta">Интерьер</span></figcaption></figure>
+        </div>
+      </section>
+
+      <section class="wrap ts-section ts-club" aria-labelledby="ts-club-title">
+        <div class="ts-head">
+          <p class="ts-overline">06 / Сообщество</p>
+          <h2 id="ts-club-title" class="ts-h2">Растём в 3D <span>вместе</span></h2>
+          <p class="ts-lead">Курсы дают основу и практику. Сообщество помогает показывать работы, задавать вопросы и оставаться среди людей, которым тоже интересна 3D-графика.</p>
+        </div>
+        <div class="ts-club-grid">
+          <p class="ts-quote">Ученики, выпускники и педагоги встречаются не только внутри уроков.</p>
+          <div class="ts-club-list">
+            <div><span class="ts-meta">01 / Эфиры</span><h3>GRIPINSKY TV</h3><p>По средам разбираем работы в прямом эфире. Можно увидеть чужие решения и понять, как улучшить свои.</p></div>
+            <div><span class="ts-meta">02 / Работы</span><h3>«Рендер дня»</h3><p>Показываем работы учеников на стримах и отмечаем самые сильные результаты.</p></div>
+            <div><span class="ts-meta">03 / Люди</span><h3>Связь после уроков</h3><p>Ученики и выпускники продолжают следить за проектами друг друга, а педагоги участвуют в жизни сообщества.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .type-system { --ts-display: clamp(40px, 5.3vw, 76px); --ts-h2: clamp(30px, 3.9vw, 56px); --ts-title: clamp(21px, 2vw, 26px); --ts-lead: clamp(17px, 1.4vw, 19px); --ts-copy: 16px; --ts-quote: clamp(21px, 2vw, 26px); --ts-gap: 24px; --ts-media-ratio: 16/10; color: var(--color-ink); background: #0E1112; }
+  .type-system--b { --ts-display: clamp(48px, 7vw, 108px); --ts-h2: clamp(34px, 4.4vw, 64px); --ts-title: clamp(23px, 2.2vw, 30px); --ts-quote: clamp(24px, 2.5vw, 36px); --ts-gap: 32px; --ts-media-ratio: 4/3; }
+  .type-system * { box-sizing: border-box; }
+  .type-system h1, .type-system h2, .type-system h3, .type-system p, .type-system figure { margin: 0; }
+  .ts-intro { padding-block: 32px 48px; border-bottom: 1px solid var(--color-line); }
+  .ts-overline, .ts-meta { color: var(--color-muted); font: 500 12px/1.4 var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+  .ts-signal::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 10px; background: var(--color-lime); vertical-align: 1px; }
+  .ts-intro-row { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-top: 12px; }
+  .ts-intro h1 { font: 750 clamp(25px, 3vw, 40px)/1 var(--font-sans); text-transform: uppercase; letter-spacing: -.03em; }
+  .ts-intro h1 span { color: var(--color-muted); }
+  .ts-intro-row > div > p { max-width: 560px; margin-top: 12px; color: var(--color-ink-2); font-size: 15px; }
+  .ts-intro nav { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ts-intro nav a { display: inline-flex; min-height: 44px; align-items: center; padding: 0 15px; border: 1px solid var(--color-line-strong); border-radius: 4px; font-size: 14px; }
+  .ts-intro nav a[aria-current] { border-color: var(--color-ink); background: var(--color-bg-2); }
+  .ts-display { max-width: 1150px; font-size: var(--ts-display); font-weight: 800; line-height: .96; letter-spacing: -.045em; text-transform: uppercase; text-wrap: balance; }
+  .ts-display span, .ts-h2 span, .ts-feature h3 span { color: var(--color-muted); }
+  .ts-h2 { max-width: 1100px; font-size: var(--ts-h2); font-weight: 750; line-height: 1; letter-spacing: -.03em; text-transform: uppercase; text-wrap: balance; }
+  .ts-lead { max-width: 640px; color: var(--color-ink-2); font-size: var(--ts-lead); line-height: 1.5; }
+  .ts-body, .ts-steps p, .ts-club-list p { max-width: 68ch; color: var(--color-ink-2); font-size: var(--ts-copy); line-height: 1.55; }
+  .ts-quote { max-width: 600px; color: var(--color-ink); font-size: var(--ts-quote); font-weight: 500; line-height: 1.35; letter-spacing: -.01em; }
+  .ts-head { display: flex; flex-direction: column; gap: 12px; margin-bottom: var(--space-head); }
+  .ts-head .ts-lead { margin-top: 4px; }
+  .ts-section { padding-top: var(--space-section); }
+  .ts-hero { position: relative; overflow: hidden; }
+  .ts-hero-img { display: block; width: 100%; height: clamp(260px, 34vw, 500px); object-fit: cover; object-position: center; }
+  .ts-hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--ts-gap); padding-top: 36px; }
+  .ts-hero-copy .ts-lead { color: var(--color-ink-2); }
+  .ts-action { display: inline-flex; min-height: 54px; align-items: center; justify-content: center; padding: 0 28px; border-radius: 6px; background: var(--color-lime); color: var(--color-bg); font-size: 17px; font-weight: 650; }
+  .ts-action:hover { color: var(--color-bg); }
+  .ts-link { display: inline-flex; min-height: 44px; align-items: center; font-weight: 650; }
+  .ts-feature { display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--color-line); }
+  .ts-feature-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; padding: 28px 32px 28px 0; }
+  .ts-feature h3 { max-width: 650px; font-size: var(--ts-title); font-weight: 700; line-height: 1.16; letter-spacing: -.02em; }
+  .ts-feature-image { display: block; width: 100%; height: 100%; min-height: 330px; object-fit: cover; border-radius: 4px; }
+  .ts-feature .ts-link { margin-top: auto; }
+  .ts-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-line); }
+  .ts-steps li { padding-top: 20px; }
+  .ts-steps h3, .ts-club-list h3 { margin: 12px 0 8px; font-size: var(--ts-title); font-weight: 700; line-height: 1.2; }
+  .ts-ai-row { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; border-top: 1px solid var(--color-line); padding-top: 24px; }
+  .ts-ai-row figure img { display: block; width: 100%; aspect-ratio: var(--ts-media-ratio); object-fit: cover; border-radius: 4px; }
+  .ts-ai-row figcaption { margin-top: 10px; }
+  .ts-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .ts-gallery figure img { display: block; width: 100%; aspect-ratio: var(--ts-media-ratio); object-fit: cover; border-radius: 4px; }
+  .ts-gallery figcaption { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-top: 12px; font-size: 16px; }
+  .ts-club { padding-bottom: var(--space-section); }
+  .ts-club-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 64px; border-top: 1px solid var(--color-line); padding-top: 24px; }
+  .ts-club-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .ts-club-list > div { border-top: 1px solid var(--color-line); padding-top: 16px; }
+
+  .type-system--b .ts-hero { min-height: min(82svh, 800px); display: flex; align-items: flex-end; }
+  .type-system--b .ts-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .type-system--b .ts-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgb(14 17 18 / .75) 65%, #0E1112 100%); pointer-events: none; }
+  .type-system--b .ts-hero-copy { position: relative; z-index: 1; padding-top: 160px; padding-bottom: 52px; }
+  .type-system--b .ts-hero-copy .ts-lead { color: var(--color-ink); }
+  .type-system--b .ts-feature { grid-template-columns: .8fr 1.2fr; min-height: 490px; }
+  .type-system--b .ts-feature h3 { font-size: var(--ts-h2); font-weight: 750; line-height: 1; text-transform: uppercase; }
+  .type-system--b .ts-feature-copy { padding-top: 36px; padding-bottom: 36px; gap: 20px; }
+  .type-system--b .ts-feature-image { min-height: 490px; }
+  .type-system--b .ts-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+  .type-system--b .ts-steps li { min-height: 145px; border-bottom: 1px solid var(--color-line); }
+  .type-system--b .ts-ai-row { grid-template-columns: .8fr 1.2fr; }
+  .type-system--b .ts-gallery { grid-template-columns: 1.25fr .75fr; }
+  .type-system--b .ts-gallery figure:nth-child(2) { padding-top: 88px; }
+  .type-system--b .ts-club-grid { grid-template-columns: .9fr 1.1fr; }
+  .type-system--b .ts-club-list { grid-template-columns: 1fr; gap: 0; }
+  .type-system--b .ts-club-list > div { padding: 18px 0; border-bottom: 1px solid var(--color-line); }
+
+  @media (max-width: 1023px) {
+    .ts-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ts-club-grid, .type-system--b .ts-club-grid { gap: 32px; }
+    .ts-club-list { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 767px) {
+    .ts-intro-row { align-items: flex-start; flex-direction: column; }
+    .ts-intro { padding-block: 28px 36px; }
+    .ts-hero-img { height: 270px; }
+    .ts-hero-copy { padding-top: 28px; }
+    .ts-feature, .type-system--b .ts-feature, .ts-ai-row, .type-system--b .ts-ai-row, .ts-club-grid, .type-system--b .ts-club-grid { grid-template-columns: 1fr; }
+    .ts-feature-copy { padding: 22px 0; }
+    .ts-feature-image, .type-system--b .ts-feature-image { min-height: 0; max-height: 380px; aspect-ratio: 16/10; }
+    .ts-ai-row { gap: 24px; }
+    .ts-gallery, .type-system--b .ts-gallery { grid-template-columns: 1fr; }
+    .type-system--b .ts-gallery figure:nth-child(2) { padding-top: 0; }
+    .ts-gallery figcaption { flex-wrap: wrap; }
+    .ts-club-grid { gap: 24px; }
+    .type-system--b .ts-hero { min-height: 620px; }
+    .type-system--b .ts-hero-img { height: 100%; }
+    .type-system--b .ts-hero-copy { padding-top: 150px; padding-bottom: 38px; }
+    .type-system--b .ts-feature h3 { font-size: var(--ts-h2); }
+  }
+  @media (max-width: 480px) {
+    .type-system { --ts-display: 40px; --ts-h2: 30px; --ts-gap: 22px; }
+    .type-system--b { --ts-display: 46px; --ts-h2: 34px; --ts-gap: 24px; }
+    .ts-steps, .type-system--b .ts-steps { grid-template-columns: 1fr; gap: 0; }
+    .ts-steps li { border-bottom: 1px solid var(--color-line); padding-block: 18px; }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+
+const requestedView = Astro.url.searchParams.get('v');
+const initialView = ['old', 'new', 'third'].includes(requestedView ?? '') ? requestedView! : 'new';
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Главная: сравнение трёх вариантов | GRIPINSKY</title>
+    <meta name="description" content="Сравнение прежнего оформления главной страницы и двух новых вариантов GRIPINSKY." />
+  </head>
+  <body>
+    <main class="review-shell" data-view={initialView}>
+      <header class="review-head">
+        <a class="back" href="/">GRIPINSKY <span>· главная</span></a>
+        <div class="intro">
+          <p class="eyebrow">ДЛЯ ОБСУЖДЕНИЯ</p>
+          <h1>Три варианта главной</h1>
+          <p class="summary">Сравните прежнее оформление, вариант 02 и новый собранный вариант 03.</p>
+        </div>
+        <nav class="switcher" aria-label="Сравнить варианты">
+          <button type="button" data-view-button="old" aria-pressed={initialView === 'old'}><span>01</span> Прежний</button>
+          <button type="button" data-view-button="new" aria-pressed={initialView === 'new'}><span>02</span> Новый</button>
+          <button type="button" data-view-button="third" aria-pressed={initialView === 'third'}><span>03</span> Микс</button>
+        </nav>
+        <p class="same-copy">Один текст и структура · три визуальных решения</p>
+      </header>
+
+      <section class="preview" aria-label="Предпросмотр выбранного варианта">
+        <iframe data-preview="old" src="/?management=1#main" title="Прежнее оформление главной GRIPINSKY" loading="lazy"></iframe>
+        <iframe data-preview="new" src="/design/home-reference?v=dark&embed=1&management=1&preview=02" title="Новое тёмное оформление главной GRIPINSKY, вариант 02"></iframe>
+        <iframe data-preview="third" src="/design/home-reference?v=third&embed=1&management=1&preview=03" title="Новый собранный вариант главной GRIPINSKY, вариант 03" loading="lazy"></iframe>
+      </section>
+    </main>
+    <script>
+      const shell = document.querySelector<HTMLElement>('.review-shell');
+      const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-view-button]')];
+      const frames = [...document.querySelectorAll<HTMLIFrameElement>('[data-preview]')];
+      const setView = (view: string, updateUrl = true) => {
+        const selected = ['old', 'third'].includes(view) ? view : 'new';
+        shell?.setAttribute('data-view', selected);
+        buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.viewButton === selected)));
+        if (updateUrl) history.replaceState(null, '', `${location.pathname}?v=${selected}`);
+        const activeFrame = frames.find((frame) => frame.dataset.preview === selected);
+        if (activeFrame) preparePreview(activeFrame);
+      };
+      const preparePreview = (frame: HTMLIFrameElement) => {
+        try {
+          const doc = frame.contentDocument;
+          if (!doc) return;
+          if (!doc.getElementById('management-preview-style')) {
+            const style = doc.createElement('style');
+            style.id = 'management-preview-style';
+            style.textContent = '.compare-bar,[data-site-cart]{display:none!important}html{scroll-behavior:auto!important}';
+            doc.head.append(style);
+          }
+          if (frame.contentWindow?.history) frame.contentWindow.history.scrollRestoration = 'manual';
+          doc.documentElement.scrollTop = 0;
+          if (doc.body) doc.body.scrollTop = 0;
+          frame.contentWindow?.scrollTo(0, 0);
+          frame.contentWindow?.requestAnimationFrame(() => frame.contentWindow?.scrollTo(0, 0));
+          frame.contentWindow?.setTimeout(() => frame.contentWindow?.scrollTo(0, 0), 180);
+        } catch { /* Встроенное сравнение остаётся доступным, если браузер ограничивает iframe. */ }
+      };
+      frames.forEach((frame) => { frame.addEventListener('load', () => preparePreview(frame)); preparePreview(frame); });
+      buttons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.viewButton ?? 'new')));
+      setView(new URL(location.href).searchParams.get('v') ?? shell?.dataset.view ?? 'new', false);
+    </script>
+  </body>
+</html>
+
+<style>
+  :root { font-family:'Inter Variable',Inter,Arial,sans-serif; font-synthesis:none; scroll-behavior:smooth; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#e8e7e1; color:#171a1b; }
+  .review-shell { --content:min(1440px,calc(100vw - 64px)); width:var(--content); margin:0 auto; padding:20px 0 36px; }
+  .review-head { display:grid; grid-template-columns:1fr auto; align-items:center; column-gap:30px; padding:4px 0 17px; }
+  .back { grid-column:1; grid-row:1; align-self:start; font-size:13px; font-weight:750; letter-spacing:.01em; }
+  .back span { color:#737975; font-weight:450; }
+  .intro { grid-column:1; grid-row:2; padding-top:18px; }
+  .eyebrow { margin:0 0 6px; color:#777d79; font:11px 'JetBrains Mono Variable',monospace; letter-spacing:.12em; }
+  h1 { margin:0; font-size:clamp(24px,3vw,34px); line-height:1.1; letter-spacing:-.045em; }
+  .summary { margin:8px 0 0; color:#555b58; font-size:14px; }
+  .switcher { grid-column:2; grid-row:2; display:flex; gap:3px; padding:4px; border:1px solid #c8cbc6; background:#f4f3ef; }
+  .switcher button { min-height:42px; padding:8px 14px; border:0; background:transparent; color:#343a39; font:550 13px 'Inter Variable',Inter,Arial,sans-serif; cursor:pointer; }
+  .switcher button span { padding-right:8px; color:#7c8380; font:11px 'JetBrains Mono Variable',monospace; }
+  .switcher button[aria-pressed="true"] { background:#171a1b; color:#f4f3ef; }
+  .switcher button[aria-pressed="true"] span { color:#e7e845; }
+  .same-copy { grid-column:2; grid-row:3; justify-self:end; margin:10px 0 0; color:#777d79; font:10px 'JetBrains Mono Variable',monospace; letter-spacing:.03em; }
+  .preview { position:relative; height:calc(100vh - 180px); min-height:650px; overflow:hidden; border:1px solid #c8cbc6; background:#111313; box-shadow:0 18px 45px #10151622; }
+  .preview iframe { position:absolute; inset:0; width:100%; height:100%; border:0; background:#111313; }
+  .preview iframe { visibility:hidden; pointer-events:none; }
+  .review-shell[data-view="old"] iframe[data-preview="old"],.review-shell[data-view="new"] iframe[data-preview="new"],.review-shell[data-view="third"] iframe[data-preview="third"] { visibility:visible; pointer-events:auto; }
+  @media (max-width:760px) {
+    .review-shell { --content:calc(100vw - 28px); padding-top:12px; }
+    .review-head { grid-template-columns:1fr; row-gap:12px; }
+    .intro { grid-row:2; padding-top:2px; }
+    .summary { max-width:46ch; font-size:13px; }
+    .switcher { grid-column:1; grid-row:3; width:100%; }
+    .switcher button { flex:1; padding-inline:6px; font-size:12px; }
+    .same-copy { grid-column:1; grid-row:4; justify-self:start; font-size:9px; }
+    .preview { height:calc(100dvh - 220px); min-height:460px; }
+  }
+</style>

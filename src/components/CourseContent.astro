@@ -1,0 +1,150 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { personMap, visibleWorks, type PersonView } from '../lib/people';
+interface Props { course: CollectionEntry<'courses'>['data']; teachers: (PersonView | undefined)[] }
+const { course: c, teachers } = Astro.props;
+const people = await personMap();
+const works = (await visibleWorks()).filter(w => c.studentWorks.some(ref => ref.id === w.id) && people.get(w.data.author.id)?.consent === 'yes');
+const bios = new Map((await getCollection('people')).map(p => [p.id, p.data.bio]));
+const testimonials = c.testimonials.filter(t => t.consent);
+const stages = c.modules.length ? c.modules : c.blocks.map(title => ({ title, description: '', topics: [], tools: [], practice: '', result: '' }));
+---
+
+{(c.benefits.length > 0 || c.description) && (
+  <section class="wrap section" aria-labelledby="course-about">
+    <div class="head">
+      <span class="t-overline">Задачи курса</span>
+      <h2 id="course-about" class="t-h2">{c.benefits.length ? 'Какие задачи помогает решать курс' : 'О курсе'}</h2>
+      {c.description && <p class="t-lead max-w-[820px]">{c.description}</p>}
+    </div>
+    {c.benefits.length > 0 && <div class="grid gap-5 md:grid-cols-3">
+      {c.benefits.map(b => <article class="border-t border-line pt-5"><h3 class="t-h3 mb-3">{b.title}</h3><p class="t-body text-ink-2">{b.text}</p></article>)}
+    </div>}
+  </section>
+)}
+
+{(c.forWhom.length > 0 || c.prerequisites.length > 0) && (
+  <section class="wrap section" aria-labelledby="course-audience">
+    <div class="grid gap-8 md:grid-cols-2">
+      {c.forWhom.length > 0 && <div>
+        <h2 id="course-audience" class="t-h2 mb-6">Кому подойдёт курс</h2>
+        <div class="grid gap-4">{c.forWhom.map(text => <p class="card t-body m-0 p-5 text-ink-2">{text}</p>)}</div>
+      </div>}
+      {c.prerequisites.length > 0 && <div>
+        <h2 id={c.forWhom.length ? undefined : 'course-audience'} class="t-h2 mb-6">Что нужно знать до начала</h2>
+        <ul class="t-body m-0 list-disc space-y-3 pl-5 text-ink-2">{c.prerequisites.map(text => <li>{text}</li>)}</ul>
+      </div>}
+    </div>
+  </section>
+)}
+
+{c.outcomes.length > 0 && (
+  <section class="wrap section" aria-labelledby="course-outcomes">
+    <div class="head"><span class="t-overline">Навыки</span><h2 id="course-outcomes" class="t-h2">Чему научитесь</h2></div>
+    <div class="grid gap-5 sm:grid-cols-2">{c.outcomes.map(text => <p class="t-body m-0 border-t border-line pt-5 text-ink-2">{text}</p>)}</div>
+  </section>
+)}
+
+{stages.length > 0 && (
+  <section id="course-program" class="wrap section" aria-labelledby="course-program-title">
+    <div class="head"><span class="t-overline">Этапы обучения</span><h2 id="course-program-title" class="t-h2" tabindex="-1">Программа курса</h2></div>
+    <ol class="course-roadmap">
+      {stages.map((m,i) => <li class="course-roadmap__step">
+        <span class="t-overline course-roadmap__number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
+        <div class="flex min-w-0 flex-col gap-3">
+          <h3 class="t-h3 m-0">{m.title}</h3>
+          {m.description && <p class="t-body m-0 text-ink-2">{m.description}</p>}
+          {m.topics.length > 0 && <details>
+            <summary class="t-small cursor-pointer py-2 font-semibold">Темы этапа</summary>
+            <ul class="t-body m-0 list-disc space-y-2 pb-3 pl-5 text-ink-2">{m.topics.map(t => <li>{t}</li>)}</ul>
+          </details>}
+          {m.practice && <p class="t-body m-0 text-ink-2"><b class="text-ink">Практика: </b>{m.practice}</p>}
+        </div>
+        {(m.result || m.tools.length > 0) && <div class="course-roadmap__result">
+          {m.result && <><span class="t-overline">Результат этапа</span><p class="t-body m-0 font-semibold">{m.result}</p></>}
+          {m.tools.length > 0 && <p class="t-meta m-0 text-muted">{m.tools.join(', ')}</p>}
+        </div>}
+      </li>)}
+    </ol>
+  </section>
+)}
+
+{!stages.length && (
+  <section class="wrap section" aria-label="Подробная программа">
+    <p class="t-body max-w-[820px] text-ink-2">Подробную программу можно посмотреть на <a href={`https://gripinsky.ru${c.legacyPath}`} class="link">прежней странице курса</a> или <a href="#consult" class="link">уточнить на консультации</a>.</p>
+  </section>
+)}
+
+{(c.projects.length > 0 || c.finalProject) && (
+  <section class="wrap section" aria-labelledby="course-projects">
+    <div class="head"><span class="t-overline">Результат обучения</span><h2 id="course-projects" class="t-h2">Что вы создадите</h2></div>
+    <div class="grid gap-6 md:grid-cols-2">
+      {c.projects.map(p => <article class="flex min-w-0 flex-col gap-4">
+        {p.image && <div class="media-frame media-frame--card"><Image src={p.image} alt={p.title} widths={[480,800]} sizes="(min-width: 768px) 45vw, 90vw" class="h-full w-full object-cover" /></div>}
+        <h3 class="t-h3 m-0">{p.title}</h3><p class="t-body m-0 text-ink-2">{p.description}</p>
+        {p.deliverable && <p class="t-body m-0"><b>На выходе: </b>{p.deliverable}</p>}
+      </article>)}
+    </div>
+    {!c.projects.length && <p class="t-body text-ink-2">{c.finalProject}</p>}
+  </section>
+)}
+
+{teachers.length > 0 && (
+  <section class="wrap section" aria-labelledby="course-teachers">
+    <div class="head"><span class="t-overline">Педагоги</span><h2 id="course-teachers" class="t-h2">Преподаватели курса</h2></div>
+    <div class="grid gap-5 sm:grid-cols-2">{teachers.filter(Boolean).map(t => <article class="flex items-start gap-4 border-t border-line pt-5">
+      {t!.photo && <Image src={t!.photo} alt={t!.name} width={96} class="h-24 w-24 shrink-0 object-cover" />}
+      <div class="min-w-0"><h3 class="t-h3 m-0">{t!.name}</h3>{bios.get(t!.id) && <p class="t-body mt-3 text-ink-2">{bios.get(t!.id)}</p>}</div>
+    </article>)}</div>
+  </section>
+)}
+
+{c.learning.length > 0 && (
+  <section class="wrap section" aria-labelledby="course-learning">
+    <div class="head"><span class="t-overline">Формат</span><h2 id="course-learning" class="t-h2">Как проходит обучение</h2></div>
+    <div class="grid gap-5 sm:grid-cols-2">{c.learning.map(item => <article class="border-t border-line pt-5"><h3 class="t-h3 mb-3">{item.title}</h3><p class="t-body text-ink-2">{item.text}</p></article>)}</div>
+  </section>
+)}
+
+{works.length > 0 && <section class="wrap section">
+  <div class="head"><h2 class="t-h2">Работы учеников курса</h2></div>
+  <div class="grid gap-5 sm:grid-cols-2">{works.map(w => <figure class="m-0">
+    <div class="media-frame media-frame--work-card"><Image src={w.data.image} alt={w.data.alt} widths={[480,800]} sizes="(min-width: 768px) 45vw, 90vw" class="h-full w-full object-cover" /></div>
+    <figcaption class="t-body mt-3">{w.data.title}<span class="t-small block text-muted">{people.get(w.data.author.id)?.name}</span></figcaption>
+  </figure>)}</div>
+</section>}
+{testimonials.length > 0 && <section class="wrap section">
+  <div class="head"><h2 class="t-h2">Отзывы об этом курсе</h2></div>
+  <div class="grid gap-5 sm:grid-cols-2">{testimonials.map(t => <figure class="card m-0 p-6"><blockquote class="t-body m-0 text-ink-2">{t.text}</blockquote><figcaption class="t-small mt-4">{t.author}{t.context && <p>{t.context}</p>}</figcaption></figure>)}</div>
+</section>}
+
+{c.trial && <section class="wrap section"><div class="flex flex-col gap-4 border-y border-line py-6">
+  <h2 class="t-h2">Попробуйте бесплатные уроки</h2>{c.trialDescription && <p class="t-body text-ink-2">{c.trialDescription}</p>}<a href={c.trial} class="btn btn-secondary self-start">Посмотреть уроки</a>
+</div></section>}
+
+<slot name="price" />
+
+{(c.included.length > 0 || c.requirements.length > 0) && <section class="wrap section"><div class="grid gap-8 md:grid-cols-2">
+  {c.included.length > 0 && <div><h2 class="t-h2 mb-6">Что входит в стоимость</h2><ul class="t-body m-0 list-disc space-y-3 pl-5 text-ink-2">{c.included.map(t => <li>{t}</li>)}</ul></div>}
+  {c.requirements.length > 0 && <div><h2 class="t-h2 mb-6">Компьютер и программы</h2><ul class="t-body m-0 list-disc space-y-3 pl-5 text-ink-2">{c.requirements.map(t => <li>{t}</li>)}</ul></div>}
+</div></section>}
+
+{c.courseFaq.length > 0 && <section class="wrap section" aria-labelledby="course-questions"><div class="grid gap-8 md:grid-cols-[4fr_8fr]">
+  <h2 id="course-questions" class="t-h2">Вопросы о курсе</h2>
+  <div>{c.courseFaq.map(f => <details class="faq group border-b border-line py-1">
+    <summary class="t-title flex min-h-16 cursor-pointer items-center justify-between gap-6 py-3">{f.question}<span aria-hidden="true" class="t-h3 shrink-0 transition-transform group-open:rotate-45">+</span></summary>
+    <p class="t-body max-w-[820px] pb-4 text-ink-2">{f.answer}</p>
+  </details>)}</div>
+</div></section>}
+
+<style>
+  .course-roadmap { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-line); }
+  .course-roadmap__step { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 16px; padding: 24px 0; border-bottom: 1px solid var(--color-line); }
+  .course-roadmap__number { padding-top: 4px; }
+  .course-roadmap__result { grid-column: 2; display: flex; min-width: 0; flex-direction: column; gap: 8px; }
+  @media (min-width: 1024px) {
+    .course-roadmap__step { grid-template-columns: 64px minmax(0, 1.5fr) minmax(0, .7fr); gap: 32px; padding: 28px 0; }
+    .course-roadmap__result { grid-column: auto; align-self: start; padding-left: 24px; border-left: 1px solid var(--color-line); }
+  }
+</style>

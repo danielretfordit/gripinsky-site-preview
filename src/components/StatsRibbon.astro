@@ -4,9 +4,10 @@ interface Props { stats: Stat[] }
 const { stats } = Astro.props;
 ---
 <section class="wrap stats-ribbon" aria-label="Академия в цифрах">
-  <dl class="stats-ribbon__grid">
-    {stats.map((stat) => (
+  <dl class="stats-ribbon__list" tabindex="0" aria-label="Пять показателей академии; на узком экране листайте горизонтально">
+    {stats.map((stat, index) => (
       <div class="stats-ribbon__item">
+        <span class="stats-ribbon__index" aria-hidden="true">0{index + 1}</span>
         <dt>{stat.label}</dt>
         <dd>
           {stat.href
@@ -19,48 +20,43 @@ const { stats } = Astro.props;
 </section>
 
 <style>
-  .stats-ribbon { padding-top: 8px; }
-  .stats-ribbon__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .stats-ribbon { padding-top: 20px; }
+  .stats-ribbon__list {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: clamp(20px, 3vw, 48px);
     margin: 0;
-    border-top: 1px solid var(--color-line);
-    border-bottom: 1px solid var(--color-line);
+    padding: 0 0 16px;
+    background: linear-gradient(to right, var(--color-lime) 0 20px, var(--color-line-strong) 20px 100%) left bottom / 100% 1px no-repeat;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
   }
+  .stats-ribbon__list::-webkit-scrollbar { display: none; }
   .stats-ribbon__item {
     display: flex;
+    flex: 0 0 auto;
     min-width: 0;
-    min-height: 104px;
     flex-direction: column-reverse;
-    justify-content: center;
-    gap: 4px;
-    padding: 16px 12px 16px 0;
-  }
-  .stats-ribbon__item:nth-child(odd) { border-right: 1px solid var(--color-line); }
-  .stats-ribbon__item:nth-child(even) { padding-left: 16px; }
-  .stats-ribbon__item:last-child {
-    grid-column: 1 / -1;
-    min-height: 76px;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: center;
-    gap: 12px;
-    border-top: 1px solid var(--color-line);
-    border-right: 0;
-    padding: 12px 0;
+    gap: 7px;
+    scroll-snap-align: start;
   }
   .stats-ribbon__item dt {
     color: var(--color-muted);
-    font-size: 13px;
+    font-family: var(--font-sans);
+    font-size: var(--type-small);
     line-height: 1.35;
   }
+  .stats-ribbon__index { display: none; }
   .stats-ribbon__item dd {
     margin: 0;
     color: var(--color-ink);
-    font-size: clamp(25px, 3vw, 42px);
-    font-weight: 750;
-    line-height: 1;
-    letter-spacing: -0.035em;
+    font-size: var(--type-stat);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.045em;
     font-variant-numeric: tabular-nums;
   }
   .stats-ribbon__item a {
@@ -70,23 +66,12 @@ const { stats } = Astro.props;
     text-underline-offset: 5px;
   }
   .stats-ribbon__item a:hover { text-decoration: underline; }
-  @media (min-width: 768px) {
-    .stats-ribbon { padding-top: 12px; }
-    .stats-ribbon__grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .stats-ribbon__item,
-    .stats-ribbon__item:last-child {
-      min-height: 128px;
-      flex-direction: column-reverse;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 8px;
-      border-top: 0;
-      border-right: 1px solid var(--color-line);
-      padding: 20px 20px 20px 0;
-    }
-    .stats-ribbon__item + .stats-ribbon__item { padding-left: 20px; }
-    .stats-ribbon__item:last-child { grid-column: auto; border-right: 0; }
-    .stats-ribbon__item dt { font-size: 14px; }
-    .stats-ribbon__item dd { font-size: clamp(26px, 2.5vw, 42px); }
+  @media (max-width: 767px) {
+    .stats-ribbon { padding-top: 16px; }
+    .stats-ribbon__list { gap: 28px; }
+    .stats-ribbon__item { min-width: 142px; }
+  }
+  @media (max-width: 560px) {
+    .stats-ribbon__item dt { font-size: var(--type-meta); }
   }
 </style>

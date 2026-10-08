@@ -1,0 +1,51 @@
+{
+  "title": "Character Artist",
+  "short": "Художник по персонажам",
+  "lead": "Создавайте персонажей и развивайте навыки моделирования, скульптинга и текстурирования.",
+  "courses": [
+    "blender",
+    "gamedevlevel1",
+    "stylized_character"
+  ],
+  "trials": [
+    "blender_mini",
+    "demo_gamedev"
+  ],
+  "addons": [
+    {
+      "course": "art_pro",
+      "text": "Композиция, свет, цвет и выразительная подача работы."
+    },
+    {
+      "course": "azbukaps",
+      "text": "Photoshop с нуля для обработки изображений и подачи проекта."
+    },
+    {
+      "course": "zbrush0",
+      "text": "Основы скульптинга и детализации моделей в ZBrush."
+    },
+    {
+      "course": "zbrushportret",
+      "text": "Анатомия головы, сходство и детали цифрового портрета.",
+      "alternative": "p_zbrushabsolute"
+    },
+    {
+      "course": "substancepainter",
+      "text": "Текстуры и материалы для игровых моделей.",
+      "alternative": "p_texturegamedev"
+    },
+    {
+      "course": "unrealenginelevel1",
+      "text": "Сборка сцены, освещение и работа в игровом движке."
+    },
+    {
+      "course": "ai",
+      "text": "Нейросети для референсов, моделей и текстур."
+    },
+    {
+      "course": "maya_level1",
+      "text": "Моделирование в Maya для игровых проектов."
+    }
+  ],
+  "order": 3
+}

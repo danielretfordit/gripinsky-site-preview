@@ -9,46 +9,46 @@ test.describe('мобильное меню', () => {
 
   test('открыть, закрыть кнопкой и Esc, фокус возвращается на кнопку', async ({ page }) => {
     await page.goto('/courses-page/visualization');
-    const btn = page.getByRole('button', { name: 'Открыть меню' });
-    const menu = page.locator('#mobile-menu');
+    const btn = page.locator('#site-menu summary');
+    const menu = page.locator('#site-primary-menu');
     await expect(menu).toBeHidden();
     await btn.click();
     await expect(menu).toBeVisible();
-    await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.locator('#menu-toggle')).toHaveAccessibleName('Закрыть меню');
-    await page.locator('#menu-toggle').click();
+    await expect(page.locator('#site-menu summary')).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.locator('#site-menu summary')).toHaveAccessibleName('Меню сайта');
+    await page.locator('#site-menu summary').click();
     await expect(menu).toBeHidden();
-    await expect(page.locator('#menu-toggle')).toHaveAttribute('aria-expanded', 'false');
-    await page.locator('#menu-toggle').click();
+    await expect(page.locator('#site-menu summary')).toHaveAttribute('aria-expanded', 'false');
+    await page.locator('#site-menu summary').click();
     await expect(menu).toBeVisible();
     await menu.getByRole('link').first().focus();
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
-    await expect(page.locator('#menu-toggle')).toBeFocused();
+    await expect(page.locator('#site-menu summary')).toBeFocused();
   });
 
   test('ссылки меню ведут на свои страницы', async ({ page }) => {
     await page.goto('/');
-    const links = await page.locator('#mobile-menu nav a').evaluateAll((as) => as.map((a) => [a.textContent!.trim(), a.getAttribute('href')!]));
+    const links = await page.locator('#site-primary-menu a').evaluateAll((as) => as.map((a) => [a.textContent!.trim(), a.getAttribute('href')!]));
     expect(links.length).toBeGreaterThanOrEqual(5);
     for (const [label, href] of links) {
       await page.goto('/');
-      await page.locator('#menu-toggle').click();
-      await page.locator('#mobile-menu').getByRole('link', { name: label, exact: true }).click();
+      await page.locator('#site-menu summary').click();
+      await page.locator('#site-primary-menu').getByRole('link', { name: label, exact: true }).click();
       await expect(page).toHaveURL(new RegExp(`${href}$`));
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       // Текущий раздел отмечен в меню (меню открывается скриптом, ждём загрузку страницы)
       await page.waitForLoadState('load');
-      await page.locator('#menu-toggle').click();
-      await expect(page.locator('#mobile-menu').getByRole('link', { name: label, exact: true })).toHaveAttribute('aria-current', 'page');
+      await page.locator('#site-menu summary').click();
+      await expect(page.locator('#site-primary-menu').getByRole('link', { name: label, exact: true })).toHaveAttribute('aria-current', 'page');
     }
   });
 
   test('«Бесплатная консультация» в меню закрывает меню и ведёт к форме', async ({ page }) => {
     await page.goto('/blog');
-    await page.locator('#menu-toggle').click();
-    await page.locator('#mobile-menu').getByRole('link', { name: 'Бесплатная консультация' }).click();
-    await expect(page.locator('#mobile-menu')).toBeHidden();
+    await page.locator('#site-menu summary').click();
+    await page.getByRole('link', { name: 'Бесплатная консультация', exact: true }).first().click();
+    await expect(page.locator('#site-primary-menu')).toBeHidden();
     await waitScrollEnd(page);
     await expect(page.locator('#consult-title')).toBeInViewport();
   });
@@ -56,13 +56,13 @@ test.describe('мобильное меню', () => {
 
 test.describe('шапка, подвал, крошки', () => {
   test('ссылки шапки на ноутбуке и компьютере', async ({ page }) => {
-    test.skip(page.viewportSize()!.width < 1024, 'до 1024 px вместо меню в шапке кнопка «Открыть меню»');
+    test.skip(page.viewportSize()!.width <= 1100, 'до 1024 px вместо меню в шапке кнопка «Открыть меню»');
     await page.goto('/');
-    const nav = page.getByRole('navigation', { name: 'Основное меню' });
+    const nav = page.locator('.site-header__nav--desktop');
     for (const label of ['3D-визуализация', 'Все курсы', 'Работы учеников', 'Отзывы', 'Блог']) {
       await nav.getByRole('link', { name: label }).click();
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-      await expect(page.getByRole('navigation', { name: 'Основное меню' }).getByRole('link', { name: label })).toHaveAttribute('aria-current', 'page');
+      await expect(page.locator('.site-header__nav--desktop').getByRole('link', { name: label })).toHaveAttribute('aria-current', 'page');
     }
     await page.getByRole('link', { name: /на главную/ }).first().click();
     await expect(page).toHaveURL(/\/$/);
@@ -115,8 +115,8 @@ test.describe('шапка, подвал, крошки', () => {
     await page.locator('main h2 a').first().click();
     await expect(page).toHaveURL(/\/blog\/.+/);
     await page.goto('/otzyvy');
-    await page.locator('main article h3 a').first().click();
-    await expect(page).toHaveURL(/\/stories\/.+/);
+    await expect(page.locator('#stories-title article.story').first()).toBeVisible();
+    await expect(page.locator('#stories-title article.story').first()).toContainText('Было');
   });
 
   test('на страницах без формы консультации ссылка «Бесплатная консультация» ведёт к форме на главной', async ({ page }) => {

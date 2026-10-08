@@ -1,0 +1,55 @@
+---
+import { getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Сообщество' }];
+---
+<Base
+  title="Сообщество 3D-художников GRIPINSKY: стримы и работы учеников"
+  description="Сообщество Академии 3D GRIPINSKY: прямые эфиры GRIPINSKY TV, разборы работ, «Рендер дня» и общение учеников, выпускников и педагогов."
+  breadcrumbs={crumbs}
+  consultContext="Сообщество"
+>
+  <section class="wrap pt-5 md:pt-7" aria-labelledby="club-page-title">
+    <Breadcrumbs items={crumbs} class="mb-8" />
+    <div class="grid gap-10 border-b border-line pb-12 md:grid-cols-[1.2fr_.8fr] md:items-end md:gap-16 md:pb-16">
+      <div class="flex flex-col items-start gap-6">
+        <p class="t-overline m-0">Сообщество Академии 3D</p>
+        <h1 id="club-page-title" class="t-display">Растём в 3D <span class="t-accent">вместе</span></h1>
+        <p class="t-lead">Курсы дают основу и практику. Сообщество помогает показывать работы, задавать вопросы и оставаться среди людей, которым тоже интересна 3D-графика.</p>
+        {site.telegramChannel && <a href={site.telegramChannel} class="btn btn-primary btn-lg" rel="noopener noreferrer" target="_blank">Канал академии в Telegram ↗</a>}
+      </div>
+      <p class="t-quote m-0 max-w-[420px] border-l border-line-strong pl-6">Ученики, выпускники и педагоги встречаются не только внутри уроков.</p>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="club-activities-title">
+    <div class="head">
+      <p class="t-overline m-0">Что происходит сейчас</p>
+      <h2 id="club-activities-title" class="t-h2">Встречи, работы <span class="t-accent">и общение</span></h2>
+    </div>
+    <ol class="m-0 grid list-none gap-x-[var(--gap-grid)] gap-y-10 border-y border-line py-8 pl-0 md:grid-cols-3">
+      <li class="flex flex-col gap-3"><span class="t-mono text-muted">01 / Эфиры</span><h3 class="t-title">GRIPINSKY TV</h3><p class="m-0 text-ink-2">По средам разбираем работы в прямом эфире. Можно увидеть чужие решения и понять, как улучшить свои.</p></li>
+      <li class="flex flex-col gap-3"><span class="t-mono text-muted">02 / Работы</span><h3 class="t-title">«Рендер дня»</h3><p class="m-0 text-ink-2">Показываем работы учеников на стримах и отмечаем самые сильные результаты.</p></li>
+      <li class="flex flex-col gap-3"><span class="t-mono text-muted">03 / Люди</span><h3 class="t-title">Связь после уроков</h3><p class="m-0 text-ink-2">Ученики и выпускники продолжают следить за проектами друг друга, а педагоги участвуют в жизни сообщества.</p></li>
+    </ol>
+  </section>
+
+  <section class="wrap section" aria-labelledby="club-works-title">
+    <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[1fr_auto] md:items-end">
+      <div class="flex flex-col gap-4"><p class="t-overline m-0">Результаты сообщества</p><h2 id="club-works-title" class="t-h2">Смотрите, что делают <span class="t-accent">ученики</span></h2><p class="m-0 max-w-[700px] text-ink-2">В галерее собраны учебные работы и проекты выпускников с именами авторов.</p></div>
+      <a href="/gallery" class="btn btn-secondary btn-lg self-start">Открыть галерею</a>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="club-channels-title">
+    <div class="border-t border-line pt-8"><h2 id="club-channels-title" class="t-h2 mb-6">Оставайтесь <span class="t-accent">на связи</span></h2>
+      <div class="flex flex-wrap gap-3">
+        {site.telegramChannel && <a href={site.telegramChannel} class="btn btn-secondary btn-lg" rel="noopener noreferrer" target="_blank">Telegram-канал ↗</a>}
+        {site.vk && <a href={site.vk} class="btn btn-secondary btn-lg" rel="noopener noreferrer" target="_blank">Сообщество ВКонтакте ↗</a>}
+      </div>
+    </div>
+  </section>
+</Base>

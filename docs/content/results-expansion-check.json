@@ -1,0 +1,87 @@
+{
+  "layouts": [
+    {
+      "route": "/",
+      "width": 375,
+      "overflow": false
+    },
+    {
+      "route": "/gallery",
+      "width": 375,
+      "overflow": false
+    },
+    {
+      "route": "/otzyvy",
+      "width": 375,
+      "overflow": false
+    },
+    {
+      "route": "/design/student-results",
+      "width": 375,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "/gallery",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "/otzyvy",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "/design/student-results",
+      "width": 768,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "route": "/gallery",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "route": "/otzyvy",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "route": "/design/student-results",
+      "width": 1024,
+      "overflow": false
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/gallery",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/otzyvy",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "route": "/design/student-results",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "filters": "passed",
+  "comparison": "passed"
+}

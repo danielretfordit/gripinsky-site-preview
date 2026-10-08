@@ -38,8 +38,9 @@ export async function professionTexts() {
 }
 
 /** FAQPage для поисковиков: только текст ответов, без разметки */
-export async function faqLd(page: 'viz' | 'home') {
-  const items = (await getCollection('faq', (f) => f.data.pages.includes(page))).sort((a, b) => a.data.order - b.data.order);
+export async function faqLd(page: 'viz' | 'home', ids?: string[]) {
+  const items = (await getCollection('faq', (f) => f.data.pages.includes(page) && (!ids || ids.includes(f.id))))
+    .sort((a, b) => ids ? ids.indexOf(a.id) - ids.indexOf(b.id) : a.data.order - b.data.order);
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

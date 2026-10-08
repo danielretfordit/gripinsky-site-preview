@@ -111,7 +111,7 @@ const steps = [
     background: var(--color-bg);
     color: var(--color-lime);
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: var(--type-meta);
     font-weight: 600;
     box-shadow: 0 0 0 1px var(--color-line-strong);
   }
@@ -128,7 +128,7 @@ const steps = [
   .learning-ladder__label { color: var(--color-muted); }
   .learning-ladder__copy h3 {
     margin: 0;
-    font-size: clamp(23px, 2.2vw, 32px);
+    font-size: var(--type-card-title);
     font-weight: 750;
     line-height: 1.1;
     letter-spacing: -0.025em;
@@ -145,11 +145,11 @@ const steps = [
   .learning-ladder__outcomes li { display: flex; align-items: baseline; gap: 8px; }
   .learning-ladder__outcomes b {
     color: var(--color-ink);
-    font-size: 28px;
+    font-size: var(--type-number);
     line-height: 1;
     letter-spacing: -0.04em;
   }
-  .learning-ladder__outcomes span { color: var(--color-muted); font-size: 14px; }
+  .learning-ladder__outcomes span { color: var(--color-muted); font-size: var(--type-small); }
   .learning-ladder__step--result .learning-ladder__marker {
     background: var(--color-lime);
     color: var(--color-bg);
@@ -195,7 +195,7 @@ const steps = [
     .learning-ladder__step:nth-child(3) { min-height: 376px; }
     .learning-ladder__step:nth-child(4) { min-height: 440px; }
     .learning-ladder__step + .learning-ladder__step { padding-left: 20px; border-left: 1px solid var(--color-line); }
-    
+
     .learning-ladder__marker { width: 40px; height: 40px; }
     .learning-ladder__copy { gap: 10px; }
     .learning-ladder__copy h3 { font-size: 26px; }

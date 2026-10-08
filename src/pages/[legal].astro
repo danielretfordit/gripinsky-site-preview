@@ -14,8 +14,8 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: doc.data.title }]
   <article class="wrap pb-16 pt-5 md:pt-7">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <h1 class="t-h2 mb-6 max-w-[900px]">{doc.data.title}</h1>
-    {doc.data.updated && <p class="mb-8 mt-0 text-[14px] text-muted">{doc.data.updated}</p>}
-    <div class="legal max-w-[860px] text-[16px] leading-relaxed text-ink-2"><Content /></div>
+    {doc.data.updated && <p class="t-overline mb-8 mt-0 normal-case">{doc.data.updated}</p>}
+    <div class="legal t-body max-w-[860px] text-ink-2"><Content /></div>
   </article>
 </Base>
 <style is:global>

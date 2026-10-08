@@ -43,7 +43,7 @@ export default defineConfig({
   adapter: node({ mode: 'standalone' }),
   // Адреса как на Tilda: без слэша на конце (/interiorpro, /courses-page/visualization)
   trailingSlash: 'never',
-  build: { format: 'file' },
+  build: { format: 'directory' },
   compressHTML: true,
   // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
   // Лента новостей Tilda (/news) переехала в блог; сами статьи остались по адресам /tpost/…
@@ -60,7 +60,7 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         const pathname = new URL(page).pathname.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
-        return isIndexable && !page.includes('/oplata/') && !page.includes('/keystatic')
+        return isIndexable && !page.includes('/oplata/') && !page.includes('/keystatic') && !page.includes('/design/')
           && !hiddenCoursePaths.has(pathname) && !seoNoindexPaths.has(pathname);
       },
     }),

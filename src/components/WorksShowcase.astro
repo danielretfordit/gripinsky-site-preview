@@ -7,26 +7,32 @@ interface Props { wide: WorkView | null; trio: WorkView[]; id: string; class?: s
 const { wide, trio, id, class: cls = '' } = Astro.props;
 ---
 <section class={`section ${cls}`} aria-labelledby={id}>
-  <div class="wrap head lg:!flex-row lg:items-end lg:justify-between lg:gap-16">
+  <div class="wrap head lg:!flex-row lg:items-end lg:justify-between">
     <slot name="head" />
   </div>
   {wide && (
-    <figure class="m-0 flex flex-col gap-3">
-      <div class="relative aspect-[4/3] overflow-hidden sm:aspect-[21/9]">
+    <figure class="m-0 flex flex-col">
+      <div class="work-feature__photo relative aspect-[4/3] overflow-hidden sm:aspect-[21/9]">
         <Image src={wide.image} alt={wide.alt} widths={[640, 960, 1280]} sizes="100vw" class="absolute inset-0 h-full w-full object-cover" style={`object-position:${wide.focus}`} />
+        <span class="work-feature__index">01 / {String(trio.length + 1).padStart(2, '0')}</span>
       </div>
-      <figcaption class="wrap t-small text-muted">{workCaption(wide)}</figcaption>
+      <figcaption class="work-feature__caption">
+        <span>РАБОТА УЧЕНИКА</span>
+        <span>{workCaption(wide)}</span>
+        <a href="/gallery" aria-label="Смотреть работы учеников">↗</a>
+      </figcaption>
     </figure>
   )}
-  <div class="wrap mt-10 grid grid-cols-2 gap-x-[var(--gap-grid)] gap-y-8 sm:mt-14 sm:grid-cols-3">
+  <div class="wrap mt-10 grid grid-cols-1 gap-x-[var(--gap-grid)] gap-y-[18px] sm:mt-14 sm:grid-cols-3">
     {trio.map((w, i) => (
-      <figure class={`zoom m-0 flex flex-col gap-2.5 ${i === 0 ? 'col-span-2 sm:col-span-1' : ''}`}>
-        <div class={`relative overflow-hidden rounded-[4px] ${i === 0 ? 'aspect-[4/3] sm:aspect-[4/5]' : 'aspect-[4/5]'}`}>
+      <figure class="zoom m-0 flex flex-col gap-2.5">
+        <div class="media-frame media-frame--work-card relative">
           <Image src={w.image} alt={w.alt} widths={[400, 640, 800]} sizes="(min-width: 768px) 33vw, 100vw" class="absolute inset-0 h-full w-full object-cover" style={`object-position:${w.focus}`} />
+          <span class="work-grid__index">0{i + 2}</span>
         </div>
         <figcaption class="t-small text-muted">{workCaption(w)}</figcaption>
       </figure>
     ))}
   </div>
-  <div class="wrap mt-10"><slot name="foot" /></div>
+  {Astro.slots.has('foot') && <div class="wrap mt-10"><slot name="foot" /></div>}
 </section>

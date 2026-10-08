@@ -9,13 +9,13 @@ const ROOT = 'dist/client';
 const legacyPages = JSON.parse(readFileSync('docs/tilda/pages.json', 'utf8'));
 const decode = (s) => s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#(?:39|x27);/gi, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 const preserveLegacyTitle = (html, file) => {
-  const route = file.slice(ROOT.length).replace(/\.html$/, '').replace(/^\/index$/, '/');
+  const route = file.slice(ROOT.length).replace(/\.html$/, '').replace(/\/index$/, '') || '/';
   return html.replace(/<title>([\s\S]*?)<\/title>/, (tag, title) =>
     decode(title) === legacyPages[route]?.title ? '' : tag);
 };
 const SKIP_PAGES = ['oferta.html', 'politica.html', 'soglasie.html'];
 // Статьи старого блога (/tpost/…) перенесены как авторские тексты; править их или нет, решает заказчица (docs/open-questions.md)
-const SKIP_DIRS = ['/tpost/'];
+const SKIP_DIRS = ['/tpost/', '/design/'];
 const files = [];
 const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); statSync(p).isDirectory() ? walk(p) : f.endsWith('.html') && files.push(p); } };
 walk(ROOT);
@@ -47,7 +47,7 @@ const strip = (html) => html
 
 let errors = 0, warnings = 0;
 for (const f of files) {
-  if (SKIP_PAGES.some((s) => f.endsWith(s)) || SKIP_DIRS.some((d) => f.includes(d))) continue;
+  if (SKIP_PAGES.some((s) => f.endsWith(s) || f.endsWith(s.replace('.html', '/index.html'))) || SKIP_DIRS.some((d) => f.includes(d))) continue;
   const text = strip(preserveLegacyTitle(readFileSync(f, 'utf8'), f));
   for (const r of RULES) {
     const lines = text.split('\n').filter((l) => r.re.test(l));

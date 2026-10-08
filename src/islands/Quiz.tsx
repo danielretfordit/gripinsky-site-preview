@@ -73,13 +73,13 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
       <div class="grid gap-4 md:grid-cols-2">
         <div class="flex flex-col gap-3 border-t border-line pt-6">
           <span class="t-overline">Вы у нас впервые</span>
-          <span class="t-title text-[24px]">Не знаете, с чего начать?</span>
-          <span class="text-ink-2">Тест за 1 минуту: подберём курсы и сразу покажем цену пакета.</span>
+          <span class="t-h3">Не знаете, с чего начать?</span>
+          <span class="text-ink-2">Тест за 1 минуту: подберём курсы и сразу покажем стоимость подборки.</span>
           <button type="button" class="btn btn-primary btn-lg mt-1 self-start" onClick={() => $quizOpen.set(true)}>Пройти тест</button>
         </div>
         <div class="flex flex-col gap-3 border-t border-line pt-6">
           <span class="t-overline">Уже знаете 3ds Max и Corona</span>
-          <span class="t-title text-[24px]">Сразу к профессии</span>
+          <span class="t-h3">Сразу к профессии</span>
           <span class="text-ink-2">Пропустите базу и выберите профессию и курсы PRO.</span>
           <button type="button" class="btn btn-secondary btn-lg mt-1 self-start"
             onClick={() => { $pkg.setKey('base', false); scrollToId('profession'); }}>Выбрать профессию ↓</button>
@@ -106,44 +106,50 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
     reachGoal('test_apply', { prof: result.prof, base: result.base, tariff: result.tariff });
     // «Подобрать со специалистом»: подборка уйдёт в заявку, ссылка сама ведёт к форме на этой же странице
     if (!toPackage) return;
+    const target = result.base ? 'base-format' : 'profession';
     if (variant === 'home') {
       const q = new URLSearchParams({ prof: result.prof, tariff: result.tariff });
       if (!result.base) q.set('base', '0');
       const c = Object.entries(result.courses).filter(([, v]) => v).map(([k]) => k);
       if (c.length) q.set('c', c.join(','));
-      location.href = `${sitePath(vizHref)}?${q.toString()}#package`;
+      location.href = `${sitePath(vizHref)}?${q.toString()}#${target}`;
       return;
     }
-    scrollToId('package');
+    scrollToId(target);
   };
   const tgStart = result ? `quiz_${result.prof}_${result.base ? 'b' : 'n'}_${result.tariff}` : 'quiz';
 
   return (
-    <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[5fr_7fr] md:gap-12 md:pt-10">
-      <div class="flex flex-col gap-3">
+    <div class="quiz-layout grid gap-8 border-t border-line pt-8 md:grid-cols-[5fr_7fr] md:gap-12 md:pt-10">
+      <div class="quiz-copy flex flex-col gap-3">
         <span class="t-overline t-signal">Тест на 1 минуту</span>
-        <h2 class="t-h2">Подберём ваш старт</h2>
-        <p class="m-0 text-ink-2">Ответьте на {total} {total >= 5 ? 'вопросов' : 'вопроса'}, и мы определим ваш уровень, подскажем курсы и сразу посчитаем пакет.</p>
-        <div class="mt-2 flex gap-1.5" role="progressbar" aria-label="Прогресс теста" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done ? total : answered}>
-          {Array.from({ length: total }, (_, k) => (
-            <span class={`h-1.5 flex-1 rounded ${k < (done ? total : answered) ? 'bg-lime' : 'bg-[rgb(236_236_230/0.18)]'}`} />
-          ))}
-        </div>
+        <h2 class="t-h2">Подберём <span>ваш старт</span></h2>
+        <p class="m-0 text-ink-2">Ответьте на {total} {total >= 5 ? 'вопросов' : 'вопроса'}, и мы определим ваш уровень, подскажем курсы и покажем стоимость рекомендованных курсов.</p>
+        <a href="#quiz" class="quiz-entry-link">Перейти к подбору <span aria-hidden="true">↗</span></a>
       </div>
 
-      <div class="flex min-h-[340px] flex-col gap-4" aria-live="polite">
+      <div class="quiz-panel quiz-card flex flex-col gap-4 md:min-h-[260px]" aria-live="polite">
         {!done && (
           <>
-            <span class="text-[15px] text-muted">Вопрос {answered + 1} из {total}</span>
+            <div class="quiz-card__top">
+              <span>ВОПРОС {String(answered + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+              <span class="quiz-track" role="progressbar" aria-label="Прогресс теста" aria-valuemin={1} aria-valuemax={total} aria-valuenow={answered + 1}>
+                <i style={{ width: `${((answered + 1) / total) * 100}%` }} />
+              </span>
+            </div>
             <h3 ref={qRef} tabIndex={-1} class="t-h3 outline-none">{cur.q}</h3>
-            <div class="flex flex-col gap-2.5">
-              {cur.o.map(([t, v]) => (
+            <div class="quiz-options flex flex-col gap-2.5">
+              {cur.o.map(([t, v], index) => (
                 <button type="button" key={t} onClick={() => pick(v)}
-                  class="choice min-h-14 px-5 py-3 text-left text-[17px] font-semibold">{t}</button>
+                  class="choice quiz-choice min-h-14 px-5 py-3 text-left font-semibold">
+                  <span class="quiz-choice__number">{String(index + 1).padStart(2, '0')}</span>
+                  <span>{t}</span>
+                  <span class="quiz-choice__arrow" aria-hidden="true">↗</span>
+                </button>
               ))}
             </div>
             {answered > 0 && (
-              <button type="button" onClick={back} class="min-h-11 self-start border-0 bg-transparent px-0 text-[15px] font-semibold text-muted">Назад</button>
+              <button type="button" onClick={back} class="t-small min-h-11 self-start border-0 bg-transparent px-0 font-semibold text-muted">Назад</button>
             )}
           </>
         )}
@@ -151,12 +157,12 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
         {done && games && (
           <div ref={resRef} tabIndex={-1} class="flex flex-col gap-4 outline-none">
             <span class="t-overline">Ваше направление</span>
-            <span class="text-[30px] font-extrabold text-ink">3D для игр</span>
+            <span class="t-num text-ink">3D для игр</span>
             <span class="text-ink-2">Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine. Направление пока живёт на прежнем сайте академии.</span>
             <div class="flex flex-wrap items-center gap-3">
               <a href={sitePath(gamesHref)} class="btn btn-primary btn-lg">Смотреть курсы для игр</a>
               <a href="#consult" class="link">Бесплатная консультация</a>
-              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-muted">Пройти заново</button>
+              <button type="button" onClick={reset} class="t-small min-h-11 border-0 bg-transparent font-semibold text-muted">Пройти заново</button>
             </div>
           </div>
         )}
@@ -164,7 +170,7 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
         {done && result && (
           <div ref={resRef} tabIndex={-1} class="flex flex-col gap-4 outline-none">
             <span class="t-overline">Ваш уровень</span>
-            <span class="text-[30px] font-extrabold leading-tight text-ink">{result.level}</span>
+            <span class="t-num !leading-tight text-ink">{result.level}</span>
             <span class="text-ink-2">{result.why}</span>
             <div class="flex flex-col gap-2.5 rounded-card border border-line p-5">
               <span class="t-overline">Рекомендуем</span>
@@ -174,21 +180,21 @@ export default function Quiz({ cat, variant = 'viz', telegramBot, gamesHref, viz
               ))}
               {result.base && <Row t={`Формат «${TN[result.tariff]}»`} d={TD[result.tariff]} />}
               <div class="mt-1 flex flex-wrap items-baseline justify-between gap-2 border-t border-line pt-3">
-                <span class="font-semibold">Пакет целиком</span>
-                <span class="text-right"><b class="text-[22px]">{rub(price)}</b><span class="block text-[14px] text-muted">или {sp(monthly)}&nbsp;₽/мес в рассрочку</span></span>
+                <span class="font-semibold">Курсы по отдельности, всего</span>
+                <span class="text-right"><b class="t-h3">{rub(price)}</b><span class="t-small block text-muted">или {sp(monthly)}&nbsp;₽/мес в рассрочку</span></span>
               </div>
             </div>
             <div class="flex flex-wrap items-center gap-3">
               {result.unsure ? (
                 <>
                   <a href="#consult" class="btn btn-primary btn-lg" onClick={() => apply(false)}>Подобрать со специалистом</a>
-                  <button type="button" class="btn btn-secondary btn-lg" onClick={() => apply()}>Показать пакет ↓</button>
+                  <button type="button" class="btn btn-secondary btn-lg" onClick={() => apply()}>Посмотреть курсы ↓</button>
                 </>
               ) : (
-                <button type="button" class="btn btn-primary btn-lg" onClick={() => apply()}>Показать пакет и цену ↓</button>
+                <button type="button" class="btn btn-primary btn-lg" onClick={() => apply()}>Посмотреть курсы и цены ↓</button>
               )}
               <a href={`${telegramBot}?start=${tgStart}`} class="link" onClick={() => reachGoal('tg_click', { place: 'quiz' })}>Сохранить подборку в Telegram</a>
-              <button type="button" onClick={reset} class="min-h-11 border-0 bg-transparent text-[15px] font-semibold text-muted">Пройти заново</button>
+              <button type="button" onClick={reset} class="t-small min-h-11 border-0 bg-transparent font-semibold text-muted">Пройти заново</button>
             </div>
           </div>
         )}

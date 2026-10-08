@@ -54,7 +54,7 @@ test('сочетание фильтров и пустой результат с 
   await expect(page).toHaveURL(/soft=zbrush/);
 });
 
-test('сортировка по цене в обе стороны и обратно «сначала пакеты»', async ({ page }) => {
+test('сортировка по цене в обе стороны и обратно к исходному порядку', async ({ page }) => {
   await page.goto('/courses');
   const prices = () => visibleCards(page).evaluateAll((cs) => cs.map((c) => Number((c as HTMLElement).dataset.price)));
   const initial = await page.locator('[data-grid] [data-course] h2').allTextContents();
@@ -68,7 +68,7 @@ test('сортировка по цене в обе стороны и обрат�
   expect(await page.locator('[data-grid] [data-course] h2').allTextContents()).toEqual(initial);
 });
 
-for (const [query, type] of [['?type=package', 'package'], ['?type=free', 'free'], ['?type=service', 'service'], ['?type=course&dir=интерьер', 'course']] as const) {
+for (const [query, type] of [['?type=free', 'free'], ['?type=service', 'service'], ['?type=course&dir=интерьер', 'course']] as const) {
   test(`фильтр из адреса ${query}`, async ({ page }) => {
     await page.goto(`/courses${query}`);
     const group = page.getByRole('group', { name: 'Тип' });
@@ -101,4 +101,44 @@ test('карточка курса целиком кликабельна', async 
   // Клик по картинке карточки (над ней растянута ссылка)
   await card.click({ position: { x: 30, y: 30 } });
   await expect(page).toHaveURL(new RegExp(`${href}$`));
+});
+
+test('сортировки сохраняются в адресе, новинка первая, популярность по рангу', async ({ page }) => {
+  await page.goto('/courses?sort=newest');
+  await expect(page.locator('[data-sort]')).toHaveValue('newest');
+  await expect(visibleCards(page).first()).toHaveAttribute('data-new', '1');
+  await expect(visibleCards(page).first().locator('.art-new')).toHaveText('Новый курс');
+  await page.locator('[data-sort]').selectOption('popular');
+  await expect(page).toHaveURL(/sort=popular/);
+  const ranks = await visibleCards(page).evaluateAll((cs) => cs.map((c) => Number((c as HTMLElement).dataset.popularity || Infinity)));
+  expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
+  await expect(visibleCards(page).first().locator('a')).toHaveAttribute('href', '/3dstock');
+  await page.getByRole('group', { name: 'Тип' }).getByRole('button', { name: /^Курсы/ }).click();
+  await expect(visibleCards(page).first().locator('a')).toHaveAttribute('href', '/3dstock');
+  await expect(page.locator('[data-sort-note]')).toContainText('август 2025');
+  await page.reload();
+  await expect(page.locator('[data-sort]')).toHaveValue('popular');
+  await expect(visibleCards(page).first().locator('a')).toHaveAttribute('href', '/3dstock');
+  await page.locator('[data-reset]').click();
+  await expect(page).toHaveURL(/\/courses$/);
+  await expect(page.locator('[data-reset]')).toBeHidden();
+});
+
+test('пакеты индивидуальных занятий находятся только в услугах', async ({ page }) => {
+  await page.goto('/courses?type=course');
+  await expect(visibleCards(page).filter({ hasText: '5 индивидуальных занятий' })).toHaveCount(0);
+  await expect(visibleCards(page).filter({ hasText: '10 индивидуальных занятий' })).toHaveCount(0);
+  await page.getByRole('button', { name: /^Услуги/ }).click();
+  await expect(visibleCards(page).filter({ hasText: '5 индивидуальных занятий' })).toHaveCount(1);
+  await expect(visibleCards(page).filter({ hasText: '10 индивидуальных занятий' })).toHaveCount(1);
+});
+
+test('метки находятся на обложках, адаптив не переполняется', async ({ page }) => {
+  await page.goto('/courses?type=course&soft=3ds+max');
+  const card = visibleCards(page).filter({ has: page.locator('a[href="/modeling1"]') });
+  await expect(card.locator('.course-art-top')).toContainText('Новичок');
+  await expect(card.locator('.course-art-bottom')).toContainText('3ds Max');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator('[data-filters]').scrollIntoViewIfNeeded();
+  await page.screenshot({ path: `docs/design/shots/catalog-${page.viewportSize()!.width}.png` });
 });

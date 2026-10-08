@@ -37,30 +37,38 @@ const ld = articleLd({ headline: pageTitle, description: pageDesc, path: `/stori
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="grid gap-8 md:grid-cols-[7fr_5fr] md:gap-12">
       <div class="flex flex-col gap-3">
-        {pics.slice(0, 1).map((w) => <Image src={w!.data.image} alt={w!.data.alt} widths={[640, 960, 1440]} sizes="(min-width: 1024px) 58vw, 100vw" loading="eager" class="w-full rounded-card object-cover" />)}
+        {pics.slice(0, 1).map((w) => (
+          <div class="media-frame media-frame--card relative">
+            <Image src={w!.data.image} alt={w!.data.alt} widths={[640, 960, 1440]} sizes="(min-width: 1024px) 58vw, 100vw" loading="eager" class="absolute inset-0 h-full w-full object-cover" />
+          </div>
+        ))}
         <div class="grid grid-cols-2 gap-3">
-          {pics.slice(1).map((w) => <Image src={w!.data.image} alt={w!.data.alt} widths={[400, 640]} sizes="(min-width: 1024px) 28vw, 50vw" class="aspect-[4/3] w-full rounded-2xl object-cover" />)}
+          {pics.slice(1).map((w) => (
+            <div class="media-frame media-frame--work-card relative">
+              <Image src={w!.data.image} alt={w!.data.alt} widths={[400, 640]} sizes="(min-width: 1024px) 28vw, 50vw" class="absolute inset-0 h-full w-full object-cover" />
+            </div>
+          ))}
         </div>
       </div>
       <div class="flex flex-col gap-4">
         <span class="chip chip-solid self-start">{s.tag}</span>
-        <h1 id="story-title" class="t-display !text-[clamp(30px,4vw,44px)]">{person.name}</h1>
+        <h1 id="story-title" class="t-page-title">{person.name}</h1>
         <span class="text-muted">{s.subtitle}</span>
         <p class="m-0 text-muted">Было: {s.before}</p>
-        <p class="m-0 text-[19px] font-semibold"><span class="text-muted">Стало:</span> {s.after}</p>
+        <p class="t-lead font-semibold text-ink"><span class="text-muted">Стало:</span> {s.after}</p>
         {s.quote && <blockquote class="t-quote m-0">{s.quote}</blockquote>}
         {s.highlights.length > 0 && <ul class="m-0 flex list-none flex-col gap-1.5 p-0 text-ink-2">{s.highlights.map((h) => <li class="flex gap-2.5"><b class="text-ink" aria-hidden="true">+</b>{h}</li>)}</ul>}
-        {s.courses && <p class="m-0 text-[15px] text-muted">{s.courses}</p>}
-        {s.extraNote && <p class="m-0 rounded-2xl bg-surface p-4 text-[15px]">{s.extraNote}</p>}
+        {s.courses && <p class="t-small m-0 text-muted">{s.courses}</p>}
+        {s.extraNote && <p class="card t-small m-0 p-4">{s.extraNote}</p>}
         {s.links.length > 0 && <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">{s.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}</p>}
         <div class="mt-2 flex flex-col gap-3 sm:flex-row">
-          <a href="/courses-page/visualization#quiz" class="btn btn-primary">Подобрать свой путь</a>
+          <a href="/#quiz" class="btn btn-primary">Подобрать свой путь</a>
           <a href="/otzyvy" class="btn btn-secondary">Все истории</a>
         </div>
       </div>
     </div>
     {hasBody && (
-      <div class="story-body mt-12 max-w-[760px] text-[17px] leading-relaxed text-ink-2">
+      <div class="story-body t-body mt-12 max-w-[760px] text-ink-2">
         <h2 class="t-h3 mb-4">История от первого лица</h2>
         <Content />
       </div>

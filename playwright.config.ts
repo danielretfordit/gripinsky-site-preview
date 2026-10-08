@@ -21,5 +21,5 @@ export default defineConfig({
     { name: 'laptop-1024', use: { browserName: 'chromium', viewport: { width: 1024, height: 768 } } },
     { name: 'desktop-1440', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 } } },
   ],
-  webServer: { command: 'npm run dev', url: 'http://localhost:4321', reuseExistingServer: true, timeout: 120_000 },
+  webServer: { command: 'npm run dev', url: process.env.BASE_URL ?? 'http://localhost:4321', reuseExistingServer: true, timeout: 120_000 },
 });

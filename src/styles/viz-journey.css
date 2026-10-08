@@ -1,0 +1,36 @@
+
+.route__steps { list-style:none; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; padding:0; margin:0; }
+.route__step { min-width:0; display:flex; flex-direction:column; justify-content:flex-end; }
+.route__visual { height:var(--step-height); background:linear-gradient(135deg,#4e5a4f,#29332d); border:1px solid #657264; border-bottom:0; padding:18px; display:flex; justify-content:space-between; align-items:flex-start; }
+.route__visual svg { width:24px; height:24px; stroke:currentColor; stroke-width:1.5; }
+.route__copy { padding:24px 20px; background:var(--color-surface); border-top:1px solid var(--color-line-strong); flex:0 0 330px; display:flex; flex-direction:column; }
+.route__index { color:var(--color-muted); }
+.route__copy h3 { margin:16px 0 0; }
+.route__copy > p { margin:12px 0; color:var(--color-ink-2); }
+.route__copy > a { margin-top:auto; padding-top:20px; }
+.route__numbers { display:flex; gap:24px; margin:20px 0 0; }
+.route__numbers strong { display:block; font-size:var(--type-stat); font-weight:750; letter-spacing:-.06em; line-height:1; }
+.route__numbers span { display:block; color:var(--color-ink-2); margin-top:8px; }
+.route__step--result { border:1px solid #a7b39c; border-radius:2px; overflow:hidden; }
+.route__step--result .route__visual { background:linear-gradient(135deg,#c2cbb4,#819276); color:var(--color-bg); border:0; }
+.route__step--result .route__index { color:var(--color-lime); }
+.route__copy .route__result { color:var(--color-ink); margin:16px 0 0; }
+.route__footer { display:flex; align-items:center; justify-content:space-between; gap:32px; border-top:1px solid var(--color-line); padding-top:24px; margin-top:24px; }
+.route__footer > p { max-width:760px; color:var(--color-muted); margin:0; }
+.route__footer > div { display:flex; gap:24px; flex-shrink:0; }
+/* Маршрут: одна линия, результат занимает отдельную заметную панель. */
+.route--journey .route__steps { gap:0; grid-template-columns:1fr 1.15fr 1.15fr 1.4fr; }
+.route--journey .route__visual { height:64px; background:transparent; border:0; border-bottom:1px solid var(--color-line-strong); position:relative; }
+.route--journey .route__visual > span { width:42px; height:42px; display:grid; place-items:center; background:var(--color-bg); border:1px solid var(--color-line-strong); border-radius:50%; }
+.route--journey .route__copy { background:transparent; border:0; padding:32px 24px; flex-basis:360px; }
+.route--journey .route__step--result { background:var(--color-surface); border-color:#a7b39c; }
+.route--journey .route__step--result .route__visual { color:var(--color-ink); }
+/* Карточки: номера и цифры формируют плакатную композицию. */
+.route--gallery .route__step { border:1px solid var(--color-line); background:var(--color-surface); }
+.route--gallery .route__visual { height:130px; border:0; background:transparent; }
+.route--gallery .route__visual > span { font-size:var(--type-stat); font-family:var(--font-mono); color:var(--color-heading-muted); }
+.route--gallery .route__copy { background:transparent; border:0; }
+.route--gallery .route__step--result { background:#c2cbb4; color:var(--color-bg); }
+.route--gallery .route__step--result :is(.route__index,.route__visual > span,.route__copy > p,.route__copy > a) { color:var(--color-bg); }
+@media(max-width:1023px) { .route__steps,.route--journey .route__steps { gap:12px; } .route__copy,.route--journey .route__copy { padding:20px 12px; } .route__numbers { gap:12px; flex-wrap:wrap; } .route__footer { align-items:start; flex-direction:column; gap:16px; } }
+@media(max-width:767px) { .route__steps,.route--journey .route__steps { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; align-items:stretch; padding-bottom:12px; } .route__step { flex:0 0 78%; scroll-snap-align:start; } .route__copy,.route--journey .route__copy { padding:24px 20px; } .route__visual { height:calc(var(--step-height) * .55); } .route__footer > div { flex-wrap:wrap; } }

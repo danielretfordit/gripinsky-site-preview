@@ -3,7 +3,7 @@
   "short": "Пакет 5 индивидуальных занятий с педагогом",
   "legacyPath": "/paket_ind5",
   "status": "active",
-  "type": "package",
+  "type": "service",
   "price": 15000,
   "oldPrice": 17500,
   "professions": [],

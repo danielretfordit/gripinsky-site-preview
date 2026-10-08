@@ -1,0 +1,43 @@
+---
+import { getEntry, getCollection } from 'astro:content';
+import { courseHref } from '../../lib/categories';
+import { rub } from '../../lib/format';
+const { stage = 'profession', profession = 'int', instance = 0 } = Astro.props;
+const baseOptions = [{ id: 'azbukaps', for: 'Дополнение к базе', text: 'Photoshop с нуля: обработка и подача первых рендеров. Можно изучать параллельно с базой.' }];
+const professions = (await getCollection('professions')).sort((a, b) => a.data.order - b.data.order);
+const selected = stage === 'shared' ? professions : professions.filter(p => p.id === profession);
+const options = new Map<string, { id: string; for: string; text: string }>();
+for (const p of selected) {
+  for (const addon of p.data.addons) {
+    const id = addon.course.id;
+    const existing = options.get(id);
+    options.set(id, { id, for: existing ? `${existing.for} / ${p.data.title}` : p.data.title, text: addon.text });
+  }
+}
+const courses = await Promise.all((stage === 'base' ? baseOptions : [...options.values()]).map(async option => ({ ...option, course: await getEntry('courses', option.id) })));
+---
+<div id={stage === 'base' ? 'base-additional' : `additional-${instance}`} class:list={['viz-additional', { 'viz-additional--base': stage === 'base' }]}>
+  <h3 class="t-title">{stage === 'base' ? 'Дополнительный курс к базе' : 'Усильте навыки под свои задачи'}</h3>
+    <p class="t-small viz-additional__intro">{stage === 'base' ? 'По желанию. 3ds Max, Corona и ИИ уже входят в базу.' : 'Подходят к базе и профессиям. Выберите нужные инструменты, остальные можно добавить позже.'}</p>
+  <div class="viz-additional__grid">{courses.map(item => item.course && item.course.data.status === 'active' && <article>
+    <span class="t-overline">{item.for}</span>
+    <h3 class="t-title"><a href={courseHref(item.id, item.course.data)} class="link">{item.course.data.title} ↗</a></h3>
+    <p class="t-small">{item.text}</p>
+    <a href={courseHref(item.id, item.course.data)} class="link t-small">Программа курса →</a><div class="viz-additional__buy"><b class="t-title">{rub(item.course.data.price)}</b><button type="button" class="btn btn-secondary" data-cart-add={item.id} disabled aria-pressed="false"><span data-cart-label>В корзину</span></button></div>
+  </article>)}</div>
+  {stage !== 'base' && <p class="t-small viz-additional__note">Подарки к выбранному набору учитываются в корзине автоматически.</p>}
+
+</div>
+<style>
+.viz-additional { margin-top:24px; } .viz-additional > h3 { min-height:48px; padding-block:12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--color-line); } .viz-additional__intro { color:var(--color-ink-2); margin:20px 0; } .viz-additional--base .viz-additional__grid { grid-template-columns:1fr; }
+.viz-additional .head { max-width:900px; }
+.viz-additional__grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.viz-additional article { display:flex; min-width:0; flex-direction:column; align-items:flex-start; border-top:1px solid var(--color-line-strong); padding:18px; background:var(--color-surface); }
+.viz-additional article > span { color:var(--color-muted); }
+.viz-additional h3 { margin:14px 0 12px; }
+.viz-additional article p { margin:0 0 12px; color:var(--color-ink-2); }
+.viz-additional__buy { margin-top:16px; display:flex; flex-wrap:wrap; width:100%; align-items:center; justify-content:space-between; gap:12px; }
+.viz-additional__note { margin:28px 0 0; color:var(--color-muted); }
+@media(max-width:1100px) { .viz-additional__grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:767px) { .viz-additional__grid { grid-template-columns:1fr; gap:28px; } }
+</style>

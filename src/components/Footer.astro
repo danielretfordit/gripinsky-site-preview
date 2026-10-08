@@ -22,6 +22,7 @@ const cols = [
     links: [
       { href: '/gallery', label: 'Работы учеников' },
       { href: '/otzyvy', label: 'Отзывы и истории' },
+      { href: '/club', label: 'Сообщество' },
       { href: '/blog', label: 'Блог' },
       { href: `${OLD}/academy`, label: 'Об академии' },
       { href: `${OLD}/teachers`, label: 'Педагоги' },
@@ -48,10 +49,10 @@ const year = new Date().getFullYear();
 // На страницах без формы консультации ссылка ведёт к форме на главной
 const { consult = true } = Astro.props as { consult?: boolean };
 ---
-<footer id="site-footer" class="wrap border-t border-line pb-10 pt-12 text-[15px] text-muted">
+<footer id="site-footer" class="wrap t-small border-t border-line pb-10 pt-12 text-muted">
   <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
     <div class="flex flex-col gap-4">
-      <a href="/" aria-label="На главную"><Image src={logo} alt="GRIPINSKY" width={166} height={22} class="block h-[22px] w-auto" /></a>
+      <a href="/" aria-label="На главную"><Image src={logo} alt="GRIPINSKY" densities={[1, 2, 3, 4]} format="png" width={166} height={22} class="block h-[22px] w-auto" /></a>
       <p class="m-0 max-w-[280px] leading-relaxed">Онлайн-курсы 3D-визуализации и 3D-графики. Учим думать, а не повторять действия.</p>
       <a href={consult ? '#consult' : '/#consult'} class="link-muted">Бесплатная консультация</a>
     </div>
@@ -67,7 +68,7 @@ const { consult = true } = Astro.props as { consult?: boolean };
       {site.email && <a href={`mailto:${site.email}`} class="text-muted hover:text-white">{site.email}</a>}
     </nav>
   </div>
-  <div class="mt-10 flex flex-col gap-2 border-t border-line pt-6 text-[13px] leading-relaxed md:flex-row md:justify-between">
+  <div class="t-caption mt-10 flex flex-col gap-2 border-t border-line pt-6 leading-relaxed md:flex-row md:justify-between">
     <span>© {year} {site.requisites}</span>
     <span>{site.certificateNote}</span>
   </div>

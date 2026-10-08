@@ -1,70 +1,51 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import { personMap, visibleWorks } from '../lib/people';
-
-const site = (await getEntry('settings', 'site'))!.data;
-const people = await personMap();
-const works = new Map((await visibleWorks()).map((w) => [w.id, w]));
-const reviews = (await getCollection('reviews')).sort((a, b) => a.data.order - b.data.order);
-const stories = (await getCollection('stories', (s) => people.has(s.data.person.id))).sort((a, b) => a.data.order - b.data.order);
-const awards = (await getCollection('awards', (a) => a.data.kind === 'student' && people.has(a.data.person.id))).sort((a, b) => a.data.order - b.data.order);
-const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Отзывы и истории' }];
-const SOURCE = { telegram: 'Telegram', yandex: 'Яндекс Карты', vk: 'ВКонтакте', site: 'сайт' } as const;
+import ReviewWall from '../components/ReviewWall.astro';
+import GraduateHighlights from '../components/GraduateHighlights.astro';
+const crumbs=[{name:'Главная',href:'/'},{name:'Истории и отзывы'}];
 ---
-<Base
-  title="Отзывы учеников Академии 3D GRIPINSKY: истории выпускников"
-  description={`Отзывы и истории выпускников Академии 3D GRIPINSKY: было и стало, награды «Царь горы» на 3DDD. Оценка ${site.stats.rating} на Яндекс Картах.`}
-  breadcrumbs={crumbs}
-  consultContext="Отзывы"
->
-  <section class="wrap pb-10 pt-5 md:pt-7" aria-labelledby="reviews-title">
-    <Breadcrumbs items={crumbs} class="mb-6" />
-    <div class="mb-10 flex flex-col gap-3">
-      <span class="t-overline">Отзывы</span>
-      <h1 id="reviews-title" class="t-display">Отзывы <span class="t-accent">и истории</span></h1>
-      <p class="t-lead max-w-[760px]">Что говорят ученики и кем они стали после обучения. Больше отзывов на <a href={site.yandexMaps} class="link" rel="noopener">Яндекс Картах</a>, там у академии оценка {site.stats.rating}.</p>
-    </div>
-    <div class="grid gap-x-[var(--gap-grid)] gap-y-10 md:grid-cols-3">
-      {reviews.map((r) => (
-        <figure class="m-0 flex flex-col gap-5 border-t border-line pt-6">
-          <blockquote class="t-quote m-0 !text-[19px]">{r.data.text}</blockquote>
-          <figcaption class="mt-auto flex flex-col gap-0.5"><b class="text-[17px]">{r.data.author}</b><span class="t-small text-muted">{r.data.role}, отзыв из {SOURCE[r.data.source]}</span></figcaption>
-        </figure>
-      ))}
-    </div>
-  </section>
-
-  <section class="wrap section" aria-labelledby="stories-title">
-    <h2 id="stories-title" class="t-h2 mb-8">Истории <span class="t-accent">выпускников</span></h2>
-    <div class="grid gap-5 sm:grid-cols-2 md:grid-cols-3">
-      {stories.map((s) => {
-        const w = s.data.works[0] && works.get(s.data.works[0].id);
-        return (
-          <article class="card lift relative flex flex-col overflow-hidden">
-            {w ? <Image src={w.data.image} alt={w.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 33vw, 100vw" class="h-[200px] w-full object-cover" />
-               : <div class="flex h-[200px] items-end bg-surface-2 p-5"><span class="t-quote">{s.data.quote}</span></div>}
-            <div class="flex flex-1 flex-col gap-2.5 p-5">
-              <span class="chip self-start">{s.data.tag}</span>
-              <h3 class="m-0 text-[20px] font-extrabold"><a href={`/stories/${s.id}`} class="text-ink after:absolute after:inset-0">{people.get(s.data.person.id)?.name}</a></h3>
-              <span class="t-small text-muted">Было: {s.data.before}</span>
-              <span class="font-semibold leading-snug"><span class="text-muted">Стало:</span> {s.data.after}</span>
-            </div>
-          </article>
-        );
-      })}
-    </div>
-  </section>
-
-  <section class="wrap section" aria-labelledby="kings-title">
-    <h2 id="kings-title" class="t-h2 mb-3">«Царь горы» <span class="t-accent">у наших учеников</span></h2>
-    <p class="mb-8 mt-0 max-w-[760px] text-ink-2">Звание лучшей работы в галерее 3DDD, главного сайта архвиз-визуализаторов.</p>
-    <ul class="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 md:grid-cols-3">
-      {awards.map((a) => (
-        <li class="card flex flex-col gap-1 p-5"><b class="text-[17px]">{people.get(a.data.person.id)?.name}</b><span class="font-bold text-ink">{a.data.title}</span><span class="t-small text-muted">{a.data.text}</span></li>
-      ))}
-    </ul>
-  </section>
+<Base title="Отзывы учеников Академии 3D GRIPINSKY: истории выпускников" description="Короткие отзывы учеников, истории выпускников и работы, получившие награду «Царь горы» на 3DDD." breadcrumbs={crumbs} consultContext="Отзывы">
+<section class="wrap section reviews-intro" aria-labelledby="reviews-title"><Breadcrumbs items={crumbs} class="mb-6" /><p class="t-overline">Опыт учеников</p><h1 id="reviews-title" class="t-display">Истории <span class="text-heading-muted">и отзывы</span></h1><p class="t-lead">С чего начинали, чего достигли и как учились в академии. Работы и впечатления наших учеников.</p></section>
+<section id="quotes" class="wrap section review-collections">
+  <div class="collection-tabs" role="tablist" aria-label="Отзывы и результаты">
+    <button class="choice" role="tab" id="tab-stories" aria-controls="stories-title" aria-selected="true" data-collection="stories">Истории выпускников</button>
+    <button class="choice" role="tab" id="tab-quotes" aria-controls="panel-quotes" aria-selected="false" tabindex="-1" data-collection="quotes">Отзывы</button>
+    <button class="choice" role="tab" id="tab-awards" aria-controls="kings-title" aria-selected="false" tabindex="-1" data-collection="awards">«Цари горы»</button>
+  </div>
+  <div id="panel-quotes" role="tabpanel" aria-labelledby="tab-quotes" data-collection-panel="quotes"><ReviewWall /></div>
+  <div class="graduate-collection"><GraduateHighlights expanded /></div>
+</section>
 </Base>
+<style>.review-nav,.review-links{display:flex;flex-wrap:wrap;gap:24px;margin-top:24px}.review-nav a,.review-links a{display:inline-flex;min-height:44px;align-items:center}#quotes{scroll-margin-top:100px}</style>
+
+<style>
+ .review-editorial { padding-bottom: 24px; }
+ .review-editorial :global(.proof-process) { display: none; }
+ .collection-tabs { display: flex; flex-wrap: wrap; gap: 12px; padding-block: 20px; border-block: 1px solid var(--color-line); margin-bottom: 32px; }
+ .collection-tabs button { min-height: 48px; padding-inline: 18px; }
+ .collection-tabs [aria-selected="true"] { background: var(--color-ink); color: var(--color-bg); }
+ .graduate-collection :global(.graduate-highlights) { margin-top: 0; }
+ .review-collections :global([hidden]) { display: none !important; }
+</style>
+<script>
+ const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-collection]')];
+ const quotes = document.querySelector<HTMLElement>('[data-collection-panel="quotes"]')!;
+ const stories = document.getElementById('stories-title')!;
+ const awards = document.getElementById('kings-title')!;
+ stories.setAttribute('role', 'tabpanel'); stories.setAttribute('aria-labelledby', 'tab-stories');
+ awards.setAttribute('role', 'tabpanel'); awards.setAttribute('aria-labelledby', 'tab-awards');
+ const select = (key: string) => {
+   quotes.hidden = key !== 'quotes'; stories.hidden = key !== 'stories'; awards.hidden = key !== 'awards';
+   buttons.forEach(b => { b.setAttribute('aria-selected', String(b.dataset.collection === key)); b.tabIndex = b.dataset.collection === key ? 0 : -1; });
+ };
+ buttons.forEach((b, i) => { b.addEventListener('click', () => select(b.dataset.collection!)); b.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); const next=buttons[(i+(e.key==='ArrowRight'?1:buttons.length-1))%buttons.length]; select(next.dataset.collection!); next.focus(); }); });
+ const fromHash = () => select(location.hash === '#quotes' || location.hash === '#panel-quotes' ? 'quotes' : location.hash === '#kings-title' ? 'awards' : 'stories');
+ document.querySelectorAll<HTMLAnchorElement>('.review-nav a').forEach(a => a.addEventListener('click', () => { const key=a.hash==='#stories-title'?'stories':a.hash==='#kings-title'?'awards':'quotes'; select(key); document.getElementById('quotes')?.scrollIntoView({behavior:'smooth'}); }));
+ fromHash(); window.addEventListener('hashchange', fromHash);
+</script>
+
+<style>
+ .reviews-intro { padding-bottom: 24px; }
+ .review-collections { padding-top: 0; }
+</style>

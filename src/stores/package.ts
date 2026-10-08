@@ -1,6 +1,6 @@
 import { sitePath } from '../lib/deployment';
 import { map, atom } from 'nanostores';
-import type { Selection, ProfId, TariffId, QuizResult } from '../lib/pricing';
+import type { SetInput, Selection, ProfId, TariffId, QuizResult } from '../lib/pricing';
 
 const PROFS: ProfId[] = ['int', 'ext', 'stock'];
 const TARIFFS: TariffId[] = ['lite', 'opt', 'mentor'];
@@ -14,7 +14,7 @@ export const $quiz = atom<QuizResult | null>(null);
 /** Открыт ли тест (кнопки «Пройти тест» в первом экране и на развилке) */
 export const $quizOpen = atom(false);
 
-export type CheckoutRequest = { kind: 'package' } | { kind: 'base'; tariff: TariffId } | { kind: 'course'; id: string; name: string; price: number };
+export type CheckoutRequest = { kind: 'set'; selection: SetInput } | { kind: 'package' } | { kind: 'base'; tariff: TariffId } | { kind: 'course'; id: string; name: string; price: number };
 /**
  * Запрос на оформление («Оформить пакет», «Купить курс»). Атом, а не событие:
  * если нажать кнопку раньше, чем загрузится остров с диалогом, запрос дождётся его и не потеряется.
@@ -64,5 +64,5 @@ export function packageUrl(sel: Selection): string {
   const c = Object.entries(sel.courses ?? {}).filter(([, v]) => v).map(([k]) => k);
   if (c.length) q.set('c', c.join(','));
   if (sel.addons.length) q.set('a', sel.addons.join(','));
-  return `${location.origin}${sitePath('/courses-page/visualization')}?${q.toString()}#package`;
+  return `${location.origin}${sitePath('/courses-page/visualization')}?${q.toString()}#profession`;
 }

@@ -9,5 +9,6 @@
   "awards": [
     "render-dnya"
   ],
-  "order": 23
+  "order": 23,
+  "inGallery": false
 }

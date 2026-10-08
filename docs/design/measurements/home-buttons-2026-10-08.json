@@ -1,0 +1,297 @@
+[
+  {
+    "viewport": 375,
+    "dpr": 1,
+    "zoom": "1",
+    "buttons": [
+      {
+        "text": "Выбрать направление ↗",
+        "width": 206.203125,
+        "height": 48,
+        "cssWidth": "206.203px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "13px",
+        "weight": "650",
+        "lineHeight": "15.6px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(0, 0, 0, 0)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "12px",
+        "arrowWidth": 10.234375,
+        "background": "rgb(231, 232, 69)"
+      },
+      {
+        "text": "Подобрать курс за 1 минуту →",
+        "width": 254.109375,
+        "height": 48,
+        "cssWidth": "254.109px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "13px",
+        "weight": "650",
+        "lineHeight": "19.5px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(241, 241, 235, 0.42)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "20px",
+        "arrowWidth": 12.109375,
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "group": {
+      "gap": "12px 24px",
+      "direction": "column"
+    }
+  },
+  {
+    "viewport": 768,
+    "dpr": 1,
+    "zoom": "1",
+    "buttons": [
+      {
+        "text": "Выбрать направление ↗",
+        "width": 218.125,
+        "height": 48,
+        "cssWidth": "218.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "16.8px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(0, 0, 0, 0)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "12px",
+        "arrowWidth": 10.9375,
+        "background": "rgb(231, 232, 69)"
+      },
+      {
+        "text": "Подобрать курс за 1 минуту →",
+        "width": 269.125,
+        "height": 48,
+        "cssWidth": "269.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "21px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(241, 241, 235, 0.42)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "20px",
+        "arrowWidth": 12.96875,
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "group": {
+      "gap": "12px 24px",
+      "direction": "row"
+    }
+  },
+  {
+    "viewport": 1024,
+    "dpr": 1,
+    "zoom": "1",
+    "buttons": [
+      {
+        "text": "Выбрать направление ↗",
+        "width": 218.125,
+        "height": 48,
+        "cssWidth": "218.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "16.8px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(0, 0, 0, 0)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "12px",
+        "arrowWidth": 10.9375,
+        "background": "rgb(231, 232, 69)"
+      },
+      {
+        "text": "Подобрать курс за 1 минуту →",
+        "width": 269.125,
+        "height": 48,
+        "cssWidth": "269.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "21px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(241, 241, 235, 0.42)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "20px",
+        "arrowWidth": 12.96875,
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "group": {
+      "gap": "12px 24px",
+      "direction": "row"
+    }
+  },
+  {
+    "viewport": 1180,
+    "dpr": 1,
+    "zoom": "1",
+    "buttons": [
+      {
+        "text": "Выбрать направление ↗",
+        "width": 218.125,
+        "height": 48,
+        "cssWidth": "218.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "16.8px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(0, 0, 0, 0)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "12px",
+        "arrowWidth": 10.9375,
+        "background": "rgb(231, 232, 69)"
+      },
+      {
+        "text": "Подобрать курс за 1 минуту →",
+        "width": 269.125,
+        "height": 48,
+        "cssWidth": "269.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "21px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(241, 241, 235, 0.42)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "20px",
+        "arrowWidth": 12.96875,
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "group": {
+      "gap": "12px 24px",
+      "direction": "row"
+    }
+  },
+  {
+    "viewport": 1440,
+    "dpr": 1,
+    "zoom": "1",
+    "buttons": [
+      {
+        "text": "Выбрать направление ↗",
+        "width": 218.125,
+        "height": 48,
+        "cssWidth": "218.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "16.8px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(0, 0, 0, 0)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "12px",
+        "arrowWidth": 10.9375,
+        "background": "rgb(231, 232, 69)"
+      },
+      {
+        "text": "Подобрать курс за 1 минуту →",
+        "width": 269.125,
+        "height": 48,
+        "cssWidth": "269.125px",
+        "cssHeight": "48px",
+        "font": "\"Inter Variable\", Inter, system-ui, sans-serif",
+        "size": "14px",
+        "weight": "650",
+        "lineHeight": "21px",
+        "padding": [
+          "0px",
+          "18px",
+          "0px",
+          "18px"
+        ],
+        "border": "1px",
+        "borderColor": "rgba(241, 241, 235, 0.42)",
+        "boxSizing": "border-box",
+        "radius": "2px",
+        "gap": "20px",
+        "arrowWidth": 12.96875,
+        "background": "rgba(0, 0, 0, 0)"
+      }
+    ],
+    "group": {
+      "gap": "12px 24px",
+      "direction": "row"
+    }
+  }
+]

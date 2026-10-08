@@ -1,0 +1,29 @@
+{
+  "works": 937,
+  "reviews": 59,
+  "duplicates": 180,
+  "comparisons": 28,
+  "errors": [],
+  "consent": "New authors pending; existing consent preserved. No consent inferred from folder labels.",
+  "reviewErrors": [],
+  "unlinkedReviews": [],
+  "videoFiles": 8,
+  "sermatFiles": 27,
+  "recoveredFormats": [
+    "Photoshop file with .png extension",
+    "TIFF"
+  ],
+  "selectedSchoolQuotes": 42,
+  "fullReviewsRendered": false,
+  "validation": {
+    "build": "passed",
+    "viewportWidths": [
+      375,
+      768,
+      1024,
+      1440
+    ],
+    "quotes": "exact substrings verified",
+    "gallery": "filters, lightbox, load more checked"
+  }
+}

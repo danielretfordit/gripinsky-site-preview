@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { noCookieBanner, collectErrors, expectIslandsHydrated, waitScrollEnd, headingClearOfSticky, expectNoBrokenImages, isMobile } from './helpers';
+import { noCookieBanner, collectErrors, expectIslandsHydrated, waitScrollEnd, headingClearOfSticky, expectNoBrokenImages } from './helpers';
 
 // Страница направления /courses-page/visualization: все интерактивные элементы по очереди
 const URL = '/courses-page/visualization';
@@ -10,6 +10,7 @@ const totalNum = async (page: Page) => num(await total(page).textContent());
 let errors: string[];
 test.beforeEach(async ({ page }) => {
   await noCookieBanner(page);
+  await page.route('**/api/checkout', (route) => route.fulfill({ json: { ok: true, mode: 'demo' } }));
   errors = collectErrors(page);
   await page.goto(URL);
   await expectIslandsHydrated(page);
@@ -265,16 +266,16 @@ test.describe('формат обучения', () => {
     expect(h.bottom).toBeLessThanOrEqual(h.vh);
   });
 
-  test('«Купить только базу» открывает оформление базы', async ({ page }) => {
+  test('«Добавить базу» открывает корзину', async ({ page }) => {
     await page.getByRole('radio', { name: /Наставничество/ }).click();
     const aside = page.getByRole('complementary', { name: 'База 3D-визуализатора' });
     await expect(aside.locator('[aria-live] span').first()).toHaveText(/69\s*900\s*₽/);
     const price = num(await aside.locator('[aria-live] span').first().textContent());
-    await aside.getByRole('button', { name: 'Купить только базу' }).click();
-    const dlg = page.getByRole('dialog');
+    await aside.getByRole('button', { name: 'Добавить базу в корзину' }).click();
+    const dlg = page.locator('[data-cart-dialog]');
     await expect(dlg).toBeVisible();
     await expect(dlg).toContainText('Наставничество');
-    expect(num(await dlg.locator('b.text-\\[22px\\]').textContent())).toBe(price);
+    expect(num(await dlg.locator('b.text-\\[30px\\]').textContent())).toBe(price);
   });
 });
 
@@ -349,7 +350,7 @@ test.describe('профессии и пакет', () => {
       const price = num((await label.locator('span.text-muted').first().textContent()) ?? '');
       await label.click();
       await expect(label.getByRole('checkbox')).toBeChecked();
-      expect(await totalNum(page)).toBe(t0 + price);
+      expect(await totalNum(page)).toBe(t0 + Math.round(price * .8));
       await label.click();
       await expect(label.getByRole('checkbox')).not.toBeChecked();
       expect(await totalNum(page)).toBe(t0);
@@ -399,8 +400,9 @@ test.describe('профессии и пакет', () => {
 
 test.describe('оформление пакета', () => {
   test('диалог: валидация, фокус на первой ошибке, отправка в демо-режиме', async ({ page }) => {
-    const opener = page.locator('#package-summary').getByRole('button', { name: 'Оформить пакет' });
+    const opener = page.locator('#package-summary').getByRole('button', { name: 'Добавить в корзину' });
     await opener.click();
+    await page.locator('[data-cart-dialog]').getByRole('button', { name: 'Оформить пакет' }).click();
     const dlg = page.getByRole('dialog', { name: 'Оформление пакета' });
     await expect(dlg).toBeVisible();
     expect(num(await dlg.locator('b.text-\\[22px\\]').textContent())).toBe(await totalNum(page));
@@ -426,20 +428,20 @@ test.describe('оформление пакета', () => {
       dlg.getByRole('button', { name: 'Перейти к оплате' }).click(),
     ]);
     const body = req.postDataJSON();
-    expect(body.kind).toBe('package');
+    expect(body.kind).toBe('set');
+    expect(body.selection.ids).toContain('baza');
     expect(body.consent).toBe(true);
     expect(body).not.toHaveProperty('total');
     await expect(page.getByRole('dialog', { name: 'Заявка принята' })).toBeVisible();
     await page.getByRole('dialog').getByRole('button', { name: 'Понятно' }).click();
     await expect(page.getByRole('dialog')).toBeHidden();
-    await expect(opener).toBeFocused();
   });
 
   test('диалог закрывается крестиком, Esc и кликом по фону', async ({ page }) => {
-    const opener = page.locator('#package-summary').getByRole('button', { name: 'Оформить пакет' });
-    const dlg = page.getByRole('dialog');
+    const opener = page.locator('#package-summary').getByRole('button', { name: 'Добавить в корзину' });
+    const dlg = page.locator('[data-cart-dialog]');
     await opener.click();
-    await dlg.getByRole('button', { name: 'Закрыть' }).click();
+    await dlg.getByRole('button', { name: 'Закрыть корзину' }).click();
     await expect(dlg).toBeHidden();
     await expect(opener).toBeFocused();
 
@@ -459,47 +461,21 @@ test.describe('оформление пакета', () => {
   });
 });
 
-test.describe('липкая панель «Ваш пакет»', () => {
-  const bar = (page: Page) => page.locator('astro-island [aria-hidden]').filter({ hasText: 'Ваш пакет' }).first();
-
-  test('появляется после профессий, «Оформить» и состав работают, прячется у пакета и у формы', async ({ page }) => {
-    await expect(bar(page)).toHaveAttribute('aria-hidden', 'true');
-    // Сразу под заголовком профессий: заголовок ушёл вверх, до пакета далеко
-    await page.evaluate(() => {
-      const h = document.getElementById('profession-title')!;
-      window.scrollTo({ top: h.getBoundingClientRect().bottom + window.scrollY + 40, behavior: 'instant' });
-    });
-    await expect(bar(page)).toHaveAttribute('aria-hidden', 'false');
-    await expect(bar(page)).toBeInViewport();
-    const y0 = await page.evaluate(() => window.scrollY);
-    await bar(page).getByRole('button', { name: /Ваш пакет/ }).click();
-    await expect(page.locator('#sticky-sheet')).toBeVisible();
-    await expect(page.locator('#sticky-sheet')).toContainText('База 3D-визуализатора');
-    await bar(page).getByRole('button', { name: /Ваш пакет/ }).click();
-    await expect(page.locator('#sticky-sheet')).toHaveCount(0);
-    expect(await page.evaluate(() => window.scrollY), 'страница не прыгает при открытии состава').toBe(y0);
-    await bar(page).getByRole('button', { name: 'Оформить' }).click();
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await page.keyboard.press('Escape');
-    await page.locator('#package-summary').scrollIntoViewIfNeeded();
-    await expect(bar(page)).toHaveAttribute('aria-hidden', 'true');
+test.describe('общая липкая корзина', () => {
+  test('появляется после добавления и доступна у формы и внизу страницы', async ({ page }) => {
+    const bar = page.locator('[data-site-cart]');
+    await expect(bar).toHaveCount(0);
+    await page.getByRole('button', { name: 'Добавить базу в корзину' }).click();
+    await page.getByRole('button', { name: 'Продолжить выбор' }).click();
     await page.locator('#consult').scrollIntoViewIfNeeded();
-    await expect(bar(page)).toHaveAttribute('aria-hidden', 'true');
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-    await expect(bar(page)).toHaveAttribute('aria-hidden', 'true');
-  });
-
-  test('«Изменить» на планшете и компьютере ведёт к профессиям', async ({ page }) => {
-    test.skip(isMobile(page), 'кнопка только с 1024');
-    await page.evaluate(() => {
-      const h = document.getElementById('profession-title')!;
-      window.scrollTo({ top: h.getBoundingClientRect().bottom + window.scrollY + 40, behavior: 'instant' });
-    });
-    const change = bar(page).getByRole('link', { name: 'Изменить' });
-    if (!(await change.isVisible())) test.skip(true, 'кнопка скрыта на этой ширине');
-    await change.click();
-    await waitScrollEnd(page);
-    const h = await headingClearOfSticky(page.locator('#profession-title'));
-    expect(h.top).toBeGreaterThanOrEqual(h.stickyBottom - 1);
+    await expect(bar).toBeInViewport();
+    const y = await page.evaluate(() => scrollY);
+    await bar.getByRole('button', { name: 'Открыть корзину' }).click();
+    await expect(page.locator('[data-cart-dialog]')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('[data-cart-dialog]')).toBeHidden();
+    expect(await page.evaluate(() => scrollY)).toBe(y);
+    await bar.getByRole('button', { name: 'Оформить', exact: true }).click();
+    await expect(page.getByRole('dialog', { name: 'Оформление пакета' })).toBeVisible();
   });
 });

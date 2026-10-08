@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { CHECKOUT_MODE } from 'astro:env/server';
 import { getCatalog } from '../../lib/catalog';
-import { quote, quoteBaseOnly, quoteCourse, summarize, type Quote, type Selection, type TariffId, type ProfId } from '../../lib/pricing';
+import { quoteSet, quote, quoteBaseOnly, quoteCourse, summarize, type Quote, type Selection, type TariffId, type ProfId } from '../../lib/pricing';
 import { sendLead } from '../../lib/b24';
 import { createGcOrder } from '../../lib/getcourse';
 import { robokassaReady, robokassaUrl, newInvId } from '../../lib/robokassa';
@@ -26,11 +26,16 @@ export const POST: APIRoute = async ({ request, url }) => {
   const s = body.selection ?? {};
   const tariff: TariffId = TARIFFS.includes(s.tariff) ? s.tariff : 'opt';
   let q: Quote;
-  if (body.kind === 'course') {
+  if (body.kind === 'set') {
+    if (!Array.isArray(s.ids) || !s.ids.length || s.ids.length > 100 || s.ids.some((id: unknown) => typeof id !== 'string' || (id !== cat.base.id && !Object.hasOwn(cat.courses, id))) || !['self', 'chat'].includes(s.support) || (s.tariff != null && !TARIFFS.includes(s.tariff))) return json({ ok: false, error: 'selection' }, 422);
+    const setTariff = s.support === 'self' ? 'lite' : s.tariff === 'mentor' ? 'mentor' : 'opt';
+    q = quoteSet(cat, { ids: s.ids, support: s.support, tariff: setTariff });
+    if (!Number.isFinite(q.total) || q.total <= 0) return json({ ok: false, error: 'empty_cart' }, 422);
+  } else if (body.kind === 'course') {
     const entry = (await getCollection('courses')).find((x) => x.id === String(s.id ?? ''));
-    if (!entry || entry.data.status !== 'active' || entry.data.price <= 0) return json({ ok: false, error: 'course' }, 422);
+    if (!entry || entry.data.status !== 'active' || entry.data.price <= 0 || entry.data.type === 'package') return json({ ok: false, error: 'course' }, 422);
     q = quoteCourse({ id: entry.id, name: entry.data.title, price: entry.data.price }, cat.installmentMonths);
-  } else q = body.kind === 'base'
+  } else if (body.kind === 'base' || body.kind === 'package') q = body.kind === 'base'
     ? quoteBaseOnly(cat, tariff)
     : quote(cat, {
         base: s.base !== false,
@@ -39,6 +44,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         addons: Array.isArray(s.addons) ? s.addons.map(String).slice(0, 10) : [],
         tariff,
       } satisfies Selection);
+  else return json({ ok: false, error: 'kind' }, 422);
   const summary = summarize(q);
   const utmLast = (body.utm?.last ?? {}) as Record<string, string>;
 

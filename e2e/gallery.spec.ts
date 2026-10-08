@@ -20,7 +20,11 @@ test('фильтры: число работ совпадает со счётчи
     const n = Number(((await b.locator('span').textContent()) ?? '').replace(/\D/g, ''));
     await b.click();
     await expect(b).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('[data-gallery] li:visible')).toHaveCount(n);
+    const cat = await b.getAttribute('data-cat');
+    const gridTotal = await page.locator(cat === 'all' ? '[data-gallery] li' : `[data-gallery] li[data-cats~="${cat}"]`).count();
+    const processTotal = await page.locator(cat === 'all' ? '[data-process-cats]' : `[data-process-cats~="${cat}"]`).count();
+    expect(gridTotal + processTotal).toBe(n);
+    await expect(page.locator('[data-gallery] li:visible')).toHaveCount(Math.min(gridTotal, 36));
   }
   expect(await page.evaluate(() => window.scrollX)).toBe(0);
 });
@@ -69,12 +73,12 @@ test('лайтбокс: закрытие крестиком и кликом по
 
 test('лайтбокс после фильтра листает только отфильтрованные работы', async ({ page }) => {
   const b = page.locator('[data-gallery-filters] button', { hasText: 'Экстерьеры' });
-  const n = Number(((await b.locator('span').textContent()) ?? '').replace(/\D/g, ''));
   await b.click();
+  const visibleCount = await page.locator('[data-gallery] li:visible').count();
   await page.locator('[data-gallery] li:visible button').first().click();
-  await expect(count(page)).toHaveText(`1 из ${n}`);
+  await expect(count(page)).toHaveText(`1 из ${visibleCount}`);
   await page.keyboard.press('ArrowLeft');
-  await expect(count(page)).toHaveText(`${n} из ${n}`);
+  await expect(count(page)).toHaveText(`${visibleCount} из ${visibleCount}`);
 });
 
 test('лайтбокс: свайп пальцем', async ({ page, browserName }) => {

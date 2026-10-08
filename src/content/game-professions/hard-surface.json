@@ -1,0 +1,33 @@
+{
+  "title": "Hard Surface Artist",
+  "short": "Художник по моделям твёрдых поверхностей",
+  "lead": "Изучайте моделирование предметов, техники и других объектов с твёрдой поверхностью в Maya.",
+  "courses": [
+    "maya_level1"
+  ],
+  "trials": [],
+  "addons": [
+    {
+      "course": "art_pro",
+      "text": "Композиция, свет, цвет и выразительная подача работы."
+    },
+    {
+      "course": "azbukaps",
+      "text": "Photoshop с нуля для обработки изображений и подачи проекта."
+    },
+    {
+      "course": "zbrush0",
+      "text": "Основы скульптинга и детализации моделей в ZBrush."
+    },
+    {
+      "course": "substancepainter",
+      "text": "Текстуры и материалы для игровых моделей.",
+      "alternative": "p_texturegamedev"
+    },
+    {
+      "course": "unrealenginelevel1",
+      "text": "Сборка сцены, освещение и работа в игровом движке."
+    }
+  ],
+  "order": 5
+}

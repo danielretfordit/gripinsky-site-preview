@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { access, copyFile, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = path.resolve('dist/client');
@@ -14,6 +14,18 @@ function rewriteUrl(value) {
   if (pathname === '/') return `${base}/index.html${suffix}`;
   const filePath = path.posix.extname(pathname) ? pathname : `${pathname}.html`;
   return `${base}${filePath}${suffix}`;
+}
+
+async function addFlatRoutes(directory) {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    const child = path.join(directory, entry.name);
+    await addFlatRoutes(child);
+    const index = path.join(child, 'index.html');
+    const flat = path.join(directory, `${entry.name}.html`);
+    try { await access(index); } catch { continue; }
+    try { await access(flat); } catch { await copyFile(index, flat); }
+  }
 }
 
 async function visit(directory) {
@@ -34,6 +46,7 @@ async function visit(directory) {
   }
 }
 
+await addFlatRoutes(root);
 await visit(root);
 await writeFile(path.join(root, '.nojekyll'), '');
 await writeFile(path.join(root, 'version.json'), JSON.stringify({

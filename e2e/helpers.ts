@@ -56,7 +56,7 @@ export function allPages(): string[] {
   };
   try { walk(root); } catch { /* сборки нет: только обязательный набор */ }
   // /design/*: черновики дизайнера, в сайт не входят
-  const pages = found.map((p) => (p === '/index' ? '/' : p)).filter((p) => p !== '/404' && !p.startsWith('/design/'));
+  const pages = found.map((p) => p.replace(/\/index$/, '') || '/').filter((p) => p !== '/404' && !p.startsWith('/design/'));
   return [...new Set([...KEY_PAGES, ...pages])].sort();
 }
 
@@ -86,10 +86,10 @@ export async function expectNoBrokenImages(page: Page, scope?: Locator) {
   }
   const root = scope ? await scope.elementHandle() : null;
   await page.waitForFunction((r) => [...(r ?? document).querySelectorAll('img')]
-    .filter((i) => i.getAttribute('src') && i.getClientRects().length > 0)
+    .filter((i) => i.getAttribute('src') && i.checkVisibility({ visibilityProperty: true, contentVisibilityAuto: true }))
     .every((i) => i.complete), root, { timeout: 20_000 }).catch(() => {});
   const broken = await page.evaluate((r) => [...(r ?? document).querySelectorAll('img')]
-    .filter((i) => i.getAttribute('src') && i.getClientRects().length > 0)
+    .filter((i) => i.getAttribute('src') && i.checkVisibility({ visibilityProperty: true, contentVisibilityAuto: true }))
     .filter((i) => !i.complete || i.naturalWidth === 0)
     .map((i) => (i.complete ? 'битая: ' : 'не загрузилась: ') + (i.currentSrc || i.src).slice(0, 160)), root);
   expect(broken, broken.join('\n')).toEqual([]);

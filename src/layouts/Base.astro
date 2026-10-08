@@ -1,5 +1,9 @@
 ---
 import '../styles/global.css';
+import '@fontsource-variable/inter';
+import SiteCart from '../islands/SiteCart';
+import Checkout from '../islands/Checkout';
+import { getCatalog } from '../lib/catalog';
 import { STATIC_PREVIEW } from '../lib/deployment';
 import { Font } from 'astro:assets';
 import { PUBLIC_INDEXABLE } from 'astro:env/client';
@@ -28,6 +32,7 @@ interface Props {
 
 const { title, description, ogImage, ogType = 'website', breadcrumbs, jsonLd = [], noindex = false, consult = true, consultContext = '' } = Astro.props;
 const site = (await getEntry('settings', 'site'))!.data;
+const cartCatalog = await getCatalog();
 const routeSeo = await getPageSeo(Astro.url.pathname);
 const resolvedTitle = routeSeo?.title || title;
 const resolvedDescription = routeSeo?.description || description;
@@ -46,7 +51,7 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <link rel="canonical" href={canonical} />
     <meta name="robots" content={robots} />
     <meta name="yandex-verification" content={YANDEX_VERIFICATION} />
-    <meta name="theme-color" content="#0E1112" />
+    <meta name="theme-color" content="#111313" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ru_RU" />
@@ -59,12 +64,11 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <meta property="og:image:width" content={String(OG_W)} />
     <meta property="og:image:height" content={String(OG_H)} />
     <meta name="twitter:card" content="summary_large_image" />
-    <Font cssVariable="--font-onest" preload />
     <Font cssVariable="--font-jetbrains-mono" />
     {ld.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
     <slot name="head" />
   </head>
-  <body>
+  <body class:list={{ 'site-home': Astro.url.pathname === '/' }}>
     <a class="skip-link" href="#main">К содержанию</a>
     {STATIC_PREVIEW && <div class="border-b border-line bg-surface px-5 py-2 text-center text-[13px] text-ink-2" role="note">Промежуточная версия сайта. Заявки и оплата пока не подключены.</div>}
     <Header consult={consult} />
@@ -74,6 +78,8 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     </main>
     <slot name="after-main" />
     <Footer consult={consult} />
+    <SiteCart client:load cat={cartCatalog} discountGuide={["/design/visualization/professions", "/courses-page/visualization", "/courses-page/gamedev"].includes(Astro.url.pathname)} />
+    <Checkout client:load cat={cartCatalog} telegramBot={site.telegramBot} />
     <CookieBanner />
     <Analytics />
   </body>

@@ -1,7 +1,8 @@
 ---
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
 import { visibleWorks, personMap } from '../lib/people';
 import { SITE, absUrl, ogHref } from '../lib/seo';
 
@@ -17,10 +18,20 @@ const CATS = [
 ] as const;
 const count = (id: string) => (id === 'all' ? works.length : works.filter((w) => w.data.categories.includes(id as 'int')).length);
 const items = await Promise.all(works.map(async (w) => {
-  const big = await getImage({ src: w.data.image, width: Math.min(1800, w.data.image.width), format: 'webp' });
   const author = people.get(w.data.author.id)!;
-  return { w, big: big.src, author: author.name, teacher: w.data.categories.includes('teach') };
+  return { w, big: w.data.image.src, author: author.name, teacher: w.data.categories.includes('teach') };
 }));
+const selectedProcessIds = ["import-55b564414111c1b7", "import-787fd855a3d57802", "import-907c4e96d41fab26", "import-aa456efaf1bd2168", "import-17dcd4db8ee2b5b7", "import-7ea54de6411f9beb", "import-b78d8accc753084d", "import-154707367c15e0fd", "import-2699748affd09d55", "import-c36b716cdd28029b", "import-3d89d121696fe923", "import-8d70bd83edf43e10", "import-9168ba3178e15060", "import-d30c8437415fdaeb", "import-a51296eb9235b988", "import-ee2ad59db34bc19f", "import-4a3527b044ddaf6a", "import-2661ff1bd8d673c0", "import-20b6cc32b21a0958", "import-9a54205875b4ad0e", "import-1afb092418aedf45", "import-023b5d76423172e7", "import-3bc0e9f1b81d8de1", "import-e2c8929ee873d2c0", "import-5533d6d60d5a88f1", "import-f7e6334ee6508c79"];
+const sideBySideIds = new Set(['import-f7e6334ee6508c79']);
+const selectedProcess = selectedProcessIds.map(id => works.find(w => w.id === id)).filter((w): w is (typeof works)[number] => Boolean(w));
+const seenProcess = new Set(selectedProcess.map(w => w.data.author.id));
+const processWorks = [...selectedProcess, ...works.filter(w => { if (!w.data.beforeImage || seenProcess.has(w.data.author.id)) return false; seenProcess.add(w.data.author.id); return true; })];
+const processIds = new Set(processWorks.map(w => w.id));
+const gridItems = items.filter(i => !processIds.has(i.w.id));
+const groups = [
+  { id: 'gallery-awards', title: '«Царь горы» на 3DDD', description: 'Работы учеников, отмеченные наградой профессионального сообщества.', items: gridItems.filter(i => i.w.data.awards.includes('tsar-gory')) },
+  { id: 'gallery-other', title: 'Другие работы', description: 'Интерьеры, экстерьеры и модели, созданные во время обучения.', items: gridItems.filter(i => !i.w.data.awards.includes('tsar-gory')) },
+];
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Работы учеников' }];
 // Разметка для Яндекс Картинок: у каждой работы автор (только люди, которых можно показывать)
 const galleryLd = {
@@ -37,13 +48,13 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
   ogImage={ogHref('gallery')}
   consultContext="Галерея"
 >
-  <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="gallery-title">
+  <section class="wrap pt-5 md:pt-7" aria-labelledby="gallery-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div class="flex flex-col gap-3">
         <span class="t-overline">Галерея</span>
         <h1 id="gallery-title" class="t-display">Работы <span class="t-accent">учеников</span></h1>
-        <p class="t-lead max-w-[720px]">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
+        <p class="t-lead">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
       </div>
       <span class="t-quote text-muted" aria-hidden="true">и это только начало</span>
     </div>
@@ -51,43 +62,62 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
     <div role="group" aria-label="Категории работ" class="snap-row mb-8 !grid-flow-col !auto-cols-max max-w-full self-start" data-gallery-filters>
       {CATS.map((c, i) => count(c.id) > 0 && (
         <button type="button" data-cat={c.id} aria-pressed={i === 0 ? 'true' : 'false'}
-          class="choice min-h-11 whitespace-nowrap !rounded-full px-4 text-[15px] font-semibold">{c.label} <span class="text-muted">{count(c.id)}</span></button>
+          class="choice t-small min-h-11 whitespace-nowrap px-4 font-semibold">{c.label} <span class="text-muted">{count(c.id)}</span></button>
       ))}
     </div>
 
-    <ul class="m-0 list-none columns-2 gap-3 p-0 sm:gap-5 md:columns-3" data-gallery>
-      {items.map(({ w, big, author, teacher }, i) => (
-        <li class="mb-3 break-inside-avoid sm:mb-5" data-cats={w.data.categories.join(' ')}>
-          <button type="button" class="zoom group block w-full overflow-hidden rounded-card border-0 bg-bg-2 p-0 text-left" data-open={i}
+    <section class="gallery-process mb-12" aria-labelledby="process-title" data-process-section>
+      <p class="t-overline">Геометрия, свет и материалы</p>
+      <h2 id="process-title" class="t-h2">От сермата к рендеру</h2>
+      <p class="t-body text-ink-2">Одна сцена на двух этапах. Передвиньте ползунок: слева сермат, справа готовая визуализация.</p>
+      <div class="process-grid">
+        {processWorks.map(w => <article data-process-cats={w.data.categories.join(' ')}>
+          {sideBySideIds.has(w.id) ? <figure class="m-0"><div class="process-stages"><div><Image src={w.data.beforeImage!} alt="Сермат" widths={[480,800]} sizes="50vw" /><span class="t-overline">Сермат</span></div><div><Image src={w.data.image} alt={w.data.alt} widths={[480,800]} sizes="50vw" /><span class="t-overline">Рендер</span></div></div><figcaption class="t-small text-muted mt-3">{people.get(w.data.author.id)?.name}</figcaption></figure> : <BeforeAfter before={w.data.beforeImage!} after={w.data.image} altBefore={`Сермат, ${people.get(w.data.author.id)?.name}`} altAfter={w.data.alt} caption={people.get(w.data.author.id)?.name ?? ''} />}
+        </article>)}
+      </div>
+      <button type="button" class="btn btn-secondary mt-6" data-process-more hidden>Показать ещё сравнения</button>
+    </section>
+    <div data-gallery>
+      {groups.map(group => <section class="mb-12" aria-labelledby={group.id} data-gallery-section>
+        <h2 id={group.id} class="t-h2">{group.title}</h2>
+        <p class="t-body text-ink-2 mb-8">{group.description}</p>
+    <ul class="m-0 list-none columns-2 gap-3 p-0 sm:gap-5 md:columns-3" >
+      {group.items.map(({ w, big, author, teacher }, i) => (
+        <li id={w.id} class="mb-3 break-inside-avoid sm:mb-5" data-cats={w.data.categories.join(' ')}>
+          <button type="button" class="zoom media-frame group block w-full border-0 bg-bg-2 p-0 text-left" data-open={i}
             data-full={big} data-title={w.data.title} data-author={author} aria-label={`Открыть крупно: ${w.data.title}, ${author}`}>
-            <Image src={w.data.image} alt={w.data.alt} widths={[360, 560, 800]} sizes="(min-width: 1024px) 33vw, 50vw" class="block h-auto w-full" />
+            <Image src={w.data.image} alt={w.data.alt} widths={[360, 800]} sizes="(min-width: 1024px) 33vw, 50vw" class="block h-auto w-full" />
           </button>
-          <span class="mt-2 flex flex-col px-1 text-[14px] leading-snug">
-            <b class="text-ink">{author}{teacher ? ', педагог' : ''}</b>
-            <span class="text-muted">{w.data.title}</span>
-            {w.data.awards.length > 0 && <span class="text-muted">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
+          <span class="mt-2 flex flex-col gap-1 px-1 leading-snug">
+            <b class="t-small text-ink">{author}{teacher ? ', педагог' : ''}</b>
+            <span class="t-overline normal-case">{w.data.title}</span>
+            {w.data.awards.length > 0 && <span class="t-overline normal-case">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
           </span>
+
         </li>
       ))}
     </ul>
+      </section>)}
+    </div>
+    <button type="button" class="btn btn-secondary mt-6" data-gallery-more hidden>Показать ещё работы</button>
 
-    <div class="mt-12 grid gap-5 rounded-card bg-surface p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
-      <span class="flex flex-col gap-1.5"><b class="text-[22px]">Хотите так же?</b><span class="text-ink-2">Начните с базы: моделирование в 3ds Max и рендер в Corona. Тест за 1 минуту подскажет, с какого шага начать.</span></span>
+    <div class="mt-12 grid gap-5 border-y border-line py-8 md:grid-cols-[1fr_auto] md:items-center md:py-10">
+      <span class="flex flex-col gap-1.5"><b class="t-h3">Хотите так же?</b><span class="text-ink-2">Начните с базы: моделирование в 3ds Max и рендер в Corona. Тест за 1 минуту подскажет, с какого шага начать.</span></span>
       <span class="flex flex-col gap-3 sm:flex-row">
-        <a href="/courses-page/visualization#quiz" class="btn btn-primary btn-lg">Подобрать курс</a>
+        <a href="/#quiz" class="btn btn-primary btn-lg">Подобрать курс</a>
         <a href="/vizualization3_mini" class="btn btn-secondary btn-lg">Бесплатные уроки</a>
       </span>
     </div>
   </section>
 
-  <dialog id="lightbox" aria-label="Работа крупно" class="m-0 h-[100dvh] max-h-none w-screen max-w-none border-0 bg-[rgb(6_16_18/0.96)] p-0 text-ink backdrop:bg-transparent">
+  <dialog id="lightbox" aria-label="Работа крупно" class="m-0 h-[100dvh] max-h-none w-screen max-w-none border-0 bg-[rgb(17_19_19/0.96)] p-0 text-ink backdrop:bg-transparent">
     <div class="flex h-full flex-col items-center justify-center gap-3 px-3 py-14 sm:px-20">
-      <img alt="" class="max-h-[calc(100dvh-140px)] max-w-full rounded-xl object-contain" data-lb-img />
+      <img alt="" class="media-image max-h-[calc(100dvh-140px)] max-w-full object-contain" data-lb-img />
       <p class="m-0 flex flex-wrap items-baseline justify-center gap-x-3 text-center"><b data-lb-author></b><span class="text-muted" data-lb-title></span><span class="text-[14px] text-muted" data-lb-count></span></p>
     </div>
     <button type="button" class="absolute right-3 top-3 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-bg text-2xl" data-lb-close aria-label="Закрыть">×</button>
-    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(14_17_18/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
-    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(14_17_18/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
+    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
+    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
   </dialog>
 </Base>
 
@@ -99,6 +129,26 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
   let visible: HTMLButtonElement[] = [];
   let cur = 0;
   let opener: HTMLElement | null = null;
+  let category = 'all';
+  let limit = 36;
+  let processLimit = 6;
+  const processCards = [...document.querySelectorAll<HTMLElement>('[data-process-cats]')];
+  const processMore = document.querySelector<HTMLButtonElement>('[data-process-more]')!;
+  const more = document.querySelector<HTMLButtonElement>('[data-gallery-more]')!;
+  const apply = () => {
+    const matching = items.filter(li => category === 'all' || li.dataset.cats!.split(' ').includes(category));
+    items.forEach(li => { li.hidden = true; });
+    matching.slice(0, limit).forEach(li => { li.hidden = false; });
+    more.hidden = matching.length <= limit;
+    grid.querySelectorAll<HTMLElement>('[data-gallery-section]').forEach(section => { section.hidden = !section.querySelector('li:not([hidden])'); });
+    const processMatching = processCards.filter(card => category === 'all' || card.dataset.processCats!.split(' ').includes(category));
+    processCards.forEach(card => { card.hidden = true; });
+    processMatching.slice(0, processLimit).forEach(card => { card.hidden = false; });
+    processMore.hidden = processMatching.length <= processLimit;
+    const process = document.querySelector<HTMLElement>('[data-process-section]')!;
+    process.hidden = !process.querySelector('[data-process-cats]:not([hidden])');
+    refresh();
+  };
 
   const refresh = () => { visible = items.filter((li) => !li.hidden).map((li) => li.querySelector('button')!); };
   const show = (i: number) => {
@@ -114,9 +164,17 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
   document.querySelectorAll<HTMLButtonElement>('[data-gallery-filters] [data-cat]').forEach((btn, _, all) => btn.addEventListener('click', () => {
     const cat = btn.dataset.cat!;
     all.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
-    items.forEach((li) => { li.hidden = cat !== 'all' && !li.dataset.cats!.split(' ').includes(cat); });
-    refresh();
+    category = cat;
+    limit = 36;
+    processLimit = 6;
+    apply();
   }));
+  processMore.addEventListener('click', () => { processLimit += 6; apply(); });
+  more.addEventListener('click', () => { limit += 36; apply(); });
+  const target = items.find(li => `#${li.id}` === location.hash);
+  if (target) limit = Math.max(limit, items.indexOf(target) + 1);
+  apply();
+  if (target) requestAnimationFrame(() => target.scrollIntoView());
 
   grid.addEventListener('click', (e) => {
     const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-open]');
@@ -147,3 +205,14 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
     x0 = null;
   });
 </script>
+
+<style>
+  .process-stages { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .process-stages img { width: 100%; aspect-ratio: 2/3; object-fit: cover; border-radius: 2px; margin-bottom: 8px; }
+  .process-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; margin-top: 28px; }
+  .process-grid :global(.ba) { aspect-ratio: 4/3; height: auto; min-height: 0; }
+  .gallery-process { padding-top: 24px; border-top: 1px solid var(--color-line); }
+  [hidden] { display: none !important; }
+  @media (max-width: 1023px) { .process-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .process-grid { grid-template-columns: 1fr; gap: 24px; } }
+</style>

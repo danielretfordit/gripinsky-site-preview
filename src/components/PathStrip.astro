@@ -11,7 +11,7 @@ const { label, steps, stats, active = 0, class: cls = '' } = Astro.props;
     <p class="t-overline t-signal m-0">{label}</p>
     <dl class="strip__stats">
       {stats.map((s) => (
-        <div><dt>{s.href ? <a href={s.href} rel="noopener" class="hover:text-ink">{s.label}</a> : s.label}</dt><dd>{s.value}</dd></div>
+        <div><dt class="t-small">{s.href ? <a href={s.href} rel="noopener" class="hover:text-ink">{s.label}</a> : s.label}</dt><dd>{s.value}</dd></div>
       ))}
     </dl>
   </div>
@@ -19,9 +19,9 @@ const { label, steps, stats, active = 0, class: cls = '' } = Astro.props;
     {steps.map((st, i) => (
       <li class={i === active ? 'is-active' : ''}>
         <a href={st.href}>
-          <span class="strip__n t-mono" aria-hidden="true">{st.n}</span>
-          <span class="strip__t"><b>{st.title}</b><small>{st.sub}</small></span>
-          <span class="strip__p">{st.price}</span>
+          <span class="strip__n t-caption t-mono" aria-hidden="true">{st.n}</span>
+          <span class="strip__t"><b class="t-title">{st.title}</b><small class="t-small">{st.sub}</small></span>
+          <span class="strip__p t-title">{st.price}</span>
         </a>
       </li>
     ))}
@@ -39,7 +39,7 @@ const { label, steps, stats, active = 0, class: cls = '' } = Astro.props;
     .strip__stats div { flex-direction: row-reverse; align-items: baseline; gap: 8px; }
   }
   .strip__stats dd { margin: 0; font-weight: 700; color: var(--color-ink); }
-  .strip__stats dt { font-size: 14px; line-height: 1.3; color: var(--color-muted); }
+  .strip__stats dt { color: var(--color-muted); }
   .strip__stats a { color: inherit; }
   .strip__list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--color-line); }
   @media (min-width: 1280px) { .strip__list { grid-template-columns: repeat(3, 1fr); } }
@@ -49,9 +49,9 @@ const { label, steps, stats, active = 0, class: cls = '' } = Astro.props;
   .strip__list a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 20px 4px; color: var(--color-ink); transition: background-color .2s ease; }
   @media (min-width: 1280px) { .strip__list a { padding: 28px 28px 28px 0; } .strip__list li + li a { padding-left: 28px; } }
   .strip__list a:hover { background: rgb(236 236 230 / 0.04); }
-  .strip__n { font-size: 13px; color: var(--color-muted); }
+  .strip__n { color: var(--color-muted); }
   .strip__t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .strip__t b { font-size: 20px; font-weight: 750; line-height: 1.1; letter-spacing: -0.01em; text-transform: uppercase; }
-  .strip__t small { font-size: 14px; line-height: 1.35; color: var(--color-muted); }
-  .strip__p { font-size: 18px; font-weight: 700; white-space: nowrap; }
+  .strip__t b { font-weight: 750; line-height: 1.1; letter-spacing: -0.01em; text-transform: uppercase; }
+  .strip__t small { line-height: 1.35; color: var(--color-muted); }
+  .strip__p { font-weight: 700; white-space: nowrap; }
 </style>

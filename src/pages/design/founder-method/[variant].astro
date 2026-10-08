@@ -1,0 +1,136 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import Base from '../../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['manifesto', 'portrait', 'path'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = ['manifesto', 'portrait', 'path'].includes(Astro.params.variant ?? '') ? Astro.params.variant : 'manifesto';
+const options = [
+  { id: 'manifesto', number: '01', title: 'Цитата в центре' },
+  { id: 'portrait', number: '02', title: 'Портрет и принцип' },
+  { id: 'path', number: '03', title: 'Тихий акцент' },
+];
+const name = 'Евгений Грипинский';
+const intro = '20 лет назад Евгений создал обучающую систему, в основе которой — системный подход к знаниям, высокие стандарты качества и адресная поддержка каждого студента.';
+const portrait = '/images/evgeny-gripinsky-color.webp';
+---
+<Base title="Три варианта блока об основателе | GRIPINSKY" description="Сравнение трёх композиций блока об основателе и его методе обучения." noindex consult={false}>
+  <main class="options-page">
+    <header class="wrap options-head">
+      <p class="eyebrow">ДИЗАЙН-ПРЕДПРОСМОТР / БЛОК ОБ ОСНОВАТЕЛЕ</p>
+      <div class="options-head__row">
+        <div><h1>История основателя</h1><p>Три композиции одного содержания.</p></div>
+        <nav aria-label="Варианты оформления">
+          {options.map((option) => <a href={`/design/founder-method/${option.id}`} aria-current={variant === option.id ? 'page' : undefined}><span>{option.number}</span>{option.title}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    {variant === 'manifesto' && <section class="wrap concept" aria-labelledby="founder-name">
+      <div class="founder-panel founder-panel--manifesto">
+        <div class="founder-copy">
+          <h2 id="founder-name">Евгений <span>Грипинский</span></h2>
+          <p class="intro">{intro}</p>
+          <blockquote class="founder-quote founder-quote--manifesto"><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M6 25c3-9 6-14 11-18M21 25c3-9 6-14 11-18" /></svg><span>«Основная цель занятий — научить вас <strong>думать</strong>, а не повторять действия»</span></blockquote>
+          <a class="founder-link" href="https://gripinsky.ru/teachers">Все педагоги <span aria-hidden="true">↗</span></a>
+        </div>
+        <figure class="photo"><img src={portrait} alt={name} width="764" height="1036" fetchpriority="high" /></figure>
+      </div>
+    </section>}
+
+    {variant === 'portrait' && <section class="wrap concept" aria-labelledby="founder-name">
+      <div class="founder-panel founder-panel--portrait">
+        <figure class="photo"><img src={portrait} alt={name} width="764" height="1036" fetchpriority="high" /></figure>
+        <div class="founder-copy">
+          <h2 id="founder-name">Евгений <span>Грипинский</span></h2>
+          <p class="intro">{intro}</p>
+          <blockquote class="founder-quote founder-quote--portrait"><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M6 25c3-9 6-14 11-18M21 25c3-9 6-14 11-18" /></svg><span>«Основная цель занятий — научить вас <strong>думать</strong>, а не повторять действия»</span></blockquote>
+          <a class="founder-link" href="https://gripinsky.ru/teachers">Все педагоги <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>}
+
+    {variant === 'path' && <section class="wrap concept" aria-labelledby="founder-name">
+      <div class="founder-panel founder-panel--path">
+        <div class="founder-copy">
+          <h2 id="founder-name">Евгений <span>Грипинский</span></h2>
+          <p class="intro">{intro}</p>
+          <blockquote class="founder-quote founder-quote--path"><svg viewBox="0 0 40 32" aria-hidden="true"><path d="M6 25c3-9 6-14 11-18M21 25c3-9 6-14 11-18" /></svg><span>«Основная цель занятий — научить вас <strong>думать</strong>, а не повторять действия»</span></blockquote>
+          <a class="founder-link" href="https://gripinsky.ru/teachers">Все педагоги <span aria-hidden="true">↗</span></a>
+        </div>
+        <figure class="photo"><img src={portrait} alt={name} width="764" height="1036" fetchpriority="high" /></figure>
+      </div>
+    </section>}
+  </main>
+</Base>
+
+<style>
+  :global([data-site-cart]) { display:none !important; }
+  :root { --concept-bg:#111313; --concept-surface:#191d1d; --concept-ink:#f1f1eb; --concept-soft:#c1c7c0; --concept-muted:#a1aaa3; --concept-line:rgba(241,241,235,.18); --concept-accent:#e7e845; font-family:'Inter Variable',Inter,Arial,sans-serif; }
+  .options-page { min-height:100vh; color:var(--concept-ink); background:var(--concept-bg); }
+  .options-page * { box-sizing:border-box; }
+  .options-head { padding-top:28px; padding-bottom:22px; border-bottom:1px solid var(--concept-line); }
+  .eyebrow { margin:0; color:var(--concept-muted); font:500 11px 'JetBrains Mono Variable',monospace; letter-spacing:.12em; text-transform:uppercase; }
+  .options-head__row { display:flex; align-items:end; justify-content:space-between; gap:30px; margin-top:14px; }
+  .options-head h1 { margin:0; font-size:clamp(26px,3.3vw,42px); line-height:1; letter-spacing:-.045em; text-transform:uppercase; }
+  .options-head__row > div > p { margin:9px 0 0; color:var(--concept-soft); font-size:15px; }
+  .options-head nav { display:flex; flex-wrap:wrap; gap:7px; }
+  .options-head nav a { display:flex; align-items:center; gap:9px; min-height:40px; padding:0 12px; border:1px solid var(--concept-line); color:var(--concept-soft); font-size:12px; text-decoration:none; }
+  .options-head nav a span { color:var(--concept-muted); font:11px 'JetBrains Mono Variable',monospace; }
+  .options-head nav a[aria-current] { color:var(--concept-bg); background:var(--concept-ink); }
+  .concept { padding-top:clamp(34px,5vw,68px); padding-bottom:90px; }
+  .founder-panel { position:relative; display:grid; grid-template-columns:minmax(0,1.55fr) minmax(280px,.82fr); align-items:stretch; min-height:530px; overflow:hidden; border-top:1px solid var(--concept-line); border-bottom:1px solid var(--concept-line); }
+  .founder-panel::before { position:absolute; z-index:1; top:-1px; left:0; width:64px; height:2px; background:var(--concept-accent); content:""; }
+  .founder-copy { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; padding:clamp(28px,4.2vw,60px) clamp(28px,4.2vw,60px) clamp(28px,4.2vw,60px) 0; }
+  .founder-copy h2 { max-width:800px; margin:0 0 20px; font-size:clamp(42px,4.5vw,60px); font-weight:760; line-height:.98; letter-spacing:-.065em; text-transform:uppercase; }
+  .founder-copy h2 span { color:var(--concept-muted); }
+  .intro { max-width:600px; margin:0; color:var(--concept-soft); font-size:17px; line-height:1.55; }
+  .photo { min-width:0; min-height:530px; height:100%; margin:0; overflow:hidden; background:var(--concept-bg); border-radius:3px; }
+  .photo img { display:block; width:100%; height:100%; object-fit:cover; object-position:center 20%; filter:brightness(.82) saturate(.9); }
+  blockquote { margin:0; }
+  .founder-quote { display:grid; grid-template-columns:34px minmax(0,1fr); align-items:start; gap:12px; max-width:720px; margin:clamp(25px,3vw,38px) 0 0; color:var(--concept-ink); font-size:17px; font-weight:600; line-height:1.55; }
+  .founder-quote svg { width:30px; height:25px; margin-top:3px; overflow:visible; fill:none; stroke:var(--concept-accent); stroke-width:2; stroke-linecap:square; stroke-linejoin:miter; }
+  .founder-quote strong { color:var(--concept-accent); font-weight:750; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:4px; }
+  .founder-link { display:inline-flex; align-items:center; gap:10px; min-height:38px; margin-top:15px; color:var(--concept-ink); font-size:17px; font-weight:650; text-decoration:none; }
+  .founder-link span { color:var(--concept-accent); transition:transform .18s ease; }
+  .founder-link:hover span,.founder-link:focus-visible span { transform:translate(3px,-3px); }
+  .founder-panel--portrait { grid-template-columns:minmax(0,.82fr) minmax(0,1.55fr); }
+  .founder-panel--portrait .photo { grid-column:1; grid-row:1; }
+  .founder-panel--portrait .founder-copy { grid-column:2; grid-row:1; }
+  .founder-panel--path { display:block; min-height:620px; background:radial-gradient(ellipse at 73% 46%,rgba(255,255,255,.035),transparent 35%); }
+  .founder-panel--path .founder-copy { position:relative; z-index:1; width:72%; min-height:620px; padding-block:50px; }
+  .founder-panel--path .photo { position:absolute; inset:0 0 0 auto; width:43%; min-height:0; height:100%; }
+  .founder-panel--path .photo::after { position:absolute; inset:0; background:linear-gradient(90deg,var(--concept-bg) 0%,rgba(17,19,19,.68) 20%,transparent 57%),linear-gradient(0deg,var(--concept-bg) 0%,transparent 26%); content:""; pointer-events:none; }
+  .founder-panel--path .photo img { object-position:center 16%; filter:brightness(.82) saturate(.86); }
+  @media (max-width:850px) {
+    .options-head__row { align-items:flex-start; flex-direction:column; }
+    .founder-panel,.founder-panel--portrait,.founder-panel--path { grid-template-columns:minmax(0,1.25fr) minmax(250px,.75fr); }
+    .founder-panel--portrait { grid-template-columns:minmax(250px,.75fr) minmax(0,1.25fr); }
+    .founder-copy { padding:30px 30px 30px 0; }
+    .founder-panel--path { min-height:600px; }
+    .founder-panel--path .founder-copy { width:74%; min-height:600px; }
+    .founder-panel--path .photo { width:45%; }
+  }
+  @media (max-width:620px) {
+    .options-head { padding-top:22px; }
+    .options-head nav { width:100%; }
+    .options-head nav a { flex:1 1 135px; }
+    .concept { padding-top:30px; padding-bottom:58px; }
+    .founder-panel,.founder-panel--portrait,.founder-panel--path { grid-template-columns:1fr; }
+    .founder-copy { grid-column:1 !important; grid-row:2 !important; padding:26px 0 24px; }
+    .founder-panel .photo,.founder-panel--portrait .photo { grid-column:1; grid-row:1; min-height:0; height:clamp(310px,92vw,420px); }
+    .founder-panel--path { min-height:0; }
+    .founder-panel--path .founder-copy { width:100%; min-height:0; padding:26px 0 24px; }
+    .founder-panel--path .photo { position:relative; inset:auto; grid-column:1; grid-row:1; width:100%; min-height:0; height:clamp(310px,92vw,420px); }
+    .founder-panel--path .photo::after { background:linear-gradient(0deg,var(--concept-bg),transparent 24%); }
+    .founder-copy h2 { margin-block:0 18px; font-size:clamp(36px,10vw,52px); }
+    .intro { font-size:16px; }
+    .intro,.founder-quote,.founder-link { font-size:16px; }
+    .founder-quote,.founder-quote--path { margin-top:24px; }
+    .founder-link { margin-top:14px; }
+  }
+</style>

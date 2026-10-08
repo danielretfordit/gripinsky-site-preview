@@ -1,0 +1,21 @@
+---
+interface Props { variant?: number; software?: string[] }
+const { variant=0, software=[] }=Astro.props;
+const sculpt=software.includes('ZBRUSH');
+const tree=software.includes('SPEEDTREE');
+const graphic=software.includes('ADOBE PHOTOSHOP') && !software.includes('3DS MAX');
+const cloth=software.includes('MARVELOUS DESIGNER');
+---
+<div class:list={['course-diagram',`course-diagram--${variant}`]} aria-hidden="true">
+<svg viewBox="0 0 600 360" fill="none">
+ {[...Array(21)].map((_,i)=><path d={`M${i*30} 0V360`} opacity=".12"/>)}
+ {[...Array(13)].map((_,i)=><path d={`M0 ${i*30}H600`} opacity=".12"/>)}
+ {tree ? <><path d="M300 310V80 M300 245L230 185 200 150 M300 220L370 160 400 120 M300 160L260 110 M300 125L340 85 M280 310H320"/><path d="M200 160L160 100 205 60 250 105Z M350 140L360 65 410 55 450 110Z M225 130L230 65 275 35 300 90Z M295 100L320 30 375 35 390 90Z" opacity=".7"/></> : graphic ? <><rect x="140" y="70" width="290" height="190"/><rect x="165" y="90" width="290" height="190"/><rect x="190" y="110" width="290" height="190"/><circle cx="350" cy="175" r="34"/><path d="M210 270L295 190 350 245 395 215 465 285 M140 280H170 M140 300H175"/><path d="M190 170H480 M285 110V300" stroke-dasharray="4 8" opacity=".3"/></> : cloth ? <><path d="M180 75Q240 100 300 70L410 110Q375 190 420 280L300 305 180 265Q220 180 180 75Z M190 130Q280 195 385 130 M200 200Q300 150 400 230 M240 90Q205 200 260 290 M325 95Q365 170 325 295"/><path d="M140 60L140 300 M130 90H150 M130 180H150 M130 270H150" stroke-dasharray="4 8" opacity=".4"/></> : sculpt ? <><path d="M300 60C230 60 210 110 220 185L240 220 245 252 270 275H330L355 252 360 220 380 185C390 110 370 60 300 60Z M220 185L270 170 300 182 330 170 380 185 M245 252L300 240 355 252 M300 70V270 M230 130Q300 160 370 130 M240 220Q300 200 360 220"/><ellipse cx="300" cy="170" rx="130" ry="120" stroke-dasharray="5 8" opacity=".3"/></> : <><path d="M160 255V105L310 55 450 125V275L300 325Z M310 55V220L160 255 M310 220L450 275 M300 325V165L160 105 M300 165L450 125 M190 115L280 85V200L190 225 M340 115L410 145V240L340 205"/><path d="M100 290L310 240 510 305 M250 50V310 M120 200H490" stroke-dasharray="5 8" opacity=".3"/></>}
+ {variant===1 && <><circle cx="470" cy="65" r="20"/><path d="M454 84L370 200 M479 88L420 235 M448 66L310 160" opacity=".5"/><circle cx="300" cy="185" r="105" stroke-dasharray="3 9" opacity=".5"/></>}
+ {variant===2 && <><path d="M90 90V55H130 M470 55H510V90 M90 265V305H130 M470 305H510V265"/><rect x="110" y="75" width="380" height="210" stroke-dasharray="4 8" opacity=".4"/></>}
+</svg>
+<span class="t-meta">GRIPINSKY / 0{variant+1}</span>
+</div>
+<style>
+ .course-diagram{position:relative;aspect-ratio:var(--media-ratio-card);overflow:hidden;border-radius:2px;background:linear-gradient(130deg,#202927,#151a19);color:#80968f}.course-diagram svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.25}.course-diagram>span{position:absolute;bottom:14px;left:16px;color:var(--color-muted)}.course-diagram--1{background:linear-gradient(130deg,#242c2e,#151a1c)}.course-diagram--2{background:linear-gradient(130deg,#2b2a23,#191b17)}
+</style>

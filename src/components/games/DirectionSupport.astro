@@ -1,0 +1,89 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, getEntry } from 'astro:content';
+import { personMap } from '../../lib/people';
+import { workViews } from '../../lib/works';
+
+const freeCourses = await Promise.all(['blender_mini','demo_gamedev','ue_mini'].map(id=>getEntry('courses',id)));
+const people = await personMap();
+const wv = await workViews();
+const projects = [
+  { id: 'gamedev-zhuravlev-chest', title: 'Сундук с сокровищами', context: 'Игровые предметы' },
+  { id: 'gamedev-marka-chest', title: 'Пиратский сундук', context: 'Игровые предметы' },
+  { id: 'gamedev-anastasia-plants', title: 'Тропическая растительность', context: 'Растительность для игр' },
+  { id: 'gamedev-ioann-island', title: 'Остров с пристанью', context: 'Игровое окружение' },
+  { id: 'gamedev-nina-vehicle', title: 'Ретрофутуристический транспорт', context: 'Моделирование техники' },
+  { id: 'gamedev-egor-chest', title: 'Сундук и череп', context: 'Игровые предметы' },
+].map(p => ({ ...p, work: wv.work(p.id) })).filter(p => p.work);
+const reviews = (await Promise.all(['natalya-approach', 'import-490aa844be77ab11', 'import-b1053a23b602ebd6'].map(id => getEntry('reviews', id))))
+  .filter(r => r && (!r.data.person || people.has(r.data.person.id)));
+const professions = (await getCollection('gameProfessions')).sort((a,b) => a.data.order - b.data.order);
+const choices: Record<string, { task: string; interest: string }> = {
+  props: { task: 'Предметы, оружие и детали игровых сцен.', interest: 'Нравится разбирать форму предмета, создавать модель и работать с материалами.' },
+  environment: { task: 'Локации, модульные объекты и окружение.', interest: 'Интересно собирать целые пространства и связывать объекты композицией и светом.' },
+  character: { task: 'Стилизованные персонажи и их детали.', interest: 'Нравится придумывать образы, работать с характером и формой персонажа.' },
+  foliage: { task: 'Деревья и растительность для игровых сцен.', interest: 'Интересны природные формы, устройство растений и работа в SpeedTree.' },
+  'hard-surface': { task: 'Техника и предметы с твёрдыми поверхностями.', interest: 'Нравятся точная геометрия, конструкции и моделирование в Maya.' },
+  unreal: { task: 'Сцены, освещение и визуализация в Unreal Engine.', interest: 'Интересно работать с готовыми ассетами, атмосферой и финальной подачей сцены.' },
+};
+---
+<section id="games-works" class="wrap section" aria-labelledby="games-works-title">
+  <div class="support-heading"><div><p class="t-overline">Результаты обучения</p><h2 id="games-works-title" class="t-h2">Работы <span class="t-accent">учеников</span></h2></div><p class="t-body text-ink-2">Игровые предметы, растительность, окружение и техника. Работы учеников направления 3D для игр.</p></div>
+  <div class="support-grid">{projects.map(p => <figure class="student-project">
+    <div class="media-frame media-frame--work-card"><Image src={p.work!.image} alt={p.work!.alt} widths={[400,640,960]} sizes="(min-width:768px) 33vw,100vw" loading="lazy" class="project-image" /></div>
+    <figcaption><h3 class="t-title">{p.title}</h3><p class="t-small">{p.work!.author}</p><p class="t-caption text-muted">{p.context}</p></figcaption>
+  </figure>)}</div>
+  <a href="/gallery" class="link support-more">Все работы учеников →</a>
+</section>
+<div class="wrap games-free"><div><p class="t-overline text-muted">Начните бесплатно</p><p class="t-small text-ink-2">Попробуйте создать свою первую игровую модель на бесплатных уроках.</p></div><div class="games-free-links">{freeCourses.map(c=>c && <a href={c.data.legacyPath} class="btn btn-secondary">{c.data.title} ↗</a>)}</div></div>
+<section id="games-reviews" class="support-reviews section" aria-labelledby="games-reviews-title"><div class="wrap">
+  <div class="support-heading"><div><p class="t-overline">Опыт учеников</p><h2 id="games-reviews-title" class="t-h2">Как это <span class="t-accent">было у них</span></h2></div><p class="t-body text-ink-2">Отзывы о GameDev и работе над персонажами с наставником.</p></div>
+  <div class="support-grid">{reviews.map(r => r && <figure class="student-review"><blockquote class="t-body">{r.data.quote ?? r.data.text}</blockquote><figcaption><b class="t-small">{r.data.author}</b><span class="t-caption text-muted">{r.id === 'natalya-approach' ? 'Обучение на курсе GameDev' : 'Проект персонажа с наставником'}</span></figcaption></figure>)}</div>
+  <a href="/otzyvy" class="link support-more">Все отзывы →</a>
+</div></section>
+<section id="games-choice" class="wrap section" aria-labelledby="games-choice-title">
+  <div class="support-heading"><div><p class="t-overline">Поможем определиться</p><h2 id="games-choice-title" class="t-h2">Что вы хотите <span class="t-accent">создавать?</span></h2></div><p class="t-body text-ink-2">Выбирайте по задачам, которые вам интересны. Инструменты можно освоить по мере прохождения маршрута.</p></div>
+  <div class="support-grid">{professions.map(p => <article class="support-card"><p class="t-overline">{p.data.title}</p><h3 class="t-title">{p.data.short}</h3><p class="t-body">{choices[p.id].task}</p><p class="t-small text-ink-2">{choices[p.id].interest}</p><a class="link t-small" href={`?profession=${p.id}#profession`}>Посмотреть маршрут →</a></article>)}</div>
+</section>
+<section id="games-start" class="wrap section" aria-labelledby="games-start-title">
+  <div class="support-heading"><div><p class="t-overline">Перед первым уроком</p><h2 id="games-start-title" class="t-h2">Что нужно <span class="t-accent">для старта</span></h2></div><p class="t-body text-ink-2">Начните с требований выбранного курса. Не обязательно устанавливать все программы направления сразу.</p></div>
+  <div class="support-grid">
+    <article class="support-card"><p class="t-overline">01 / Опыт</p><h3 class="t-title">Определите свой уровень</h3><p class="t-body">Если впервые открываете 3D-программу, начните с бесплатных уроков. Для курса визуализации в Blender нужна основа моделирования.</p><a href="/blender_mini" class="link t-small">Попробовать Blender →</a></article>
+    <article class="support-card"><p class="t-overline">02 / Программы</p><h3 class="t-title">Подготовьте инструменты</h3><p class="t-body">В GameDev Level 1 используются Blender и Substance Painter. Для других маршрутов понадобятся Maya, ZBrush, SpeedTree или Unreal Engine.</p><p class="t-small text-ink-2">Точный список смотрите в требованиях курса.</p></article>
+    <article class="support-card"><p class="t-overline">03 / Компьютер</p><h3 class="t-title">Проверьте совместимость</h3><p class="t-body">Сверьте компьютер с системными требованиями версии программы, которую будете устанавливать. Для разных маршрутов требования отличаются.</p><a href="#consult" class="link t-small">Обсудить старт с нами →</a></article>
+  </div>
+</section>
+<section id="games-learning" class="wrap section" aria-labelledby="games-learning-title">
+  <div class="support-heading"><div><p class="t-overline">От урока к практике</p><h2 id="games-learning-title" class="t-h2">Как проходит <span class="t-accent">обучение</span></h2></div><p class="t-body text-ink-2">Изучаете инструменты, применяете их в заданиях и собираете собственный проект.</p></div>
+  <div class="support-grid">
+    <article class="support-card"><p class="t-overline">01 / Уроки</p><h3 class="t-title">Смотрите и разбирайтесь</h3><p class="t-body">Видеоуроки объясняют инструменты и этапы работы. Состав программы и условия доступа указаны на странице курса.</p></article>
+    <article class="support-card"><p class="t-overline">02 / Практика</p><h3 class="t-title">Применяйте в проекте</h3><p class="t-body">Выполняйте задания по темам программы. Например, в GameDev Level 1 пройдёте от блокинга предмета до текстур и оформления работы на ArtStation.</p></article>
+    <article class="support-card"><p class="t-overline">03 / Помощь</p><h3 class="t-title">Выберите нужную поддержку</h3><p class="t-body">В корзине можно выбрать самостоятельное обучение или вариант с чатом поддержки. Если нужен индивидуальный разбор проекта, обсудите работу с наставником.</p><a href="#consult" class="link t-small">Подобрать формат →</a></article>
+  </div>
+</section>
+<style>
+  .support-heading { display:grid; grid-template-columns:3fr 2fr; gap:48px; align-items:end; margin-bottom:32px; }
+  .support-heading .t-overline { margin:0 0 16px; color:var(--color-muted); }
+  .support-heading > p { margin:0; }
+  .support-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+  .student-project { margin:0; min-width:0; }
+  .student-project .media-frame { aspect-ratio:4/5; }
+  .project-image { display:block; width:100%; height:100%; object-fit:contain; }
+  .student-project figcaption { padding-top:18px; }
+  .student-project h3 { margin:0 0 10px; }
+  .student-project p { margin:0 0 6px; }
+  .support-reviews { padding-block:48px; background:var(--color-surface); }
+  .student-review { margin:0; display:flex; flex-direction:column; border-top:1px solid var(--color-line); }
+  .student-review blockquote { margin:24px 0; }
+  .student-review figcaption { display:flex; flex-direction:column; gap:8px; margin-top:auto; padding-top:16px; border-top:1px solid var(--color-line); }
+  .support-card { min-width:0; display:flex; flex-direction:column; align-items:flex-start; padding:24px; border-top:1px solid var(--color-line-strong); background:var(--color-surface); }
+  .support-card > .t-overline { color:var(--color-muted); margin:0; }
+  .support-card h3 { margin:16px 0; }
+  .support-card p { margin:0 0 16px; }
+  .support-card a { margin-top:auto; padding-top:8px; }
+  .support-more { display:inline-flex; margin-top:28px; }
+  @media(max-width:1100px) { .support-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:767px) { .support-heading,.support-grid { grid-template-columns:1fr; } .support-heading { gap:20px; } }
+</style>
+
+<style>.games-free { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; margin-top:var(--space-sub); padding-block:var(--space-head); border-top:1px solid var(--color-line); }.games-free p{margin:0 0 10px;}.games-free-links{display:flex;flex-wrap:wrap;gap:12px;}.games-free-links a{white-space:normal;max-width:100%;}</style>

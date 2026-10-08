@@ -1,31 +1,83 @@
 ---
 import { Image } from 'astro:assets';
+import type { WorkView } from '../lib/works';
 import type { CollectionEntry } from 'astro:content';
 import { TYPE_LABEL, courseHref } from '../lib/categories';
-import { rub } from '../lib/format';
+import { softwareName } from '../lib/software';
+import { rub, plural }  from '../lib/format';
 
-interface Props { course: CollectionEntry<'courses'>; headingLevel?: 'h2' | 'h3' }
-const { course, headingLevel: H = 'h3' } = Astro.props;
+interface Props { selectable?: boolean; course: CollectionEntry<'courses'>; headingLevel?: 'h2' | 'h3'; framed?: boolean; work?: WorkView; result?: string }
+const { course, headingLevel: H = 'h3', framed = false, selectable = false, work, result } = Astro.props;
 const c = course.data;
 const href = courseHref(course.id, c);
 const filters = [c.type, ...c.professions, ...c.software].join('|').toLowerCase();
+const level = c.level?.includes(',') ? 'Любой уровень' : c.level;
+const software = c.software.map(softwareName);
+const separatePrice = c.type === 'package' || course.id.startsWith('paket_ind');
 ---
-<article class="card lift group relative flex flex-col overflow-hidden" data-course data-type={c.type} data-tags={filters} data-price={c.price}>
-  <div class="zoom aspect-[16/10] bg-surface-2">
-    {c.cover && <Image src={c.cover} alt="" widths={[400, 640]} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" class="h-full w-full object-cover" />}
+<article class:list={["catalog-card group relative flex flex-col", { "content-card catalog-card--framed": framed }]} data-course data-type={course.id === 'baza' ? 'course' : c.type} data-tags={filters} data-price={c.price}
+  data-new={Number(c.isNew)} data-published={c.publishedAt ?? ''} data-popularity={c.popularityRank ?? ''}>
+  <a href={href} class="course-card-link absolute inset-0 z-[1]" aria-label={c.title} tabindex="-1" aria-hidden="true"></a>
+  <div class="course-art">
+    {(work?.image || c.cover) && <Image src={work?.image || c.cover!} alt={work?.alt ?? ''} widths={[400, 640, 960]} sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" class="course-image" loading="lazy" />}
+    <div class="course-art-top">
+      {level && <span class="art-label">{level}</span>}
+      {c.isNew && <span class="art-label art-new">Новый курс</span>}
+    </div>
+    {software.length > 0 && <div class="course-art-bottom" aria-label="Программы">
+      {software.slice(0, 2).map((name) => <span class="art-software">{name}</span>)}
+      {software.length > 2 && <span class="art-software" title={software.slice(2).join(', ')}>+{software.length - 2}<span class="sr-only">: {software.slice(2).join(', ')}</span></span>}
+    </div>}
   </div>
-  <div class="flex flex-1 flex-col gap-2.5 p-5">
-    <span class="flex flex-wrap gap-1.5">
-      <span class={`chip ${c.type === 'free' ? 'chip-solid' : ''}`}>{TYPE_LABEL[c.type]}</span>
-      {c.level && <span class="chip !bg-transparent !text-muted ring-1 ring-line">{c.level}</span>}
-    </span>
-    <H class="t-title"><a href={href} class="text-ink after:absolute after:inset-0 hover:text-white">{c.title}</a></H>
-    {c.short && <p class="t-small m-0 line-clamp-3 text-muted">{c.short}</p>}
-    <span class="mt-auto flex items-baseline gap-2 pt-2">
-      {c.price > 0 ? <b class="text-[20px]">{rub(c.price)}</b> : <b class="text-[20px] text-ink">Бесплатно</b>}
-      {c.oldPrice && c.oldPrice > c.price && (c.type === 'package'
-        ? <span class="text-[14px] text-muted">по отдельности {rub(c.oldPrice)}</span>
-        : <s class="text-[14px] text-muted">{rub(c.oldPrice)}</s>)}
-    </span>
+  <div class="course-body">
+    {work && <p class="t-caption text-muted m-0">Работа ученика: {work.author}</p>}
+    <span class="course-kicker t-overline">{TYPE_LABEL[c.type]}{c.lessons ? ` / ${c.lessons} ${plural(c.lessons, ['урок', 'урока', 'уроков'])}` : ''}</span>
+    <H class="course-title t-h3"><a href={href} class="text-ink relative z-10 hover:text-white">{c.title}</a></H>
+    {c.short && <p class="course-description t-small">{c.short}</p>}
+    {result && <p class="t-small text-ink-2 m-0"><b class="text-ink">Результат:</b> {result}</p>}
+    <a href={href} class="link t-small relative z-10 self-start">Программа курса →</a>
+    <div class="course-footer">
+      <span class="course-price">
+        <b class="t-title">{course.id === 'baza' ? 'от ' : ''}{c.price > 0 ? rub(c.price) : 'Бесплатно'}</b>
+        {c.oldPrice && c.oldPrice > c.price && (separatePrice
+          ? <span>по отдельности {rub(c.oldPrice)}</span>
+          : <s>{rub(c.oldPrice)}</s>)}
+      </span>
+      {c.status === 'active' && (c.type === 'course' || course.id === 'baza') && c.price > 0
+        ? selectable ? <label class="course-select t-small relative z-10"><input type="checkbox" data-cart-select={course.id} disabled /><span>Выбрать курс</span></label> : <button type="button" data-cart-add={course.id} disabled aria-pressed="false" class="t-small relative z-10 min-h-11 rounded-field border border-line-strong px-3 font-semibold hover:bg-surface-2"><span data-cart-label>В корзину</span></button>
+        : <span class="course-open" aria-hidden="true">↗</span>}
+    </div>
   </div>
 </article>
+<style>
+  .catalog-card--framed { border:1px solid var(--color-line); border-radius:var(--radius-card); background:var(--color-surface); overflow:hidden; }
+  .catalog-card--framed .course-body { padding:clamp(24px,3vw,40px); }
+  .catalog-card--framed .course-footer { flex-wrap:wrap; }
+  @media(max-width:560px) { .catalog-card--framed .course-body { padding:28px 24px 24px; } }
+
+  .course-card-link { position:absolute; inset:0; z-index:1; }
+  .catalog-card { min-width: 0; border-bottom: 1px solid var(--color-line); }
+  .catalog-card[hidden] { display: none; }
+  .course-art { position: relative; aspect-ratio: var(--media-ratio-card); overflow: hidden; border-radius: var(--radius-media); background: var(--color-surface-2); }
+  .course-image { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+  .catalog-card:hover .course-image { transform: scale(1.035); }
+  .course-art-top, .course-art-bottom { position: absolute; left: 16px; right: 16px; display: flex; gap: 6px; align-items: flex-start; flex-wrap: wrap; pointer-events: none; }
+  .course-art-top { top: 16px; }
+  .course-art-bottom { bottom: 16px; }
+  .art-label, .art-software { padding: 6px 9px; border-radius: 2px; font-size: var(--type-meta); line-height: 1.25; font-weight: 600; color: var(--color-ink); background: rgb(17 19 19 / .9); }
+  .art-label { background: var(--color-ink); color: var(--color-bg); }
+  .art-new { margin-left: auto; background: var(--color-lime); }
+  .art-software { box-shadow: inset 0 0 0 1px var(--color-line-strong); }
+  .course-body { display: flex; flex: 1; flex-direction: column; padding: 20px 0 22px; gap: 10px; }
+  .course-description { margin: 0; color: var(--color-ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .course-footer { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 12px; }
+  .course-price { display: flex; flex-direction: column; gap: 4px; }
+  .course-price span, .course-price s { font-size: var(--type-meta); color: var(--color-muted); }
+  .course-select { display:flex; align-items:center; gap:10px; min-height:44px; padding:0 12px; border:1px solid var(--color-line-strong); border-radius:var(--radius-card); cursor:pointer; font-weight:600; }
+  .course-select input { width:18px; height:18px; accent-color:var(--color-lime); cursor:pointer; }
+  .course-select:has(:checked) { border-color:var(--color-lime); }
+  .course-open { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--color-line-strong); border-radius: 2px; font-size: 20px; transition: background .2s; }
+  .catalog-card:hover .course-open { background: var(--color-ink); color: var(--color-bg); }
+  .catalog-card:focus-within { outline: 2px solid var(--color-lime); outline-offset: 5px; }
+  @media(prefers-reduced-motion: reduce) { .course-image { transition: none; } .catalog-card:hover .course-image { transform: none; } }
+</style>

@@ -1,0 +1,18 @@
+---
+import { Image } from 'astro:assets';
+import BeforeAfter from './BeforeAfter.astro';
+import { visibleWorks, personMap } from '../lib/people';
+interface Props { compact?: boolean }
+const {compact=false}=Astro.props;
+const people=await personMap();const all=await visibleWorks();
+const seen=new Set<string>();
+const selected=all.filter(w=>{if(!w.data.reviewQuote || !w.data.beforeImage || seen.has(w.data.author.id))return false;seen.add(w.data.author.id);return true;}).slice(0,4);
+const spreads=selected.slice(0,compact?1:2);const comparisons=selected.slice(2,compact?3:4);
+---
+<div class="student-proof">
+ {spreads.map(w=><article class="proof-spread"><a class="proof-photo" href={`/gallery#${w.id}`}><Image src={w.data.image} alt={w.data.alt} widths={[640,960,1400]} sizes="(min-width:768px) 60vw,100vw" /></a><div class="proof-copy"><span class="t-overline">Работа ученика</span><h3 class="t-h3">{people.get(w.data.author.id)?.name}</h3><blockquote class="t-lead">«{w.data.reviewQuote}»</blockquote><a class="link t-small" href={`/gallery#${w.id}`}>Посмотреть проект →</a></div></article>)}
+ {comparisons.length>0 && <div class="proof-process"><div class="proof-process-head"><span class="t-overline">Геометрия, свет и материалы</span><h3 class="t-h3">От сермата к рендеру</h3><p class="t-body">Передвиньте ползунок, чтобы рассмотреть сцену с материалами и без них.</p></div><div class:list={['proof-comparisons',{'proof-comparisons--single':compact}]}>{comparisons.map(w=><article><BeforeAfter after={w.data.image} before={w.data.beforeImage!} altAfter={w.data.alt} altBefore={`Сермат, ${people.get(w.data.author.id)?.name}`} caption={`${people.get(w.data.author.id)?.name}`} /><blockquote class="t-body">«{w.data.reviewQuote}»</blockquote></article>)}</div></div>}
+</div>
+<style>
+ .student-proof{display:grid;gap:48px}.proof-spread{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:clamp(24px,4vw,56px);padding-top:32px;border-top:1px solid var(--color-line)}.proof-photo{display:block;min-width:0}.proof-photo img{display:block;width:100%;height:auto;max-height:720px;object-fit:contain;border-radius:2px}.proof-copy{display:flex;flex-direction:column;align-items:flex-start;gap:24px;justify-content:center}.proof-copy h3,.proof-copy blockquote{margin:0}.proof-copy blockquote{max-width:36ch;color:var(--color-ink-2);overflow-wrap:anywhere}.proof-process{padding-top:32px;border-top:1px solid var(--color-line)}.proof-process-head{max-width:620px;margin-bottom:28px}.proof-process-head h3{margin-block:16px}.proof-comparisons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}.proof-comparisons--single{grid-template-columns:1fr;max-width:960px}.proof-comparisons blockquote{margin:20px 0 0;max-width:54ch;color:var(--color-ink-2)}.proof-comparisons :global(.ba){aspect-ratio:4/3;height:auto;min-height:0}.proof-comparisons :global(figcaption){padding-top:10px}@media(max-width:767px){.student-proof{gap:32px}.proof-spread,.proof-comparisons{grid-template-columns:1fr}.proof-copy{gap:18px}.proof-copy blockquote{max-width:none}.proof-photo img{max-height:none}}
+</style>

@@ -16,7 +16,7 @@ const channels = [
       <p class="m-0 text-ink-2">Профессия учит не только рендеру, но и работе за деньги: как найти заказчика, сколько просить и как защитить проект.</p>
       {kazakov && (
         <figure class="m-0 mt-2 flex flex-col gap-3 border-t border-line pt-5">
-          <blockquote class="t-quote m-0 !text-[19px]">{kazakov.text}</blockquote>
+          <blockquote class="t-quote m-0">{kazakov.text}</blockquote>
           <figcaption class="t-small text-muted"><b class="text-ink">{kazakov.author}</b>, {kazakov.role}</figcaption>
         </figure>
       )}
@@ -24,9 +24,9 @@ const channels = [
     <ul class="m-0 grid list-none gap-x-[var(--gap-grid)] gap-y-8 p-0 sm:grid-cols-2">
       {channels.map((c, i) => (
         <li class="flex flex-col gap-2 border-t border-line pt-5">
-          <span class="t-mono text-[13px] text-muted" aria-hidden="true">0{i + 1}</span>
+          <span class="t-caption t-mono text-muted" aria-hidden="true">0{i + 1}</span>
           <h3 class="t-title">{c.title}</h3>
-          <p class="t-small m-0 text-muted">{c.text}</p>
+          <p class="t-small m-0 text-ink-2">{c.text}</p>
         </li>
       ))}
     </ul>

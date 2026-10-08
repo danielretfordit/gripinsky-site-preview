@@ -1,0 +1,28 @@
+{
+  "title": "Unreal Artist",
+  "short": "Художник в Unreal Engine",
+  "lead": "Работайте со сценами, освещением и визуализацией в Unreal Engine.",
+  "courses": [
+    "unrealenginelevel1"
+  ],
+  "trials": [],
+  "addons": [
+    {
+      "course": "blender",
+      "text": "Моделирование и визуализация в Blender."
+    },
+    {
+      "course": "art_pro",
+      "text": "Композиция, свет, цвет и выразительная подача работы."
+    },
+    {
+      "course": "azbukaps",
+      "text": "Photoshop с нуля для обработки изображений и подачи проекта."
+    },
+    {
+      "course": "speedtree",
+      "text": "Создание деревьев и другой растительности в SpeedTree."
+    }
+  ],
+  "order": 6
+}

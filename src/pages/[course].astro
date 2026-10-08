@@ -4,8 +4,10 @@ import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CourseCard from '../components/CourseCard.astro';
-import Checkout from '../islands/Checkout';
-import { TYPE_LABEL } from '../lib/categories';
+import CourseContent from '../components/CourseContent.astro';
+import CourseVisualContent from '../components/CourseVisualContent.astro';
+import CourseHero from '../components/CourseHero.astro';
+import { TYPE_LABEL, isListed } from '../lib/categories';
 import { personMap } from '../lib/people';
 import { rub, sp } from '../lib/format';
 import { courseLd, ogHref, clipText } from '../lib/seo';
@@ -28,13 +30,16 @@ const months = site.installment.months;
 const includes = (await Promise.all(c.includes.map((r) => getEntry('courses', r.id)))).filter(Boolean);
 const teachers = c.teachers.map((t) => people.get(t.id)).filter(Boolean);
 const vizRelated = c.professions.some((p) => ['Визуализация', 'Интерьер', 'Экстерьер', 'ЖК', 'Стоки', 'Коммерческая визуализация'].includes(p));
-const allCourses = await getCollection('courses', (x) => x.data.status === 'active' && x.id !== id);
+const allCourses = await getCollection('courses', (x) => isListed(x.data) && x.id !== id);
 const related = (c.related.length
   ? allCourses.filter((x) => c.related.some((r) => r.id === x.id))
   : allCourses.filter((x) => x.data.type !== 'service' && x.data.professions.some((p) => c.professions.includes(p)))
 ).slice(0, 3);
-const rich = c.blocks.length > 0 || Boolean(c.description);
+const isSessionPackage = id === 'paket_ind5' || id === 'paket_ind10';
 const isFree = c.type === 'free' || c.price === 0;
+const retiredPackage = c.type === 'package';
+const visualCourse = c.type === 'course' && c.status === 'active' && !['ai','ai-lab'].includes(id);
+const Content = visualCourse ? CourseVisualContent : CourseContent;
 const hidden = c.status !== 'active';
 
 // SEO-поля выводятся в том виде, в котором сохранены в записи.
@@ -46,96 +51,63 @@ const description = c.seo.description
   : clipText(`${c.title}. ${lead === '.' ? '' : lead} Онлайн-обучение в Академии 3D GRIPINSKY${isFree ? ', бесплатно' : `, ${sp(c.price)} ₽, рассрочка`}.`, 200);
 const og = c.cover ? ogHref(`course-${id}`) : undefined;
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, ...(vizRelated ? [{ name: '3D-визуализация', href: '/courses-page/visualization' }] : []), { name: c.title }];
-const ld = courseLd({ name: c.title, description: c.description || c.short || c.title, path: c.legacyPath, prices: [c.price], image: og });
+const ld = courseLd({ name: c.title, description: c.description || c.short || c.title, path: c.legacyPath, prices: retiredPackage ? [] : [c.price], image: og });
 const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроков` : null, c.level].filter(Boolean) as string[];
 ---
-<Base title={title} description={description} ogImage={og} breadcrumbs={crumbs} jsonLd={[ld]} noindex={hidden} consultContext={`Курс: ${c.title}`}>
-  <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="course-title">
+<Base title={title} description={description} ogImage={og} breadcrumbs={crumbs} jsonLd={retiredPackage ? [] : [ld]} noindex={hidden} consultContext={`Курс: ${c.title}`}>
+  {visualCourse ? <><div class="wrap pt-5 md:pt-7"><Breadcrumbs items={crumbs} /></div><CourseHero course={c} id={id} /></> : <section class="wrap pt-5 md:pt-7" aria-labelledby="course-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
-    <div class="grid gap-8 md:grid-cols-[7fr_5fr] md:gap-12">
-      <div class="flex flex-col gap-5">
-        <span class="flex flex-wrap gap-2">
-          <span class={`chip ${isFree ? 'chip-solid' : ''}`}>{TYPE_LABEL[c.type]}</span>
-          {c.software.map((s) => <span class="chip !bg-transparent !text-muted ring-1 ring-line">{s}</span>)}
-        </span>
-        <h1 id="course-title" class="t-display !text-[clamp(30px,4.4vw,48px)]">{c.title}</h1>
-        {c.short && <p class="t-lead">{c.short}</p>}
-        {meta.length > 0 && <p class="m-0 text-[15px] font-medium text-muted">{meta.join(', ')}</p>}
-        {c.cover && (
-          <div class="overflow-hidden rounded-card bg-surface-2">
-            <Image src={c.cover} alt={`Обложка курса «${c.title}»`} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 55vw, 100vw" loading="eager" class="max-h-[440px] w-full object-cover" />
-          </div>
-        )}
+    <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+      <div class="flex min-w-0 flex-col gap-5">
+        <span class="t-overline">{TYPE_LABEL[c.type]}</span>
+        <h1 id="course-title" class="t-display normal-case">{c.title}</h1>
+        {(c.short || c.description) && <p class="t-lead">{c.short && c.short.toLowerCase() !== c.title.toLowerCase() ? c.short : c.description || c.short}</p>}
+        {meta.length > 0 && <p class="t-small m-0 text-ink-2">{meta.join(', ')}</p>}
+        {c.software.length > 0 && <p class="t-small m-0 text-muted">{c.software.join(', ')}</p>}
+        <div class="flex flex-wrap gap-3">
+          <a href="#course-price" class="btn btn-primary">{retiredPackage ? 'Выбрать курсы' : isFree ? 'Получить доступ' : c.type === 'course' ? `Выбрать курс, ${rub(c.price)}` : `Стоимость, ${rub(c.price)}`}</a>
+          {(c.modules.length > 0 || c.blocks.length > 0) && <a href="#course-program" class="btn btn-secondary">Программа</a>}
+        </div>
+        {c.trial && <a href={c.trial} class="link t-small self-start">Попробовать бесплатные уроки</a>}
       </div>
+      {c.cover && <div class="media-frame media-frame--card bg-surface-2">
+        <Image src={c.cover} alt={`Обложка курса «${c.title}»`} widths={[480, 800, 1200]} sizes="(min-width: 768px) 45vw, 90vw" loading="eager" class="h-full w-full object-cover" />
+      </div>}
+    </div>
+  </section>}
 
-      <aside aria-label="Стоимость" class="flex flex-col gap-4 self-start rounded-card border border-line bg-surface p-6 md:sticky md:top-6">
-        {isFree ? (
+  <Content course={c} teachers={teachers}>
+    <section slot="price" id="course-price" class:list={["wrap section", visualCourse && "course-visual-price"]} aria-labelledby="course-price-title">
+      <div class="grid gap-8 md:grid-cols-[4fr_8fr] md:gap-12">
+        <div><span class="t-overline">{retiredPackage ? 'Выбор курсов' : 'Обучение'}</span><h2 id="course-price-title" class="t-h2 mt-3">{retiredPackage ? 'Соберите свою подборку' : isFree ? 'Доступ к курсу' : 'Стоимость обучения'}</h2>{visualCourse && <><p class="t-lead text-ink-2 mt-6">{c.title}</p><ul class="t-body text-ink-2 list-disc pl-5 space-y-3 mt-6">{c.included.map(text => <li>{text}</li>)}</ul></>}</div>
+      <div class="card flex flex-col gap-4 p-6 md:p-8">
+        {retiredPackage ? (
+          <><span class="t-h3">Соберите свой пакет</span><p class="text-ink-2">Этот готовый пакет больше не продаётся. Выберите нужные курсы отдельно, скидка рассчитается в корзине.</p><a href="/courses" class="btn btn-primary">Выбрать курсы</a><a href="/courses-page/visualization#base" class="link">База 3D-визуализатора остаётся доступна целиком</a></>
+        ) : isFree ? (
           <>
-            <span class="text-[34px] font-extrabold leading-none text-ink">Бесплатно</span>
+            <span class="t-num text-ink">Бесплатно</span>
             <span class="text-ink-2">Бесплатный мини-курс: оцените формат и педагога до покупки.</span>
             <a href={site.telegramBot} class="btn btn-primary btn-lg btn-block">Получить доступ</a>
           </>
         ) : (
           <>
             <span class="flex items-baseline gap-3">
-              <span class="text-[34px] font-extrabold leading-none">{rub(c.price)}</span>
-              {c.oldPrice && c.oldPrice > c.price && c.type !== 'package' && <s class="text-muted">{rub(c.oldPrice)}</s>}
+              <span class="t-num">{rub(c.price)}</span>
+              {c.oldPrice && c.oldPrice > c.price && c.type !== 'package' && !isSessionPackage && <s class="text-muted">{rub(c.oldPrice)}</s>}
             </span>
-            {c.oldPrice && c.oldPrice > c.price && c.type === 'package' && <span class="text-[15px] text-ink-2">Курсы пакета по отдельности стоят {rub(c.oldPrice)}, выгода {rub(c.oldPrice - c.price)}</span>}
-            <span class="text-[15px] text-muted">или {sp(Math.ceil(c.price / months))}&nbsp;₽/мес в рассрочку на {months} мес.</span>
-            <button type="button" class="btn btn-primary btn-lg btn-block" data-buy={JSON.stringify({ kind: 'course', id, name: c.title, price: c.price })}>Купить курс</button>
+            {c.oldPrice && c.oldPrice > c.price && (c.type === 'package' || isSessionPackage) && <span class="t-small text-ink-2">{isSessionPackage ? 'Занятия' : 'Курсы пакета'} по отдельности стоят {rub(c.oldPrice)}, выгода {rub(c.oldPrice - c.price)}</span>}
+            <span class="t-small text-muted">или {sp(Math.ceil(c.price / months))}&nbsp;₽/мес в рассрочку на {months} мес.</span>
+            {c.type === 'course' ? <button type="button" class="btn btn-primary btn-lg btn-block" data-cart-add={id} disabled><span data-cart-label>В корзину</span></button> : <button type="button" class="btn btn-primary btn-lg btn-block" data-buy={JSON.stringify({ kind: 'course', id, name: c.title, price: c.price })}>Выбрать услугу</button>}
             <a href={`${site.telegramBot}?start=installment`} class="btn btn-secondary btn-block">Оформить рассрочку</a>
           </>
         )}
-        {c.trial && <a href={c.trial} class="link text-center text-[15px]">Сначала бесплатные уроки →</a>}
-        {vizRelated && !isFree && <a href="/courses-page/visualization#package" class="link-muted text-center text-[14px]">Выгоднее в пакете с базой и подарками</a>}
-        <a href="#consult" class="link text-center text-[15px]">Бесплатная консультация</a>
-      </aside>
-    </div>
-  </section>
-
-  {rich && (
-    <section class="wrap section" aria-labelledby="about-course">
-      <div class="grid gap-10 md:grid-cols-[7fr_5fr] md:gap-12">
-        <div class="flex flex-col gap-5">
-          <h2 id="about-course" class="t-h2">О курсе</h2>
-          {c.description && <p class="m-0 text-[17px] leading-relaxed text-ink-2">{c.description}</p>}
-          {c.forWhom.length > 0 && (
-            <div class="flex flex-col gap-3">
-              <h3 class="t-h3">Для кого курс</h3>
-              <ul class="m-0 list-disc space-y-2 pl-5 text-ink-2">{c.forWhom.map((item) => <li>{item}</li>)}</ul>
-            </div>
-          )}
-          {c.outcomes.length > 0 && (
-            <div class="rounded-2xl bg-surface p-5"><b class="text-muted">Результат:</b> {c.outcomes.join(' ')}</div>
-          )}
-          {c.finalProject && <p class="m-0"><b class="text-muted">Итоговый проект:</b> {c.finalProject}</p>}
-          {c.blocks.length > 0 && (
-            <div class="flex flex-col gap-3">
-              <h3 class="t-h3">Программа</h3>
-              <ol class="m-0 grid gap-2 pl-6 text-ink-2 sm:grid-cols-2 sm:gap-x-8">{c.blocks.map((b) => <li>{b}</li>)}</ol>
-            </div>
-          )}
-        </div>
-        {teachers.length > 0 && (
-          <div class="flex flex-col gap-4">
-            <h2 class="t-h3">Педагоги</h2>
-            <ul class="m-0 flex list-none flex-col gap-3 p-0">
-              {teachers.map((t) => <li class="card flex items-center gap-3 p-4"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-2 font-bold" aria-hidden="true">{t!.name.split(' ').map((p) => p[0]).join('')}</span><b>{t!.name}</b></li>)}
-            </ul>
-          </div>
-        )}
+        {c.trial && <a href={c.trial} class="link t-small text-center">Сначала бесплатные уроки →</a>}
+        {vizRelated && !isFree && !retiredPackage && <a href="/courses-page/visualization#profession" class="link-muted t-small text-center">Выбрать дополнительные курсы</a>}
+        <a href="#consult" class="link t-small text-center">Бесплатная консультация</a>
+      </div>
       </div>
     </section>
-  )}
-
-  {!rich && (
-    <section class="wrap section">
-      <div class="rounded-2xl border border-line p-6 text-ink-2">
-        Подробная программа курса переносится на новый сайт. Пока её можно посмотреть на <a href={`https://gripinsky.ru${c.legacyPath}`} class="link" rel="noopener">прежней странице курса</a> или спросить на консультации.
-      </div>
-    </section>
-  )}
+  </Content>
 
   {includes.length > 0 && (
     <section class="wrap section" aria-labelledby="includes-title">
@@ -154,12 +126,15 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
     </section>
   )}
 
-  <Fragment slot="after-main">
-    <Checkout client:load months={months} telegramBot={site.telegramBot} />
-  </Fragment>
 </Base>
 
 <script>
   import { openCheckout } from '../stores/package';
   document.querySelectorAll<HTMLElement>('[data-buy]').forEach((b) => b.addEventListener('click', () => openCheckout(JSON.parse(b.dataset.buy!))));
 </script>
+
+<style>
+ .course-visual-price :global(.card){border-radius:2px;border-top:1px solid var(--color-line-strong);background:var(--color-surface)}
+ :global(body:has([data-course-program])){--course-anchor-offset:calc(var(--header-h) + 70px)}
+ :global(body:has([data-course-program]) [id^="course-"]){scroll-margin-top:var(--course-anchor-offset)}
+</style>

@@ -65,12 +65,17 @@ const works = defineCollection({
     author: reference('people'),
     image: image(),
     beforeImage: image().nullish(),
+    reviewText: z.string().optional(),
+    reviewQuote: z.string().optional(),
+    processImages: z.array(image()).default([]),
+    videos: z.array(z.string()).default([]),
     alt: z.string(),
     categories: z.array(z.enum(WORK_CATEGORIES)).min(1),
     awards: z.array(z.enum(['render-dnya', 'tsar-gory', '3ddd-award'])).default([]),
     sourceUrl: z.url().nullish(),
     focus: z.string().nullish(),
     inGallery: z.boolean().default(true),
+    isProcessImage: z.boolean().default(false),
     order: z.number().default(100),
   }),
 });
@@ -117,9 +122,13 @@ const reviews = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/reviews' }),
   schema: z.object({
     author: z.string(),
+    person: reference('people').optional(),
+    works: z.array(reference('works')).default([]),
     role: z.string(),
-    source: z.enum(['telegram', 'yandex', 'vk', 'site']),
+    source: z.enum(['telegram', 'yandex', 'vk', 'site', 'azbuka']),
+    sourceUrl: z.url().optional(),
     text: z.string(),
+    quote: z.string().optional(),
     topic: z.enum(['money', 'skill', 'career', 'general']).default('general'),
     order: z.number().default(100),
   }),
@@ -159,6 +168,9 @@ const courses = defineCollection({
     software: z.array(z.string()).default([]),
     level: z.string().nullable().default(null),
     cover: image().nullish(),
+    isNew: z.boolean().default(false),
+    publishedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).or(z.literal('')).nullish(),
+    popularityRank: z.number().int().positive().nullish(),
     lessons: z.number().int().nullish(),
     meta: z.string().nullish(),
     description: z.string().nullish(),
@@ -166,6 +178,18 @@ const courses = defineCollection({
     outcomes: z.array(z.string()).default([]),
     blocks: z.array(z.string()).default([]),
     finalProject: z.string().nullish(),
+    benefits: z.array(z.object({ title: z.string().min(1), text: z.string() })).default([]),
+    prerequisites: z.array(z.string()).default([]),
+    modules: z.array(z.object({ title: z.string().min(1), description: z.string().default(''), tools: z.array(z.string()).default([]), topics: z.array(z.string()).default([]), practice: z.string().default(''), result: z.string().default('') })).default([]),
+    projects: z.array(z.object({ title: z.string().min(1), description: z.string(), deliverable: z.string().default(''), image: image().nullish() })).default([]),
+    learning: z.array(z.object({ title: z.string().min(1), text: z.string() })).default([]),
+    included: z.array(z.string()).default([]),
+    requirements: z.array(z.string()).default([]),
+    courseFaq: z.array(z.object({ question: z.string().min(1), answer: z.string() })).default([]),
+    trialDescription: z.string().default(''),
+    studentWorks: z.array(reference('works')).default([]),
+    testimonials: z.array(z.object({ author: z.string(), text: z.string(), context: z.string().default(''), consent: z.boolean().default(false) })).default([]),
+
     includes: z.array(reference('courses')).default([]),
     /** Подарки к курсу, которых нет в каталоге (value: реальная цена или null) */
     gifts: z.array(z.object({ id: z.string(), name: z.string(), value: z.number().int().positive().nullable() })).default([]),
@@ -262,4 +286,17 @@ const pageSeo = defineCollection({
   }),
 });
 
-export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, blog, legal, pageSeo };
+const gameProfessions = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/game-professions' }),
+  schema: z.object({
+    title: z.string(),
+    short: z.string(),
+    lead: z.string(),
+    courses: z.array(reference('courses')).min(1),
+    trials: z.array(reference('courses')),
+    addons: z.array(z.object({ course: reference('courses'), text: z.string(), alternative: reference('courses').nullish() })),
+    order: z.number(),
+  }),
+});
+
+export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, gameProfessions, blog, legal, pageSeo };

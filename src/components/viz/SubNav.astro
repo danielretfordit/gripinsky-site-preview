@@ -1,18 +1,19 @@
 ---
 const items = [
+  { href: '#path', label: 'Путь обучения' },
+  { href: '#ai', label: 'ИИ в 3D' },
+  { href: '#base', label: '02 / База + доп. курсы' },
+  { href: '#profession', label: '03 / Профессия + доп. курсы' },
+  { href: '#additional', label: 'Дополнительные курсы' },
   { href: '#works', label: 'Результаты' },
-  { href: '#path', label: 'Путь ученика' },
-  { href: '#base', label: 'База' },
-  { href: '#profession', label: 'Профессии' },
-  { href: '#package', label: 'Цены' },
   { href: '#faq', label: 'Вопросы' },
 ];
 ---
-<nav aria-label="Разделы страницы" class="sticky top-0 z-30 border-b border-line bg-[rgb(14_17_18/0.94)] backdrop-blur-md">
+<nav aria-label="Разделы страницы" class="sticky top-[var(--header-h)] z-30 border-b border-line bg-[rgb(17_19_19/0.94)] backdrop-blur-md">
   <ul class="wrap snap-row m-0 flex !grid-flow-col list-none gap-6 py-0" data-subnav>
     {items.map((i) => (
       <li class="!w-auto">
-        <a href={i.href} class="inline-flex min-h-12 items-center whitespace-nowrap text-[15px] font-semibold text-muted hover:text-ink aria-[current=true]:text-ink aria-[current=true]:shadow-[inset_0_-2px_0_var(--color-lime)]">{i.label}</a>
+        <a href={i.href} class="inline-flex min-h-12 items-center whitespace-nowrap t-small font-semibold text-muted hover:text-ink aria-[current=true]:text-ink aria-[current=true]:shadow-[inset_0_-2px_0_var(--color-lime)]">{i.label}</a>
       </li>
     ))}
   </ul>

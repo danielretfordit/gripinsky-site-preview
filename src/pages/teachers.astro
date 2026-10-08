@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import { personMap } from '../lib/people';
+const visible=await personMap();
+const teachers=(await getCollection('people')).filter(p=>p.data.roles.includes('teacher')&&visible.has(p.id)).sort((a,b)=>a.id==='gripinsky'?-1:b.id==='gripinsky'?1:a.data.name.localeCompare(b.data.name,'ru'));
+const courses=await getCollection('courses',c=>c.data.status==='active'&&c.data.type==='course');
+const linked=(id:string)=>courses.filter(c=>c.data.teachers.some(t=>t.id===id));
+const initials=(name:string)=>name.split(' ').slice(0,2).map(n=>n[0]).join('');
+const crumbs=[{name:'Главная',href:'/'},{name:'Педагоги'}];
+---
+<Base title="Педагоги академии 3D GRIPINSKY" description="Преподаватели GRIPINSKY: моделирование, визуализация, персонажи и игровое окружение. Специализации и курсы педагогов академии." breadcrumbs={crumbs} consultContext="Педагоги академии">
+<header class="wrap teachers-head"><Breadcrumbs items={crumbs}/><p class="t-overline">Команда академии / {teachers.length} педагогов</p><h1 class="t-display normal-case">Люди, которые<br/><span class="text-heading-muted">помогают освоить 3D.</span></h1><p class="t-lead text-ink-2">Познакомьтесь с преподавателями и выберите курс по интересующей задаче: моделирование, визуализация, персонажи или окружение.</p></header>
+<section class="wrap section" aria-label="Преподаватели"><div class="teachers-grid">{teachers.map(p=><article id={p.id} class:list={['teacher-card',p.id==='gripinsky'&&'teacher-card--founder']}>
+ <div class="teacher-person">{p.id==='gripinsky'?<img src="/images/evgeny-gripinsky-color.webp" alt={p.data.name} class="teacher-photo" width="96" height="120" loading="lazy"/>:p.data.photo?<Image src={p.data.photo} alt={p.data.name} width={96} class="teacher-photo"/>:<span class="teacher-initials t-num" aria-hidden="true">{initials(p.data.name)}</span>}<div><p class="t-overline">{p.id==='gripinsky'?'Основатель академии':'Преподаватель'}</p><h2 class="t-h3">{p.data.name}</h2></div></div>
+ {p.data.bio&&<p class="t-body text-ink-2 teacher-bio">{p.data.bio}</p>}
+ {linked(p.id).length>0&&<div class="teacher-courses"><h3 class="t-overline">Курсы преподавателя</h3><ul>{linked(p.id).map(c=><li><a class="t-body" href={c.data.legacyPath}>{c.data.title}<span aria-hidden="true">↗</span></a></li>)}</ul></div>}
+ </article>)}</div></section>
+</Base>
+<style>
+.teachers-head{padding-top:24px}.teachers-head>.t-overline{margin-top:32px}.teachers-head h1{margin:20px 0 24px}.teachers-head>.t-lead{max-width:700px}.teachers-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.teacher-card{padding:28px;background:var(--color-surface);border-top:1px solid var(--color-line);border-radius:2px;display:flex;flex-direction:column;min-width:0;scroll-margin-top:calc(var(--header-h) + 20px)}.teacher-person{display:flex;gap:20px;align-items:center}.teacher-person>div{min-width:0}.teacher-person h2{margin:12px 0 0}.teacher-person p{margin:0}.teacher-photo{width:80px;height:100px;object-fit:cover;object-position:50% 20%;border-radius:2px;flex-shrink:0}.teacher-initials{display:flex;align-items:center;justify-content:center;width:64px;height:64px;flex-shrink:0;border:1px solid var(--color-line);color:var(--color-muted)}.teacher-bio{margin-block:24px}.teacher-courses{margin-top:auto;padding-top:24px}.teacher-courses h3{margin:0 0 16px}.teacher-courses ul{list-style:none;padding:0;margin:0}.teacher-courses li{border-top:1px solid var(--color-line)}.teacher-courses a{display:flex;justify-content:space-between;gap:16px;padding-block:14px;color:var(--color-ink-2)}.teacher-courses a:hover{color:var(--color-ink)}.teacher-courses a span{flex-shrink:0}.teacher-card--founder{border-color:var(--color-line-strong)}
+@media(max-width:1023px){.teachers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.teacher-card{padding:24px}.teacher-person{gap:16px}}
+@media(max-width:767px){.teachers-grid{grid-template-columns:1fr}.teacher-person h2{font-size:var(--type-card-title)}}
+</style>

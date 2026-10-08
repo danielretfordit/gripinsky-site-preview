@@ -1,0 +1,96 @@
+---
+// Два черновика акцента для курса ИИ на главной. В сборку сайта не входят.
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import AiFeature from '../../components/AiFeature.astro';
+import meshRaw from '../../assets/ai/mesh-raw.jpg';
+import meshScene from '../../assets/ai/mesh-scene.jpg';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['a', 'b'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = Astro.params.variant;
+const name = variant === 'a' ? 'Процесс' : 'Типографика';
+---
+<Base title={`ИИ или умри: вариант ${variant?.toUpperCase()} — ${name}`} description="Варианты оформления курса ИИ на главной странице GRIPINSKY" noindex consult={false}>
+  <section class="wrap section design-ai" aria-labelledby="design-ai-title">
+    <div class="design-ai__intro">
+      <p class="t-overline m-0">Черновик блока на главной / {variant?.toUpperCase()}</p>
+      <h1 id="design-ai-title" class="t-h2">ИИ или умри <span class="t-accent">/ {name}</span></h1>
+      <p class="t-small m-0 text-muted">Палитра сайта сохранена. На главной остаётся только идея курса, состав программы раскрывается на его странице.</p>
+      <nav class="design-ai__nav" aria-label="Варианты оформления">
+        <a href="/design/ai-a" class={variant === 'a' ? 'design-ai__current' : ''} aria-current={variant === 'a' ? 'page' : undefined}>A. Процесс</a>
+        <a href="/design/ai-b" class={variant === 'b' ? 'design-ai__current' : ''} aria-current={variant === 'b' ? 'page' : undefined}>B. Типографика</a>
+        <a href="/#ai">Главная ↗</a>
+      </nav>
+    </div>
+
+    {variant === 'a' ? (
+      <div class="ai-feature ai-feature--process">
+        <div class="ai-feature__copy">
+          <p class="ai-feature__eyebrow"><span class="ai-feature__dot" aria-hidden="true"></span> Новый курс / ИИ в 3D</p>
+          <h2>ИИ <span>ИЛИ УМРИ</span></h2>
+          <p class="ai-feature__quote">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+          <p class="ai-feature__body">Нейросети помогают с референсами, моделью и сценой. Финальную работу доводите сами: от сетки до рендера.</p>
+          <div class="ai-feature__action"><a href="/ai" class="btn btn-primary btn-lg">Смотреть курс ↗</a><span>от 4 900 ₽</span></div>
+        </div>
+        <figure class="ai-feature__visual">
+          <div class="ai-feature__compare">
+            <Image src={meshRaw} alt="Черновая сетка модели" widths={[600, 900]} sizes="(min-width: 900px) 42vw, 100vw" class="ai-feature__image ai-feature__image--raw" />
+            <Image src={meshScene} alt="Та же модель после доработки" widths={[600, 900]} sizes="(min-width: 900px) 42vw, 100vw" class="ai-feature__image ai-feature__image--scene" />
+            <span class="ai-feature__divider" aria-hidden="true"></span>
+            <span class="ai-feature__before">01 / ЧЕРНОВИК</span><span class="ai-feature__after">02 / РЕЗУЛЬТАТ</span>
+          </div>
+          <figcaption>Нейросеть даёт начало. Решение остаётся за художником.</figcaption>
+        </figure>
+      </div>
+    ) : (
+      <AiFeature price="4 900 ₽" />
+    )}
+  </section>
+</Base>
+
+<style>
+  .design-ai__intro { max-width: 740px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+  .design-ai__nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .design-ai__nav a { min-height: 44px; display: inline-flex; align-items: center; border: 1px solid var(--color-line-strong); padding: 0 14px; font-size: 14px; }
+  .design-ai__nav .design-ai__current { border-color: var(--color-lime); color: var(--color-lime); }
+  .ai-feature { min-height: 490px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); border-top: 2px solid var(--color-lime); border-bottom: 1px solid var(--color-line); background: var(--color-bg-2); }
+  .ai-feature__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; padding: 48px; }
+  .ai-feature__eyebrow { display: flex; align-items: center; gap: 9px; margin: 0; font: 500 12px var(--font-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--color-ink-2); }
+  .ai-feature__dot { width: 7px; height: 7px; background: var(--color-lime); }
+  .ai-feature h2 { max-width: 670px; margin: 0; font-size: clamp(48px, 5.3vw, 88px); line-height: .92; letter-spacing: -.055em; font-weight: 800; }
+  .ai-feature h2 span { display: block; color: var(--color-lime); }
+  .ai-feature__quote { max-width: 600px; margin: 0; color: var(--color-ink); font-size: clamp(19px, 2vw, 26px); font-weight: 650; line-height: 1.2; }
+  .ai-feature__body { max-width: 560px; margin: 0; color: var(--color-ink-2); font-size: 16px; line-height: 1.5; }
+  .ai-feature__action { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: auto; padding-top: 16px; font-weight: 650; }
+  .ai-feature__visual { min-width: 0; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 24px 24px 24px 0; }
+  .ai-feature__compare { position: relative; flex: 1; min-height: 360px; overflow: hidden; background: #ecece6; }
+  .ai-feature__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ai-feature__image--raw { clip-path: inset(0 50% 0 0); }
+  .ai-feature__image--scene { clip-path: inset(0 0 0 50%); }
+  .ai-feature__divider { position: absolute; z-index: 1; top: 0; bottom: 0; left: 50%; width: 3px; background: var(--color-lime); }
+  .ai-feature__before, .ai-feature__after { position: absolute; bottom: 15px; z-index: 2; padding: 6px 8px; background: var(--color-bg); color: var(--color-ink); font: 500 11px var(--font-mono); }
+  .ai-feature__before { left: 15px; } .ai-feature__after { right: 15px; }
+  .ai-feature__visual figcaption { color: var(--color-muted); font: 12px var(--font-mono); }
+  .ai-feature--type { overflow: hidden; }
+  .ai-feature--type .ai-feature__copy { position: relative; z-index: 1; }
+  .ai-feature__symbol { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-left: 1px solid var(--color-line); background: var(--color-bg); }
+  .ai-feature__symbol > span { color: transparent; -webkit-text-stroke: 2px var(--color-lime); font-size: clamp(240px, 28vw, 430px); font-weight: 800; line-height: 1; letter-spacing: -.14em; transform: translateX(-.06em); }
+  .ai-feature__symbol small { position: absolute; right: 28px; bottom: 25px; color: var(--color-ink-2); font: 12px/1.5 var(--font-mono); text-align: right; text-transform: uppercase; }
+  @media (max-width: 899px) {
+    .ai-feature { grid-template-columns: 1fr; }
+    .ai-feature__copy { padding: 30px 24px; }
+    .ai-feature__visual { padding: 0 24px 24px; }
+    .ai-feature__compare { min-height: 260px; }
+    .ai-feature__symbol { min-height: 280px; border-top: 1px solid var(--color-line); border-left: 0; }
+  }
+  @media (max-width: 480px) {
+    .ai-feature__copy { padding: 24px 20px; gap: 16px; }
+    .ai-feature h2 { font-size: 48px; }
+    .ai-feature__visual { padding: 0 20px 20px; }
+    .ai-feature__symbol > span { font-size: 240px; }
+  }
+</style>

@@ -9,72 +9,79 @@ const nav = [
   { href: '/courses-page/visualization', label: '3D-визуализация' },
   { href: '/courses', label: 'Все курсы' },
   { href: '/gallery', label: 'Работы учеников' },
+  { href: '/club', label: 'Сообщество' },
   { href: '/otzyvy', label: 'Отзывы' },
   { href: '/blog', label: 'Блог' },
 ];
 const current = canonicalPath(Astro.url.pathname);
-// На страницах без формы консультации (документы, 404, оплата) ссылка ведёт к форме на главной
+// На страницах без формы консультации ссылка ведёт к форме на главной.
 const { consult = true } = Astro.props as { consult?: boolean };
 const consultHref = consult ? '#consult' : '/#consult';
 ---
-<header class="wrap relative z-40 border-b border-line bg-bg">
-  <div class="flex h-16 items-center gap-6 md:h-[88px]">
-    <a href="/" class="shrink-0" aria-label="Академия 3D GRIPINSKY, на главную">
-      <Image src={logo} alt="GRIPINSKY" width={196} height={26} class="block h-[22px] w-auto md:h-[26px]" loading="eager" />
+<header class="site-header global-site-header sticky top-0 z-40 border-b border-line bg-bg">
+  <div class="site-header__inner">
+    <a href="/" class="site-header__brand" aria-label="Академия 3D GRIPINSKY, на главную">
+      <Image src={logo} alt="GRIPINSKY" densities={[1, 2, 3, 4]} format="png" width={196} height={26} class="block h-auto" loading="eager" />
     </a>
 
-    <nav aria-label="Основное меню" class="hidden grow gap-[clamp(14px,1.8vw,28px)] text-[15px] font-medium md:flex">
+    <nav aria-label="Основное меню" class="site-header__nav site-header__nav--desktop">
       {nav.map((n) => (
-        <a href={n.href} aria-current={current === n.href ? 'page' : undefined}
-           class="whitespace-nowrap text-ink hover:text-white aria-[current=page]:underline aria-[current=page]:decoration-lime aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">{n.label}</a>
+        <a href={n.href} aria-current={current === n.href ? 'page' : undefined}>{n.label}</a>
       ))}
     </nav>
 
-    <a href={site.telegramBot} class="hidden min-h-11 min-w-11 items-center justify-center gap-2 whitespace-nowrap text-[15px] font-medium text-ink hover:text-white md:inline-flex" aria-label="Задать вопрос в Telegram">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/></svg>
-      <span class="hidden lg:inline">Задать вопрос</span>
-    </a>
-    <a href={consultHref} class="btn btn-secondary btn-sm hidden md:inline-flex"><span class="lg:hidden">Консультация</span><span class="hidden lg:inline">Бесплатная консультация</span></a>
-
-    <div class="ml-auto flex items-center gap-1 md:hidden">
-      <a href={site.telegramBot} class="inline-flex h-11 w-11 items-center justify-center rounded-full text-ink" aria-label="Написать в Telegram">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 4-18 7 6 2 2 6 3-4 5 4z"/><path d="m9 13 8-6"/></svg>
+    <div class="site-header__actions">
+      <a href={consultHref} class="site-header__consult btn btn-secondary btn-sm" aria-label="Бесплатная консультация">
+        <span class="site-header__consult-full">Бесплатная консультация</span>
+        <span class="site-header__consult-short" aria-hidden="true">Консультация</span>
+        <span class="site-header__consult-arrow" aria-hidden="true">↗</span>
       </a>
-      <button type="button" id="menu-toggle" class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-line-strong bg-transparent"
-              aria-expanded="false" aria-controls="mobile-menu" aria-label="Открыть меню">
-        <svg class="menu-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        <svg class="menu-close hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div id="mobile-menu" hidden class="md:hidden">
-    <nav aria-label="Меню" class="flex flex-col border-t border-line py-2">
-      {nav.map((n) => (
-        <a href={n.href} aria-current={current === n.href ? 'page' : undefined}
-           class="flex min-h-14 items-center border-b border-line text-lg font-semibold text-ink aria-[current=page]:underline aria-[current=page]:decoration-lime aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">{n.label}</a>
-      ))}
-    </nav>
-    <div class="flex flex-col gap-3 pb-6 pt-4">
-      <a href={consultHref} class="btn btn-primary btn-lg btn-block" data-close-menu>Бесплатная консультация</a>
-      <a href={site.telegramBot} class="btn btn-secondary btn-lg btn-block">Написать в Telegram</a>
+      <a href={site.telegramBot} class="site-header__telegram" aria-label="Задать вопрос в Telegram" title="Telegram">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 3 9.4 14.6M21 3l-6.7 18-4.9-6.4L3 10.9 21 3Z" />
+        </svg>
+      </a>
+      <details class="site-header__menu" id="site-menu">
+        <summary aria-label="Меню сайта" title="Меню" aria-controls="site-primary-menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </summary>
+        <nav id="site-primary-menu" aria-label="Основное меню" class="site-header__menu-nav">
+          {nav.map((n) => (
+            <a href={n.href} aria-current={current === n.href ? 'page' : undefined}>{n.label}</a>
+          ))}
+        </nav>
+      </details>
     </div>
   </div>
 </header>
 
-<script>
-  const btn = document.getElementById('menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  if (btn && menu) {
-    const set = (open: boolean) => {
-      btn.setAttribute('aria-expanded', String(open));
-      btn.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
-      menu.hidden = !open;
-      btn.querySelector('.menu-open')?.classList.toggle('hidden', open);
-      btn.querySelector('.menu-close')?.classList.toggle('hidden', !open);
-    };
-    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
-    menu.querySelectorAll('[data-close-menu], a[href^="#"]').forEach((a) => a.addEventListener('click', () => set(false)));
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); } });
+<style>
+  .site-header__telegram svg,
+  .site-header__menu summary svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
   }
+</style>
+
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>('#site-menu');
+  const toggle = menu?.querySelector('summary');
+  menu?.addEventListener('toggle', () => toggle?.setAttribute('aria-expanded', String(menu.open)));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu?.open) {
+      menu.open = false;
+      toggle?.focus();
+    }
+  });
+  document.addEventListener('click', (event) => {
+    if (menu?.open && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+  });
+  menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menu.open = false; }));
 </script>

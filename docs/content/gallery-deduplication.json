@@ -1,0 +1,482 @@
+{
+  "excluded": [
+    {
+      "id": "import-6e3ca368ce04ba51",
+      "reason": "process-image"
+    },
+    {
+      "id": "import-e5b39acf2c126e5c",
+      "reason": "process-image"
+    },
+    {
+      "id": "import-ccdcec520163f5dd",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-cdff39e19872aa00",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-21005c63ed865623",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-cc9024e85792f6f4",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-5dc4d670d26fe4aa",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-a8221808135abb05",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-5f28c12ab700bc57",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-88fe87778daa4568",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-af1f61ddf78bda2a",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-74f22192b9233117",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-dd426cf9f78c5379",
+      "reason": "same-project",
+      "keep": "import-01a69764e4deea9b"
+    },
+    {
+      "id": "import-d52ed4453098d4cc",
+      "reason": "same-project",
+      "keep": "import-0830cb720f84c49a"
+    },
+    {
+      "id": "import-16cf7c10477c9c81",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-668839e2b6800bfd",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-9224d87c3274db35",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-e47ef43810d76d81",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-6c58ae7a93a711e7",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-74429ef3b0e4d978",
+      "reason": "same-project",
+      "keep": "import-c193962e75962659"
+    },
+    {
+      "id": "import-1a24a558f0f39452",
+      "reason": "same-project",
+      "keep": "import-3910b5c94c5d02e7"
+    },
+    {
+      "id": "import-236815f713b3c7bc",
+      "reason": "same-project",
+      "keep": "import-3910b5c94c5d02e7"
+    },
+    {
+      "id": "import-e0a3e7f7a23453cf",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-5df6aab5b22a27ef",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-1db98794aa59491c",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-7813bfcb895b2b1b",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-6af7ff3a3b2aecf2",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-ff3a5d45309dab37",
+      "reason": "same-project",
+      "keep": "import-aa456efaf1bd2168"
+    },
+    {
+      "id": "import-67672c77240d146f",
+      "reason": "same-project",
+      "keep": "import-1faafdcb28f832f5"
+    },
+    {
+      "id": "import-209afde082089d88",
+      "reason": "same-project",
+      "keep": "import-2791c2049936a971"
+    },
+    {
+      "id": "import-9ff2579e34d4a29d",
+      "reason": "same-project",
+      "keep": "import-2791c2049936a971"
+    },
+    {
+      "id": "import-2a649491075918b2",
+      "reason": "same-project",
+      "keep": "import-5ac9af6358e172a7"
+    },
+    {
+      "id": "import-b1b5fb4abec37be6",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-ea8b4ba80d48d091",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-a09b9cab5d4800b4",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-dee5c64abc518c45",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-a6ec841088455b0c",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-a821c769733d2202",
+      "reason": "same-project",
+      "keep": "import-2ce56f69337fc725"
+    },
+    {
+      "id": "import-9e65a4198cfd1546",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-54347a5f58b3c922",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-3fe36df3872748f5",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-b784272027d07886",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-387f2d2e73ddf883",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-6b7e967baa7c4c2c",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-4819329cabe3be9a",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-92f146039a4d3ce4",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-74e6a349bbf6f6d0",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-f1e4cded8c1ba04a",
+      "reason": "same-project",
+      "keep": "import-629f5eea7d1eb930"
+    },
+    {
+      "id": "import-845f3747813e1ade",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-4325ced393662433",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-cbd2b120faba8417",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-9e40431d611af266",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-cb2b0a58081dd1e4",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-704296dd14308bab",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-9ed7a8847a025aa3",
+      "reason": "same-project",
+      "keep": "import-8e9a305b18241192"
+    },
+    {
+      "id": "import-50548fa80e28aca0",
+      "reason": "same-project",
+      "keep": "import-51a5ccf96e0d916f"
+    },
+    {
+      "id": "import-8aed20f195d186a6",
+      "reason": "same-project",
+      "keep": "import-51a5ccf96e0d916f"
+    },
+    {
+      "id": "import-b2927e11c900a6e3",
+      "reason": "same-project",
+      "keep": "import-91042feea7271880"
+    },
+    {
+      "id": "import-5b75a530c9dd3e73",
+      "reason": "same-project",
+      "keep": "import-91042feea7271880"
+    },
+    {
+      "id": "import-e08e6cd22d8e8a62",
+      "reason": "same-project",
+      "keep": "import-8c08705f8a3ed2ce"
+    },
+    {
+      "id": "import-1bfa7093b0b45de3",
+      "reason": "visual-duplicate",
+      "keep": "budnik-osenniy-dom-1",
+      "mse": 22.546296296296298
+    },
+    {
+      "id": "import-c568938832b581d2",
+      "reason": "visual-duplicate",
+      "keep": "bugaeva-interior",
+      "mse": 29.57002314814815
+    },
+    {
+      "id": "import-660637749831063e",
+      "reason": "visual-duplicate",
+      "keep": "gushchina-house",
+      "mse": 22.391203703703702
+    },
+    {
+      "id": "pavlova-dom-v-lesu",
+      "reason": "visual-duplicate",
+      "keep": "import-0361e4a5656a300b",
+      "mse": 19.611689814814813
+    },
+    {
+      "id": "korotovskaya-shale",
+      "reason": "visual-duplicate",
+      "keep": "import-03efa321dd27409a",
+      "mse": 39.65046296296296
+    },
+    {
+      "id": "import-0b4516a1155dd1b6",
+      "reason": "visual-duplicate",
+      "keep": "import-5994612f6ae34de8",
+      "mse": 115.00057870370371
+    },
+    {
+      "id": "import-4289761db1cfcff8",
+      "reason": "visual-duplicate",
+      "keep": "import-1360855510baa95e",
+      "mse": 190.5596064814815
+    },
+    {
+      "id": "lapin-dom-u-ozera",
+      "reason": "visual-duplicate",
+      "keep": "import-1a0c423d5c852d45",
+      "mse": 31.645833333333332
+    },
+    {
+      "id": "import-1faafdcb28f832f5",
+      "reason": "visual-duplicate",
+      "keep": "zaytseva-dom-v-lesu",
+      "mse": 74.77141203703704
+    },
+    {
+      "id": "import-f68485c27591dbd6",
+      "reason": "visual-duplicate",
+      "keep": "import-256c4e79885c122c",
+      "mse": 15.255208333333334
+    },
+    {
+      "id": "import-2791c2049936a971",
+      "reason": "visual-duplicate",
+      "keep": "smirnova-derevo",
+      "mse": 183.1869212962963
+    },
+    {
+      "id": "import-ab5aa2b7f93fd6aa",
+      "reason": "visual-duplicate",
+      "keep": "import-2d0c011ae200fd1f",
+      "mse": 91.81712962962963
+    },
+    {
+      "id": "import-2d0c011ae200fd1f",
+      "reason": "visual-duplicate",
+      "keep": "meshkov-lake-house",
+      "mse": 114.70659722222223
+    },
+    {
+      "id": "import-4fc1c5022a328587",
+      "reason": "visual-duplicate",
+      "keep": "import-48058126bd504d54",
+      "mse": 172.5445601851852
+    },
+    {
+      "id": "import-4e5df1379ef1744d",
+      "reason": "visual-duplicate",
+      "keep": "import-49249d66c8a7db60",
+      "mse": 188.14814814814815
+    },
+    {
+      "id": "import-f1a4ae1c7ae103fa",
+      "reason": "visual-duplicate",
+      "keep": "import-49249d66c8a7db60",
+      "mse": 164.60069444444446
+    },
+    {
+      "id": "import-fc0cd47d035c1b6b",
+      "reason": "visual-duplicate",
+      "keep": "import-49249d66c8a7db60",
+      "mse": 208.16782407407408
+    },
+    {
+      "id": "import-946739541d302f46",
+      "reason": "visual-duplicate",
+      "keep": "import-50d1097d92016169",
+      "mse": 117.51099537037037
+    },
+    {
+      "id": "import-e2c7c383582b4a37",
+      "reason": "visual-duplicate",
+      "keep": "import-6e22b0125e791cbc",
+      "mse": 70.47280092592592
+    },
+    {
+      "id": "import-ee7326f2b4fa2f3d",
+      "reason": "visual-duplicate",
+      "keep": "import-a51296eb9235b988",
+      "mse": 0.6053240740740741
+    },
+    {
+      "id": "import-be4007408b1fe9eb",
+      "reason": "visual-duplicate",
+      "keep": "import-ad5913c0e1128677",
+      "mse": 104.5613425925926
+    },
+    {
+      "id": "import-ce2c7d0c4ad24de4",
+      "reason": "visual-duplicate",
+      "keep": "import-ad5913c0e1128677",
+      "mse": 165.57986111111111
+    },
+    {
+      "id": "knyazev-ulitsa",
+      "reason": "visual-duplicate",
+      "keep": "import-b931357ac22eaef3",
+      "mse": 23.200810185185187
+    },
+    {
+      "id": "import-d5e8a5d31dbec23e",
+      "reason": "visual-duplicate",
+      "keep": "import-bbcb3a3e55e6f3f2",
+      "mse": 193.85590277777777
+    },
+    {
+      "id": "import-de372bd575aaf5f2",
+      "reason": "visual-duplicate",
+      "keep": "import-bbcb3a3e55e6f3f2",
+      "mse": 219.34895833333334
+    },
+    {
+      "id": "import-f7e6334ee6508c79",
+      "reason": "visual-duplicate",
+      "keep": "import-c4c4eed606b2f291",
+      "mse": 3.372685185185185
+    },
+    {
+      "id": "merkulova-kuhnya",
+      "reason": "visual-duplicate",
+      "keep": "import-d4501b196101ef4e",
+      "mse": 35.39699074074074
+    },
+    {
+      "id": "import-d972009f0acec760",
+      "reason": "visual-duplicate",
+      "keep": "rossoshansky-gostinaya",
+      "mse": 32.855324074074076
+    },
+    {
+      "id": "kondratenko-interer",
+      "reason": "visual-duplicate",
+      "keep": "import-f62e22b3cc132414",
+      "mse": 22.34201388888889
+    },
+    {
+      "id": "import-baa91ff2f796f855",
+      "reason": "same-project",
+      "keep": "import-9f7270fd7fb6c545"
+    }
+  ],
+  "retained": 890
+}

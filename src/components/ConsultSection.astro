@@ -6,16 +6,19 @@ interface Props { context?: string }
 const { context = '' } = Astro.props;
 const site = (await getEntry('settings', 'site'))!.data;
 ---
-<section id="consult" class="wrap section" aria-labelledby="consult-title">
-  <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[5fr_6fr] md:gap-16 md:pt-12">
-    <div class="flex flex-col gap-3">
-      <p class="t-overline t-signal m-0">Консультация</p>
-      <h2 id="consult-title" class="t-h2">Поможем выбрать за 15 минут</h2>
+<section id="consult" class="consult-home" aria-labelledby="consult-title">
+  <div class="consult-home__inner">
+    <div class="consult-home__copy">
+      <p class="t-overline m-0">Консультация</p>
+      <h2 id="consult-title" class="t-h2">Поможем выбрать <span>за 15 минут</span></h2>
       <p class="t-lead">Бесплатная консультация: подберём старт, профессию и формат обучения. Перезвоним или напишем в течение дня.</p>
-      <p class="t-small m-0 text-muted">Удобнее сразу в мессенджере? <a href={site.telegramBot} class="link">Напишите в Telegram</a>{site.vk && <> или <a href={site.vk} class="link">ВКонтакте</a></>}.</p>
     </div>
-    <div>
-      <LeadForm context={context} />
-    </div>
+    <details class="consult-home__action">
+      <summary class="btn btn-primary btn-lg">Записаться на консультацию <span aria-hidden="true">↗</span></summary>
+      <div class="consult-home__form">
+        <p class="t-small m-0 text-muted">Удобнее сразу в мессенджере? <a href={site.telegramBot} class="link">Напишите в Telegram</a>{site.vk && <> или <a href={site.vk} class="link">ВКонтакте</a></>}.</p>
+        <LeadForm context={context} />
+      </div>
+    </details>
   </div>
 </section>

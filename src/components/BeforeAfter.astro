@@ -6,7 +6,7 @@ const { after, before, altAfter, altBefore, caption, class: cls = '' } = Astro.p
 const id = `ba-${Math.random().toString(36).slice(2, 8)}`;
 ---
 <figure class={`m-0 flex flex-col gap-2.5 ${cls}`}>
-  <div class="ba relative aspect-[4/5] select-none overflow-hidden rounded-card sm:aspect-[4/3] md:aspect-auto md:h-full md:min-h-[440px]" data-ba style="--pos: 50%">
+  <div class="ba media-frame relative aspect-[4/5] select-none sm:aspect-[4/3] md:aspect-auto md:h-full md:min-h-[440px]" data-ba style="--pos: 50%">
     <Image src={after} alt={altAfter} widths={[480, 960, 1440]} sizes="(min-width: 1024px) 50vw, 100vw" class="pointer-events-none absolute inset-0 h-full w-full object-cover" />
     <Image src={before} alt={altBefore} widths={[480, 960, 1440]} sizes="(min-width: 1024px) 50vw, 100vw" class="ba-before pointer-events-none absolute inset-0 h-full w-full object-cover" />
     <span aria-hidden="true" class="pointer-events-none absolute bottom-0 top-0 w-[3px] -translate-x-1/2 bg-ink" style="left: var(--pos)"></span>

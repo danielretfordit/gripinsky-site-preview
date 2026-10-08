@@ -1,36 +1,45 @@
 ---
 import { getCollection, render } from 'astro:content';
-interface Props { page: 'viz' | 'home'; title?: string; id?: string }
-const { page, title = 'Вопросы и сомнения', id = 'faq' } = Astro.props;
+interface Props { page: 'viz' | 'home'; title?: string; id?: string; spacing?: 'section' | 'subsection'; ids?: string[]; compact?: boolean }
+const { page, title = 'Вопросы и сомнения', id = 'faq', spacing = 'section', ids, compact = false } = Astro.props;
 const GROUPS = [
   { id: 'money', label: 'Деньги' },
   { id: 'start', label: 'Перед стартом' },
   { id: 'study', label: 'Учёба' },
   { id: 'after', label: 'После курса' },
 ] as const;
-const items = (await getCollection('faq', (f) => f.data.pages.includes(page))).sort((a, b) => a.data.order - b.data.order);
+const items = (await getCollection('faq', (f) => f.data.pages.includes(page) && (!ids || ids.includes(f.id))))
+  .sort((a, b) => ids ? ids.indexOf(a.id) - ids.indexOf(b.id) : a.data.order - b.data.order);
 const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await render(f)).Content })));
 ---
-<section id={id} class="wrap section" aria-labelledby={`${id}-title`}>
+<section id={id} class={`wrap ${spacing}`} aria-labelledby={`${id}-title`}>
   <div class="grid gap-10 md:grid-cols-[4fr_8fr] md:gap-14">
-    <div class="flex flex-col gap-3 md:sticky md:top-24 md:self-start">
-      <span class="t-overline">Вопросы</span>
+    <div class="flex flex-col gap-3 md:sticky md:top-[calc(var(--header-h)+16px)] md:self-start">
+      <span class="t-overline">{compact ? 'Перед стартом' : 'Вопросы'}</span>
       <h2 id={`${id}-title`} class="t-h2" tabindex="-1">{title}</h2>
       <p class="m-0 text-muted">Не нашли ответ? <a href="#consult" class="link">Спросите на консультации</a> или в <a href="https://t.me/Academy3D_bot" class="link">Telegram</a>.</p>
     </div>
-    <div class="flex max-w-[820px] flex-col gap-10">
-      {GROUPS.map((g) => {
+    <div class:list={["flex max-w-[820px] flex-col", compact ? "gap-0" : "gap-10"]}>
+      {compact ? rendered.map(({ f, Content }, index) => (
+        <details class:list={["faq group border-b border-line py-1", { "border-t": index === 0 }]}>
+          <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
+            {f.data.question}
+            <span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>
+        </details>
+      )) : GROUPS.map((g) => {
         const list = rendered.filter((r) => r.f.data.group === g.id);
         return list.length > 0 && (
           <div class="flex flex-col">
-            <h3 class="t-overline mb-1 !text-[14px]">{g.label}</h3>
+            <h3 class="t-overline mb-1">{g.label}</h3>
             {list.map(({ f, Content }) => (
               <details class="faq group border-b border-line py-1">
-                <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[17px] font-semibold md:text-[19px]">
+                <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
                   {f.data.question}
                   <span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <div class="faq-answer pb-5 text-[16px] leading-relaxed text-muted md:text-[17px]"><Content /></div>
+                <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>
               </details>
             ))}
           </div>

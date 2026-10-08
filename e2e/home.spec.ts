@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { noCookieBanner, collectErrors, expectIslandsHydrated, waitScrollEnd, headingClearOfSticky } from './helpers';
 
-// Главная: кнопки первого экрана, полоса шагов, выбор по программе, тест подбора (все ветки)
+// Главная: структура, навигация, выбор по программе и тест подбора
 let errors: string[];
 test.beforeEach(async ({ page }) => {
   await noCookieBanner(page);
@@ -66,16 +66,20 @@ test('ветка «Пока не знаю»: «Подобрать со спец�
   expect(await page.evaluate(() => sessionStorage.getItem('gr-quiz-summary'))).toContain('не уверен');
 });
 
-test('полоса шагов под первым экраном: три шага с ценами ведут к разделам направления', async ({ page }) => {
-  const strip = page.getByRole('region', { name: 'Путь в 3D-визуализации' });
-  const steps = strip.getByRole('listitem');
-  await expect(steps).toHaveCount(3);
-  for (const [i, hash] of [[0, '#base'], [1, '#profession'], [2, '#package']] as const) {
-    await expect(steps.nth(i).getByRole('link')).toHaveAttribute('href', `/courses-page/visualization${hash}`);
-    await expect(steps.nth(i)).toContainText(/от\s\d[\d\s]*₽/);
-  }
-  await steps.first().getByRole('link').click();
-  await expect(page).toHaveURL(/\/courses-page\/visualization#base$/);
+test('баннер и порядок блоков сохранены, сообщество открывается', async ({ page }) => {
+  await expect(page.locator('#home-title')).toHaveText(/Курсы 3D-графики с нуля до заказов/i);
+  await expect(page.locator('.hero__img')).toBeVisible();
+  await expect(page.locator('.stats-ribbon__item')).toHaveCount(5);
+  const ids = await page.locator('main h1[id], main h2[id]').evaluateAll((headings) => headings.map((el) => el.id));
+  const ordered = ['home-title', 'dir-title', 'ai-title', 'hw-title', 'why-title', 'club-title', 'hr-title', 'about-title', 'faq-title'];
+  const positions = ordered.map((id) => ids.indexOf(id));
+  expect(positions.every((position) => position >= 0)).toBe(true);
+  expect(positions).toEqual([...positions].sort((a, b) => a - b));
+  expect(await page.locator('.stats-ribbon').evaluate((el) => !!(el.compareDocumentPosition(document.querySelector('#directions')!) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+  await expect(page.locator('#ai-title')).toHaveText(/ИИ или умри/i);
+  await page.getByRole('link', { name: 'Узнать о сообществе' }).click();
+  await expect(page).toHaveURL(/\/club$/);
+  await expect(page.getByRole('heading', { level: 1, name: /растём в 3D вместе/i })).toBeVisible();
 });
 
 test('«По программе»: плитка программы открывает каталог с фильтром', async ({ page }) => {

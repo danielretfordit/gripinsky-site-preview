@@ -1,8 +1,9 @@
 import { Fragment } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { useStore } from '@nanostores/preact';
-import { $pkg, initFromUrl, packageUrl, afterIslandsHydrated, openCheckout } from '../stores/package';
-import { quote, availableAddons, summarize, type Catalog } from '../lib/pricing';
+import { $pkg, initFromUrl, packageUrl, afterIslandsHydrated } from '../stores/package';
+import { addCourses } from '../stores/cart';
+import { supportOf, quote, availableAddons, summarize, type Catalog } from '../lib/pricing';
 import { reachGoal } from '../lib/analytics';
 import { rub, sp, Gift, CheckBox } from './ui';
 
@@ -29,7 +30,7 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
   };
   const checkout = () => {
     reachGoal('package_checkout', { sum: q.total, items: q.items.join(',') });
-    openCheckout({ kind: 'package' });
+    addCourses(q.lines.filter((l) => l.kind === 'item').map((l) => l.id), { support: supportOf(pkg.tariff), tariff: pkg.tariff });
   };
   const copy = async () => {
     const url = packageUrl(pkg);
@@ -66,17 +67,17 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
       <div class="flex flex-col gap-3 border-y border-line py-5 md:col-span-2 md:flex-row md:flex-wrap md:items-center md:gap-x-5 md:gap-y-3 md:py-7" aria-hidden="true" data-formula>
         {formula.map((f, i) => (
           <Fragment key={f.label}>
-            {i > 0 && <span class="hidden text-[22px] text-muted md:inline">+</span>}
+            {i > 0 && <span class="t-h3 hidden text-muted md:inline">+</span>}
             <span class="flex items-baseline justify-between gap-3 md:min-w-0 md:flex-1 md:flex-col md:justify-start md:gap-1">
-              <span class="text-[15px] text-muted">{f.label}</span>
-              <b class={`whitespace-nowrap text-[18px] md:text-[20px] ${f.gift ? 'font-semibold' : ''}`}>{f.value}</b>
+              <span class="t-small text-muted">{f.label}</span>
+              <b class={`t-title whitespace-nowrap ${f.gift ? 'font-semibold' : ''}`}>{f.value}</b>
             </span>
           </Fragment>
         ))}
-        <span class="hidden text-[22px] text-muted md:inline">=</span>
+        <span class="t-h3 hidden text-muted md:inline">=</span>
         <span class="flex flex-col gap-1 pt-2 md:flex-[1.3] md:pt-0">
-          <b class="self-start border-b-2 border-lime text-[clamp(32px,3vw,44px)] font-[750] leading-[1.05] tracking-[-0.02em]">{rub(q.total)}</b>
-          <span class="text-[14px] text-muted">или {sp(q.monthly)}&nbsp;₽/мес{q.savings > 0 ? `, выгода ${rub(q.savings)}` : ''}</span>
+          <b class="t-num self-start border-b-2 border-lime">{rub(q.total)}</b>
+          <span class="t-small text-muted">или {sp(q.monthly)}&nbsp;₽/мес{q.savings > 0 ? `, выгода ${rub(q.savings)}` : ''}</span>
         </span>
       </div>
       <div class="flex flex-col gap-6">
@@ -84,9 +85,9 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
           <span class="inline-flex items-center gap-2 text-muted"><Gift /><span class="t-overline">Подарок к профессии</span></span>
           <span class="flex-1">
             <b>{prof.gift.name}</b>
-            <span class="block text-[15px] text-muted">{giftTexts[pkg.prof]}</span>
+            <span class="t-small block text-muted">{giftTexts[pkg.prof]}</span>
           </span>
-          {prof.gift.value && <span class="whitespace-nowrap text-[15px]"><s class="text-muted">{rub(prof.gift.value)}</s> <b class="text-ink">0&nbsp;₽</b></span>}
+          {prof.gift.value && <span class="t-small whitespace-nowrap"><s class="text-muted">{rub(prof.gift.value)}</s> <b class="text-ink">0&nbsp;₽</b></span>}
         </div>
 
         {addons.length > 0 && (
@@ -100,8 +101,8 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
                     <input type="checkbox" class="sr-only" checked={on} onChange={() => toggleAddon(a.id)} />
                     <span class="mt-0.5"><CheckBox on={on} /></span>
                     <span class="flex flex-col">
-                      <span class="text-[15px] font-semibold">{a.name} <span class="font-medium text-muted">+{rub(a.price!)}</span></span>
-                      <span class="text-[13px] text-muted">{addonTexts[a.id]}</span>
+                      <span class="t-small font-semibold">{a.name} <span class="font-medium text-muted">+{rub(a.price!)}</span></span>
+                      <span class="t-caption text-muted">{addonTexts[a.id]}</span>
                     </span>
                   </label>
                 );
@@ -112,12 +113,12 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
       </div>
 
       <aside id="package-summary" aria-labelledby="pkg-title" class="flex flex-col gap-4 rounded-card border border-line bg-surface p-5 sm:p-6">
-        <span id="pkg-title" class="text-[17px] font-bold">Ваш пакет</span>
+        <span id="pkg-title" class="t-title">Ваш пакет</span>
 
         <div class="flex flex-col gap-2">
           <span class="t-overline">Курсы</span>
           {courses.map((l) => (
-            <div key={l.id} class="grid grid-cols-[1fr_auto] gap-3 border-b border-line pb-2 text-[15px]">
+            <div key={l.id} class="t-small grid grid-cols-[1fr_auto] gap-3 border-b border-line pb-2">
               <span class="text-ink-2">{l.name}</span><b class="whitespace-nowrap">{rub(l.price)}</b>
             </div>
           ))}
@@ -126,17 +127,17 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
         <div class="flex flex-col gap-2">
           <span class="t-overline">Подарки и бонусы</span>
           {bonuses.map((l) => (
-            <div key={l.id} class="grid grid-cols-[1fr_auto] gap-3 text-[15px]">
+            <div key={l.id} class="t-small grid grid-cols-[1fr_auto] gap-3">
               <span class="text-ink-2">{l.name}</span>
-              <span class="whitespace-nowrap">{l.value ? <s class="mr-2 text-[13px] text-muted">{rub(l.value)}</s> : null}<b class="text-ink">{l.kind === 'included' ? 'входит' : 'в подарок'}</b></span>
+              <span class="whitespace-nowrap">{l.value ? <s class="t-caption mr-2 text-muted">{rub(l.value)}</s> : null}<b class="text-ink">{l.kind === 'included' ? 'входит' : 'в подарок'}</b></span>
             </div>
           ))}
         </div>
 
-        <div class="flex flex-col gap-1.5 border-y border-line py-3 text-[15px]">
+        <div class="t-small flex flex-col gap-1.5 border-y border-line py-3">
           {q.tariffApplied ? (
             <span class="flex items-baseline justify-between gap-3">
-              <span>Формат: <b>{tariff.name}</b> <a href="#base-format" class="link-muted ml-1 text-[14px]">изменить</a></span>
+              <span>Формат: <b>{tariff.name}</b> <a href="#base-format" class="link-muted t-small ml-1">изменить</a></span>
               <b class="whitespace-nowrap">{tariff.extra ? `+${rub(tariff.extra)}` : 'включено'}</b>
             </span>
           ) : (
@@ -145,14 +146,14 @@ export default function PackageSummary({ cat, addonTexts, giftTexts, installment
         </div>
 
         <div class="flex flex-col gap-1 border-t border-line pt-4" aria-live="polite" aria-atomic="true">
-          <span class="flex items-baseline justify-between"><span class="text-[17px] font-semibold">Итого</span><span class="text-[30px] font-[750] tracking-[-0.02em]">{rub(q.total)}</span></span>
-          <span class="text-[15px] text-muted">или {sp(q.monthly)}&nbsp;₽/мес в рассрочку на {cat.installmentMonths} мес.</span>
-          {q.savings > 0 && <span class="text-[15px] font-semibold text-muted">Ваша выгода {rub(q.savings)} по сравнению с покупкой по отдельности</span>}
+          <span class="flex items-baseline justify-between"><span class="t-title font-semibold">Итого</span><span class="t-num">{rub(q.total)}</span></span>
+          <span class="t-small text-muted">или {sp(q.monthly)}&nbsp;₽/мес в рассрочку на {cat.installmentMonths} мес.</span>
+          {q.savings > 0 && <span class="t-small font-semibold text-muted">Ваша выгода {rub(q.savings)} по сравнению с покупкой по отдельности</span>}
         </div>
 
-        <button type="button" class="btn btn-primary btn-lg btn-block" onClick={checkout}>Оформить пакет</button>
-        <span class="text-center text-[13px] leading-snug text-muted">Дальше выберете способ оплаты: картой, частями или в рассрочку. {installmentNote}</span>
-        <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[15px]">
+        <button type="button" class="btn btn-primary btn-lg btn-block" onClick={checkout}>Добавить в корзину</button>
+        <span class="t-caption text-center leading-snug text-muted">В корзине можно изменить состав, затем перейти к оплате. {installmentNote}</span>
+        <div class="t-small flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
           <a href="#consult" class="link">Бесплатная консультация</a>
           <button type="button" onClick={copy} class="min-h-11 border-0 bg-transparent p-0 font-semibold text-muted">{copied ? 'Ссылка скопирована' : 'Скопировать ссылку на пакет'}</button>
         </div>

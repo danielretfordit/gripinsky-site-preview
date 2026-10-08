@@ -1,60 +1,166 @@
 ---
 import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
-import StepHeader from '../StepHeader.astro';
-import icon3ds from '../../assets/brand/icon-3dsmax.png';
-import iconCorona from '../../assets/brand/icon-corona.png';
-import akopyan from '../../assets/works/akopyan-kreslo.jpg';
-import chaukina from '../../assets/works/chaukina-skorpion.jpg';
-import merkulova from '../../assets/works/merkulova-kuhnya.jpg';
-import { rub } from '../../lib/format';
-
-const c = async (id: string) => (await getEntry('courses', id))!.data;
-const [m1, m2, v3, ai] = await Promise.all(['modeling1', 'modeling2', 'vizualization3', 'ai'].map(c));
-const cards = [
-  { stage: 'С нуля', title: 'Моделирование в 3ds Max', img: akopyan, imgAlt: 'Кожаное кресло, модель ученицы', badge: 'Модель ученицы Карины Акопян', icons: [icon3ds], course: m1, gift: null, href: '/modeling1' },
-  { stage: 'Углубляемся', title: 'Сложное моделирование', img: chaukina, imgAlt: 'Кресло в форме скорпиона, модель ученицы', badge: 'Модель ученицы Ирины Чаукиной', icons: [icon3ds], course: m2, gift: 'С базой в подарок: Анимация в 3ds Max', href: '/modeling2' },
-  { stage: 'Финальный рендер', title: 'Визуализация в Corona', img: merkulova, imgAlt: 'Кухня с островом, рендер ученицы', badge: 'Рендер ученицы Оксаны Меркуловой', icons: [icon3ds, iconCorona], course: v3, gift: null, href: '/vizualization3', pos: '50% 55%' },
+import { workViews } from '../../lib/works';
+const works = await workViews();
+const examples = works.pick(['import-0a29e7f4e4aafe80', 'import-186cda06db19a48c', 'rossoshansky-gostinaya']);
+const courses = await Promise.all(['modeling1', 'modeling2', 'vizualization3'].map(async id => (await getEntry('courses', id))!));
+const stages = [
+ { title: 'Старт с нуля', text: 'Знакомитесь с интерфейсом 3ds Max, навигацией и устройством сцены.', example: null, fit: 'contain', topics: ['Интерфейс', 'Навигация', 'Простые объекты'], result: 'Понимаете, как устроена программа, и готовы создать первый объект.' },
+ { title: 'Первые модели', text: 'Пропадает страх перед программой. Создаёте первые предметы и мебель по референсам.', example: examples[0], fit: 'contain', topics: ['3ds Max', 'Форма', 'Референсы'], result: '42 модели в практике первого уровня.' },
+ { title: 'Сложное моделирование', text: 'Можете смоделировать то, что видите. Выбираете удобный инструмент для сложных форм и мягкой мебели.', example: examples[1], fit: 'contain', topics: ['Топология', 'Сглаживание', 'Мягкая мебель'], result: 'Ещё 62 модели. Всего 104 модели в практике базы.' },
+ { title: 'Визуализации в Corona', text: 'Создаёте красивый рендер: собираете свет, материалы и ракурс в законченный кадр.', example: examples[2], fit: 'cover', topics: ['Corona', 'Свет', 'Материалы', 'Камера'], result: 'Готовые визуализации с разбором в курсе Corona.' },
+ { title: 'Готовые учебные проекты', text: 'Соединяете моделирование, свет, материалы и подачу в законченных сценах.', example: works.work('filatov-interer'), fit: 'cover', topics: ['Сборка сцены', 'Рендер', 'Постобработка'], result: '7 визуализаций по итогам базы. Дальше можно выбирать профессию.' },
 ];
 ---
-<section id="base" class="wrap section" aria-labelledby="base-title">
-  <div class="flex flex-col gap-[var(--space-head)]">
-    <StepHeader step={1} chip="Старт здесь" note="без базы курсы профессий будут слишком сложными" title="База:" accent="с неё начинают все" id="base-title"
-      lead="Один курс, три этапа: от первого запуска 3ds Max до фотореалистичного рендера в Corona, плюс нейросети в работе. 230 уроков, доступ на год." />
-
-    <div class="snap-row md:!grid md:!grid-flow-row md:!grid-cols-3 md:!gap-[var(--gap-grid)]">
-      {cards.map((k) => (
-        <article class="flex flex-col gap-4">
-          <div class="relative aspect-[16/10] overflow-hidden rounded-[4px]">
-            <Image src={k.img} alt={k.imgAlt} widths={[480, 720, 960]} sizes="(min-width: 1024px) 33vw, 85vw" class="h-full w-full object-cover" style={k.pos ? `object-position:${k.pos}` : ''} />
-            <span class="badge-on-image absolute bottom-3 left-3 max-w-[calc(100%-24px)] overflow-hidden text-ellipsis">{k.badge}</span>
-          </div>
-          <div class="flex flex-1 flex-col gap-3">
-            <div class="flex items-center justify-between">
-              <span class="t-overline">{k.stage}</span>
-              <span class="flex gap-2">{k.icons.map((ic, i) => <Image src={ic} alt={i === 0 ? '3ds Max' : 'Corona Renderer'} width={40} height={40} class="h-8 w-8" />)}</span>
-            </div>
-            <h3 class="t-title text-[22px]">{k.title}</h3>
-            <p class="t-small m-0 text-muted">{k.course.description}</p>
-            <div class="border-l-2 border-line-strong pl-3 text-[15px] leading-snug"><b class="text-muted">Результат:</b> {k.course.outcomes[0].charAt(0).toLowerCase() + k.course.outcomes[0].slice(1)}</div>
-            {k.gift && <span class="flex items-center gap-2 text-[15px] text-ink-2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>{k.gift}</span>}
-            <span class="t-meta">{k.course.meta}</span>
-            <details class="mt-auto border-t border-line pt-2">
-              <summary class="inline-flex min-h-11 items-center text-[15px] font-semibold text-ink">Программа курса <span class="details-arrow ml-1.5">↓</span></summary>
-              <ol class="m-0 mt-1 flex flex-col gap-1.5 pl-5 text-[15px] text-ink-2">{k.course.blocks.map((b) => <li>{b}</li>)}</ol>
-              <a href={k.href} class="link mt-2 inline-block text-[15px]">Страница курса →</a>
-            </details>
-          </div>
-        </article>
-      ))}
+<section id="base" class="wrap section base-route" aria-labelledby="base-title">
+  <header class="head">
+    <p class="t-overline">Шаг 02 / База и дополнительные курсы</p>
+    <h2 id="base-title" class="t-h2" tabindex="-1">Освойте <span class="t-accent">базу 3D</span></h2>
+    <p class="t-lead">Постепенно усложняете задачи: от первого объекта в 3ds Max до законченной сцены в Corona.</p>
+  </header>
+  <div class="base-route__start"><span class="t-overline">00 / Старт с нуля</span><p class="t-small">Опыт в 3D не нужен. Начинаете с интерфейса и простых объектов.</p><span class="t-meta">230 уроков / Доступ на год</span></div>
+  <div class="base-mobile-steps">{stages.slice(1,4).map((stage,i)=><article>
+    <div class="base-mobile-steps__row">{stage.example && <Image src={stage.example.image} alt={stage.example.alt} width={240} class="base-mobile-steps__image" />}<div><p class="t-overline">0{i+1} / {i===0?'С нуля':i===1?'Углубляемся':'Финальный рендер'}</p><h3 class="t-title">{stage.title}</h3><p class="t-small">{stage.text}</p><p class="t-small"><strong>{stage.result}</strong></p></div></div>
+    <a href={courses[i].data.legacyPath} class="link t-small">Страница курса →</a><details><summary class="link t-small">Темы программы ↓</summary><ul class="t-small">{courses[i].data.blocks.map(block=><li>{block}</li>)}</ul></details>
+  </article>)}</div>
+  <p class="base-explorer__hint t-small">Нажмите на этап, чтобы посмотреть работу и результат.</p>
+  <div class="base-explorer" data-base-explorer>
+    <div class="base-explorer__nav" role="tablist" aria-label="Этапы базы" aria-orientation="vertical">
+      {stages.map((stage, i) => <button type="button" role="tab" id={`base-tab-${i}`} aria-controls={`base-panel-${i}`} aria-selected={i === 1 ? 'true' : 'false'} tabindex={i === 1 ? 0 : -1} data-stage={i}>
+        <span class="t-overline">0{i}</span><span class="t-title">{stage.title}</span><span class="base-explorer__dot" aria-hidden="true"></span><span class="base-explorer__arrow" aria-hidden="true">↓</span>
+      </button>)}
     </div>
-
-    <div class="flex flex-col gap-3 border-y border-line py-5 sm:flex-row sm:items-center sm:gap-6">
-      <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[4px] border border-line-strong font-mono text-[15px] text-ink" aria-hidden="true">ИИ</span>
-      <p class="m-0 flex-1 text-ink-2">
-        <b class="text-ink">Курс «ИИ в 3D» входит в базу.</b> 3D-специалист сегодня работает с нейросетями: вы с первого месяца учитесь генерировать референсы, модели, текстуры и окружение.
-        Отдельно курс стоит {rub(ai.price)}. <a href="/ai" class="link">Программа курса</a>
-      </p>
+    <div class="base-explorer__panels">
+      {stages.map((stage, i) => <article role="tabpanel" id={`base-panel-${i}`} aria-labelledby={`base-tab-${i}`} hidden={i !== 1} tabindex="0">
+        <header><p class="t-overline">Этап 0{i} / 04</p><h3 class="t-h3">{stage.title}</h3><p class="t-body">{stage.text}</p></header>
+        {stage.example ? <figure><div class="media-frame media-frame--card"><Image src={stage.example.image} alt={stage.example.alt} widths={[480, 720, 1200]} sizes="(min-width: 900px) 60vw, 90vw" class="base-route__image" style={`object-fit:${stage.fit};object-position:${stage.example.focus}`} /></div><figcaption class="t-caption">Работа ученика: {stage.example.author}</figcaption></figure> : <div class="base-explorer__zero"><span class="t-h2">Начинаете с нуля</span><p class="t-body">Опыт в 3D не нужен. Всё необходимое разбираете в первых уроках.</p></div>}
+        <footer><div><p class="t-overline">Темы</p><ul class="base-explorer__topics">{stage.topics.map(topic => <li class="t-small">{topic}</li>)}</ul></div><div><p class="t-overline">На выходе</p><p class="t-title">{stage.result}</p></div></footer>
+        {i > 0 && i < 4 && <a class="base-explorer__course link t-small" href={courses[i-1].data.legacyPath}>Программа и страница курса →</a>}
+      </article>)}
     </div>
   </div>
+  <div class="base-route__result">
+    <div><p class="t-overline">Результат базы</p><h3 class="t-title">Уже умеете моделировать<br/>и создавать визуализации</h3></div>
+    <dl><div><dt>104</dt><dd>модели в практике</dd></div><div><dt>7</dt><dd>визуализаций</dd></div></dl>
+    <a href="#profession" class="link">Дальше выбрать профессию ↓</a>
+  </div>
+  <div class="base-route__program">
+    <details><summary class="t-title">Что входит в программу базы <span aria-hidden="true">↓</span></summary>
+      <div class="base-route__syllabus">{courses.map(course => <div><h4 class="t-title">{course.data.title}</h4><ol class="t-small">{course.data.blocks.map(block => <li>{block}</li>)}</ol><a href={`/${course.id}`} class="link t-small">Подробнее о курсе →</a></div>)}</div>
+    </details>
+    <div id="ai" class="base-route__ai"><span class="base-route__ai-mark t-h3" aria-hidden="true">+ ИИ</span><div><p class="t-body"><strong>Курс «ИИ в 3D» входит в базу.</strong> Нейросети в работе с первого дня.</p><a href="/ai" class="link t-small">Программа курса ↗</a><p class="t-small text-muted">Анимация в 3ds Max в подарок.</p></div></div>
+  </div>
+  <slot />
 </section>
+<style>
+.base-route .head { max-width: 900px; }
+.base-route__start { display:flex; flex-wrap:wrap; align-items:center; gap:12px 28px; padding:20px 0; border-top:1px solid var(--color-line); }
+.base-route__start p { margin:0; color:var(--color-ink-2); flex:1; min-width:240px; }
+.base-route__start > span:last-child { color:var(--color-muted); }
+.base-route__stages { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-grid); list-style:none; margin:20px 0 32px; padding:0; }
+.base-route__stages > li { min-width:0; }
+.base-route__marker { display:flex; align-items:center; gap:16px; margin-bottom:20px; color:var(--color-muted); }
+.base-route__line { height:1px; flex:1; background:var(--color-line-strong); }
+.base-route__stages figure { margin:0 0 20px; }
+.base-route__image { width:100%; height:100%; object-fit:cover; }
+.base-route__stages figcaption { margin-top:10px; color:var(--color-muted); }
+.base-route__stages h3 { margin:0 0 12px; }
+.base-route__stages p { color:var(--color-ink-2); margin:0; max-width:400px; }
+.base-route__result { display:grid; grid-template-columns:1.3fr 1fr; align-items:center; gap:24px 40px; padding:32px; background:var(--color-surface); border:1px solid var(--color-line); border-radius:var(--radius-card); }
+.base-route__result p { margin:0 0 14px; color:var(--color-muted); }
+.base-route__result h3 { margin:0; }
+.base-route__result dl { display:flex; gap:40px; margin:0; }
+.base-route__result dt { font-size:var(--type-stat); line-height:1; font-weight:750; letter-spacing:-.04em; }
+.base-route__result dd { font-size:var(--type-small); color:var(--color-muted); margin:12px 0 0; }
+.base-route__result a { grid-column:1 / -1; justify-self:start; }
+.base-route__program { margin-top:28px; }
+.base-route__program summary { display:flex; align-items:center; justify-content:space-between; cursor:pointer; min-height:48px; border-bottom:1px solid var(--color-line); padding-block:12px; list-style:none; }
+.base-route__program summary::-webkit-details-marker { display:none; }
+.base-route__program details[open] summary span { transform:rotate(180deg); }
+.base-route__syllabus { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-grid); padding:24px 0; }
+.base-route__syllabus h4 { margin:0 0 16px; }
+.base-route__syllabus ol { padding-left:20px; color:var(--color-ink-2); }
+.base-route__syllabus li { margin-bottom:8px; }
+.base-route__bonus { margin:20px 0 0; color:var(--color-ink-2); }
+@media(max-width:767px) {
+ .base-route__stages { grid-template-columns:1fr; gap:32px; }
+ .base-route__stages > li { position:relative; padding-left:28px; border-left:1px solid var(--color-line-strong); }
+ .base-route__marker { margin-left:-29px; gap:12px; }
+ .base-route__marker > span:first-child { background:var(--color-bg); padding-block:6px; }
+ .base-route__line { background:transparent; }
+ .base-route__result { grid-template-columns:1fr; padding:24px; }
+ .base-route__result dl { gap:32px; flex-wrap:wrap; }
+ .base-route__syllabus { grid-template-columns:1fr; }
+}
+</style>
+
+<script>
+ document.querySelectorAll<HTMLElement>('[data-base-explorer]').forEach(root => {
+  const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+  const activate = (index: number) => { tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; }); panels.forEach((panel, i) => panel.hidden = i !== index); };
+  tabs.forEach((tab, i) => { tab.addEventListener('click', () => { activate(i); if (matchMedia('(max-width:899px)').matches) panels[i].scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); }); tab.addEventListener('keydown', event => { let next = i; if (['ArrowDown','ArrowRight'].includes(event.key)) next = (i + 1) % tabs.length; else if (['ArrowUp','ArrowLeft'].includes(event.key)) next = (i - 1 + tabs.length) % tabs.length; else if (event.key === 'Home') next = 0; else if (event.key === 'End') next = tabs.length - 1; else return; event.preventDefault(); activate(next); tabs[next].focus(); }); });
+ });
+</script>
+<style>
+.base-explorer__hint { margin:20px 0 0; color:var(--color-ink-2); }
+.base-explorer__arrow { display:none; }
+.base-explorer__panels article { scroll-margin-top:calc(var(--header-h) + 64px); }
+.base-explorer { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:32px; margin:24px 0 32px; align-items:start; }
+.base-explorer__nav { display:flex; flex-direction:column; }
+.base-explorer__nav button { display:grid; grid-template-columns:32px minmax(0,1fr) 8px; gap:16px; align-items:center; min-height:96px; padding:24px 20px; border:0; border-top:1px solid var(--color-line); background:transparent; color:var(--color-ink-2); text-align:left; cursor:pointer; }
+.base-explorer__nav button:last-child { border-bottom:1px solid var(--color-line); }
+.base-explorer__nav button[aria-selected="true"] { background:var(--color-surface); color:var(--color-ink); }
+.base-explorer__dot { width:6px; height:6px; border-radius:50%; background:transparent; }
+[aria-selected="true"] .base-explorer__dot { background:var(--color-lime); }
+.base-explorer__nav button:focus-visible { outline:2px solid var(--color-lime); outline-offset:-2px; }
+.base-explorer__panels { min-width:0; }
+.base-explorer__panels article { background:var(--color-surface); border-radius:var(--radius-card); overflow:hidden; }
+.base-explorer__panels article[hidden] { display:none; }
+.base-explorer__panels header { padding:28px 32px; }
+.base-explorer__panels header > p:first-child { color:var(--color-muted); margin:0 0 16px; }
+.base-explorer__panels h3 { margin:0 0 16px; }
+.base-explorer__panels header .t-body { margin:0; color:var(--color-ink-2); }
+.base-explorer__panels figure { margin:0; }
+.base-explorer__panels figcaption { padding:12px 32px; color:var(--color-muted); }
+.base-explorer__panels footer { display:grid; grid-template-columns:1fr 1fr; gap:24px; padding:24px 32px 32px; }
+.base-explorer__panels footer > div + div { border-left:1px solid var(--color-line); padding-left:24px; }
+.base-explorer__panels footer .t-overline { color:var(--color-muted); margin:0 0 16px; }
+.base-explorer__topics { list-style:none; margin:0; padding:0; display:flex; gap:8px; flex-wrap:wrap; }
+.base-explorer__topics li { padding:8px 12px; border:1px solid var(--color-line-strong); }
+.base-explorer__zero { padding:48px 32px; border-block:1px solid var(--color-line); }
+.base-explorer__zero p { color:var(--color-ink-2); }
+@media(max-width:899px) { .base-explorer__nav button { grid-template-columns:32px minmax(0,1fr) 32px; } .base-explorer__dot { display:none; } .base-explorer__arrow { display:grid; width:32px; height:32px; place-items:center; border:1px solid var(--color-line-strong); border-radius:50%; } .base-explorer__nav button[aria-selected="true"] .base-explorer__arrow { color:var(--color-bg); background:var(--color-lime); border-color:var(--color-lime); } .base-explorer { grid-template-columns:1fr; gap:20px; } .base-explorer__nav button { min-height:56px; padding:14px 16px; } }
+@media(max-width:560px) { .base-explorer__panels header { padding:24px 20px; } .base-explorer__panels figcaption { padding:12px 20px; } .base-explorer__panels footer { grid-template-columns:1fr; padding:24px 20px; } .base-explorer__panels footer > div + div { border-left:0; border-top:1px solid var(--color-line); padding:20px 0 0; } }
+</style>
+
+<style>
+.base-mobile-steps { display:none; }
+@media(max-width:899px) { .base-explorer,.base-explorer__hint { display:none; } .base-mobile-steps { display:block; margin:20px 0 28px; } .base-mobile-steps article { border-top:1px solid var(--color-line); padding:20px 0; } .base-mobile-steps__row { display:grid; grid-template-columns:96px minmax(0,1fr); gap:16px; align-items:start; } .base-mobile-steps__image { width:96px; height:72px; object-fit:contain; background:var(--color-surface); border-radius:var(--radius-media); } .base-mobile-steps p { margin:0 0 10px; color:var(--color-ink-2); } .base-mobile-steps h3 { margin:0 0 10px; } .base-mobile-steps summary { cursor:pointer; min-height:44px; display:flex; align-items:center; } .base-mobile-steps ul { color:var(--color-ink-2); padding-left:20px; } }
+</style>
+
+<style>
+@media(min-width:900px) {
+.base-explorer { gap:24px; }
+.base-explorer__nav button { min-height:72px; padding:16px; }
+.base-explorer__panels header { padding:18px 24px; }
+.base-explorer__panels header > p:first-child { margin-bottom:8px; }
+.base-explorer__panels h3 { margin-bottom:8px; }
+.base-explorer__panels .media-frame { width:min(100%,560px); margin-inline:auto; }
+.base-explorer__panels figure { background:var(--color-surface); }
+.base-explorer__panels figcaption { padding:8px 24px; }
+.base-explorer__panels footer { padding:16px 24px; gap:16px; }
+.base-explorer__panels footer p { margin:0 0 8px; }
+.base-explorer__topics li { padding:4px 8px; }
+}
+.base-explorer__course { display:inline-flex; padding:0 24px 20px; }
+</style>
+
+<style>
+.base-route__ai { display:grid; grid-template-columns:120px minmax(0,1fr); gap:24px; align-items:center; border-top:1px solid var(--color-line); padding-top:24px; margin-top:24px; scroll-margin-top:calc(var(--header-h) + 64px); }
+.base-route__ai-mark { display:grid; place-items:center; min-height:88px; color:var(--color-ink); background:var(--color-surface); border:1px solid var(--color-line-strong); border-radius:2px; }
+.base-route__ai p { margin:0 0 8px; }
+.base-route__ai p:last-child { margin:8px 0 0; }
+@media(max-width:560px) { .base-route__ai { grid-template-columns:72px minmax(0,1fr); gap:16px; } .base-route__ai-mark { min-height:72px; } }
+</style>

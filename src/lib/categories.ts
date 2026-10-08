@@ -31,4 +31,5 @@ export const TYPE_LABEL: Record<Course['type'], string> = { course: 'Курс', 
 /** Куда ведёт карточка курса */
 export const courseHref = (id: string, c: Course) => c.landing ?? (id === 'ai' ? '/ai' : c.legacyPath);
 
-export const isListed = (c: Course) => c.status === 'active';
+export const isBaseCourse = (c: Course) => c.type === 'package' && c.legacyPath === '/courses-page/visualization';
+export const isListed = (c: Course) => c.status === 'active' && (c.type !== 'package' || isBaseCourse(c));

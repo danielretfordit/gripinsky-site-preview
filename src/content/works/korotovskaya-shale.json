@@ -10,5 +10,6 @@
     "render-dnya"
   ],
   "order": 4,
-  "focus": "70% 42%"
+  "focus": "70% 42%",
+  "inGallery": false
 }

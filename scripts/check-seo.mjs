@@ -7,7 +7,7 @@ import { join, relative } from 'node:path';
 const ROOT = 'dist/client';
 const SITE = 'https://gripinsky.ru';
 const files = [];
-const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) { if (!['_astro', 'og', 'keystatic'].includes(f)) walk(p); } else if (f.endsWith('.html')) files.push(p); } };
+const walk = (d) => { for (const f of readdirSync(d)) { const p = join(d, f); if (statSync(p).isDirectory()) { if (!['_astro', 'og', 'keystatic', 'design'].includes(f)) walk(p); } else if (f.endsWith('.html')) files.push(p); } };
 walk(ROOT);
 
 const dec = (s) => s?.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
@@ -28,7 +28,7 @@ const titles = new Map(), descs = new Map();
 const noindex = new Set();
 
 for (const f of files) {
-  const url = ('/' + relative(ROOT, f).replace(/\.html$/, '')).replace(/^\/index$/, '/');
+  const url = ('/' + relative(ROOT, f).replace(/\.html$/, '')).replace(/\/index$/, '') || '/';
   const html = readFileSync(f, 'utf8');
   if (/http-equiv="refresh"/i.test(html)) continue; // редиректы
   const robots = meta(html, /<meta name="robots" content="([^"]*)"/) ?? '';

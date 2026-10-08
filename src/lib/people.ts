@@ -19,5 +19,5 @@ export async function personMap(): Promise<Map<string, PersonView>> {
 
 export async function visibleWorks() {
   const people = await personMap();
-  return (await getCollection('works', (w) => people.has(w.data.author.id))).sort((a, b) => a.data.order - b.data.order);
+  return (await getCollection('works', (w) => people.has(w.data.author.id) && !w.data.isProcessImage)).sort((a, b) => a.data.order - b.data.order);
 }

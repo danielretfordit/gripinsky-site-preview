@@ -3,7 +3,6 @@ import { getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import BeforeAfter from '../components/BeforeAfter.astro';
-import Checkout from '../islands/Checkout';
 import { rub, sp } from '../lib/format';
 import { courseLd, ogHref } from '../lib/seo';
 import meshRaw from '../assets/ai/mesh-raw.jpg';
@@ -44,19 +43,19 @@ const ld = [
   ogImage={ogHref('ai')}
   consultContext="Курс ИИ в 3D"
 >
-  <section class="wrap pb-14 pt-5 md:pb-20 md:pt-7" aria-labelledby="ai-title">
+  <section class="wrap pt-5 md:pt-7" aria-labelledby="ai-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="grid items-center gap-8 md:grid-cols-2 md:gap-12">
       <div class="flex flex-col gap-5">
         <span class="t-overline t-signal">Онлайн-курс</span>
         <h1 id="ai-title" class="t-display normal-case">ИИ в 3D: <span class="t-accent">нейросети для <span class="whitespace-nowrap">3D-моделей</span></span></h1>
-        <p class="t-quote m-0 text-muted">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+        <p class="t-quote m-0">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
         <p class="t-lead">Весь пайплайн: от референса и 3D-модели по фото до рендера в интерьере. Нейросети помогают с черновыми этапами, а вы проверяете геометрию и доводите результат в 3ds Max.</p>
         <div class="flex flex-col gap-3 sm:flex-row">
           <a href="#tariffs" class="btn btn-primary btn-lg">Выбрать тариф, от {rub(ai.price)}</a>
           <a href="#program" class="btn btn-secondary btn-lg">Программа</a>
         </div>
-        <p class="m-0 text-[15px] text-ink-2">Курс входит в «Базу 3D-визуализатора». <a href="/courses-page/visualization#base" class="link">Подробнее о базе</a></p>
+        <p class="t-small m-0 text-ink-2">Курс входит в «Базу 3D-визуализатора». <a href="/courses-page/visualization#base" class="link">Подробнее о базе</a></p>
       </div>
       <BeforeAfter after={meshScene} before={meshRaw} altAfter="Модель с чистой сеткой в интерьере" altBefore="Модель с кривой сеткой после генерации" caption="Потяните ползунок: модель после нейросети и она же после доработки в интерьере" />
     </div>
@@ -108,9 +107,9 @@ const ld = [
   <section class="wrap section" aria-labelledby="who-title">
     <h2 id="who-title" class="t-h2 mb-8">Кому <span class="t-accent">подходит</span></h2>
     <ul class="m-0 grid list-none gap-4 p-0 md:grid-cols-3">
-      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-muted">Подключите нейросети к привычному пайплайну и сохраните ручной контроль над геометрией и подачей.</p></li>
-      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Новичкам без моделирования</h3><p class="t-small m-0 text-muted">Понятная точка входа, но для сильного результата нужна база. <a href="/modeling1" class="link">Начать с 3ds Max</a>.</p></li>
-      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Выпускникам академии</h3><p class="t-small m-0 text-muted">Добавьте новые инструменты к навыкам моделирования и визуализации, которые уже используете.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Практикующим 3D-художникам</h3><p class="t-small m-0 text-ink-2">Подключите нейросети к привычному пайплайну и сохраните ручной контроль над геометрией и подачей.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Новичкам без моделирования</h3><p class="t-small m-0 text-ink-2">Понятная точка входа, но для сильного результата нужна база. <a href="/modeling1" class="link">Начать с 3ds Max</a>.</p></li>
+      <li class="card flex flex-col gap-2 p-6"><h3 class="t-title">Выпускникам академии</h3><p class="t-small m-0 text-ink-2">Добавьте новые инструменты к навыкам моделирования и визуализации, которые уже используете.</p></li>
     </ul>
   </section>
 
@@ -119,23 +118,23 @@ const ld = [
     <div class="grid gap-5 md:grid-cols-2">
       <article class="card flex flex-col gap-4 p-6 md:p-8">
         <h3 class="t-h3">Самостоятельно</h3>
-        <span><b class="text-[34px]">{rub(ai.price)}</b> <span class="text-muted">разовый платёж</span></span>
+        <span><b class="t-num">{rub(ai.price)}</b> <span class="text-muted">разовый платёж</span></span>
         <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
           <li>Все 6 шагов пайплайна в записи</li><li>Демо-модель для практики</li><li>Доступ 6 месяцев</li><li class="text-muted">Без проверки и поддержки</li>
         </ul>
-        <button type="button" class="btn btn-secondary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai', name: 'ИИ в 3D: Самостоятельно', price: ai.price })}>Купить</button>
+        <button type="button" class="btn btn-secondary btn-lg mt-auto" data-cart-add="ai" disabled><span data-cart-label>В корзину</span></button>
       </article>
       <article class="flex flex-col gap-4 rounded-card bg-surface-2 p-6 md:p-8">
         <span class="chip self-start !bg-bg !text-muted">Популярный</span>
         <h3 class="t-h3">Лаборатория</h3>
-        <span><b class="text-[34px]">{rub(lab.price)}</b> <span class="text-muted">или {sp(Math.ceil(lab.price / months))}&nbsp;₽/мес</span></span>
+        <span><b class="t-num">{rub(lab.price)}</b> <span class="text-muted">или {sp(Math.ceil(lab.price / months))}&nbsp;₽/мес</span></span>
         <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
           <li>Всё из тарифа «Самостоятельно»</li><li>Обучение в группе</li><li>Живой стрим с разбором полного цикла</li><li class="text-muted">Уточните дату ближайшего потока</li>
         </ul>
-        <button type="button" class="btn btn-primary btn-lg mt-auto" data-buy={JSON.stringify({ kind: 'course', id: 'ai-lab', name: lab.title, price: lab.price })}>Выбрать «Лабораторию»</button>
+        <button type="button" class="btn btn-primary btn-lg mt-auto" data-cart-add="ai-lab" disabled><span data-cart-label>В корзину</span></button>
       </article>
     </div>
-    <p class="mt-4 text-[15px] text-muted">Оплата картой, через СБП, в рассрочку и частями, счёт для юрлиц и ИП.</p>
+    <p class="t-small mt-4 text-muted">Оплата картой, через СБП, в рассрочку и частями, счёт для юрлиц и ИП.</p>
   </section>
 
   <section class="wrap section" aria-labelledby="aifaq-title">
@@ -144,17 +143,14 @@ const ld = [
       <div class="flex max-w-[820px] flex-col">
         {faq.map(([q, a]) => (
           <details class="faq group border-b border-line py-1">
-            <summary class="flex min-h-16 items-center justify-between gap-6 py-3 text-[18px] font-bold md:text-[20px]">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span></summary>
-            <p class="mb-5 mt-0 text-muted">{a}</p>
+            <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span></summary>
+            <p class="mb-5 mt-0 text-ink-2">{a}</p>
           </details>
         ))}
       </div>
     </div>
   </section>
 
-  <Fragment slot="after-main">
-    <Checkout client:load months={months} telegramBot={site.telegramBot} />
-  </Fragment>
 </Base>
 
 <style>
@@ -169,36 +165,32 @@ const ld = [
     border-bottom: 1px solid var(--color-line);
   }
   .ai-roadmap__progress { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-  .ai-roadmap__number { color: var(--color-ink); font-size: 27px; font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
-  .ai-roadmap__progress .t-overline { font-size: 12px; }
+  .ai-roadmap__number { color: var(--color-ink); font-size: var(--type-number); font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
   .ai-roadmap__track { width: 100%; height: 2px; margin-top: 2px; background: rgb(236 236 230 / .14); }
   .ai-roadmap__track span { display: block; height: 100%; background: var(--color-lime); }
   .ai-roadmap__copy, .ai-roadmap__result { min-width: 0; }
   .ai-roadmap__copy { display: flex; flex-direction: column; gap: 8px; }
-  .ai-roadmap__copy > .t-overline, .ai-roadmap__result > .t-overline { font-size: 12px; }
-  .ai-roadmap__copy h3 { margin: 0; font-size: clamp(20px, 2.1vw, 28px); font-weight: 700; line-height: 1.16; letter-spacing: -.02em; }
+  .ai-roadmap__copy h3 { margin: 0; font-size: var(--type-card-title); font-weight: 700; line-height: 1.2; letter-spacing: -.01em; }
   .ai-roadmap__copy p { max-width: 660px; margin: 0; color: var(--color-ink-2); line-height: 1.5; }
   .ai-roadmap__result { grid-column: 2; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
   .ai-roadmap__result p { margin: 0; color: var(--color-ink); font-weight: 650; line-height: 1.4; }
-  .ai-roadmap__tools { color: var(--color-muted); font-family: var(--font-mono); font-size: 12px; line-height: 1.4; }
-  .ai-tools { display: flex; flex-direction: column; gap: 6px; margin: 20px 0 0; color: var(--color-muted); font-size: 14px; }
+  .ai-roadmap__tools { color: var(--color-muted); font-family: var(--font-mono); font-size: var(--type-meta); line-height: 1.4; }
+  .ai-tools { display: flex; flex-direction: column; gap: 6px; margin: 20px 0 0; color: var(--color-muted); font-size: var(--type-small); }
   .ai-tools b { color: var(--color-ink-2); font-weight: 600; }
   .ai-outcomes__head { display: flex; max-width: 760px; flex-direction: column; gap: 12px; }
   .ai-outcomes__list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: var(--space-head) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--color-line); }
   .ai-outcomes__list li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--color-line); }
-  .ai-outcomes__n { color: var(--color-muted); font-family: var(--font-mono); font-size: 13px; }
-  .ai-outcomes__list h3 { margin: 0 0 5px; font-size: 18px; font-weight: 700; }
-  .ai-outcomes__list p { margin: 0; color: var(--color-ink-2); font-size: 15px; line-height: 1.45; }
+  .ai-outcomes__n { color: var(--color-muted); font-family: var(--font-mono); font-size: var(--type-meta); }
+  .ai-outcomes__list h3 { margin: 0 0 5px; font-size: var(--type-title); font-weight: 700; }
+  .ai-outcomes__list p { margin: 0; color: var(--color-ink-2); font-size: var(--type-small); line-height: 1.45; }
   @media (min-width: 768px) {
     .ai-roadmap__step { grid-template-columns: 112px minmax(0, 1.5fr) minmax(190px, .7fr); gap: 32px; padding: 28px 0; }
     .ai-roadmap__progress { gap: 9px; }
-    .ai-roadmap__number { font-size: 36px; }
     .ai-roadmap__result { grid-column: auto; align-self: center; padding-left: 24px; border-left: 1px solid var(--color-line); }
     .ai-tools { flex-direction: row; flex-wrap: wrap; gap: 6px 24px; }
     .ai-outcomes__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
     .ai-outcomes__list li { grid-template-columns: 36px minmax(0, 1fr); align-content: start; gap: 14px; padding: 22px 18px 20px 0; border-bottom: 0; }
     .ai-outcomes__list li + li { border-left: 1px solid var(--color-line); padding-left: 20px; }
-    .ai-outcomes__list h3 { font-size: 20px; }
   }
 </style>
 

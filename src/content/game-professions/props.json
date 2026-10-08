@@ -1,0 +1,45 @@
+{
+  "title": "Props Artist",
+  "short": "Художник по игровым предметам",
+  "lead": "Создавайте игровые предметы: от модели до текстур и финальной подачи.",
+  "courses": [
+    "blender",
+    "gamedevlevel1"
+  ],
+  "trials": [
+    "blender_mini",
+    "demo_gamedev"
+  ],
+  "addons": [
+    {
+      "course": "art_pro",
+      "text": "Композиция, свет, цвет и выразительная подача работы."
+    },
+    {
+      "course": "azbukaps",
+      "text": "Photoshop с нуля для обработки изображений и подачи проекта."
+    },
+    {
+      "course": "zbrush0",
+      "text": "Основы скульптинга и детализации моделей в ZBrush."
+    },
+    {
+      "course": "substancepainter",
+      "text": "Текстуры и материалы для игровых моделей.",
+      "alternative": "p_texturegamedev"
+    },
+    {
+      "course": "unrealenginelevel1",
+      "text": "Сборка сцены, освещение и работа в игровом движке."
+    },
+    {
+      "course": "ai",
+      "text": "Нейросети для референсов, моделей и текстур."
+    },
+    {
+      "course": "maya_level1",
+      "text": "Моделирование в Maya для игровых проектов."
+    }
+  ],
+  "order": 1
+}

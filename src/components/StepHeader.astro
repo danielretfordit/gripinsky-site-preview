@@ -9,5 +9,5 @@ const { step, chip, note, title, accent, lead, id } = Astro.props;
     {note && <span class="text-[15px] text-muted">{note}</span>}
   </p>
   <h2 id={id} class="t-h2" tabindex="-1"><span class="sr-only">Шаг {step}. </span>{title} <span class="t-accent">{accent}</span></h2>
-  {lead && <p class="t-lead max-w-[720px]">{lead}</p>}
+  {lead && <p class="t-lead">{lead}</p>}
 </div>

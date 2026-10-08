@@ -1,0 +1,155 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['portrait', 'manifesto'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = Astro.params.variant;
+const method = [
+  { title: 'Понять логику', body: 'Разбираем, почему приём работает, чтобы вы могли принимать решения в собственной сцене.' },
+  { title: 'Сделать своё', body: 'Отрабатываете знания на практических заданиях и собираете работы для портфолио.' },
+  { title: 'Получить разбор', body: 'В форматах с поддержкой педагоги проверяют работы и отвечают на вопросы.' },
+];
+const reviews = [
+  { claim: 'О подходе', text: 'Евгений заложил в меня ценные навыки. Не только моделирования, визуализации, но и самого подхода к поставленной задаче. Что, впоследствии, очень помогло мне в будущей работе по профилю.', author: 'Наталья', role: 'ученица, отзыв в Telegram' },
+  { claim: 'О работах', text: 'Неоднократно заказывала визуализации у выпускников, либо учеников Евгения Грипинского. На любую сложную и нетривиальную задачу всегда подходили творчески и делали все на высоте.', author: 'Дарья Владимировна', role: 'заказчица работ выпускников' },
+  { claim: 'О сообществе', text: 'Отдельная благодарность за группу в тг. Экономия времени космических масштабов. Гораздо удобнее и надежнее с коллегами решать вопросы.', author: 'bitUM', role: 'ученик, отзыв в Telegram' },
+];
+---
+<Base title="Евгений и метод GRIPINSKY | Дизайн-предпросмотр" description="Локальные варианты блока об основателе" noindex consult={false}>
+  <div class="wrap design-intro">
+    <p class="t-overline">Дизайн-предпросмотр · главная пока без изменений</p>
+    <h1>Почему GRIPINSKY: Евгений и его подход</h1>
+    <p>Две версии блока об основателе, его принципе обучения и том, как он воплощён в академии.</p>
+    <nav aria-label="Выбор варианта" class="design-nav">
+      <a href="/design/why/poster">Б · Плакат и список</a>
+      <a class={variant === 'portrait' ? 'selected' : ''} href="/design/founder/portrait">В1 · Портрет и метод</a>
+      <a class={variant === 'manifesto' ? 'selected' : ''} href="/design/founder/manifesto">В2 · Автор и команда</a>
+    </nav>
+  </div>
+
+  {variant === 'portrait' && <section class="wrap founder-portrait" aria-labelledby="founder-title">
+    <figure class="founder-photo">
+      <img src="/images/evgeny-gripinsky-color.webp" alt="Евгений Грипинский" width="764" height="1036" loading="eager" />
+      <figcaption>Евгений Грипинский<br /><span>основатель академии</span></figcaption>
+    </figure>
+    <div class="founder-copy">
+      <p class="eyebrow"><i aria-hidden="true"></i> АВТОР ПОДХОДА</p>
+      <h2 id="founder-title">ЕВГЕНИЙ<br /><em>ГРИПИНСКИЙ</em></h2>
+      <blockquote>«Основная цель занятий: научить вас думать, а не повторять действия»</blockquote>
+      <p>Преподаёт 3D с 2007 года. От индивидуальных занятий по 3ds Max появилась бесплатная энциклопедия 3D, а затем академия с командой педагогов.</p>
+      <div class="founder-links"><a href="/vizualization3_mini">Начать с бесплатного урока ↗</a><a href="https://gripinsky.ru/academy">История академии ↗</a></div>
+    </div>
+    <div class="method-strip" aria-label="Как устроен подход">
+      {method.map((step, i) => <article><span>0{i + 1}</span><h3>{step.title}</h3><p>{step.body}</p></article>)}
+    </div>
+  </section>}
+
+  {variant === 'manifesto' && <section class="wrap founder-manifesto" aria-labelledby="manifesto-title">
+    <div class="manifesto-top">
+      <div class="manifesto-head">
+        <p class="eyebrow"><i aria-hidden="true"></i> ОСНОВАТЕЛЬ АКАДЕМИИ</p>
+        <h2 id="manifesto-title" style="margin:clamp(24px,4vw,58px) 0 30px">ЕВГЕНИЙ<br /><em>ГРИПИНСКИЙ</em></h2>
+        <p class="manifesto-lead">Преподаёт 3D с 2007 года. От индивидуальных занятий до академии, где учат понимать задачу и находить собственное решение.</p>
+      </div>
+      <div class="manifesto-photo"><img src="/images/evgeny-gripinsky-color.webp" alt="Евгений Грипинский" width="764" height="1036" loading="eager" /></div>
+    </div>
+    <div class="manifesto-bottom">
+      <blockquote>«Основная цель занятий: научить вас думать, а не повторять действия»</blockquote>
+      <div class="manifesto-method">
+        {method.map((step, i) => <article><span>0{i + 1}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></article>)}
+      </div>
+    </div>
+    <div class="manifesto-link"><a href="/vizualization3_mini">Посмотреть бесплатный урок ↗</a><a href="/gallery">Работы учеников ↗</a></div>
+  </section>}
+
+  <section class="wrap reviews" aria-labelledby="reviews-title">
+    <div class="reviews-head"><span>СЛОВА УЧЕНИКОВ И ЗАКАЗЧИЦЫ</span><h2 id="reviews-title">НЕ ОБЕЩАНИЯ. <em>ИХ ОПЫТ.</em></h2></div>
+    <div class="reviews-grid">{reviews.map((review) => <figure><p class="review-claim">{review.claim}</p><blockquote>«{review.text}»</blockquote><figcaption><strong>{review.author}</strong><small>{review.role}</small></figcaption></figure>)}</div>
+  </section>
+  <p class="wrap source-note">Фото и дата преподавания предоставлены заказчицей.</p>
+</Base>
+
+<style>
+  .design-intro { padding-top: 24px; padding-bottom: 28px; }
+  .design-intro h1 { margin: 9px 0 7px; font-size: clamp(24px,2.8vw,34px); line-height: 1.15; }
+  .design-intro > p:not(.t-overline) { max-width: 740px; margin: 0; color: var(--color-ink-2); font-size: 15px; }
+  .design-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .design-nav a { border: 1px solid var(--color-line); border-radius: 4px; padding: 10px 18px; color: var(--color-ink); text-decoration: none; }
+  .design-nav a.selected { background: var(--color-lime); border-color: var(--color-lime); color: var(--color-bg); }
+  .eyebrow { display: flex; align-items: center; gap: 12px; color: var(--color-muted); font: 12px var(--font-mono); letter-spacing: .1em; }
+  .eyebrow i { width: 7px; height: 7px; flex: 0 0 7px; background: var(--color-lime); }
+  .founder-portrait { display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); gap: 0 clamp(32px,5vw,80px); border-top: 1px solid var(--color-line); padding-top: 28px; }
+  .founder-photo { position: relative; grid-row: span 2; margin: 0; overflow: hidden; border-radius: 4px; background: var(--color-bg-2); }
+  .founder-photo img { display: block; width: 100%; height: 680px; object-fit: cover; object-position: center 20%; }
+  .founder-photo figcaption { position: absolute; bottom: 0; left: 0; right: 0; padding: 44px 24px 22px; background: linear-gradient(transparent,rgba(0,0,0,.82)); font-weight: 650; }
+  .founder-photo figcaption span { color: var(--color-ink-2); font: 12px var(--font-mono); text-transform: uppercase; }
+  .founder-copy { display: flex; flex-direction: column; align-items: flex-start; }
+  .founder-copy h2 { margin: 30px 0 38px; font-size: clamp(42px,4.8vw,70px); line-height: .97; letter-spacing: -.045em; }
+  .founder-copy h2 em, .manifesto-head h2 em, .reviews-head h2 em { color: var(--color-muted); font-style: normal; }
+  .founder-copy blockquote { max-width: 650px; margin: 0 0 26px; font-size: clamp(24px,2.5vw,36px); line-height: 1.2; letter-spacing: -.025em; }
+  .founder-copy > p:not(.eyebrow) { max-width: 570px; margin: 0; color: var(--color-ink-2); font-size: 16px; line-height: 1.6; }
+  .founder-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: auto; padding-top: 32px; }
+  .founder-links a, .manifesto-link a { color: var(--color-ink); font-weight: 650; text-decoration: none; }
+  .method-strip { grid-column: 1/-1; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; margin-top: 54px; }
+  .method-strip article { border-top: 1px solid var(--color-line); padding-top: 18px; }
+  .method-strip article span, .manifesto-method article span { color: var(--color-muted); font: 12px var(--font-mono); }
+  .method-strip h3 { margin: 22px 0 10px; font-size: 22px; }
+  .method-strip p { max-width: 350px; margin: 0; color: var(--color-ink-2); font-size: 15px; line-height: 1.5; }
+  .founder-manifesto { border-top: 1px solid var(--color-line); padding-top: 28px; }
+  .manifesto-top { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--gap-grid); }
+  .manifesto-head { grid-column: span 2; display: flex; flex-direction: column; }
+  .manifesto-head h2 { margin: 58px 0 30px; font-size: clamp(58px,8vw,112px); line-height: .9; letter-spacing: -.075em; }
+  .manifesto-lead { max-width: 580px; margin: 0 0 4px; color: var(--color-ink-2); font-size: 20px; line-height: 1.45; }
+  .manifesto-photo { grid-column: 3; height: 500px; background: var(--color-bg-2); overflow: hidden; border-radius: 4px; }
+  .manifesto-photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 20%; }
+  .manifesto-bottom { display: grid; grid-template-columns: minmax(0,.85fr) minmax(0,1fr); gap: 48px; margin-top: 54px; border-top: 1px solid var(--color-line); padding-top: 28px; }
+  .manifesto-bottom > blockquote { max-width: 500px; margin: 0; font-size: clamp(26px,3vw,42px); line-height: 1.22; letter-spacing: -.03em; }
+  .manifesto-method article { display: grid; grid-template-columns: 38px 1fr; gap: 18px; border-top: 1px solid var(--color-line); padding: 18px 0; }
+  .manifesto-method article:first-child { border-top: 0; padding-top: 0; }
+  .manifesto-method h3 { margin: 0 0 6px; font-size: 20px; }
+  .manifesto-method p { max-width: 500px; margin: 0; color: var(--color-ink-2); font-size: 15px; line-height: 1.5; }
+  .manifesto-link { display: flex; flex-wrap: wrap; gap: 12px 30px; margin-top: 24px; }
+  .reviews { margin-top: 88px; padding: 56px clamp(24px,4vw,64px) 88px; background: var(--color-bg-2); }
+  .reviews-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 20px 40px; border-top: 1px solid var(--color-line); padding-top: 22px; }
+  .reviews-head span { flex-basis: 100%; color: var(--color-muted); font: 12px var(--font-mono); }
+  .reviews-head h2 { margin: 0; font-size: clamp(34px,4vw,60px); line-height: 1; letter-spacing: -.04em; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; margin-top: 34px; }
+  .reviews figure { display: flex; flex-direction: column; gap: 14px; margin: 0; border-top: 1px solid var(--color-line); padding-top: 18px; }
+  .review-claim { margin: 0; color: var(--color-ink-2); font: 12px var(--font-mono); text-transform: uppercase; }
+  .reviews blockquote { margin: 0 0 12px; font-size: 16px; line-height: 1.55; }
+  .reviews figcaption { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+  .reviews figcaption strong { font-size: 15px; }
+  .reviews figcaption small { color: var(--color-muted); font-size: 12px; }
+  .source-note { padding: 30px 0 80px; color: var(--color-muted); font-size: 12px; }
+  .source-note a { color: var(--color-ink-2); }
+  @media (max-width: 800px) {
+    .founder-portrait { grid-template-columns: minmax(0,.7fr) minmax(0,1fr); gap: 32px; }
+    .founder-photo { grid-row: auto; }
+    .founder-photo img { height: 550px; }
+    .founder-copy h2 { margin: 24px 0; }
+    .founder-copy blockquote { font-size: 26px; }
+    .method-strip { margin-top: 44px; }
+    .manifesto-photo { height: 420px; }
+    .manifesto-head h2 { font-size: clamp(50px,7vw,80px); }
+    .reviews-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 620px) {
+    .design-intro { padding-top: 30px; padding-bottom: 40px; }
+    .founder-portrait, .manifesto-top, .manifesto-bottom { grid-template-columns: 1fr; }
+    .manifesto-head, .manifesto-photo { grid-column: auto; }
+    .founder-photo img { height: 430px; object-position: center 24%; }
+    .founder-copy h2 { font-size: clamp(38px,10vw,52px); }
+    .founder-copy blockquote { font-size: 25px; }
+    .founder-links { margin-top: 8px; }
+    .method-strip { grid-template-columns: 1fr; gap: 22px; }
+    .method-strip h3 { margin-top: 12px; }
+    .manifesto-head h2 { margin: 34px 0 24px; font-size: clamp(50px,12vw,72px); }
+    .manifesto-photo { height: 380px; }
+    .manifesto-bottom { gap: 34px; margin-top: 36px; }
+    .reviews { margin-top: 64px; padding: 32px 20px 64px; }
+    .reviews blockquote { font-size: 15px; }
+  }
+</style>

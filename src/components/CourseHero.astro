@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import HeroActions from './HeroActions.astro';
+import { rub } from '../lib/format';
+import { softwareName } from '../lib/software';
+import interior from '../assets/home/ba-render.jpg';
+interface Props { course: CollectionEntry<'courses'>['data']; id: string }
+const {course:c,id}=Astro.props;
+const hero=id==='interiorpro'?interior:c.cover;
+---
+<section class="course-hero wrap" aria-labelledby="course-title">
+ <div class="course-hero__copy">
+  <p class="t-overline">Курс / {c.level}</p><h1 id="course-title" class="t-display normal-case">{c.title}</h1>
+  <p class="t-lead">{c.short || c.description}</p>
+  <div class="course-hero__facts">{c.lessons && <div><strong class="t-num">{c.lessons}</strong><span class="t-small">{c.meta?.replace(/^\d+\s*/, '') || 'видеоуроков'}</span></div>}<div><strong class="t-title">{c.software.slice(0,2).map(softwareName).join(' + ')}</strong><span class="t-small">инструменты курса</span></div></div>
+  <HeroActions primaryHref="#course-price" primaryLabel={`Выбрать курс, ${rub(c.price)}`} secondaryHref="#course-program" secondaryLabel="Посмотреть программу" />
+  {c.trial && <a href={c.trial} class="link t-small">Сначала бесплатные уроки →</a>}
+ </div>
+ {hero && <figure class="course-hero__picture"><div class="t-overline course-hero__signature"><span>Академия 3D GRIPINSKY</span><span>Курс / 3D</span></div><div class="media-frame media-frame--portrait"><Image src={hero} alt={`Визуальные материалы курса «${c.title}»`} widths={[480,800,1200]} sizes="(min-width:1024px) 40vw, 90vw" loading="eager" fetchpriority="high" /></div><figcaption class="t-small text-muted">{id==='interiorpro'?'Интерьерная визуализация':'Визуальные материалы курса'}<span>{c.software.map(softwareName).join(', ')}</span></figcaption></figure>}
+</section>
+<style>
+ .course-hero{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:48px;padding-top:28px;padding-bottom:40px}.course-hero__copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:24px;min-width:0}.course-hero__copy h1,.course-hero__copy p{margin:0}.course-hero__copy .t-lead{max-width:580px;color:var(--color-ink-2)}.course-hero__facts{display:flex;flex-wrap:wrap;gap:36px}.course-hero__facts>div{display:flex;flex-direction:column;justify-content:center;gap:6px;max-width:100%}.course-hero__actions{display:flex;flex-wrap:wrap;gap:12px}.course-hero__picture{margin:0;min-width:0}.course-hero__signature{display:flex;justify-content:space-between;gap:12px;padding-bottom:14px}.course-hero__picture :global(img){width:100%;height:100%;object-fit:cover}.course-hero__picture figcaption{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding-top:14px}.course-hero__picture figcaption span{max-width:65%}
+ @media(max-width:1023px){.course-hero{gap:28px}.course-hero__copy{gap:20px}.course-hero__facts{gap:24px}}
+ @media(max-width:767px){.course-hero{grid-template-columns:1fr;gap:28px;padding-top:24px}.course-hero__picture .media-frame{aspect-ratio:var(--media-ratio-card)}.course-hero__picture figcaption span{max-width:100%}}
+</style>

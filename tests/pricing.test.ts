@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { quote, basePrice, activeCourseIds, availableAddons, quizResult, selfPriceRule, type Catalog } from '../src/lib/pricing.ts';
+import { quoteSet, quote, basePrice, activeCourseIds, availableAddons, quizResult, selfPriceRule, type Catalog } from '../src/lib/pricing.ts';
 
 // Те же цены, что в src/content (каталог Tilda + решения в docs/decisions.md)
 const cat: Catalog = {
@@ -57,11 +57,11 @@ test('форматы в пакете: Самостоятельный 49 800, Н�
   assert.equal(quote(cat, { base: true, prof: 'int', addons: [], tariff: 'mentor' }).total, 99800);
 });
 
-test('без базы доплата за формат не берётся', () => {
+test('наставничество доступно без базы с одной доплатой', () => {
   const q = quote(cat, { base: false, prof: 'int', addons: [], tariff: 'mentor' });
-  assert.equal(q.total, 29900);
-  assert.equal(q.tariffApplied, false);
-  assert.ok(!q.items.some((i) => i.startsWith('tariff:')));
+  assert.equal(q.total, 69900);
+  assert.equal(q.tariffApplied, true);
+  assert.equal(q.items.filter((i) => i === 'tariff:mentor').length, 1);
 });
 
 test('экстерьеры по умолчанию без ЖК, с ЖК дороже на 43 900', () => {
@@ -111,3 +111,60 @@ test('только база: цена формата прибавляется, �
   assert.equal(q.monthly, 3742);
   assert.ok(!q.items.includes('interiorpro'));
 });
+
+
+test('самостоятельная корзина: 1 / 2 / 3 / 4 курса, скидки и округление', () => {
+  const ids = ['modeling1', 'modeling2', 'vizualization3', 'materialspro'];
+  [0, 15, 20, 22].forEach((pct, i) => {
+    const subset = ids.slice(0, i + 1);
+    const q = quoteSet(cat, { ids: subset, support: 'chat' });
+    assert.equal(q.pct, pct);
+    assert.equal(q.count, i + 1);
+    assert.equal(q.total, subset.reduce((sum, id) => sum + Math.round(cat.courses[id].price * (1-pct/100)), 0));
+  });
+});
+test('пустая корзина, повторы и неизвестные позиции не увеличивают итог', () => {
+  assert.equal(quoteSet(cat, { ids: [], support: 'chat' }).total, 0);
+  const q = quoteSet(cat, { ids: ['modeling1', 'modeling1', '1-2-3lvl', 'unknown', '__proto__', 'constructor'], support: 'chat' });
+  assert.equal(q.count, 1);
+  assert.equal(q.total, 10900);
+});
+test('база и её три уровня не оплачиваются дважды', () => {
+  const q = quoteSet(cat, { ids: ['baza', 'modeling1', 'modeling2', 'vizualization3', 'ai'], support: 'chat' });
+  assert.equal(q.total, 44900);
+  assert.equal(q.count, 1);
+  assert.equal(q.dropped.length, 4);
+  assert.equal(quoteSet(cat, { ids: ['modeling1', 'modeling2', 'vizualization3'], support: 'chat' }).total, 40560);
+});
+test('подарок профессии не продаётся второй раз', () => {
+  const c = { ...cat, courses: { ...cat.courses, marvelous: { id: 'marvelous', name: 'Marvelous', price: 13900, selfPrice: 9900 } } };
+  const q = quoteSet(c, { ids: ['baza', 'interiorpro', 'marvelous'], support: 'chat' });
+  assert.equal(q.total, 74800);
+  assert.deepEqual(q.dropped, ['marvelous']);
+  assert.equal(q.lines.filter((l) => l.id === 'marvelous').length, 1);
+});
+test('подарок базы не продаётся второй раз', () => {
+  const c = { ...cat, courses: { ...cat.courses, anim: { id: 'anim', name: 'Анимация', price: 12900, selfPrice: 8900 } } };
+  const q = quoteSet(c, { ids: ['baza', 'anim'], support: 'chat' });
+  assert.equal(q.total, 44900);
+  assert.deepEqual(q.dropped, ['anim']);
+});
+test('смена поддержки пересчитывает всю корзину', () => {
+  const ids = ['modeling1', 'modeling2'];
+  const q = quoteSet(cat, { ids, support: 'self' });
+  assert.equal(q.total, ids.reduce((sum, id) => sum + Math.round(cat.courses[id].selfPrice * .85), 0));
+});
+
+import { normalizeCart } from '../src/stores/cart.ts';
+test('сохранённая корзина очищает неизвестные ID и согласует поддержку с тарифом', () => {
+  assert.deepEqual(normalizeCart(cat, { ids: ['baza', 'baza', 'constructor', 'unknown', 7], support: 'self', tariff: 'mentor' }), { ids: ['baza'], support: 'self', tariff: 'lite' });
+  assert.deepEqual(normalizeCart(cat, null), { ids: [], support: 'chat' });
+});
+
+ test('наставник оплачивается один раз для нескольких курсов, пустая корзина бесплатна', () => {
+ const ordinary = quoteSet(cat, { ids: ['interiorpro', 'materialspro'], support: 'chat' });
+ const mentor = quoteSet(cat, { ids: ['interiorpro', 'materialspro'], support: 'chat', tariff: 'mentor' });
+ assert.equal(mentor.total, ordinary.total + 40000);
+ assert.equal(mentor.lines.filter(line => line.kind === 'format').length, 1);
+ assert.equal(quoteSet(cat, { ids: [], support: 'chat', tariff: 'mentor' }).total, 0);
+ });

@@ -20,14 +20,14 @@ const ld = articleLd({ headline: post.data.title, description: post.data.descrip
     <Breadcrumbs items={crumbs} class="mb-6" />
     <div class="grid gap-10 md:grid-cols-[8fr_4fr]">
       <div class="post min-w-0 max-w-[760px]">
-        <time datetime={post.data.date.toISOString()} class="text-[14px] text-muted">{post.data.date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
-        <h1 class="t-h2 mb-6 mt-2">{post.data.title}</h1>
+        <time datetime={post.data.date.toISOString()} class="t-overline">{post.data.date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}</time>
+        <h1 class="t-page-title mb-6 mt-2 normal-case">{post.data.title}</h1>
         <Content />
       </div>
       {headings.length > 2 && (
-        <nav aria-label="Содержание статьи" class="hidden self-start md:sticky md:top-6 md:block">
+        <nav aria-label="Содержание статьи" class="hidden self-start md:sticky md:top-[calc(var(--header-h)+16px)] md:block">
           <span class="t-overline">Содержание</span>
-          <ul class="m-0 mt-3 flex list-none flex-col gap-2 p-0 text-[15px]">{headings.filter((h) => h.depth === 2).map((h) => <li><a href={`#${h.slug}`} class="text-ink-2 hover:text-white">{h.text}</a></li>)}</ul>
+          <ul class="t-small m-0 mt-3 flex list-none flex-col gap-2 p-0">{headings.filter((h) => h.depth === 2).map((h) => <li><a href={`#${h.slug}`} class="text-ink-2 hover:text-white">{h.text}</a></li>)}</ul>
         </nav>
       )}
     </div>
@@ -41,12 +41,12 @@ const ld = articleLd({ headline: post.data.title, description: post.data.descrip
 </Base>
 <style is:global>
   .post { overflow-wrap: anywhere; }
-  .post h2 { font-size: clamp(22px, 2.4vw, 28px); font-weight: 800; margin: 32px 0 12px; }
-  .post h3 { font-size: clamp(19px, 2vw, 22px); font-weight: 700; margin: 24px 0 10px; }
-  .post p { margin: 0 0 14px; font-size: 17px; line-height: 1.65; color: var(--color-ink-2); }
+  .post h2 { font-size: var(--type-card-title); font-weight: 800; margin: 32px 0 12px; }
+  .post h3 { font-size: var(--type-title); font-weight: 700; margin: 24px 0 10px; }
+  .post p { margin: 0 0 14px; font-size: var(--type-body); line-height: 1.65; color: var(--color-ink-2); }
   .post ul, .post ol { margin: 0 0 14px; padding-left: 22px; color: var(--color-ink-2); line-height: 1.65; }
   .post p a, .post li a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgb(236 236 230 / 0.45); }
-  .post img { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: 16px; }
+  .post img { display: block; width: 100%; height: auto; margin: 20px 0; border-radius: var(--radius-media); }
   .post hr { margin: 28px 0; border: 0; border-top: 1px solid var(--color-line); }
   .post blockquote { margin: 0 0 14px; padding-left: 16px; border-left: 2px solid var(--color-line-strong); }
 </style>

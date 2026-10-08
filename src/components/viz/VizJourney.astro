@@ -1,0 +1,32 @@
+---
+interface Props { variant?: string }
+const { variant = 'catalog' } = Astro.props;
+const steps = [
+ { n:'00', title:'Ваш старт', text:'Без опыта или с пробелами в знаниях.', height:'90px', href:'#quiz', link:'Определить уровень' },
+ { n:'01', title:'База', text:'Осваиваете 3ds Max, Corona и ИИ. Создаёте модели и первые визуализации.', height:'180px', href:'#base', link:'Посмотреть базу' },
+ { n:'02', title:'Профессия', text:'Применяете навыки в интерьерах, экстерьерах или моделях для стоков.', height:'270px', href:'#profession', link:'Выбрать профессию' },
+ { n:'03', title:'Ваш результат', text:'Учебные работы для портфолио и опыт создания проектов по ТЗ.', height:'360px', href:'/gallery', link:'Работы учеников' },
+];
+---
+<section id="path" class={`wrap section route route--${variant}`} aria-labelledby="path-title">
+ <div class="head"><p class="t-overline">Как устроено обучение</p><h2 id="path-title" class="t-h2">От нуля <span class="text-heading-muted">к результату</span></h2></div>
+ <ol class="route__steps">
+  {steps.map((step,i) => <li class={`route__step ${i===3?'route__step--result':''}`} style={`--step-height:${step.height}`}>
+   <div class="route__visual" aria-hidden="true"><span class="t-meta">{step.n}</span><svg viewBox="0 0 24 24" fill="none"><path d="M5 18 18 5M5 5h13v13" /></svg></div>
+   <div class="route__copy"><span class="route__index t-meta">{step.n} / {i===3?'РЕЗУЛЬТАТ':'ЭТАП'}</span><h3 class="t-title">{step.title}</h3><p class="t-small">{step.text}</p>
+   {i===1 && <div class="route__numbers"><div><strong>104</strong><span class="t-small">модели</span></div><div><strong>7</strong><span class="t-small">визуализаций</span></div></div>}
+   {i===2 && <div class="route__numbers route__numbers--prof"><div><strong>4</strong><span class="t-small">проекта интерьеров</span></div><div><strong>1</strong><span class="t-small">экстерьер по ТЗ</span></div></div>}
+   {i===3 && <p class="route__result t-title">Портфолио.<br/>Практика.<br/>Новые навыки.</p>}
+   <a href={step.href} class="link t-small">{step.link} ↓</a></div>
+  </li>)}
+ </ol>
+ <div class="route__footer"><p class="t-small">Результат зависит от выбранных курсов. Для стоков создаёте свою модель для публикации на 3DDD. На курсе ЖК выполняете проект с генпланом.</p><div><a href="#quiz" class="link t-small">Пройти тест →</a><a href="/courses" class="link t-small">Все курсы →</a></div></div>
+</section>
+
+
+<style>
+.route__numbers { border-top:1px solid var(--color-line-strong); padding-top:18px; }
+.route__numbers strong { color:#d7dfc9; text-shadow:0 0 24px rgb(167 179 156 / .12); }
+.route__numbers > div { border-left:2px solid #839377; padding-left:12px; }
+.route__numbers span { color:var(--color-ink); }
+</style>

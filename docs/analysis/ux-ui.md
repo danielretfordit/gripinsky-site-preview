@@ -1,5 +1,7 @@
 # Разбор дизайна «Академии 3D GRIPINSKY»: страница «3D-визуализация», галерея, черновик главной
 
+Исторический анализ прежнего оформления. Размеры и радиусы кнопок ниже не являются действующими правилами. Актуальная спецификация и замеры рабочей главной от 08.10.2026: [система оформления](../design/system.md#фактические-размеры-кнопок-первого-экрана-главной).
+
 Разбор сделан по методикам design-critique, accessibility-review (WCAG 2.1 AA) и ux-copy. Номера строк даны по файлам:
 - `/private/tmp/claude-501/-Users-aleksandragripinskaa------GRIPINSKY/324ac47a-3d0b-47a5-ae98-7a80b12f1a15/scratchpad/ref/gripinsky-3d-viz/prototype/index.html` (далее **idx**)
 - `.../prototype/gallery.html` (**gal**)

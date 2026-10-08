@@ -122,9 +122,9 @@ export function baseSeparately(cat: Catalog, support: Support): number {
 export function quoteSet(cat: Catalog, input: SetInput): SetQuote {
   const { support } = input;
   const tariff = input.tariff ?? tariffOf(support);
-  const uniq = [...new Set(input.ids)].filter((id) => id === cat.base.id || cat.courses[id]);
+  const uniq = [...new Set(input.ids)].filter((id) => id === cat.base.id || Object.hasOwn(cat.courses, id));
   const hasBase = uniq.includes(cat.base.id);
-  const inBase = new Set(hasBase ? [...cat.base.parts, ...cat.base.included.map((i) => i.id)] : []);
+  const inBase = new Set(hasBase ? [...cat.base.parts, ...cat.base.included.map((i) => i.id), ...cat.base.gifts.map((i) => i.id)] : []);
   const dropped = uniq.filter((id) => inBase.has(id));
   const rest = uniq.filter((id) => id !== cat.base.id && !inBase.has(id));
   const fixed = hasBase ? rest.filter((id) => profOf(cat, id)) : [];
@@ -183,7 +183,7 @@ export function quoteSet(cat: Catalog, input: SetInput): SetQuote {
     savings += list - price;
   }
 
-  if (hasBase) {
+  if (hasBase || (tariff === 'mentor' && count > 0)) {
     const t = cat.tariffs.find((x) => x.id === tariff) ?? cat.tariffs[0];
     lines.push({ id: `tariff:${t.id}`, kind: 'format', name: `Формат: ${t.name}`, price: t.extra });
     items.push(`tariff:${t.id}`);
@@ -202,7 +202,7 @@ export function quoteSet(cat: Catalog, input: SetInput): SetQuote {
     baseHint = { diff: alt.total - total, parts, adds };
   }
 
-  return { lines, total, monthly: Math.ceil(total / cat.installmentMonths), savings, tariffApplied: hasBase, items, support, count, pct, next, dropped, baseHint };
+  return { lines, total, monthly: Math.ceil(total / cat.installmentMonths), savings, tariffApplied: hasBase || (tariff === 'mentor' && count > 0), items, support, count, pct, next, dropped, baseHint };
 }
 
 export function activeCourseIds(cat: Catalog, sel: Pick<Selection, 'prof' | 'courses'>): string[] {

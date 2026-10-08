@@ -1,0 +1,62 @@
+---
+// Three visual compositions share the same learning sequence and content.
+---
+<style is:global>
+/* 01 / Галерея: the student's work anchors each section. */
+.viz-page--gallery .base-route__stages { gap:24px; }
+.viz-page--gallery .base-route__stages > li { padding:0 0 22px; border-bottom:1px solid var(--color-line); }
+.viz-page--gallery .base-route__marker { margin-bottom:12px; }
+.viz-page--gallery .base-route__stages figure { margin-bottom:18px; }
+.viz-page--gallery .base-route__result { background:transparent; border-inline:0; padding-inline:0; }
+.viz-page--gallery .viz-additional__grid article { background:transparent; }
+.viz-page--gallery .viz-start-grid article { border-inline:0; background:transparent; }
+
+/* 02 / Выбор: each step is one coherent panel, with compact additions. */
+.viz-page--catalog .base-route__stages { gap:0; border:1px solid var(--color-line); border-radius:var(--radius-card); background:var(--color-surface); }
+.viz-page--catalog .base-route__stages > li { padding:24px; }
+.viz-page--catalog .base-route__stages > li + li { border-left:1px solid var(--color-line); }
+.viz-page--catalog .base-route__result { border:0; background:transparent; padding-inline:0; }
+.viz-page--catalog .viz-additional__grid { gap:0; border:1px solid var(--color-line); background:var(--color-surface); border-radius:var(--radius-card); }
+.viz-page--catalog .viz-additional__grid article { padding:22px; border-top:0; }
+.viz-page--catalog .viz-additional__grid article + article { border-left:1px solid var(--color-line); }
+.viz-page--catalog .viz-start-grid { gap:16px; }
+
+/* 03 / Маршрут: a quiet numbered rail ties the stages together. */
+.viz-page--journey #path,
+.viz-page--journey #base,
+.viz-page--journey #profession { border-left:1px solid var(--color-line-strong); padding-left:32px; }
+.viz-page--journey .base-route__stages { grid-template-columns:1fr; gap:0; }
+.viz-page--journey .base-route__stages > li { display:grid; grid-template-columns:48px minmax(0,1.2fr) minmax(0,1fr); gap:12px 24px; padding:24px 0; border-top:1px solid var(--color-line); }
+.viz-page--journey .base-route__marker { grid-column:1; grid-row:1 / span 2; align-self:start; margin:0; }
+.viz-page--journey .base-route__line { display:none; }
+.viz-page--journey .base-route__stages figure { grid-column:2; grid-row:1 / span 2; margin:0; }
+.viz-page--journey .base-route__stages h3 { grid-column:3; align-self:end; margin:0; }
+.viz-page--journey .base-route__stages p { grid-column:3; }
+.viz-page--journey .base-route__result { border-inline:0; background:transparent; padding-inline:0; }
+.viz-page--journey .viz-additional__grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.viz-page--journey .viz-start-grid article { background:transparent; }
+
+@media (max-width:1100px) and (min-width:768px) {
+ .viz-page--catalog .viz-additional__grid article:nth-child(3) { border-left:0; }
+ .viz-page--catalog .viz-additional__grid article:nth-child(n+3) { border-top:1px solid var(--color-line); }
+}
+@media (max-width:767px) {
+ .viz-page--catalog .base-route__stages > li { padding:20px; border-left:0; }
+ .viz-page--catalog .base-route__stages > li + li { border-left:0; border-top:1px solid var(--color-line); }
+ .viz-page--catalog .base-route__marker { margin-left:0; }
+ .viz-page--catalog .base-route__marker > span:first-child { background:transparent; }
+ .viz-page--catalog .viz-additional__grid article + article { border-left:0; border-top:1px solid var(--color-line); }
+ .viz-page--gallery .base-route__stages > li { border-left:0; }
+ .viz-page--gallery .base-route__marker { margin-left:0; }
+ .viz-page--journey #path,
+ .viz-page--journey #base,
+ .viz-page--journey #profession { border-left:0; padding-left:20px; }
+ .viz-page--journey .base-route__stages > li { display:grid; grid-template-columns:28px minmax(0,1fr); gap:12px; padding:20px 0; border-left:0; }
+ .viz-page--journey .base-route__marker { grid-column:1; grid-row:1; margin:0; }
+ .viz-page--journey .base-route__marker > span:first-child { background:transparent; }
+ .viz-page--journey .base-route__stages figure { grid-column:2; grid-row:auto; }
+ .viz-page--journey .base-route__stages h3,
+ .viz-page--journey .base-route__stages p { grid-column:2; }
+ .viz-page--journey .viz-additional__grid { grid-template-columns:1fr; }
+}
+</style>

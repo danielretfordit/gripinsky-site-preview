@@ -1,0 +1,152 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['direct', 'editorial'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = Astro.params.variant === 'editorial' ? 'editorial' : 'direct';
+const site = (await getEntry('settings', 'site'))!.data;
+const faqIds = ['s-chego-nachat', 'risovat', 'vremya', 'oplata', 'vozvrat'];
+const faq = (await getCollection('faq', (item) => item.data.pages.includes('home') && faqIds.includes(item.id)))
+  .sort((a, b) => faqIds.indexOf(a.id) - faqIds.indexOf(b.id));
+const questions = await Promise.all(faq.map(async (item) => ({ item, Content: (await render(item)).Content })));
+---
+<Base title={`Низ главной: ${variant === 'direct' ? 'короткий финал' : 'редакционный финал'} | GRIPINSKY`} description="Dev-only макет нижней части главной" noindex consult={false}>
+  <header class="wrap preview-bar">
+    <p class="t-overline">Дизайн-предпросмотр / низ главной</p>
+    <nav aria-label="Варианты нижней части главной">
+      <a href="/design/home-ending/direct" aria-current={variant === 'direct' ? 'page' : undefined}>А / Короткий финал</a>
+      <a href="/design/home-ending/editorial" aria-current={variant === 'editorial' ? 'page' : undefined}>Б / Редакционный финал</a>
+    </nav>
+  </header>
+
+  <div class={`home-end home-end--${variant}`}>
+    <section id="transition" class="wrap bridge" aria-label="Переход от сообщества">
+      <span class="t-overline">Сообщество академии</span>
+      <p class="t-body">Выпускники, ученики и педагоги остаются на связи и делятся опытом.</p>
+    </section>
+
+    <section id="faq" class="wrap faq-section" aria-labelledby="faq-title">
+      <div class="faq-section__intro">
+        <p class="t-overline">Перед стартом</p>
+        <h2 id="faq-title" class="t-h2">Вопросы</h2>
+        <p class="t-body text-ink-2">Не нашли ответ? <a href="#consult" class="link">Спросите на консультации</a> или в <a href={site.telegramBot} class="link">Telegram</a>.</p>
+      </div>
+      <div class="faq-section__list">
+        {questions.map(({ item, Content }) => (
+          <details class="faq-item">
+            <summary class="t-title"><span>{item.data.question}</span><span class="faq-item__mark" aria-hidden="true">+</span></summary>
+            <div class="faq-answer t-body text-ink-2"><Content /></div>
+          </details>
+        ))}
+      </div>
+    </section>
+
+    {variant === 'editorial' && (
+      <section class="wrap editorial-note" aria-labelledby="editorial-note-title">
+        <div>
+          <p class="t-overline">Об академии</p>
+          <h2 id="editorial-note-title" class="t-title">Академия 3D GRIPINSKY: онлайн-школа 3D-графики</h2>
+        </div>
+        <p class="t-body text-ink-2">Онлайн-курсы 3D-моделирования и визуализации для новичков и практикующих специалистов. Учим с нуля профессиям 3D-визуализатора интерьеров и экстерьеров и 3D-художника для игр: от первых шагов в 3ds Max и Blender до учебных проектов для портфолио.</p>
+      </section>
+    )}
+
+    <section id="consult" class="wrap consult-section" aria-labelledby="consult-title">
+      <div class="consult-section__inner">
+        <div class="consult-section__copy">
+          <p class="t-overline">Консультация</p>
+          <h2 id="consult-title" class="t-h2">Поможем выбрать за 15 минут</h2>
+          <p class="t-lead">Бесплатная консультация: подберём старт, профессию и формат обучения. Перезвоним или напишем в течение дня.</p>
+          <p class="t-small text-ink-2">Удобнее сразу в мессенджере? <a href={site.telegramBot} class="link">Напишите в Telegram</a>{site.vk && <> или <a href={site.vk} class="link">ВКонтакте</a></>}.</p>
+        </div>
+        <form class="preview-form" aria-label="Макет формы консультации">
+          <div class="preview-form__fields">
+            <div><label class="t-small" for="preview-name">Как к вам обращаться</label><input class="field" id="preview-name" type="text" autocomplete="off" /></div>
+            <div><label class="t-small" for="preview-contact">Телефон или ник в Telegram</label><input class="field" id="preview-contact" type="text" placeholder="+7… или @ник" autocomplete="off" /></div>
+          </div>
+          <label class="preview-form__consent t-small">
+            <input type="checkbox" />
+            <span>Даю <a href="/soglasie" class="link">согласие на обработку персональных данных</a> и принимаю <a href="/politica" class="link">политику обработки данных</a></span>
+          </label>
+          <button type="button" class="btn btn-primary btn-lg">Записаться на консультацию</button>
+          <p class="t-overline preview-form__note">Макет формы, отправка отключена</p>
+        </form>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .home-end { padding-bottom: 0; }
+  .preview-bar { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 10px 24px; padding-block: 14px; }
+  .preview-bar p { margin: 0; }
+  .preview-bar nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .preview-bar nav a { color: var(--color-muted); font: 500 var(--type-meta)/1.4 var(--font-mono); text-transform: uppercase; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 5px; }
+  .preview-bar nav a[aria-current] { color: var(--color-ink); text-decoration-color: var(--color-ink); }
+  .bridge { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 28px; padding-block: 22px; border-block: 1px solid var(--color-line); background: var(--color-bg-2); }
+  .bridge .t-overline { color: var(--color-ink-2); }
+  .bridge p { max-width: 650px; color: var(--color-ink-2); }
+  .faq-section { padding-top: var(--space-section); }
+  .faq-section__intro { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .faq-section__intro p { margin: 0; }
+  .faq-section__intro .t-body { max-width: 330px; }
+  .faq-section__list { min-width: 0; }
+  .faq-item { border-bottom: 1px solid var(--color-line); }
+  .faq-item:first-child { border-top: 1px solid var(--color-line); }
+  .faq-item summary { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 0; cursor: pointer; }
+  .faq-item__mark { flex: 0 0 auto; color: var(--color-muted); font-weight: 400; transition: transform .2s ease; }
+  .faq-item[open] .faq-item__mark { transform: rotate(45deg); }
+  .faq-answer { padding: 0 28px 18px 0; }
+  .faq-answer :global(p) { margin: 0 0 10px; }
+  .faq-answer :global(ul) { margin: 0 0 10px; padding-left: 22px; }
+  .faq-answer :global(a) { color: var(--color-ink); text-decoration: underline; text-underline-offset: 3px; }
+  .consult-section { padding-top: var(--space-section); padding-bottom: var(--space-section); }
+  .consult-section__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+  .consult-section__copy p { margin: 0; }
+  .consult-section__copy .t-lead { max-width: 560px; }
+  .preview-form { display: flex; flex-direction: column; gap: 16px; }
+  .preview-form__fields { display: grid; gap: 16px; }
+  .preview-form__fields > div { display: flex; flex-direction: column; gap: 8px; }
+  .preview-form__consent { display: flex; align-items: flex-start; gap: 10px; color: var(--color-ink-2); }
+  .preview-form__consent input { flex: 0 0 auto; width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--color-ink); }
+  .preview-form__note { margin: -4px 0 0; }
+  .preview-form button { align-self: flex-start; }
+
+  .home-end--direct .faq-section { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; }
+  .home-end--direct .consult-section__inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; border-top: 1px solid var(--color-line); padding-top: 32px; }
+
+  .home-end--editorial .faq-section__intro { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 10px 30px; margin-bottom: 24px; }
+  .home-end--editorial .faq-section__intro .t-overline { grid-column: 1 / -1; }
+  .home-end--editorial .faq-section__intro .t-body { max-width: 410px; }
+  .home-end--editorial .faq-section__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+  .home-end--editorial .faq-item:nth-child(2) { border-top: 1px solid var(--color-line); }
+  .home-end--editorial .faq-item:last-child { grid-column: 1 / -1; }
+  .editorial-note { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 48px; padding-top: var(--space-sub); padding-bottom: var(--space-sub); border-block: 1px solid var(--color-line); }
+  .editorial-note .t-overline { margin: 0 0 10px; }
+  .editorial-note .t-title { max-width: 360px; }
+  .editorial-note > p { max-width: 780px; margin: 0; }
+  .home-end--editorial .consult-section__inner { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; padding: 36px; background: var(--color-bg-2); }
+  .home-end--editorial .preview-form__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  :global(body:has(.home-end) #site-footer .link-muted),
+  :global(body:has(.home-end) header a[href="/#consult"]),
+  :global(body:has(.home-end) [data-site-cart]) { display: none; }
+  @media (max-width: 900px) {
+    .home-end--direct .faq-section, .home-end--direct .consult-section__inner, .editorial-note, .home-end--editorial .consult-section__inner { grid-template-columns: 1fr; gap: 28px; }
+    .home-end--editorial .consult-section__inner { padding: 28px; }
+  }
+  @media (max-width: 600px) {
+    .bridge { padding-block: 18px; }
+    .faq-section { padding-top: 44px; }
+    .home-end--editorial .faq-section__intro { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .home-end--editorial .faq-section__list { display: block; }
+    .home-end--editorial .faq-item:nth-child(2) { border-top: 0; }
+    .consult-section { padding-top: 48px; }
+    .home-end--editorial .consult-section__inner { margin-inline: -20px; padding: 24px 20px; }
+    .home-end--editorial .preview-form__fields { grid-template-columns: 1fr; }
+  }
+</style>

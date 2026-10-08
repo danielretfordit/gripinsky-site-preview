@@ -1,0 +1,162 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { heroCoverIds } from '../../../lib/hero-covers';
+import HeroWork from '../../../components/HeroWork.astro';
+import HeroActions from '../../../components/HeroActions.astro';
+import StatsRibbon from '../../../components/StatsRibbon.astro';
+import VizJourney from '../../../components/viz/VizJourney.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import SubNav from '../../../components/viz/SubNav.astro';
+import VizProof from '../../../components/viz/VizProof.astro';
+import BaseStep from '../../../components/viz/BaseStep.astro';
+import VisualVariants from '../../../components/viz/VisualVariants.astro';
+import AdditionalCourses from '../../../components/viz/AdditionalCourses.astro';
+import NoRisk from '../../../components/viz/NoRisk.astro';
+import Faq from '../../../components/Faq.astro';
+import VizReviews from '../../../components/viz/VizReviews.astro';
+import Quiz from '../../../islands/Quiz';
+import FormatPicker from '../../../islands/FormatPicker';
+import CourseCard from '../../../components/CourseCard.astro';
+
+import { getEntry } from 'astro:content';
+import { getCatalog } from '../../../lib/catalog';
+import { tariffViews, faqLd } from '../../../lib/views';
+import { courseLd } from '../../../lib/seo';
+import { workViews } from '../../../lib/works';
+import { rub } from '../../../lib/format';
+
+const site = (await getEntry('settings', 'site'))!.data;
+const cat = await getCatalog();
+const [tariffs, faq] = await Promise.all([tariffViews(), faqLd('viz')]);
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
+const wv = await workViews();
+const heroSlides = wv.pick(heroCoverIds);
+const hero = heroSlides[0] ?? wv.work('bolshunova-banya-1') ?? wv.work('bolshunova-ostrov-1')!;
+const st = site.stats;
+const stats = [
+  { value: st.graduates, label: 'выпускников' },
+  { value: st.years, label: 'учим по авторской системе' },
+  { value: st.videos, label: 'видеоуроков' },
+  { value: st.rating, label: 'оценка на Яндекс Картах', href: site.yandexMaps },
+  { value: st.subscribers, label: 'подписчиков на YouTube', href: site.youtube },
+];
+const specialistCourses = await Promise.all(['interiorpro', 'exteriorpro', '3dstock'].map(id => getEntry('courses', id)));
+const professionWorks = [wv.work('filatov-interer'), wv.work('zaytseva-dom-v-lesu'), wv.work('import-186cda06db19a48c')];
+const professionResults = ['4 проекта интерьеров по ТЗ', 'Проект экстерьера по реальному ТЗ', 'Своя модель, подготовленная для публикации на 3DDD'];
+const variant = (Astro.props.variant ?? 'journey') as string;
+const preview = true;
+const baseLd = courseLd({
+  name: 'База 3D-визуализатора',
+  description: 'Онлайн-курс 3D-визуализации с нуля: моделирование в 3ds Max, рендер в Corona, нейросети в работе. 230 уроков, доступ на год.',
+  path: '/courses-page/visualization',
+  prices: [cat.base.price],
+});
+---
+<Base
+  title="Курсы 3D-визуализации онлайн с нуля: 3ds Max и Corona | GRIPINSKY"
+  description="Курсы 3D-визуализации интерьеров и экстерьеров с нуля: 3ds Max, Corona, ИИ в 3D. Учебные проекты для портфолио, специализации и отдельные курсы. База от 29 900 ₽, рассрочка."
+  breadcrumbs={crumbs}
+  jsonLd={[baseLd, faq]}
+  noindex={preview}
+  consultContext="Направление 3D-визуализация"
+>
+  <div class={`viz-page viz-page--${variant}`}>
+  {preview && <nav class="wrap viz-variants" aria-label="Варианты дизайна"><span class="t-overline">3D-визуализация</span>{[['catalog','01 / Лестница'],['journey','02 / Маршрут'],['gallery','03 / Карточки']].map(([key,label]) => <a href={`/design/visualization/${key}`} aria-current={key === variant ? 'page' : undefined}>{label}</a>)}</nav>}
+  <HeroWork work={hero} slides={heroSlides.length ? heroSlides : [hero]} kicker="Направление" id="hero-title">
+    <Breadcrumbs slot="top" items={crumbs} class="[text-shadow:0_1px_8px_rgb(0_0_0/0.6)] [&_a]:!text-ink-2 [&_li]:!text-ink-2" />
+    <h1 slot="title" id="hero-title" class="t-hero">Курсы <span class="viz-hero-term">3D-визуализации</span> <span class="t-accent block">от основ к портфолио</span></h1>
+    <p slot="lead" class="t-lead m-0 max-w-[540px]">Интерьеры, экстерьеры и модели для стоков в 3ds Max и Corona. С нуля или чтобы закрыть пробелы, если вы уже работаете в 3D.</p>
+    <Fragment slot="cta">
+      <p class="t-small viz-hero-price">База от {rub(cat.base.price)}. Доступ на год.</p>
+      <HeroActions primaryHref="#base" primaryLabel="Посмотреть базу" secondaryHref="/vizualization3_mini" secondaryLabel="Бесплатные уроки" secondaryGoal="trial_click" />
+    </Fragment>
+  </HeroWork>
+  <SubNav />
+  <VizJourney variant={variant} />
+  <details id="quiz" class="wrap subsection viz-quiz"><summary class="link t-small">Пройти тест и определить уровень →</summary>
+    <Quiz client:load cat={cat} variant="viz" startOpen telegramBot={site.telegramBot} gamesHref="https://gripinsky.ru/courses-page/gamedev" vizHref="/courses-page/visualization" />
+  </details>
+
+  <BaseStep>
+    <div id="base-format" class="viz-base-purchase">
+      <h3 id="format-title" class="t-title">Формат и стоимость базы</h3>
+      <FormatPicker client:load cat={cat} tariffs={tariffs} trialHref="/vizualization3_mini" compact />
+    </div>
+
+  </BaseStep>
+
+  <section id="profession" class="wrap section viz-specializations" aria-labelledby="profession-title">
+    <div class="head"><p class="t-overline">Шаг 03 / Профессия и дополнительные курсы</p><h2 id="profession-title" class="t-h2">Выберите <span class="t-accent">профессию</span></h2><p class="t-lead">Теперь примените навыки базы в выбранной профессии: создавайте интерьеры, экстерьеры или модели для стоков. Если уже уверенно работаете в 3ds Max и Corona, можно начать с этого шага.</p></div>
+    <div class="profession-selector" role="tablist" aria-label="Выбор профессии">{['Интерьеры','Экстерьеры и ЖК','3D-стоки'].map((label,i)=><button type="button" role="tab" id={`profession-tab-${i}`} aria-controls={`profession-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} class="btn btn-secondary">{label}</button>)}</div>
+    {specialistCourses.map((course,i)=>course && <div class="profession-panel" id={`profession-panel-${i}`} role="tabpanel" aria-labelledby={`profession-tab-${i}`} hidden={i!==0}>
+      <CourseCard course={course} framed work={professionWorks[i] ?? undefined} result={professionResults[i]} />
+
+    </div>)}
+    <a class="link viz-more" href="/courses">Все курсы и отдельные уровни →</a>
+  </section>
+
+  <section id="additional" class="wrap subsection"><AdditionalCourses stage="shared" /></section>
+
+  <section id="works" class="viz-supporting" aria-label="Работы и результаты учеников">
+    <StatsRibbon stats={stats} />
+    <VizProof variant={variant} />
+  </section>
+
+  <VizReviews />
+  <NoRisk />
+  <Faq page="viz" />
+  </div>
+  <VisualVariants />
+
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.profession-selector [role="tab"]').forEach((tab, i, tabs) => { const activate = (index: number) => { tabs.forEach((t,j) => { t.setAttribute('aria-selected', String(index===j)); t.tabIndex=index===j?0:-1; }); document.querySelectorAll<HTMLElement>('.profession-panel').forEach((panel,j)=>panel.hidden=index!==j); }; tab.addEventListener('click',()=>activate(i)); tab.addEventListener('keydown',e=>{ let n=i; if(e.key==='ArrowRight') n=(i+1)%tabs.length; else if(e.key==='ArrowLeft') n=(i-1+tabs.length)%tabs.length; else if(e.key==='Home') n=0; else if(e.key==='End') n=tabs.length-1; else return; e.preventDefault(); activate(n); tabs[n].focus(); }); });
+  import { $quizOpen } from '../../../stores/package';
+  import { reachGoal } from '../../../lib/analytics';
+  document.querySelectorAll<HTMLAnchorElement>('a[href="#quiz"]').forEach(a => a.addEventListener('click', () => { const quiz = document.querySelector<HTMLDetailsElement>('details#quiz'); if (quiz) quiz.open = true; $quizOpen.set(true); }));
+  document.querySelectorAll('[data-open-quiz]').forEach((a) => a.addEventListener('click', () => $quizOpen.set(true)));
+  document.querySelectorAll<HTMLElement>('[data-goal]').forEach((a) => a.addEventListener('click', () => reachGoal(a.dataset.goal!)));
+</script>
+
+<style is:global>
+.profession-selector { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px; } .profession-selector [aria-selected="true"] { border-color:var(--color-lime); color:var(--color-lime); }
+.profession-panel { display:grid; grid-template-columns:minmax(0,1fr); gap:32px; align-items:start; } .profession-panel[hidden] { display:none; } .profession-panel .viz-additional { margin-top:0; } .profession-panel .viz-additional__grid { grid-template-columns:1fr; }
+@media(max-width:767px) { .profession-panel { grid-template-columns:1fr; } }
+
+.viz-page #base, .viz-page #profession { margin-top:48px; padding-top:32px; border-top:1px solid var(--color-line); }
+.viz-base-purchase { margin-top:28px; } .viz-base-purchase h3 { margin:0 0 16px; }
+.viz-supporting { margin-top:48px; border-block:1px solid var(--color-line); } .viz-supporting > summary { min-height:72px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.viz-page .base-route__result { padding:20px 24px; }
+@media(min-width:1024px) { .viz-page .base-route__result { grid-template-columns:1.2fr 1fr auto; } }
+.viz-page .base-route__result br { display:none; }
+.viz-page .base-route__result a { grid-column:auto; }
+
+.viz-hero-term { white-space:nowrap; }
+@media(max-width:820px) { .viz-hero-term { white-space:normal; overflow-wrap:anywhere; } }
+.viz-page .viz-hero-price { flex-basis:100%; margin:0; color:var(--color-ink-2); }
+@media(max-width:560px) { .viz-page .viz-hero-price { flex-basis:auto; } }
+.viz-variants { display:flex; gap:24px; flex-wrap:wrap; padding-block:22px; padding-top:calc(var(--header-h) + 22px); border-bottom:1px solid var(--color-line); }
+.viz-variants a { font-size:var(--type-small); padding-bottom:6px; }
+.viz-variants a[aria-current] { border-bottom:2px solid var(--color-lime); }
+.viz-course-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:var(--gap-grid); }
+.viz-more { display:inline-flex; margin-top:28px; min-height:44px; align-items:center; }
+.viz-learning { margin-top:var(--space-section); display:grid; grid-template-columns:3fr 2fr; gap:56px; border-top:1px solid var(--color-line); padding-top:40px; }
+.viz-learning h2 { margin-top:18px; }
+.viz-learning-list { list-style:none; padding:0; margin:0; }
+.viz-learning-list li { display:grid; grid-template-columns:32px 1fr; gap:16px; padding:24px 0; border-top:1px solid var(--color-line); }
+.viz-learning-list p { color:var(--color-ink-2); margin:10px 0 0; }
+
+.viz-page--catalog .viz-learning { grid-template-columns:1fr; }
+.viz-page--catalog .viz-learning-list { display:grid; grid-template-columns:repeat(2,1fr); gap:0 40px; }
+.viz-page--journey .viz-specializations .head { display:grid; grid-template-columns:3fr 2fr; gap:18px 48px; }
+.viz-page--journey .viz-specializations .head h2 { grid-column:1; }
+.viz-page--journey .viz-specializations .head p:last-child { grid-column:2; grid-row:1 / span 2; }
+@media(max-width:820px) { .viz-course-grid,.viz-learning { grid-template-columns:1fr; } .viz-learning { gap:24px; } .viz-page--catalog .viz-learning-list { grid-template-columns:1fr; }  .viz-page--journey .viz-specializations .head { display:block; } }
+</style>
+
+<style is:global>
+.viz-specializations .catalog-card { display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.viz-specializations .course-art { align-self:start; }
+@media(max-width:767px) { .viz-specializations .catalog-card { grid-template-columns:1fr; } }
+</style>

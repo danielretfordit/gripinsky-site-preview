@@ -33,7 +33,7 @@ const cap = (w: { author: string; title: string; award: string | null }) => `${w
 <div class="sp" data-style={s.id} style={vars}>
   <header class="sp-top">
     <div class="sp-wrap sp-top__in">
-      <a href="/design" class="sp-logo" aria-label="Академия 3D GRIPINSKY"><Image src={logo} alt="GRIPINSKY" width={170} height={23} /></a>
+      <a href="/design" class="sp-logo" aria-label="Академия 3D GRIPINSKY"><Image src={logo} alt="GRIPINSKY" densities={[1, 2, 3, 4]} format="png" width={170} height={23} /></a>
       <nav class="sp-nav" aria-label="Меню прототипа">
         <a href="#s-works">Работы учеников</a><a href="#s-steps">Как учимся</a><a href="#s-price">Цены</a><a href="/design">Отзывы</a>
       </nav>

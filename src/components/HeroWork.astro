@@ -1,46 +1,152 @@
 ---
 // Первый экран: работа ученика на всю ширину, заголовок поверх неё, сверху «метаданные рендера»
+import { heroMobileFocus } from '../lib/hero-covers';
 import { Image } from 'astro:assets';
+import { workCaption } from '../lib/works';
 import type { WorkView } from '../lib/works';
 
-interface Props { work: WorkView; kicker: string; id: string; class?: string }
-const { work, kicker, id, class: cls = '' } = Astro.props;
+interface Props { work: WorkView; slides?: WorkView[]; kicker: string; id: string; class?: string }
+const { work, slides = [work], kicker, id, class: cls = '' } = Astro.props;
+const carousel = slides.length > 1;
+const count = String(slides.length).padStart(2, '0');
 ---
-<section class={`hero ${cls}`} aria-labelledby={id}>
-  <Image src={work.image} alt={work.alt} class="hero__img" style={`object-position:${work.focus}`}
-    widths={[640, 960, 1280, 1600]} sizes="100vw" loading="eager" fetchpriority="high" />
-  <div class="hero__shade" aria-hidden="true"></div>
-  <p class="t-meta hero__meta">
-    <span class="max-md:hidden">Из галереи учеников</span><span>{work.author}, {work.title}</span>{work.soft && <span>{work.soft}</span>}{work.award && <span>{work.award}</span>}
-  </p>
-  <div class="wrap hero__content">
+<section class={`hero ${cls}`} aria-labelledby={id} data-hero-carousel={carousel ? 'true' : undefined}>
+  <div class="hero__copy">
     <slot name="top" />
-    <p class="t-overline t-signal m-0 !text-ink/80">{kicker}</p>
+    <p class="t-overline m-0 !text-ink/80">{kicker}</p>
     <slot name="title" />
     <div class="hero__row">
       <slot name="lead" />
       <div class="hero__cta"><slot name="cta" /></div>
     </div>
   </div>
+  <div class="hero__visual">
+    <div class="hero__signature">
+      <span>АКАДЕМИЯ 3D GRIPINSKY</span>
+      {carousel && <span data-hero-count aria-live="off">01 / {count}</span>}
+    </div>
+    <div class="hero__image" role={carousel ? 'group' : undefined} aria-roledescription={carousel ? 'карусель' : undefined} aria-label={carousel ? 'Работы учеников' : undefined}>
+      {slides.map((slide, index) => (
+        <figure class="hero__slide" data-hero-slide data-active={index === 0 ? 'true' : undefined} aria-hidden={index === 0 ? undefined : 'true'}>
+          <Image src={slide.image} alt={slide.alt} class="hero__img" style={`--hero-focus:${slide.focus};--hero-mobile-focus:${heroMobileFocus[slide.id] ?? slide.focus}`}
+            widths={[640, 960, 1280, 1600]} sizes="(min-width: 1024px) 40vw, 100vw" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} />
+          <figcaption><span>РАБОТА УЧЕНИКА</span>{workCaption(slide)}</figcaption>
+          <span class="hero__image-index" aria-hidden="true">GRIPINSKY / 3D</span>
+        </figure>
+      ))}
+      {carousel && (
+        <div class="hero__controls" aria-label="Переключить работу">
+          <button type="button" data-hero-prev aria-label="Предыдущая работа"><span aria-hidden="true">←</span></button>
+          <button type="button" data-hero-next aria-label="Следующая работа"><span aria-hidden="true">→</span></button>
+        </div>
+      )}
+    </div>
+  </div>
 </section>
 
 <style>
-  .hero { position: relative; isolation: isolate; display: flex; align-items: flex-end; overflow: hidden; min-height: min(calc(100svh - 64px), 720px); }
-  @media (min-width: 768px) { .hero { min-height: min(calc(100svh - 72px), 860px); } }
-  .hero :global(.hero__img) { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; }
-  .hero__shade {
-    position: absolute; inset: 0; z-index: -1;
-    background:
-      linear-gradient(180deg, rgb(14 17 18 / 0.55) 0, transparent 22%),
-      linear-gradient(180deg, transparent 28%, rgb(14 17 18 / 0.62) 62%, var(--color-bg) 100%),
-      linear-gradient(90deg, rgb(14 17 18 / 0.5), transparent 62%);
-  }
-  .hero__content { display: flex; flex-direction: column; gap: 22px; padding-top: 140px; padding-bottom: 40px; }
-  @media (min-width: 1024px) { .hero__content { gap: 28px; padding-bottom: 56px; } }
-  .hero__row { display: flex; flex-direction: column; gap: 22px; }
-  @media (min-width: 1024px) { .hero__row { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 48px; } }
+  /* Выбранный вариант 03: текстовая панель слева, работа ученика справа. */
+  .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); overflow: hidden; min-height: clamp(570px, 48vw, 680px); padding-top: var(--header-h); background: var(--color-bg); }
+  .hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(48px, 7vw, 104px) clamp(32px, 5vw, 76px) 54px var(--site-gutter); background: var(--color-bg); }
+  .hero__visual { display: flex; min-width: 0; height: clamp(570px, 48vw, 680px); min-height: 0; flex-direction: column; }
+  .hero :global(.t-hero) { max-width: 750px; margin: 22px 0 16px; font-size: clamp(42px, 4.45vw, 64px); line-height: 1.02; letter-spacing: -.058em; }
+  .hero :global(.t-lead) { max-width: 570px; color: var(--color-ink-2); font-size: var(--type-lead); line-height: 1.55; }
+  .hero :global(.hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--hero-focus, 50% 50%); }
+  .hero__image { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; margin: 0; overflow: hidden; background: var(--color-surface); }
+  .hero__slide { position: absolute; inset: 0; margin: 0; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility .45s ease; }
+  .hero__slide[data-active] { opacity: 1; visibility: visible; }
+  .hero__slide[aria-hidden="true"] { pointer-events: none; }
+  .hero__image::after { position: absolute; inset: 48% 0 0; background: linear-gradient(transparent, rgb(8 10 10 / .78)); content: ""; pointer-events: none; }
+  .hero__image figcaption { position: absolute; z-index: 1; right: 120px; bottom: 23px; left: 24px; display: flex; flex-direction: column; gap: 4px; color: var(--color-ink); font-size: var(--type-small); }
+  .hero__image figcaption span, .hero__image-index { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; }
+  .hero__image-index { position: absolute; z-index: 1; top: 101px; right: 22px; writing-mode: vertical-rl; }
+  .hero__controls { position: absolute; z-index: 2; right: 20px; bottom: calc(var(--sticky-bar-h, 0px) + 20px); display: flex; gap: 6px; }
+  .hero__controls button { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgb(241 241 235 / .64); background: rgb(17 19 19 / .28); color: var(--color-ink); font-size: 19px; line-height: 1; transition: color .2s ease, border-color .2s ease, background .2s ease; }
+  .hero__controls button:hover, .hero__controls button:focus-visible { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); }
+  .hero__row { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
   .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
-  .hero__meta { position: absolute; top: 20px; left: 20px; right: 20px; justify-content: flex-end; color: rgb(236 236 230 / 0.85); text-shadow: 0 1px 10px rgb(0 0 0 / 0.5); }
-  @media (max-width: 767px) { .hero__meta { justify-content: flex-start; } }
-  @media (min-width: 1024px) { .hero__meta { top: 28px; left: auto; right: max(64px, calc((100% - 1280px) / 2)); } }
+  .hero__signature { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 20px; width: 100%; box-sizing: border-box; margin: 0; padding: 13px clamp(16px, 2vw, 24px); border-top: 1px solid var(--color-line); color: var(--color-muted); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .09em; }
+  @media (min-width: 821px) and (max-width: 1100px) {
+    .hero :global(.t-hero) { font-size: clamp(40px, 4.8vw, 56px); }
+  }
+  @media (max-width: 820px) {
+    .hero :global(.hero__img) { object-position: var(--hero-mobile-focus, 50% 50%); }
+    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 0; }
+    .hero__copy { min-height: 0; padding: 48px var(--site-gutter) 0; background: transparent; }
+    .hero :global(.t-hero) { max-width: 700px; font-size: clamp(44px, 8vw, 64px); }
+    .hero__visual { height: auto; min-height: 0; }
+    .hero__signature { width: auto; margin: 27px var(--site-gutter) 30px; padding: 13px 0 0; }
+    .hero__image { flex: 0 0 auto; height: clamp(280px, 54vw, 430px); min-height: 0; margin-inline: var(--site-gutter); touch-action: pan-y; }
+  }
+  @media (max-width: 560px) {
+    .hero__copy { padding-top: 35px; }
+    .hero :global(.t-hero) { font-size: clamp(30px, 7.8vw, 36px); line-height: 1.05; }
+    .hero :global(.t-lead) { font-size: var(--type-body); }
+    .hero__image { height: 270px; min-height: 0; }
+    .hero__row { gap: 18px; }
+    .hero__cta { align-items: flex-start; flex-direction: column; width: 100%; min-width: 0; }
+    .hero :global(.hero__cta a) { width: auto; }
+    .hero__image figcaption { right: 104px; bottom: 14px; left: 14px; }
+    .hero__image-index { top: 20px; right: 14px; }
+    .hero__controls { right: 12px; bottom: calc(var(--sticky-bar-h, 0px) + 12px); }
+    .hero__controls button { width: 38px; height: 38px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero__slide, .hero__controls button { transition: none; } }
 </style>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-hero-carousel="true"]').forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll<HTMLElement>('[data-hero-slide]'));
+    const count = carousel.querySelector<HTMLElement>('[data-hero-count]');
+    const previous = carousel.querySelector<HTMLButtonElement>('[data-hero-prev]');
+    const next = carousel.querySelector<HTMLButtonElement>('[data-hero-next]');
+    const image = carousel.querySelector<HTMLElement>('.hero__image');
+    if (slides.length < 2 || !count || !previous || !next || !image) return;
+
+    let activeIndex = 0;
+    let timer: number | undefined;
+    const stop = () => {
+      if (timer !== undefined) window.clearInterval(timer);
+      timer = undefined;
+    };
+    const show = (index: number) => {
+      activeIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        const isActive = slideIndex === activeIndex;
+        slide.toggleAttribute('data-active', isActive);
+        slide.setAttribute('aria-hidden', String(!isActive));
+      });
+      count.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    };
+    let inViewport = true;
+    const start = () => {
+      stop();
+      if (reducedMotion.matches || document.hidden || !inViewport) return;
+      timer = window.setInterval(() => show(activeIndex + 1), 4800);
+    };
+
+    previous.addEventListener('click', () => { show(activeIndex - 1); start(); });
+    next.addEventListener('click', () => { show(activeIndex + 1); start(); });
+    let touchStart: { x: number; y: number } | undefined;
+    image.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'mouse' || (event.target as HTMLElement).closest('button')) return;
+      touchStart = { x: event.clientX, y: event.clientY };
+    });
+    image.addEventListener('pointerup', (event) => {
+      if (!touchStart) return;
+      const deltaX = event.clientX - touchStart.x;
+      const deltaY = event.clientY - touchStart.y;
+      touchStart = undefined;
+      if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+      show(activeIndex + (deltaX < 0 ? 1 : -1));
+      start();
+    });
+    image.addEventListener('pointercancel', () => { touchStart = undefined; });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
+    new IntersectionObserver(([entry]) => { inViewport = entry.isIntersecting; if (inViewport) start(); else stop(); }).observe(carousel);
+    reducedMotion.addEventListener('change', start);
+    start();
+  });
+</script>

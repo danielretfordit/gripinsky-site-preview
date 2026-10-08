@@ -1,0 +1,8 @@
+---
+import Visualization from './legacy.astro';
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['gallery', 'catalog', 'journey'].map(variant => ({params:{variant}}));
+}
+---
+<Visualization variant={Astro.params.variant} preview={true} />

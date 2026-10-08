@@ -57,12 +57,12 @@ export default function StickyPackageBar({ cat }: Props) {
 
   return (
     <div ref={barRef} aria-hidden={!visible} inert={!visible}
-      class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(14_17_18/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+      class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(17_19_19/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {sheet && (
         <div class="wrap max-h-[50vh] overflow-y-auto overscroll-contain border-b border-line py-4" id="sticky-sheet">
           <span class="t-overline">Состав пакета</span>
-          <ul class="m-0 mt-2 flex list-none flex-col gap-1.5 p-0 text-[15px]">
+          <ul class="t-small m-0 mt-2 flex list-none flex-col gap-1.5 p-0">
             {q.lines.map((l) => (
               <li key={l.id} class="flex justify-between gap-3">
                 <span class="text-ink-2">{l.name}</span>
@@ -76,11 +76,11 @@ export default function StickyPackageBar({ cat }: Props) {
         <button type="button" onClick={() => setSheet(!sheet)} aria-expanded={sheet} aria-controls="sticky-sheet"
           class="flex min-w-0 flex-1 flex-col items-start border-0 bg-transparent p-0 text-left">
           <span class="whitespace-nowrap t-overline">Ваш пакет<span class="hidden sm:inline">{q.tariffApplied ? `, ${tariff.name}` : ''}</span> <span aria-hidden="true">{sheet ? '▾' : '▴'}</span></span>
-          <span class="w-full truncate text-[15px] font-semibold md:text-[17px]">{title || prof.title}</span>
+          <span class="t-small w-full truncate font-semibold">{title || prof.title}</span>
         </button>
         <span class="flex flex-col items-end" aria-live="polite">
-          <span class="whitespace-nowrap text-[18px] font-extrabold md:text-[20px]">{rub(q.total)}</span>
-          <span class="whitespace-nowrap text-[12px] text-muted md:text-[13px]">или {sp(q.monthly)}&nbsp;₽/мес</span>
+          <span class="t-title whitespace-nowrap font-extrabold">{rub(q.total)}</span>
+          <span class="t-caption whitespace-nowrap text-muted">или {sp(q.monthly)}&nbsp;₽/мес</span>
         </span>
         <a href="#profession" class="btn btn-secondary btn-sm hidden md:inline-flex">Изменить</a>
         <button type="button" onClick={checkout} class="btn btn-primary btn-sm">Оформить</button>

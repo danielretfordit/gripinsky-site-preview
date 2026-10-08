@@ -1,0 +1,39 @@
+---
+interface Props { price: string }
+const { price } = Astro.props;
+---
+
+<div class="ai-feature">
+  <div class="ai-feature__copy">
+    <p class="ai-feature__eyebrow t-overline"><span class="ai-feature__dot" aria-hidden="true"></span> Новый курс / ИИ в 3D</p>
+    <h2 id="ai-title" class="t-h2">ИИ <span>ИЛИ УМРИ</span></h2>
+    <p class="ai-feature__quote t-quote">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
+    <p class="ai-feature__body t-body">Нейросети во всём пайплайне: референсы, 3D-модель по фото, ретопология, текстуры и сцена. Рутину отдаёте ИИ, качество доводите сами. Курс входит в «Базу 3D-визуализатора».</p>
+    <div class="ai-feature__action"><a href="/ai" class="btn btn-primary btn-lg">Смотреть курс ↗</a><span>от {price}</span></div>
+  </div>
+  <div class="ai-feature__symbol" aria-hidden="true"><span>ИИ</span><small>3D × AI<br />Человек решает</small></div>
+</div>
+
+<style>
+  .ai-feature { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); overflow: hidden; border-block: 1px solid var(--color-line); background: var(--color-bg-2); }
+  .ai-feature__copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding: clamp(24px, 3vw, 40px); }
+  .ai-feature__eyebrow { display: flex; align-items: center; gap: 9px; color: var(--color-ink-2); }
+  .ai-feature__dot { width: 7px; height: 7px; background: var(--color-lime); }
+  .ai-feature h2 { max-width: 670px; }
+  .ai-feature h2 span { display: block; color: var(--color-muted); }
+  .ai-feature__quote { max-width: 600px; }
+  .ai-feature__body { max-width: 560px; color: var(--color-ink-2); }
+  .ai-feature__action { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 6px; padding-top: 8px; font-weight: 650; }
+  .ai-feature__symbol { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; border-left: 1px solid var(--color-line); background: var(--color-bg); }
+  .ai-feature__symbol > span { color: transparent; -webkit-text-stroke: 1px var(--color-dim); font-size: clamp(160px, 19vw, 280px); font-weight: 800; line-height: 1; letter-spacing: -.14em; transform: translateX(-.06em); }
+  .ai-feature__symbol small { position: absolute; right: 24px; bottom: 20px; color: var(--color-muted); font: 12px/1.5 var(--font-mono); text-align: right; text-transform: uppercase; }
+  @media (max-width: 899px) {
+    .ai-feature { grid-template-columns: 1fr; }
+    .ai-feature__copy { padding: 30px 24px; }
+    .ai-feature__symbol { min-height: 180px; border-top: 1px solid var(--color-line); border-left: 0; }
+  }
+  @media (max-width: 480px) {
+    .ai-feature__copy { padding: 24px 20px; }
+    .ai-feature__symbol > span { font-size: 160px; }
+  }
+</style>

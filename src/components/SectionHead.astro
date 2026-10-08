@@ -6,7 +6,7 @@ const { overline, title, accent, lead, hand, id, as: Tag = 'h2', class: cls = ''
   <div class="flex flex-col gap-3">
     {overline && <span class="t-overline">{overline}</span>}
     <Tag id={id} class={Tag === 'h1' ? 't-display' : 't-h2'} tabindex="-1">{title}{accent && <>{' '}<span class="t-accent">{accent}</span></>}</Tag>
-    {lead && <p class="t-body m-0 max-w-[760px] text-muted">{lead}</p>}
+    {lead && <p class="t-body m-0 max-w-[760px] text-ink-2">{lead}</p>}
     <slot />
   </div>
   {hand && <p class="t-overline m-0 max-w-[360px] md:text-right" aria-hidden="true">{hand}</p>}

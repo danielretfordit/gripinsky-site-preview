@@ -1,0 +1,175 @@
+---
+import Base from '../../../layouts/Base.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return ['chapters', 'poster', 'poster-pairs', 'poster-route'].map((variant) => ({ params: { variant } }));
+}
+
+const variant = Astro.params.variant;
+const isPoster = variant?.startsWith('poster');
+interface WhyItem { id: string; title: string; body: string; href?: string; link?: string }
+interface WhyChapter { id: string; name: string; items: WhyItem[] }
+const chapters: WhyChapter[] = [
+  { id: '01', name: 'Метод', items: [
+    { id: '01', title: 'Учим думать, а не копировать', body: 'Разбираем логику каждого приёма, чтобы вы могли создавать собственные сцены, а не повторять действия преподавателя.' },
+    { id: '04', title: 'Путь под вашу цель', body: 'Можно начать с базы или выбрать отдельный курс. Добавляйте нужные темы в корзину и сразу видите итоговую стоимость.' },
+  ] },
+  { id: '02', name: 'Результат', items: [
+    { id: '02', title: 'Практика для портфолио', body: 'В базе 3D-визуализатора делаете 7 визуализаций. Дальше проекты выбранной профессии, в том числе по реальному ТЗ.', href: '/gallery', link: 'Работы учеников ↗' },
+    { id: '03', title: 'Награды учеников на 3DDD', body: 'Работы выпускников получали звание «Царь горы». Показываем авторов и их проекты в галерее.', href: '/otzyvy#kings', link: 'Смотреть награды ↗' },
+  ] },
+  { id: '03', name: 'Люди', items: [
+    { id: '05', title: 'Экосистема, а не просто уроки', body: 'В форматах с поддержкой педагоги проверяют работы. Также доступны индивидуальные занятия, наставничество и помощь с портфолио.' },
+    { id: '06', title: 'Тёплое комьюнити', body: 'Ученики, выпускники и педагоги встречаются на эфирах GRIPINSKY TV, обсуждают работы и остаются на связи после обучения.' },
+  ] },
+];
+const flat = chapters.flatMap((chapter) => chapter.items).sort((a, b) => Number(a.id) - Number(b.id));
+const reviews = [
+  { claim: 'Учим думать', text: 'Евгений заложил в меня ценные навыки. Не только моделирования, визуализации, но и самого подхода к поставленной задаче. Что, впоследствии, очень помогло мне в будущей работе по профилю.', author: 'Наталья', role: 'ученица, отзыв в Telegram' },
+  { claim: 'Сильные работы', text: 'Неоднократно заказывала визуализации у выпускников, либо учеников Евгения Грипинского. На любую сложную и нетривиальную задачу всегда подходили творчески и делали все на высоте.', author: 'Дарья Владимировна', role: 'заказчица работ выпускников' },
+  { claim: 'Сообщество рядом', text: 'Отдельная благодарность за группу в тг. Экономия времени космических масштабов. Гораздо удобнее и надежнее с коллегами решать вопросы.', author: 'bitUM', role: 'ученик, отзыв в Telegram' },
+];
+---
+<Base title="Композиция блока Почему GRIPINSKY | Предпросмотр" description="Локальные варианты композиции главной страницы" noindex consult={false}>
+  <header class="wrap design-intro">
+    <p class="t-overline">Дизайн-предпросмотр · главная пока без изменений</p>
+    <h1 class="t-h2">Почему <span class="t-accent">GRIPINSKY</span></h1>
+    <p class="t-lead">Четыре композиции с теми же шестью причинами. Отзывы идут отдельным блоком. Чёрный фон и один сигнальный цвет.</p>
+    <nav class="design-nav" aria-label="Выбор варианта">
+      <a class={variant === 'chapters' ? 'selected' : ''} href="/design/why/chapters">А · Три главы</a>
+      <a class={variant === 'poster' ? 'selected' : ''} href="/design/why/poster">Б · Исходный плакат</a>
+      <a class={variant === 'poster-pairs' ? 'selected' : ''} href="/design/why/poster-pairs">Б2 · Три темы</a>
+      <a class={variant === 'poster-route' ? 'selected' : ''} href="/design/why/poster-route">Б3 · Маршрут</a>
+    </nav>
+  </header>
+
+  {variant === 'chapters' && <section class="wrap why-chapters" aria-labelledby="chapters-title">
+    <div class="section-head"><span>01 / ПОДХОД</span><h2 id="chapters-title">Почему <em>GRIPINSKY</em></h2></div>
+    {chapters.map((chapter) => <div class="chapter">
+      <div class="chapter-name"><span>{chapter.id} / 03</span><h3>{chapter.name}</h3><i aria-hidden="true"></i></div>
+      {chapter.items.map((item) => <article><span>{item.id}</span><h4>{item.title}</h4><p>{item.body}</p>{item.href && <a href={item.href}>{item.link}</a>}</article>)}
+    </div>)}
+  </section>}
+
+  {isPoster && <section class:list={['wrap', 'why-poster', variant === 'poster-route' && 'why-poster--route']} aria-labelledby="poster-title">
+    <div class="poster-side">
+      <p class="eyebrow">01 / ПОДХОД</p>
+      <h2 id="poster-title">ПОЧЕМУ<br /><em>GRIPINSKY</em></h2>
+      <div class="poster-diagram" aria-hidden="true"><span>G</span><i></i><i></i><i></i></div>
+      <p class="poster-note">От первых действий<br />до своей работы.</p>
+    </div>
+    {variant === 'poster' && <div class="poster-grid">
+      {flat.map((item) => <article><span>{item.id} / 06</span><h3>{item.title}</h3><p>{item.body}</p>{item.href && <a href={item.href}>{item.link}</a>}</article>)}
+    </div>}
+    {variant === 'poster-pairs' && <div class="poster-pairs">
+      {chapters.map((chapter) => <div class="poster-pair">
+        <div class="pair-label"><span>{chapter.id} / 03</span><strong>{chapter.name}</strong></div>
+        <div class="pair-items">{chapter.items.map((item) => <article><span>{item.id} / 06</span><h3>{item.title}</h3><p>{item.body}</p>{item.href && <a href={item.href}>{item.link}</a>}</article>)}</div>
+      </div>)}
+    </div>}
+    {variant === 'poster-route' && <div class="poster-route">
+      {flat.map((item) => <article><span class="route-number">{item.id}</span><div><h3>{item.title}</h3><p>{item.body}</p>{item.href && <a href={item.href}>{item.link}</a>}</div></article>)}
+    </div>}
+  </section>}
+
+  <section class:list={['wrap', 'reviews', isPoster && 'reviews-surface']} aria-labelledby="reviews-title">
+    <div class="section-head"><span>02 / ПОДТВЕРЖДЕНИЕ</span><h2 id="reviews-title">Не обещания. <em>Их опыт.</em></h2><a href="/otzyvy">Все отзывы и истории ↗</a></div>
+    <div class="reviews-grid">
+      {reviews.map((review, i) => <figure><div class="review-tag"><span>0{i + 1}</span>{review.claim}</div><blockquote>«{review.text}»</blockquote><figcaption><strong>{review.author}</strong><small>{review.role}</small></figcaption></figure>)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .design-intro { padding-top: 40px; padding-bottom: 48px; }
+  .design-intro .t-lead { max-width: 680px; }
+  .design-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .design-nav a { border: 1px solid var(--color-line); border-radius: 4px; padding: 10px 18px; color: var(--color-ink); text-decoration: none; }
+  .design-nav a.selected { background: var(--color-lime); border-color: var(--color-lime); color: var(--color-bg); }
+  .section-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px 40px; border-top: 1px solid var(--color-line); padding-top: 26px; margin-bottom: 32px; }
+  .section-head > span, .eyebrow { flex-basis: 100%; color: var(--color-muted); font: 12px var(--font-mono); letter-spacing: .1em; }
+  .section-head h2 { margin: 0; font-size: clamp(34px, 4vw, 60px); line-height: 1; letter-spacing: -.04em; text-transform: uppercase; }
+  .section-head h2 em, .poster-side h2 em { color: var(--color-muted); font-style: normal; }
+  .section-head > a, article a { color: var(--color-ink); font-weight: 650; text-decoration: none; }
+  .chapter { display: grid; grid-template-columns: minmax(170px,.7fr) repeat(2,minmax(0,1fr)); gap: 24px; border-top: 1px solid var(--color-line); padding: 28px 0 48px; }
+  .chapter-name { position: relative; min-height: 190px; }
+  .chapter-name span, article > span { color: var(--color-muted); font: 12px var(--font-mono); }
+  .chapter-name h3 { margin: 22px 0 0; font-size: clamp(28px,3vw,44px); line-height: 1; letter-spacing: -.035em; }
+  .chapter-name i { position: absolute; left: 0; bottom: 12px; width: 70px; height: 70px; border: 1px solid var(--color-lime); border-radius: 50%; opacity: .8; }
+  .chapter:nth-of-type(3) .chapter-name i { border-radius: 0; transform: rotate(-25deg); }
+  .chapter:nth-of-type(4) .chapter-name i { border-radius: 0; transform: rotate(45deg); }
+  article h4, article h3 { max-width: 320px; margin: 22px 0 10px; font-size: 21px; line-height: 1.2; }
+  article p { max-width: 370px; margin: 0 0 14px; color: var(--color-ink-2); font-size: 15px; line-height: 1.55; }
+  .why-poster { display: grid; grid-template-columns: minmax(230px,.85fr) minmax(0,2fr); gap: clamp(36px, 5vw, 84px); padding-bottom: 40px; }
+  .poster-side { position: relative; min-height: 720px; border-top: 1px solid var(--color-line); padding-top: 26px; }
+  .poster-side h2 { margin: 52px 0 0; font-size: clamp(36px,4vw,64px); line-height: .95; letter-spacing: -.05em; }
+  .poster-diagram { position: relative; display: grid; place-items: center; width: min(100%,340px); aspect-ratio: 1; margin-top: 72px; border: 1px solid var(--color-line); border-radius: 50%; }
+  .poster-diagram span { color: transparent; -webkit-text-stroke: 1px var(--color-dim); font-size: clamp(160px,18vw,260px); line-height: 1; font-weight: 800; }
+  .poster-diagram i { position: absolute; width: 8px; height: 8px; background: var(--color-lime); border-radius: 50%; }
+  .poster-diagram i:nth-of-type(1) { top: 13%; right: 14%; }
+  .poster-diagram i:nth-of-type(2) { bottom: 10%; left: 19%; }
+  .poster-diagram i:nth-of-type(3) { top: 47%; left: -4px; }
+  .poster-note { color: var(--color-muted); font: 13px/1.5 var(--font-mono); text-transform: uppercase; }
+  .poster-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 24px; }
+  .poster-grid article { min-height: 230px; border-top: 1px solid var(--color-line); padding: 26px 0 30px; }
+  .poster-grid article h3 { font-size: 20px; }
+  .poster-pairs { border-top: 1px solid var(--color-line); }
+  .poster-pair { padding: 24px 0 34px; border-bottom: 1px solid var(--color-line); }
+  .pair-label { display: flex; align-items: baseline; gap: 16px; margin-bottom: 25px; }
+  .pair-label span { color: var(--color-muted); font: 12px var(--font-mono); }
+  .pair-label strong { font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: -.03em; }
+  .pair-items { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; padding-left: 47px; }
+  .pair-items article { position: relative; }
+  .pair-items article:first-child::before { content: ''; position: absolute; left: -17px; top: 3px; width: 5px; height: 5px; background: var(--color-lime); border-radius: 50%; }
+  .pair-items article h3 { margin-top: 13px; }
+  .why-poster--route { grid-template-columns: minmax(230px,.9fr) minmax(0,1.5fr); }
+  .poster-route { border-top: 1px solid var(--color-line); }
+  .poster-route article { display: grid; grid-template-columns: 76px 1fr; gap: 12px; padding: 19px 0 20px; border-bottom: 1px solid var(--color-line); }
+  .poster-route article .route-number { display: block; color: var(--color-dim); font: 38px/1 var(--font-mono); letter-spacing: -.06em; }
+  .poster-route article:first-child .route-number, .poster-route article:last-child .route-number { color: var(--color-lime); }
+  .poster-route article h3 { max-width: none; margin: 0 0 6px; font-size: 20px; }
+  .poster-route article p { max-width: 500px; margin-bottom: 7px; }
+  .reviews { padding-top: 80px; padding-bottom: 120px; }
+  .reviews-surface { background: var(--color-bg-2); padding: 64px clamp(24px, 4vw, 64px) 88px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
+  .reviews figure { display: flex; flex-direction: column; margin: 0; border-top: 1px solid var(--color-line); padding-top: 20px; }
+  .review-tag { display: flex; gap: 12px; color: var(--color-ink-2); font: 12px var(--font-mono); text-transform: uppercase; }
+  .review-tag span { color: var(--color-lime); }
+  blockquote { margin: 20px 0; color: var(--color-ink); font-size: 16px; line-height: 1.55; }
+  figcaption { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+  figcaption strong { font-size: 15px; }
+  figcaption small { color: var(--color-muted); font-size: 12px; }
+  @media (max-width: 800px) {
+    .design-intro { padding-top: 32px; padding-bottom: 40px; }
+    .chapter { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+    .chapter-name { grid-column: 1/-1; min-height: 90px; }
+    .chapter-name h3 { margin-top: 12px; }
+    .chapter-name i { right: 8px; left: auto; bottom: 8px; width: 56px; height: 56px; }
+    .why-poster { grid-template-columns: 1fr; }
+    .why-poster--route { grid-template-columns: 1fr; }
+    .poster-side { min-height: 160px; }
+    .poster-side h2 { margin: 18px 0 0; }
+    .poster-diagram { position: absolute; right: 0; bottom: 0; width: 100px; margin: 0; }
+    .poster-diagram span { font-size: 70px; }
+    .poster-note { display: none; }
+    .reviews-grid { grid-template-columns: 1fr; gap: 32px; }
+  }
+  @media (max-width: 540px) {
+    .chapter { grid-template-columns: 1fr; }
+    .chapter-name { min-height: 80px; }
+    .chapter article + article { margin-top: 4px; }
+    .poster-grid { grid-template-columns: 1fr; }
+    .poster-grid article { min-height: auto; padding-bottom: 28px; }
+    .pair-label { margin-bottom: 20px; }
+    .pair-label strong { font-size: 25px; }
+    .pair-items { grid-template-columns: 1fr; gap: 24px; padding-left: 0; }
+    .pair-items article:first-child::before { display: none; }
+    .pair-items article h3 { margin-top: 10px; }
+    .poster-route article { grid-template-columns: 54px 1fr; }
+    .poster-route article .route-number { font-size: 28px; }
+    .reviews { padding-top: 64px; padding-bottom: 80px; }
+    .reviews-surface { padding: 32px 20px 64px; }
+    blockquote { font-size: 15px; }
+  }
+</style>
