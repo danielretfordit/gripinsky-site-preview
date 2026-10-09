@@ -26,7 +26,7 @@ createServer((req, res) => {
   const url = new URL(req.url, 'http://x');
   if (url.pathname.startsWith('/api/')) return proxy(req, res);
   const path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
-  const candidates = path === '/' ? ['/index.html'] : [path, `${path}.html`];
+  const candidates = path === '/' ? ['/index.html'] : [path, `${path}.html`, `${path}/index.html`];
   const hit = candidates.map((c) => join(ROOT, c)).find(isFile);
   if (!hit) return proxy(req, res);
   res.writeHead(200, { 'content-type': TYPES[extname(hit)] ?? 'application/octet-stream' });

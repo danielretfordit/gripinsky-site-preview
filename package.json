@@ -19,7 +19,11 @@
     "check:seo": "node scripts/check-seo.mjs",
     "import:tilda": "node scripts/import-tilda.mjs",
     "e2e": "playwright test",
-    "e2e:report": "playwright show-report e2e-report"
+    "e2e:report": "playwright show-report e2e-report",
+    "lint:css": "node scripts/lint-css.mjs",
+    "visual": "playwright test -c playwright.visual.config.ts",
+    "visual:update": "playwright test -c playwright.visual.config.ts --update-snapshots",
+    "visual:audit": "node scripts/visual-audit-summary.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "2.0.9",
