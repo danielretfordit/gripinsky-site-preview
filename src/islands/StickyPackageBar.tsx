@@ -57,7 +57,7 @@ export default function StickyPackageBar({ cat }: Props) {
 
   return (
     <div ref={barRef} aria-hidden={!visible} inert={!visible}
-      class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(17_19_19/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
+      data-sticky-package class={`fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-[rgb(17_19_19/0.96)] backdrop-blur-md transition-transform duration-300 ${visible ? 'translate-y-0' : 'translate-y-full'}`}
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       {sheet && (
         <div class="wrap max-h-[50vh] overflow-y-auto overscroll-contain border-b border-line py-4" id="sticky-sheet">

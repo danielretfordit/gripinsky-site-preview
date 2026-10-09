@@ -6,10 +6,16 @@ const { items, class: cls = '' } = Astro.props;
 <nav aria-label="Хлебные крошки" class={cls}>
   <ol class="t-overline m-0 flex list-none flex-wrap gap-x-2.5 gap-y-1 p-0">
     {items.map((c, i) => (
-      <li class="flex items-center gap-2.5">
-        {i > 0 && <span aria-hidden="true">/</span>}
+      <li class="crumb">
+        {i > 0 && <span aria-hidden="true" class="crumb__sep">/</span>}
         {c.href && i < items.length - 1 ? <a href={c.href} class="text-muted hover:text-white">{c.name}</a> : <span aria-current={i === items.length - 1 ? 'page' : undefined} class="text-ink-2">{c.name}</span>}
       </li>
     ))}
   </ol>
 </nav>
+
+<style>
+  /* Пункт и его разделитель не разрываются: «/» не повисает в начале строки; длинный пункт переносится внутри себя */
+  .crumb { display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; }
+  .crumb__sep { flex-shrink: 0; }
+</style>

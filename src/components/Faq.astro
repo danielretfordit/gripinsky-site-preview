@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import { typo } from '../lib/format';
 interface Props { page: 'viz' | 'home'; title?: string; id?: string; spacing?: 'section' | 'subsection'; ids?: string[]; compact?: boolean }
 const { page, title = 'Вопросы и сомнения', id = 'faq', spacing = 'section', ids, compact = false } = Astro.props;
 const GROUPS = [
@@ -23,7 +24,7 @@ const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await 
       {compact ? rendered.map(({ f, Content }, index) => (
         <details class:list={["faq group border-b border-line py-1", { "border-t": index === 0 }]}>
           <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
-            {f.data.question}
+            {typo(f.data.question)}
             <span aria-hidden="true" class="shrink-0 text-[length:var(--type-icon-lg)] font-medium text-muted transition-transform group-open:rotate-45">+</span>
           </summary>
           <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>
@@ -36,7 +37,7 @@ const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await 
             {list.map(({ f, Content }) => (
               <details class="faq group border-b border-line py-1">
                 <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
-                  {f.data.question}
+                  {typo(f.data.question)}
                   <span aria-hidden="true" class="shrink-0 text-[length:var(--type-icon-lg)] font-medium text-muted transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>

@@ -60,7 +60,7 @@ const ld = articleLd({ headline: pageTitle, description: pageDesc, path: `/stori
         {s.highlights.length > 0 && <ul class="m-0 flex list-none flex-col gap-1.5 p-0 text-ink-2">{s.highlights.map((h) => <li class="flex gap-2.5"><b class="text-ink" aria-hidden="true">+</b>{h}</li>)}</ul>}
         {s.courses && <p class="t-small m-0 text-muted">{s.courses}</p>}
         {s.extraNote && <p class="card t-small m-0 p-4">{s.extraNote}</p>}
-        {s.links.length > 0 && <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">{s.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}</p>}
+        {s.links.length > 0 && <p class="m-0 flex flex-wrap gap-x-5 gap-y-2">{s.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}</p>}
         <div class="mt-2 flex flex-col gap-3 sm:flex-row">
           <a href="/#quiz" class="btn btn-primary">Подобрать свой путь</a>
           <a href="/otzyvy" class="btn btn-secondary">Все истории</a>

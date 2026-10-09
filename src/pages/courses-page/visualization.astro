@@ -51,11 +51,11 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
       <div class="prototype-description"><div><h3 class="t-h3">{p.data.short}</h3><p class="t-body text-ink-2">{p.data.lead}</p></div><aside class="prototype-result"><p class="t-overline text-muted">В вашем портфолио</p><p class="t-title">{p.data.portfolio}</p><a href="#works" class="link t-small">Работы учеников →</a></aside></div>
       <h3 class="t-title prototype-section-title">Основные курсы</h3>
       <div class="prototype-course-grid">{p.courses.map((c,index)=>c&&<div data-course-stage={p.data.courses.some(pc=>pc.course.id===c.id)?"specialization":"base"}><p class="t-overline text-muted">{String(index+1).padStart(2,'0')} / Маршрут обучения</p><CourseCard course={c} framed selectable /></div>)}</div>
-      <details id={i === 0 ? "base" : undefined} class="prototype-base"><summary class="t-title">Начинаете с нуля? Можно выбрать базу целиком</summary><p class="t-body text-ink-2">Уровни 1, 2 и 3 собраны в «Базу 3D-визуализатора». Корзина учитывает уже включённые курсы и подарки автоматически.</p><div class="prototype-base-card"><CourseCard course={base} framed selectable /></div></details>
+      <details id={i === 0 ? "base" : undefined} class="prototype-base"><summary class="t-title">Начинаете с нуля? Можно выбрать базу целиком<span aria-hidden="true" class="prototype-faq-plus">+</span></summary><p class="t-body text-ink-2">Уровни 1, 2 и 3 собраны в «Базу 3D-визуализатора». Корзина учитывает уже включённые курсы и подарки автоматически.</p><div class="prototype-base-card"><CourseCard course={base} framed selectable /></div></details>
       <h3 id={i === 0 ? "additional" : undefined} class="t-title prototype-section-title">Дополнительные курсы</h3>
       <p class="t-small text-ink-2">Усильте навыки под свои задачи. Выберите нужные инструменты, остальные можно добавить позже.</p>
       <div class="prototype-addon-grid">{p.addons.map(a => <article>
-        <p class="t-overline">По желанию</p><h4 class="t-title"><a href={courseHref(a.course.id,a.course.data)} class="link">{a.course.data.title} ↗</a></h4>
+        <p class="t-overline">По желанию</p><h4 class="t-title"><a href={courseHref(a.course.id,a.course.data)} class="link">{a.course.data.title} ↗</a></h4>
         <p class="t-small text-ink-2">{a.text}</p><a href={courseHref(a.course.id,a.course.data)} class="link t-small">Программа курса →</a>
         <div class="prototype-addon-buy"><b class="t-title">{rub(a.course.data.price)}</b><label class="prototype-course-select t-small"><input type="checkbox" data-cart-select={a.course.id} disabled /><span>Выбрать курс</span></label></div>
       </article>)}</div>
@@ -64,7 +64,7 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
   </section>
   <div class="prototype-proof"><div id="works"><VizProof variant="gallery" wideId="import-17dcd4db8ee2b5b7" trioIds={["import-9f6284ff86050815", "meshkov-lake-house", "filimonova-spalnya"]} /></div>      <div class="prototype-free wrap">
         <div><p class="t-overline">Начните бесплатно</p><p class="t-small">Попробуйте создать свою первую сцену на бесплатных уроках.</p></div>
-        <div class="prototype-free-links">{freeCourses.map(c => c && <a href={c.data.legacyPath} class="btn btn-secondary">{c.data.title} ↗</a>)}</div>
+        <div class="prototype-free-links">{freeCourses.map(c => c && <a href={c.data.legacyPath} class="btn btn-secondary">{c.data.title} ↗</a>)}</div>
       </div>
 <VizReviews /></div>
   <section id="prototype-faq" class="wrap section prototype-faq" aria-labelledby="prototype-faq-title">
@@ -123,7 +123,8 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
   .prototype-faq summary { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:63px; padding:12px 0; cursor:pointer; font-size:var(--type-body); font-weight:600; list-style:none; }
   .prototype-faq summary::-webkit-details-marker { display:none; }
   .prototype-faq-plus { flex-shrink:0; color:var(--color-muted); font-size:var(--type-title); transition:transform .2s; }
-  .prototype-faq details[open] .prototype-faq-plus { transform:rotate(45deg); }
+  .prototype-faq details[open] .prototype-faq-plus, .prototype-base[open] .prototype-faq-plus { transform:rotate(45deg); }
+  .prototype-base > summary { display:flex; align-items:center; justify-content:space-between; gap:16px; }
   .prototype-faq details p { max-width:68ch; color:var(--color-ink-2); margin:0; padding-bottom:20px; }
   @media(max-width:767.98px) { .prototype-faq-layout { grid-template-columns:1fr; gap:61px; } .prototype-faq-heading { position:static; } }
   @media(max-width:560px) { .prototype-faq-layout { gap:25px; } .prototype-faq summary { min-height:59px; padding:13px 0; } }

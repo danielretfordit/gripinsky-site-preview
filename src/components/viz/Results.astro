@@ -139,7 +139,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
               {s.data.courses && <span class="t-small text-muted">{s.data.courses}</span>}
               <span class="flex flex-wrap gap-x-5 gap-y-2 pt-1 t-small font-semibold">
                 <a href={`/stories/${s.id}`} class="link">История на сайте →</a>
-                {s.data.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}
+                {s.data.links.map((l) => <a href={l.url} class="link" rel="noopener">{l.label} ↗</a>)}
               </span>
             </div>
           </article>

@@ -12,12 +12,12 @@ const { context = '', submitLabel = 'Записаться на консульт�
   <div class="grid gap-4 sm:grid-cols-2">
     <div class="flex flex-col gap-2">
       <label for={`${id}-name`} class="t-small font-semibold">Как к вам обращаться</label>
-      <input id={`${id}-name`} name="name" type="text" class="field" autocomplete="name" required maxlength="80" aria-describedby={`${id}-name-err`} />
+      <input id={`${id}-name`} name="name" type="text" class="field" autocomplete="name" autocapitalize="words" enterkeyhint="next" required maxlength="80" aria-describedby={`${id}-name-err`} />
       <span id={`${id}-name-err`} class="field-error t-caption hidden text-danger" role="alert">Напишите имя</span>
     </div>
     <div class="flex flex-col gap-2">
       <label for={`${id}-contact`} class="t-small font-semibold">Телефон или ник в Telegram</label>
-      <input id={`${id}-contact`} name="contact" type="text" class="field" autocomplete="tel" required maxlength="80" placeholder="+7… или @ник" aria-describedby={`${id}-contact-err`} />
+      <input id={`${id}-contact`} name="contact" type="text" class="field" autocomplete="tel" enterkeyhint="send" spellcheck="false" required maxlength="80" placeholder="+7… или @ник" aria-describedby={`${id}-contact-err`} />
       <span id={`${id}-contact-err`} class="field-error t-caption hidden text-danger" role="alert">Оставьте телефон или ник, чтобы мы могли ответить</span>
     </div>
   </div>

@@ -45,7 +45,7 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
       <Image src={vizImg} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 42vw, 100vw" class="h-[clamp(220px,40vw,320px)] w-full object-cover md:h-full" />
       <span class="flex flex-col gap-3 p-6 md:p-10">
         <span class="t-overline">Направление</span>
-        <span class="t-h2">3D-визуализация <span class="t-accent">с нуля до заказов</span></span>
+        <span class="t-h2 catalog-direction__title"><span class="whitespace-nowrap">3D-визуализация</span> <span class="t-accent block">с нуля до заказов</span></span>
         <span class="text-ink-2">База в 3ds Max и Corona, затем профессия: интерьеры, экстерьеры и ЖК или модели для стоков. Соберите пакет и сразу увидите цену.</span>
         <span class="font-semibold text-ink" data-cta>Подобрать курс →</span>
       </span>
@@ -173,6 +173,8 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
 </script>
 
 <style>
+  /* Заголовок карточки направления: меньше H2 страницы, «3D-визуализация» не рвётся по дефису */
+  .catalog-direction__title { font-size: clamp(1.625rem, 7.4vw, var(--type-section)); }
   .catalog-tools { margin-bottom: 32px; scroll-margin-top: calc(var(--header-h) + 16px); }
   .catalog-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--color-line); overflow-x: auto; }
   .catalog-tabs button { flex: 0 0 auto; min-height: 56px; padding: 12px 0; position: relative; color: var(--color-muted); font-size: var(--type-body); font-weight: 600; cursor: pointer; }

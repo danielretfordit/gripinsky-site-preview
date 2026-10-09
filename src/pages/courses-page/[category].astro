@@ -7,7 +7,7 @@ import CourseCard from '../../components/CourseCard.astro';
 import Faq from '../../components/Faq.astro';
 import { CATEGORIES, isListed } from '../../lib/categories';
 import { visibleWorks, personMap } from '../../lib/people';
-import { rub } from '../../lib/format';
+import { rub, lcFirst } from '../../lib/format';
 import { SITE, courseLd, ogHref, clipText, canonicalPath } from '../../lib/seo';
 import tildaPages from '../../../docs/tilda/pages.json';
 
@@ -64,7 +64,7 @@ const jsonLd = prof
             <h1 id="prof-title" class="t-display">{prof.data.seo.h1}</h1>
             <p class="t-lead">{prof.data.lead}</p>
             <ul class="m-0 flex list-none flex-col gap-2 p-0 text-ink-2">
-              <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>В портфолио: {prof.data.portfolio.toLowerCase()}</li>
+              <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>В портфолио: {lcFirst(prof.data.portfolio)}</li>
               <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>Работа с заказчиком, ТЗ и ценой проекта</li>
               {gift && <li class="flex gap-2"><b class="text-ink" aria-hidden="true">+</b>В подарок: {gift.data.title}</li>}
             </ul>

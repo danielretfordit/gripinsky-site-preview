@@ -56,10 +56,9 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
         <h1 id="gallery-title" class="t-display">Работы <span class="t-accent">учеников</span></h1>
         <p class="t-lead">Рендеры и модели учеников и педагогов академии. Многие отмечены «Рендером дня» на стримах GRIPINSKY TV и «Царём горы» на 3DDD.</p>
       </div>
-      <span class="t-quote text-muted" aria-hidden="true">и это только начало</span>
     </div>
 
-    <div role="group" aria-label="Категории работ" class="snap-row mb-8 !grid-flow-col !auto-cols-max max-w-full self-start" data-gallery-filters>
+    <div role="group" aria-label="Категории работ" class="snap-row gallery-filters mb-8 !grid-flow-col !auto-cols-max max-w-full self-start" data-gallery-filters>
       {CATS.map((c, i) => count(c.id) > 0 && (
         <button type="button" data-cat={c.id} aria-pressed={i === 0 ? 'true' : 'false'}
           class="choice t-small min-h-11 whitespace-nowrap px-4 font-semibold">{c.label} <span class="text-muted">{count(c.id)}</span></button>
@@ -90,8 +89,8 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
           </button>
           <span class="mt-2 flex flex-col gap-1 px-1 leading-snug">
             <b class="t-small text-ink">{author}{teacher ? ', педагог' : ''}</b>
-            <span class="t-overline normal-case">{w.data.title}</span>
-            {w.data.awards.length > 0 && <span class="t-overline normal-case">{w.data.awards.map((a) => AWARD[a]).join(', ')}</span>}
+            <span class="t-caption text-ink-2">{w.data.title}</span>
+            {w.data.awards.filter((a) => !w.data.title.includes(AWARD[a])).length > 0 && <span class="t-caption text-muted">{w.data.awards.filter((a) => !w.data.title.includes(AWARD[a])).map((a) => AWARD[a]).join(', ')}</span>}
           </span>
 
         </li>
@@ -122,6 +121,8 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
 </Base>
 
 <style>
+  /* Фильтры листаются пальцем: правый край растворяется, пока есть что листать */
+  @media (max-width: 767.98px) { .gallery-filters { margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); mask-image: linear-gradient(to right, black calc(100% - 48px), transparent); } }
   /* Лайтбокс на телефоне с вырезом экрана: кнопки и подпись не уходят под вырез и полосу жестов */
   .lb-safe { padding-top: max(3.5rem, env(safe-area-inset-top)); padding-bottom: max(3.5rem, env(safe-area-inset-bottom)); }
   .lb-close { top: max(.75rem, env(safe-area-inset-top)); right: max(.75rem, env(safe-area-inset-right)); }

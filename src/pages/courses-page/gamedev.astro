@@ -55,10 +55,10 @@ const shortLabels: Record<string, string> = { props: 'Предметы', environ
         <p class="t-small text-ink-2">Усильте навыки под свои задачи. Выберите нужные инструменты, остальные можно добавить позже.</p>
         <div class="games-addon-grid">{p.addons.map(a => <article data-game-addon={a.course.id}>
           <p class="t-overline">По желанию</p>
-          <h4 class="t-title"><a href={courseHref(a.course.id, a.course.data)} class="link">{a.course.data.title} ↗</a></h4>
+          <h4 class="t-title"><a href={courseHref(a.course.id, a.course.data)} class="link">{a.course.data.title} ↗</a></h4>
           <p class="t-small text-ink-2">{a.text}</p>
           <a href={courseHref(a.course.id, a.course.data)} class="link t-small">Программа курса →</a>
-          {a.alternative && <p class="t-small games-alternative">Или <a href={a.alternative.data.legacyPath} class="link">{a.alternative.data.title} ↗</a><span class="t-caption text-muted">Подбор отдельных курсов</span></p>}
+          {a.alternative && <p class="t-small games-alternative">Или <a href={a.alternative.data.legacyPath} class="link">{a.alternative.data.title} ↗</a><span class="t-caption text-muted">Подбор отдельных курсов</span></p>}
           <div class="games-addon-buy"><b class="t-title">{rub(a.course.data.price)}</b><label class="games-course-select t-small"><input type="checkbox" data-cart-select={a.course.id} disabled /><span>Выбрать курс</span></label></div>
         </article>)}</div>
       </div>

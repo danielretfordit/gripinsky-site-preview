@@ -4,7 +4,7 @@ import type { WorkView } from '../lib/works';
 import type { CollectionEntry } from 'astro:content';
 import { TYPE_LABEL, courseHref } from '../lib/categories';
 import { softwareName } from '../lib/software';
-import { rub, plural }  from '../lib/format';
+import { rub, plural, typo } from '../lib/format';
 
 interface Props { selectable?: boolean; course: CollectionEntry<'courses'>; headingLevel?: 'h2' | 'h3'; framed?: boolean; work?: WorkView; result?: string }
 const { course, headingLevel: H = 'h3', framed = false, selectable = false, work, result } = Astro.props;
@@ -14,6 +14,10 @@ const filters = [c.type, ...c.professions, ...c.software].join('|').toLowerCase(
 const level = c.level?.includes(',') ? 'Любой уровень' : c.level;
 const software = c.software.map(softwareName);
 const separatePrice = c.type === 'package' || course.id.startsWith('paket_ind');
+// Подпись ссылки по сути карточки: у услуги нет «программы курса»
+const moreLabel = c.type === 'course' ? 'Программа курса' : c.type === 'package' ? 'Состав пакета' : c.type === 'free' ? 'Смотреть уроки' : 'Подробнее';
+// Описание, которое повторяет название, не показываем
+const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().toLowerCase() ? c.short : '';
 ---
 <article class:list={["catalog-card group relative flex flex-col", { "content-card catalog-card--framed": framed }]} data-course data-type={course.id === 'baza' ? 'course' : c.type} data-tags={filters} data-price={c.price}
   data-new={Number(c.isNew)} data-published={c.publishedAt ?? ''} data-popularity={c.popularityRank ?? ''}>
@@ -32,10 +36,10 @@ const separatePrice = c.type === 'package' || course.id.startsWith('paket_ind');
   <div class="course-body">
     {work && <p class="t-caption text-muted m-0">Работа ученика: {work.author}</p>}
     <span class="course-kicker t-overline">{TYPE_LABEL[c.type]}{c.lessons ? ` / ${c.lessons} ${plural(c.lessons, ['урок', 'урока', 'уроков'])}` : ''}</span>
-    <H class="course-title t-h3"><a href={href} class="text-ink relative z-10 hover:text-white">{c.title}</a></H>
-    {c.short && <p class="course-description t-small">{c.short}</p>}
+    <H class="course-title t-h3"><a href={href} class="text-ink relative z-10 hover:text-white">{typo(c.title)}</a></H>
+    {description && <p class="course-description t-small">{description}</p>}
     {result && <p class="t-small text-ink-2 m-0"><b class="text-ink">Результат:</b> {result}</p>}
-    <a href={href} class="link t-small relative z-10 self-start">Программа курса →</a>
+    <a href={href} class="link t-small relative z-10 self-start">{moreLabel}&nbsp;→</a>
     <div class="course-footer">
       <span class="course-price">
         <b class="t-title">{course.id === 'baza' ? 'от ' : ''}{c.price > 0 ? rub(c.price) : 'Бесплатно'}</b>

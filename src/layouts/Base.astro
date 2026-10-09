@@ -44,7 +44,7 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>{resolvedTitle}</title>
     <meta name="description" content={resolvedDescription} />
     <link rel="canonical" href={canonical} />
@@ -53,8 +53,12 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <meta name="theme-color" content="#111313" />
     <meta name="color-scheme" content="dark" />
     {/* Ширина окна без полосы прокрутки для полей страницы (--site-gutter). На телефоне совпадает с 100vw. */}
-    <script is:inline>(function(){var d=document.documentElement,s=function(){d.style.setProperty('--page-w',d.clientWidth+'px')};s();if(window.ResizeObserver)new ResizeObserver(s).observe(d);else addEventListener('resize',s)})();</script>
+    {/* До отрисовки: ширина окна без полосы прокрутки и пометка встроенного браузера (Telegram, VK, WebView) на <html> */}
+    <script is:inline>(function(){var d=document.documentElement,s=function(){d.style.setProperty('--page-w',d.clientWidth+'px')};s();if(window.ResizeObserver)new ResizeObserver(s).observe(d);else addEventListener('resize',s);var u=navigator.userAgent,k='TelegramWebviewProxy'in window||/Telegram/i.test(u)?'telegram':/VKClient|VKAndroidApp|vk_app/i.test(u)?'vk':/Instagram|FBAN|FBAV/i.test(u)?'social':/; wv\)/.test(u)?'webview':'';if(k)d.classList.add('is-inapp','is-inapp-'+k)})();</script>
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:site_name" content="Академия 3D GRIPINSKY" />
@@ -85,5 +89,13 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <Checkout client:load cat={cartCatalog} telegramBot={site.telegramBot} />
     <CookieBanner />
     <Analytics />
+    <script>
+      // Телефон: пока открыта клавиатура (фокус в поле), нижние панели прячутся и не закрывают поле и кнопку
+      const fields = 'input:not([type=checkbox]):not([type=radio]):not([type=hidden]), textarea, select';
+      if (matchMedia('(pointer: coarse)').matches) {
+        document.addEventListener('focusin', (e) => { if ((e.target as Element).matches?.(fields)) document.documentElement.classList.add('is-typing'); });
+        document.addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement?.matches?.(fields)) document.documentElement.classList.remove('is-typing'); }, 80));
+      }
+    </script>
   </body>
 </html>

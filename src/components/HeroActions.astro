@@ -14,5 +14,9 @@ const { primaryHref, primaryLabel, secondaryHref, secondaryLabel, secondaryGoal 
 </div>
 <style>
   .hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; max-width:100%; }
-  @media(max-width:560px) { .hero-actions { align-items:flex-start; flex-direction:column; } }
+  /* Телефон: обе кнопки во всю ширину столбцом (удобно большому пальцу), подпись слева, стрелка справа */
+  @media(max-width:559.98px) {
+    .hero-actions { align-items:stretch; flex-direction:column; width:100%; }
+    .hero-actions > .btn { width:100%; }
+  }
 </style>

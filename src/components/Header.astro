@@ -1,7 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
-import logo from '../assets/brand/logo.png';
+import { assetPath } from '../lib/deployment';
 import { canonicalPath } from '../lib/seo';
 
 const site = (await getEntry('settings', 'site'))!.data;
@@ -21,7 +20,7 @@ const consultHref = consult ? '#consult' : '/#consult';
 <header class="site-header global-site-header sticky top-0 z-40 border-b border-line bg-bg">
   <div class="site-header__inner">
     <a href="/" class="site-header__brand" aria-label="Академия 3D GRIPINSKY, на главную">
-      <Image src={logo} alt="GRIPINSKY" densities={[1, 2, 3, 4]} format="png" width={196} height={26} class="block h-auto" loading="eager" />
+      <img src={assetPath('/brand/gripinsky.svg')} alt="GRIPINSKY" width="164" height="22" decoding="async" fetchpriority="high" class="block h-auto" />
     </a>
 
     <nav aria-label="Основное меню" class="site-header__nav site-header__nav--desktop">

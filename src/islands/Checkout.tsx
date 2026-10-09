@@ -5,10 +5,11 @@ import { quoteSet, quote, quoteBaseOnly, quoteCourse, type Catalog, type Quote, 
 import { reachGoal } from '../lib/analytics';
 import { readUtm } from '../lib/utm';
 import { rub, sp, CheckBox } from './ui';
+import { detectInApp, isAndroid, androidExternalUrl, copyText, type InAppKind } from '../lib/inapp';
 
 interface Props { cat?: Catalog; months?: number; telegramBot: string }
 type Detail = CheckoutRequest;
-type Status = 'form' | 'sending' | 'demo' | 'error';
+type Status = 'form' | 'sending' | 'demo' | 'error' | 'redirect';
 
 /** Оформление заказа: состав, контакты, согласие. Сумму считает сервер по тем же правилам. */
 export default function Checkout({ cat, months = 12, telegramBot }: Props) {
@@ -20,6 +21,11 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
   const [status, setStatus] = useState<Status>('form');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const [consent, setConsent] = useState(false);
+  // Ссылка на оплату и среда: во встроенном браузере (Telegram, VK) банк или СБП могут не открыться
+  const [payUrl, setPayUrl] = useState('');
+  const [inApp, setInApp] = useState<InAppKind>(null);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => setInApp(detectInApp()), []);
 
   useEffect(() => $checkout.subscribe((req) => {
     if (!req) return;
@@ -73,7 +79,14 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
       const out = await res.json();
       if (!res.ok || !out.ok) throw new Error(out.error ?? String(res.status));
       reachGoal('checkout_redirect', { mode: out.mode, sum: out.total });
-      if (out.redirect) { location.href = out.redirect; return; }
+      if (out.redirect) {
+        // Переход в том же окне (window.open во встроенных браузерах блокируется). Во встроенном браузере
+        // сначала показываем запасные пути: если банк не откроется, человек не останется без ссылки.
+        setPayUrl(out.redirect);
+        setStatus('redirect');
+        setTimeout(() => location.assign(out.redirect), detectInApp() ? 600 : 0);
+        return;
+      }
       setStatus('demo');
     } catch {
       setStatus('error');
@@ -109,6 +122,20 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
           <div class="flex flex-col gap-4" role="status">
             <p class="m-0 text-ink-2">Это промежуточная версия для просмотра. Состав и стоимость можно проверить, оформление заказа и оплата здесь пока не подключены.</p>
             <button type="button" class="btn btn-secondary" onClick={close}>Продолжить просмотр</button>
+          </div>
+        ) : status === 'redirect' ? (
+          <div class="flex flex-col gap-4" role="status">
+            <p class="m-0 text-ink-2">Открываем страницу оплаты…</p>
+            {inApp && (
+              <div class="flex flex-col gap-3 border-t border-line pt-4">
+                <p class="t-small m-0 text-ink-2">Если оплата не открылась или банк не запускается, откройте страницу в обычном браузере: так работают СБП и приложения банков.</p>
+                <div class="flex flex-wrap gap-3">
+                  <a href={payUrl} class="btn btn-primary">Открыть оплату</a>
+                  {isAndroid() && <a href={androidExternalUrl(payUrl)} class="btn btn-secondary">Открыть в браузере</a>}
+                  <button type="button" class="btn btn-secondary" onClick={async () => setCopied(await copyText(payUrl))}>{copied ? 'Ссылка скопирована' : 'Скопировать ссылку'}</button>
+                </div>
+              </div>
+            )}
           </div>
         ) : status === 'demo' ? (
           <div class="flex flex-col gap-3" role="status">
@@ -148,7 +175,7 @@ function Field({ id, name, label, type = 'text', autoComplete, error, msg }: { i
   return (
     <div class="flex flex-col gap-2">
       <label for={id} class="t-small font-semibold">{label} <span class="text-muted" aria-hidden="true">*</span></label>
-      <input id={id} name={name} type={type} autoComplete={autoComplete} required aria-required="true" class="field" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined} />
+      <input id={id} name={name} type={type} autoComplete={autoComplete} inputMode={type === 'tel' ? 'tel' : type === 'email' ? 'email' : undefined} enterKeyHint="next" autoCapitalize={type === 'text' ? 'words' : 'off'} spellcheck={false} required aria-required="true" class="field" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined} />
       {error && <span id={`${id}-err`} class="t-caption text-danger" role="alert">{msg}</span>}
     </div>
   );

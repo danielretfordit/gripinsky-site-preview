@@ -70,3 +70,47 @@ test('направление и курс: острова оживают без �
   }
   expect(errors).toEqual([]);
 });
+
+// ---------- Встроенный браузер Telegram (эмуляция: строка агента и объект TelegramWebviewProxy) ----------
+const TG_UA = 'Mozilla/5.0 (Linux; Android 14; Pixel 7 Build/UQ1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.0.0 Mobile Safari/537.36 Telegram-Android/11.2.0';
+
+test.describe('Telegram', () => {
+  test.use({ userAgent: TG_UA });
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => { (window as unknown as Record<string, unknown>).TelegramWebviewProxy = { postEvent() {} }; });
+  });
+
+  test('сайт помечает встроенный браузер и даёт запасной путь к оплате', async ({ page }) => {
+    const errors = watch(page);
+    await page.unroute('**/api/checkout');
+    await page.route('**/api/checkout', (r) => r.fulfill({ json: { ok: true, mode: 'getcourse', total: 10900, redirect: '/oplata/uspeh' } }));
+    await page.goto('/courses');
+    await hydrated(page);
+    await expect(page.locator('html')).toHaveClass(/is-inapp-telegram/);
+    await page.locator('[data-cart-add]:not([disabled])').first().click();
+    await page.locator('dialog[data-cart-dialog][open]').getByRole('button', { name: 'Оформить пакет' }).click();
+    const form = page.locator('dialog[open]').filter({ has: page.locator('input[name="email"]') });
+    await form.locator('input[name="name"]').fill('Анна Тестова');
+    await form.locator('input[name="email"]').fill('anna@example.com');
+    await form.locator('input[name="phone"]').fill('+79991234567');
+    await form.getByRole('checkbox').check({ force: true });
+    await page.waitForTimeout(2600); // форма не отправляется быстрее, чем её заполнил бы человек
+    await form.getByRole('button', { name: 'Перейти к оплате' }).click();
+    // После отправки форма сменяется экраном перехода к оплате с запасными путями
+    const pay = page.locator('dialog[open]');
+    await expect(pay.getByText('Если оплата не открылась')).toBeVisible();
+    await expect(pay.getByRole('button', { name: 'Скопировать ссылку' })).toBeVisible();
+    await expect(pay.getByRole('link', { name: 'Открыть в браузере' })).toHaveAttribute('href', /^intent:\/\//);
+    await page.waitForURL('**/oplata/uspeh');
+    expect(errors).toEqual([]);
+  });
+
+  test('корзина приходит по ссылке', async ({ page }) => {
+    await page.goto('/courses?cart=modeling1,ai,../evil&support=chat');
+    await hydrated(page);
+    await expect(page.locator('[data-site-cart]')).toBeVisible();
+    await expect(page).toHaveURL(/\/courses$/);
+    const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('gripinsky-cart-v1') ?? '{}'));
+    expect(saved.ids).toEqual(['modeling1', 'ai']);
+  });
+});

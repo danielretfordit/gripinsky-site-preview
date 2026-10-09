@@ -401,7 +401,7 @@ body:has(dialog[open]) { overflow: hidden; }
   min-height: calc(var(--header-h) - 1px);
   margin-inline: auto;
 }
-.site-header__brand { display: inline-flex; flex: 0 0 auto; }
+.site-header__brand { display: inline-flex; flex: 0 0 auto; align-items: center; min-height: var(--tap); color: var(--color-ink); }
 .site-header__brand img { width: 164px; height: auto; }
 .site-header__nav--desktop {
   display: flex;
@@ -541,6 +541,9 @@ body:has(dialog[open]) { overflow: hidden; }
   .site-header__consult { padding-inline: 6px; letter-spacing: -.01em; }
 }
 
+/* Клавиатура на телефоне открыта: нижние панели уходят вниз и не закрывают поле ввода */
+.is-typing :is(.site-cart-bar, [data-prototype-empty-cart], [data-sticky-package]) { transform: translateY(110%); transition: transform var(--dur) ease; }
+
 /* Панель корзины общая для рабочих страниц; высота учитывает safe-area и резервирует место в документе. */
 .site-cart-bar {
   box-sizing: border-box;
@@ -578,7 +581,7 @@ body:not(.site-home) .quiz-experience astro-island > .quiz-layout {
 .quiz-experience .quiz-copy h2 { margin: 18px 0 17px; font-size: var(--type-section); line-height: 1.03; letter-spacing: -.057em; }
 .quiz-experience .quiz-copy h2 span { display: block; color: var(--color-heading-muted); }
 .quiz-experience .quiz-copy .t-overline { margin-bottom: 0; }
-.quiz-experience .quiz-entry-link { display: inline-flex; align-self: flex-start; align-items: center; min-height: 30px; margin-top: 23px; padding-bottom: 5px; border-bottom: 1px solid var(--color-line-strong); color: var(--color-ink); font-size: var(--type-small); line-height: 1.5; font-weight: 600; }
+.quiz-experience .quiz-entry-link { display: inline-flex; align-self: flex-start; align-items: center; min-height: var(--tap); margin-top: 16px; padding-bottom: 0; border-bottom: 1px solid var(--color-line-strong); color: var(--color-ink); font-size: var(--type-small); line-height: 1.5; font-weight: 600; }
 .quiz-experience .quiz-entry-link span { display: inline-block; margin-left: 12px; font-size: 16px; font-weight: 400; }
 .quiz-experience .quiz-panel { gap: 0; }
 .quiz-experience .quiz-card { padding: 0; border: 0; background: transparent; }

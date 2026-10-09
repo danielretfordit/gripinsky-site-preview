@@ -21,7 +21,7 @@ const courses = await Promise.all((stage === 'base' ? baseOptions : [...options.
     <p class="t-small viz-additional__intro">{stage === 'base' ? 'По желанию. 3ds Max, Corona и ИИ уже входят в базу.' : 'Подходят к базе и профессиям. Выберите нужные инструменты, остальные можно добавить позже.'}</p>
   <div class="viz-additional__grid">{courses.map(item => item.course && item.course.data.status === 'active' && <article>
     <span class="t-overline">{item.for}</span>
-    <h3 class="t-title"><a href={courseHref(item.id, item.course.data)} class="link">{item.course.data.title} ↗</a></h3>
+    <h3 class="t-title"><a href={courseHref(item.id, item.course.data)} class="link">{item.course.data.title} ↗</a></h3>
     <p class="t-small">{item.text}</p>
     <a href={courseHref(item.id, item.course.data)} class="link t-small">Программа курса →</a><div class="viz-additional__buy"><b class="t-title">{rub(item.course.data.price)}</b><button type="button" class="btn btn-secondary" data-cart-add={item.id} disabled aria-pressed="false"><span data-cart-label>В корзину</span></button></div>
   </article>)}</div>

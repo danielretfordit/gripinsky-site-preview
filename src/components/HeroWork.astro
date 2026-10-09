@@ -12,7 +12,7 @@ const count = String(slides.length).padStart(2, '0');
 ---
 <section class={`hero ${cls}`} aria-labelledby={id} data-hero-carousel={carousel ? 'true' : undefined}>
   <div class="hero__copy">
-    <slot name="top" />
+    {Astro.slots.has('top') && <div class="hero__top"><slot name="top" /></div>}
     <p class="t-overline m-0 !text-ink/80">{kicker}</p>
     <slot name="title" />
     <div class="hero__row">
@@ -48,6 +48,8 @@ const count = String(slides.length).padStart(2, '0');
      Кегль заголовка берётся из общей плавной роли --type-hero, высоты привязаны к ширине, а не к точкам перелома. */
   .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; background: var(--color-bg); }
   .hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(32px, 6vw, 56px) var(--site-gutter) 0; }
+  /* Хлебные крошки отделены от надзаголовка: иначе «…/ 3D-визуализация» и «Направление» читаются одной строкой */
+  .hero__top { margin-bottom: clamp(20px, 3vw, 36px); }
   .hero__visual { display: flex; min-width: 0; min-height: 0; flex-direction: column; }
   .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.058em; }
   .hero :global(.t-lead) { max-width: 570px; color: var(--color-ink-2); font-size: var(--type-lead); line-height: 1.55; }
@@ -70,8 +72,8 @@ const count = String(slides.length).padStart(2, '0');
   /* Телефон: кнопки первого экрана столбцом, ширина по подписи */
   @media (max-width: 559.98px) {
     .hero :global(.t-lead) { font-size: var(--type-body); }
-    .hero__cta { align-items: flex-start; flex-direction: column; width: 100%; min-width: 0; }
-    .hero :global(.hero__cta a) { width: auto; max-width: 100%; }
+    .hero__cta { align-items: stretch; flex-direction: column; width: 100%; min-width: 0; }
+    .hero :global(.hero__cta > *) { width: 100%; }
   }
   /* Широкий экран: две колонки 3:2, кадр на всю высоту первого экрана */
   @media (min-width: 1024px) {

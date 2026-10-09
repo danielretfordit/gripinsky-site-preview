@@ -14,14 +14,42 @@ export function normalizeCart(cat: Catalog, value: unknown): SetInput {
   return { ids, support, ...(tariff ? { tariff: support === 'self' ? 'lite' : tariff === 'lite' ? 'opt' : tariff } : {}) };
 }
 
+/**
+ * Корзина из ссылки: ?cart=modeling1,ai&support=chat&tariff=opt. Нужна, когда человек открывает сайт из Telegram или VK
+ * и переходит в обычный браузер: у встроенного браузера своё хранилище, и выбор иначе потерялся бы.
+ * Идентификаторы проверяются по каталогу (normalizeCart), лишнее отбрасывается.
+ */
+function cartFromUrl(cat: Catalog): SetInput | null {
+  try {
+    const q = new URLSearchParams(location.search);
+    const raw = q.get('cart');
+    if (!raw) return null;
+    const value = normalizeCart(cat, { ids: raw.split(',').slice(0, 100), support: q.get('support') ?? undefined, tariff: q.get('tariff') ?? undefined });
+    // Параметры убираем из адресной строки, чтобы ссылка при обновлении не добавляла курсы повторно
+    for (const k of ['cart', 'support', 'tariff']) q.delete(k);
+    const rest = q.toString();
+    history.replaceState(history.state, '', `${location.pathname}${rest ? `?${rest}` : ''}${location.hash}`);
+    return value.ids.length ? value : null;
+  } catch { return null; }
+}
+
+/** Ссылка на текущую корзину (для «открыть в браузере» и «отправить подборку себе») */
+export function cartShareUrl(cart: SetInput, path = '/courses'): string {
+  const q = new URLSearchParams({ cart: cart.ids.join(','), support: cart.support, ...(cart.tariff ? { tariff: cart.tariff } : {}) });
+  return `${location.origin}${path}?${q}`;
+}
+
 export function initializeCart(cat: Catalog) {
   if (initialized) return;
   initialized = true;
+  const fromUrl = cartFromUrl(cat);
   try {
     const saved = normalizeCart(cat, JSON.parse(localStorage.getItem(CART_KEY) ?? 'null'));
     const pending = $cart.get();
-    $cart.set(pending.ids.length ? normalizeCart(cat, { ...pending, ids: [...saved.ids, ...pending.ids] }) : saved);
-  } catch { $cart.set(normalizeCart(cat, $cart.get())); }
+    const merged = [...saved.ids, ...pending.ids, ...(fromUrl?.ids ?? [])];
+    const base = fromUrl ?? (pending.ids.length ? pending : saved);
+    $cart.set(normalizeCart(cat, { ...base, ids: merged }));
+  } catch { $cart.set(normalizeCart(cat, fromUrl ?? $cart.get())); }
 }
 
 export function addCourses(ids: string[], format?: { support: Support; tariff?: TariffId }) {

@@ -35,7 +35,7 @@ const choices: Record<string, { task: string; interest: string }> = {
   </figure>)}</div>
   <a href="/gallery" class="link support-more">Все работы учеников →</a>
 </section>
-<div class="wrap games-free"><div><p class="t-overline text-muted">Начните бесплатно</p><p class="t-small text-ink-2">Попробуйте создать свою первую игровую модель на бесплатных уроках.</p></div><div class="games-free-links">{freeCourses.map(c=>c && <a href={c.data.legacyPath} class="btn btn-secondary">{c.data.title} ↗</a>)}</div></div>
+<div class="wrap games-free"><div><p class="t-overline text-muted">Начните бесплатно</p><p class="t-small text-ink-2">Попробуйте создать свою первую игровую модель на бесплатных уроках.</p></div><div class="games-free-links">{freeCourses.map(c=>c && <a href={c.data.legacyPath} class="btn btn-secondary">{c.data.title} ↗</a>)}</div></div>
 <section id="games-reviews" class="support-reviews section" aria-labelledby="games-reviews-title"><div class="wrap">
   <div class="support-heading"><div><p class="t-overline">Опыт учеников</p><h2 id="games-reviews-title" class="t-h2">Как это <span class="t-accent">было у них</span></h2></div><p class="t-body text-ink-2">Отзывы о GameDev и работе над персонажами с наставником.</p></div>
   <div class="support-grid">{reviews.map(r => r && <figure class="student-review"><blockquote class="t-body">{r.data.quote ?? r.data.text}</blockquote><figcaption><b class="t-small">{r.data.author}</b><span class="t-caption text-muted">{r.id === 'natalya-approach' ? 'Обучение на курсе GameDev' : 'Проект персонажа с наставником'}</span></figcaption></figure>)}</div>

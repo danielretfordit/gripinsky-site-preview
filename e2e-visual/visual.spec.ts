@@ -108,7 +108,11 @@ async function audit(page: Page, mobile: boolean) {
       for (const el of document.querySelectorAll<HTMLElement>('a[href], button, summary, [role="tab"], input:not([type="hidden"]), select')) {
         if (!visible(el)) continue;
         const cs = getComputedStyle(el);
-        const r = el.getBoundingClientRect();
+        // Поле внутри подписи: нажимают на подпись
+        const owner = el.matches('input') ? el.closest('label') : null;
+        const r = (owner ?? el).getBoundingClientRect();
+        // Заголовок карточки, когда вся карточка уже ссылка
+        if (el.tagName === 'A' && el.closest('article')?.querySelector(':scope a[tabindex="-1"][class*="absolute"], :scope > a.absolute')) continue;
         const before = getComputedStyle(el, '::before');
         const hitH = before.content !== 'none' && before.position === 'absolute' ? Math.max(r.height, parseFloat(before.height) || 0) : r.height;
         const hitW = before.content !== 'none' && before.position === 'absolute' ? Math.max(r.width, parseFloat(before.width) || 0) : r.width;
