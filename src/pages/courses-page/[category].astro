@@ -75,7 +75,7 @@ const jsonLd = prof
             <p class="t-small m-0 text-ink-2">Курс профессии от <b class="text-ink">{rub(minCourse)}</b>, вместе с базой от <b class="text-ink">{rub(minCourse + base.price)}</b>. Есть рассрочка.</p>
           </div>
           <div class="media-frame bg-white">
-            <Image src={prof.data.image} alt={prof.data.imageAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" class="h-[280px] w-full sm:h-[420px]" style={`object-fit:${prof.data.imageFit};object-position:${prof.data.imagePos}`} />
+            <Image src={prof.data.image} alt={prof.data.imageAlt} widths={[480, 800, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" loading="eager" class="h-[clamp(280px,41.0vw,420px)] w-full " style={`object-fit:${prof.data.imageFit};object-position:${prof.data.imagePos}`} />
           </div>
         </div>
       </section>

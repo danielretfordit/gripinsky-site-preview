@@ -143,7 +143,7 @@ const ld = [
       <div class="flex max-w-[820px] flex-col">
         {faq.map(([q, a]) => (
           <details class="faq group border-b border-line py-1">
-            <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">{q}<span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span></summary>
+            <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">{q}<span aria-hidden="true" class="shrink-0 text-[length:var(--type-icon-lg)] font-medium text-muted transition-transform group-open:rotate-45">+</span></summary>
             <p class="mb-5 mt-0 text-ink-2">{a}</p>
           </details>
         ))}

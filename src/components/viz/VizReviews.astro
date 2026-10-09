@@ -7,5 +7,5 @@ const reviews = (await getCollection('reviews', r=>!r.data.person || people.has(
   <section class="viz-reviews subsection" aria-labelledby="viz-review-title"><div class="wrap"><div class="head"><p class="t-overline">Опыт учеников</p><h2 id="viz-review-title" class="t-h2">Как это <span class="t-accent">было у них</span></h2></div><div class="viz-review-grid">{reviews.map(r => <figure><blockquote class="t-body">{r.data.quote ?? r.data.text}</blockquote><figcaption><b class="t-small">{r.data.author}</b><span class="t-meta">{r.data.role}</span></figcaption></figure>)}</div><a href="/otzyvy" class="link viz-more">Все отзывы →</a></div></section>
 <style>
 .viz-reviews { background:var(--color-surface); padding-block:48px; } .viz-review-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; } figure { margin:0; border-top:1px solid var(--color-line); display:flex; flex-direction:column; } blockquote { margin:24px 0; } figcaption { display:flex; flex-direction:column; gap:6px; border-top:1px solid var(--color-line); padding-top:16px; margin-top:auto; }
-@media(max-width:820px) { .viz-review-grid { grid-template-columns:1fr; } }
+@media(max-width:767.98px) { .viz-review-grid { grid-template-columns:1fr; } }
 </style>

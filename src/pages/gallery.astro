@@ -111,15 +111,27 @@ const AWARD: Record<string, string> = { 'render-dnya': '«Рендер дня»'
   </section>
 
   <dialog id="lightbox" aria-label="Работа крупно" class="m-0 h-[100dvh] max-h-none w-screen max-w-none border-0 bg-[rgb(17_19_19/0.96)] p-0 text-ink backdrop:bg-transparent">
-    <div class="flex h-full flex-col items-center justify-center gap-3 px-3 py-14 sm:px-20">
+    <div class="lb-safe flex h-full flex-col items-center justify-center gap-3 px-3 py-14 sm:px-20">
       <img alt="" class="media-image max-h-[calc(100dvh-140px)] max-w-full object-contain" data-lb-img />
-      <p class="m-0 flex flex-wrap items-baseline justify-center gap-x-3 text-center"><b data-lb-author></b><span class="text-muted" data-lb-title></span><span class="text-[14px] text-muted" data-lb-count></span></p>
+      <p class="m-0 flex flex-wrap items-baseline justify-center gap-x-3 text-center"><b data-lb-author></b><span class="text-muted" data-lb-title></span><span class="t-small text-muted" data-lb-count></span></p>
     </div>
-    <button type="button" class="absolute right-3 top-3 inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-strong bg-bg text-2xl" data-lb-close aria-label="Закрыть">×</button>
-    <button type="button" class="absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
-    <button type="button" class="absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
+    <button type="button" class="lb-close absolute right-3 top-3 inline-flex h-12 w-12 items-center justify-center rounded-field border border-line-strong bg-bg text-2xl" data-lb-close aria-label="Закрыть">×</button>
+    <button type="button" class="lb-prev absolute left-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-field border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:left-5" data-lb-prev aria-label="Предыдущая работа">←</button>
+    <button type="button" class="lb-next absolute right-2 top-1/2 inline-flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-field border border-line-strong bg-[rgb(17_19_19/0.7)] text-xl sm:right-5" data-lb-next aria-label="Следующая работа">→</button>
   </dialog>
 </Base>
+
+<style>
+  /* Лайтбокс на телефоне с вырезом экрана: кнопки и подпись не уходят под вырез и полосу жестов */
+  .lb-safe { padding-top: max(3.5rem, env(safe-area-inset-top)); padding-bottom: max(3.5rem, env(safe-area-inset-bottom)); }
+  .lb-close { top: max(.75rem, env(safe-area-inset-top)); right: max(.75rem, env(safe-area-inset-right)); }
+  .lb-prev { left: max(.5rem, env(safe-area-inset-left)); }
+  .lb-next { right: max(.5rem, env(safe-area-inset-right)); }
+  @media (min-width: 768px) {
+    .lb-prev { left: max(1.25rem, env(safe-area-inset-left)); }
+    .lb-next { right: max(1.25rem, env(safe-area-inset-right)); }
+  }
+</style>
 
 <script>
   const grid = document.querySelector<HTMLElement>('[data-gallery]')!;

@@ -24,3 +24,6 @@ docs/design/shots/*
 
 docs/content/student-import-manifest.json
 docs/content/screenshot-quotes.json
+
+# данные приложения (заказы Robokassa локально)
+var/

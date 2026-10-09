@@ -31,7 +31,6 @@ const count = String(slides.length).padStart(2, '0');
           <Image src={slide.image} alt={slide.alt} class="hero__img" style={`--hero-focus:${slide.focus};--hero-mobile-focus:${heroMobileFocus[slide.id] ?? slide.focus}`}
             widths={[640, 960, 1280, 1600]} sizes="(min-width: 1024px) 40vw, 100vw" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} />
           <figcaption><span>РАБОТА УЧЕНИКА</span>{workCaption(slide)}</figcaption>
-          <span class="hero__image-index" aria-hidden="true">GRIPINSKY / 3D</span>
         </figure>
       ))}
       {carousel && (
@@ -45,51 +44,46 @@ const count = String(slides.length).padStart(2, '0');
 </section>
 
 <style>
-  /* Выбранный вариант 03: текстовая панель слева, работа ученика справа. */
-  .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); overflow: hidden; min-height: clamp(570px, 48vw, 680px); padding-top: var(--header-h); background: var(--color-bg); }
-  .hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(48px, 7vw, 104px) clamp(32px, 5vw, 76px) 54px var(--site-gutter); background: var(--color-bg); }
-  .hero__visual { display: flex; min-width: 0; height: clamp(570px, 48vw, 680px); min-height: 0; flex-direction: column; }
-  .hero :global(.t-hero) { max-width: 750px; margin: 22px 0 16px; font-size: clamp(42px, 4.45vw, 64px); line-height: 1.02; letter-spacing: -.058em; }
+  /* Выбранный вариант 03: текстовая панель слева, работа ученика справа (от 1024 px); ниже работа идёт под текстом.
+     Кегль заголовка берётся из общей плавной роли --type-hero, высоты привязаны к ширине, а не к точкам перелома. */
+  .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; background: var(--color-bg); }
+  .hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(32px, 6vw, 56px) var(--site-gutter) 0; }
+  .hero__visual { display: flex; min-width: 0; min-height: 0; flex-direction: column; }
+  .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.058em; }
   .hero :global(.t-lead) { max-width: 570px; color: var(--color-ink-2); font-size: var(--type-lead); line-height: 1.55; }
-  .hero :global(.hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--hero-focus, 50% 50%); }
-  .hero__image { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; margin: 0; overflow: hidden; background: var(--color-surface); }
-  .hero__slide { position: absolute; inset: 0; margin: 0; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility .45s ease; }
+  .hero :global(.hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--hero-mobile-focus, var(--hero-focus, 50% 50%)); }
+  .hero__image { position: relative; flex: 0 0 auto; min-width: 0; margin: 0 var(--site-gutter); aspect-ratio: 4 / 3; max-height: min(520px, 64svh); overflow: hidden; background: var(--color-surface); touch-action: pan-y; }
+  .hero__slide { position: absolute; inset: 0; margin: 0; opacity: 0; visibility: hidden; transition: opacity .6s var(--ease-out), visibility .6s; }
   .hero__slide[data-active] { opacity: 1; visibility: visible; }
   .hero__slide[aria-hidden="true"] { pointer-events: none; }
-  .hero__image::after { position: absolute; inset: 48% 0 0; background: linear-gradient(transparent, rgb(8 10 10 / .78)); content: ""; pointer-events: none; }
-  .hero__image figcaption { position: absolute; z-index: 1; right: 120px; bottom: 23px; left: 24px; display: flex; flex-direction: column; gap: 4px; color: var(--color-ink); font-size: var(--type-small); }
-  .hero__image figcaption span, .hero__image-index { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; }
-  .hero__image-index { position: absolute; z-index: 1; top: 101px; right: 22px; writing-mode: vertical-rl; }
-  .hero__controls { position: absolute; z-index: 2; right: 20px; bottom: calc(var(--sticky-bar-h, 0px) + 20px); display: flex; gap: 6px; }
-  .hero__controls button { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid rgb(241 241 235 / .64); background: rgb(17 19 19 / .28); color: var(--color-ink); font-size: 19px; line-height: 1; transition: color .2s ease, border-color .2s ease, background .2s ease; }
-  .hero__controls button:hover, .hero__controls button:focus-visible { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); }
-  .hero__row { display: flex; flex-direction: column; align-items: flex-start; gap: 28px; }
+  .hero__image::after { position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgb(8 10 10 / .8)); content: ""; pointer-events: none; }
+  .hero__image figcaption { position: absolute; z-index: 1; right: 116px; bottom: 16px; left: 16px; display: flex; flex-direction: column; gap: 4px; color: var(--color-ink); font-size: var(--type-small); line-height: 1.4; }
+  .hero__image figcaption span { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; }
+  .hero__controls { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: flex; gap: 6px; }
+  .hero__controls button { display: grid; width: var(--tap); height: var(--tap); place-items: center; border: 1px solid rgb(241 241 235 / .64); border-radius: var(--radius-field); background: rgb(17 19 19 / .32); color: var(--color-ink); font-size: var(--type-icon); line-height: 1; transition: color var(--dur) ease, border-color var(--dur) ease, background var(--dur) ease; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .hero__controls button:focus-visible { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); }
+  .hero__controls button:active { background: rgb(17 19 19 / .78); }
+  @media (hover: hover) { .hero__controls button:hover { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); } }
+  .hero__row { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(18px, 2.4vw, 28px); }
   .hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
-  .hero__signature { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 20px; width: 100%; box-sizing: border-box; margin: 0; padding: 13px clamp(16px, 2vw, 24px); border-top: 1px solid var(--color-line); color: var(--color-muted); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .09em; }
-  @media (min-width: 821px) and (max-width: 1100px) {
-    .hero :global(.t-hero) { font-size: clamp(40px, 4.8vw, 56px); }
-  }
-  @media (max-width: 820px) {
-    .hero :global(.hero__img) { object-position: var(--hero-mobile-focus, 50% 50%); }
-    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; padding-top: 0; }
-    .hero__copy { min-height: 0; padding: 48px var(--site-gutter) 0; background: transparent; }
-    .hero :global(.t-hero) { max-width: 700px; font-size: clamp(44px, 8vw, 64px); }
-    .hero__visual { height: auto; min-height: 0; }
-    .hero__signature { width: auto; margin: 27px var(--site-gutter) 30px; padding: 13px 0 0; }
-    .hero__image { flex: 0 0 auto; height: clamp(280px, 54vw, 430px); min-height: 0; margin-inline: var(--site-gutter); touch-action: pan-y; }
-  }
-  @media (max-width: 560px) {
-    .hero__copy { padding-top: 35px; }
-    .hero :global(.t-hero) { font-size: clamp(30px, 7.8vw, 36px); line-height: 1.05; }
+  .hero__signature { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 20px; box-sizing: border-box; margin: 30px var(--site-gutter) 24px; padding: 13px 0 0; border-top: 1px solid var(--color-line); color: var(--color-muted); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .09em; }
+  /* Телефон: кнопки первого экрана столбцом, ширина по подписи */
+  @media (max-width: 559.98px) {
     .hero :global(.t-lead) { font-size: var(--type-body); }
-    .hero__image { height: 270px; min-height: 0; }
-    .hero__row { gap: 18px; }
     .hero__cta { align-items: flex-start; flex-direction: column; width: 100%; min-width: 0; }
-    .hero :global(.hero__cta a) { width: auto; }
-    .hero__image figcaption { right: 104px; bottom: 14px; left: 14px; }
-    .hero__image-index { top: 20px; right: 14px; }
-    .hero__controls { right: 12px; bottom: calc(var(--sticky-bar-h, 0px) + 12px); }
-    .hero__controls button { width: 38px; height: 38px; }
+    .hero :global(.hero__cta a) { width: auto; max-width: 100%; }
+  }
+  /* Широкий экран: две колонки 3:2, кадр на всю высоту первого экрана */
+  @media (min-width: 1024px) {
+    .hero { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); min-height: clamp(570px, 48vw, 680px); padding-top: var(--header-h); }
+    .hero__copy { padding: clamp(48px, 7vw, 104px) clamp(32px, 5vw, 76px) 54px var(--site-gutter); }
+    .hero :global(.t-hero) { max-width: 750px; }
+    .hero :global(.hero__img) { object-position: var(--hero-focus, 50% 50%); }
+    .hero__visual { height: clamp(570px, 48vw, 680px); }
+    .hero__signature { margin: 0; padding: 13px clamp(16px, 2vw, 24px); }
+    .hero__image { flex: 1 1 auto; margin: 0; aspect-ratio: auto; max-height: none; }
+    .hero__image figcaption { right: 120px; bottom: 23px; left: 24px; }
+    .hero__controls { right: 20px; bottom: calc(var(--sticky-bar-h, 0px) + 20px); }
   }
   @media (prefers-reduced-motion: reduce) { .hero__slide, .hero__controls button { transition: none; } }
 </style>

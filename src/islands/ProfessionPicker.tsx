@@ -48,12 +48,12 @@ export default function ProfessionPicker({ cat, professions }: Props) {
           return (
             <button type="button" role="radio" aria-checked={on} tabIndex={on ? 0 : -1} data-value={p.id} key={p.id}
               onClick={() => pick(p.id)} onKeyDown={(e) => onRadioKeys(e, ids, cur.id, (id) => pick(id as ProfId))}
-              class="choice zoom group relative grid grid-cols-[72px_1fr] items-center gap-4 overflow-hidden p-2 text-left md:block md:h-[250px] md:p-0">
+              class="choice zoom group relative grid grid-cols-[72px_1fr] items-center gap-4 overflow-hidden p-2 text-left md:block md:h-[clamp(220px,20vw,250px)] md:p-0">
               <img src={p.image.src} srcset={p.image.srcset} sizes="(min-width: 1024px) 400px, 72px" alt="" loading="lazy" decoding="async"
                 class="h-[72px] w-[72px] rounded-media bg-white md:absolute md:inset-0 md:h-full md:w-full md:rounded-none"
                 style={{ objectFit: p.image.fit, objectPosition: p.image.pos, opacity: on ? 1 : 0.85 }} />
               <span class="hidden md:absolute md:inset-0 md:block md:bg-[linear-gradient(180deg,rgba(17,19,19,0)_30%,rgba(17,19,19,0.92))]" />
-              <span class={`t-caption absolute right-3 top-3 hidden items-center gap-1 rounded-full px-2.5 py-1 font-semibold md:inline-flex ${on ? 'bg-ink text-bg' : 'bg-ink-2 text-bg'}`}>
+              <span class={`t-caption absolute right-3 top-3 hidden items-center gap-1 rounded-chip px-2.5 py-1 font-semibold md:inline-flex ${on ? 'bg-ink text-bg' : 'bg-ink-2 text-bg'}`}>
                 {on ? <><Check size={12} /> выбрано</> : 'выбрать'}
               </span>
               <span class="flex flex-col gap-0.5 md:absolute md:bottom-3.5 md:left-[18px] md:right-[18px]">

@@ -16,7 +16,7 @@ const storyWork = works.work('bolshunova-ostrov-1');
     <Fragment slot="head"><div><p class="t-overline">Результаты обучения</p><h2 id="viz-works-title" class="t-h2">Работы, <span class="t-accent">которые говорят за себя</span></h2></div><p class="t-body">Проекты учеников разных курсов.<br/><a class="link" href="/gallery">Смотреть галерею →</a></p></Fragment>
   </WorksShowcase>
   {showStory && <article class="wrap subsection viz-story">
-    {storyWork && <div class="media-frame media-frame--work-card"><Image src={storyWork.image} alt={storyWork.alt} widths={[480,800,1200]} sizes="(min-width:821px) 55vw,100vw" class="w-full h-full object-cover" /></div>}
+    {storyWork && <div class="media-frame media-frame--work-card"><Image src={storyWork.image} alt={storyWork.alt} widths={[480,800,1200]} sizes="(min-width:768px) 55vw,100vw" class="w-full h-full object-cover" /></div>}
     <div><p class="t-overline">История ученицы / Юлия Большунова</p><h2 class="t-h2">От первых рендеров <span class="t-accent">к коммерческому проекту</span></h2><dl><dt>До обучения</dt><dd>{story.data.before}</dd><dt>После</dt><dd>{story.data.after}</dd></dl><p class="t-small">{story.data.courses}</p><blockquote class="t-body">{story.data.quote}</blockquote><a href={`/stories/${story.id}`} class="link">Читать историю →</a></div>
   </article>}
 
@@ -25,7 +25,7 @@ const storyWork = works.work('bolshunova-ostrov-1');
 .viz-story { display:grid; grid-template-columns:3fr 2fr; gap:48px; align-items:center; } .viz-story h2 { margin:18px 0 24px; } dl { margin:0; } dt { color:var(--color-muted); font-size:var(--type-meta); margin-top:16px; } dd { margin:6px 0 0; font-size:var(--type-body); } .viz-story p,.viz-story blockquote { color:var(--color-ink-2); } blockquote { margin:24px 0; } .viz-reviews { background:var(--color-surface); padding-block:48px; } .viz-review-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; } figure { margin:0; border-top:1px solid var(--color-line); } figcaption { display:flex; flex-direction:column; gap:6px; border-top:1px solid var(--color-line); padding-top:16px; }
 .viz-proof--catalog .viz-story { grid-template-columns:1fr 1fr; margin-top:var(--space-sub); padding-top:40px; border-top:1px solid var(--color-line); }
 .viz-proof--journey .viz-story { grid-template-columns:2fr 3fr; }
-@media(max-width:820px) { .viz-story,.viz-proof--catalog .viz-story,.viz-proof--journey .viz-story,.viz-review-grid { grid-template-columns:1fr; } .viz-story { gap:24px; } }
+@media(max-width:767.98px) { .viz-story,.viz-proof--catalog .viz-story,.viz-proof--journey .viz-story,.viz-review-grid { grid-template-columns:1fr; } .viz-story { gap:24px; } }
 </style>
 <style is:global>
 .viz-page--catalog .viz-proof > section { width:calc(100% - 2 * var(--site-gutter)); margin-inline:auto; }
@@ -36,5 +36,5 @@ const storyWork = works.work('bolshunova-ostrov-1');
 .viz-page--journey .viz-proof > section > .head { display:grid; grid-template-columns:3fr 2fr; gap:48px; }
 .viz-page--journey .viz-proof .work-feature__photo { aspect-ratio:21/9; }
 .viz-page--journey .viz-story { border-left:2px solid var(--color-line-strong); padding-left:32px; }
-@media(max-width:820px) { .viz-page--catalog .viz-proof > section { width:calc(100% - 2 * var(--site-gutter)); } .viz-page--catalog .viz-proof > section > figure,.viz-page--journey .viz-proof > section > .head { display:block; } .viz-page--journey .viz-proof .work-feature__photo { aspect-ratio:var(--media-ratio-work-card); } .viz-page--journey .viz-story { padding-left:20px; } }
+@media(max-width:767.98px) { .viz-page--catalog .viz-proof > section { width:calc(100% - 2 * var(--site-gutter)); } .viz-page--catalog .viz-proof > section > figure,.viz-page--journey .viz-proof > section > .head { display:block; } .viz-page--journey .viz-proof .work-feature__photo { aspect-ratio:var(--media-ratio-work-card); } .viz-page--journey .viz-story { padding-left:20px; } }
 </style>

@@ -14,7 +14,7 @@ const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 
     <ul class="m-0 grid list-none gap-5 p-0 md:grid-cols-2">
       {posts.map((p) => (
         <li class="card lift relative flex flex-col gap-3 p-6 md:p-8">
-          <time datetime={p.data.date.toISOString()} class="text-[14px] text-muted">{fmt(p.data.date)}</time>
+          <time datetime={p.data.date.toISOString()} class="t-small text-muted">{fmt(p.data.date)}</time>
           <h2 class="t-h3"><a href={postHref(p)} class="text-ink after:absolute after:inset-0 hover:text-white">{p.data.title}</a></h2>
           <p class="m-0 text-ink-2">{p.data.description}</p>
           <span class="mt-auto font-semibold text-ink" data-cta>Читать →</span>

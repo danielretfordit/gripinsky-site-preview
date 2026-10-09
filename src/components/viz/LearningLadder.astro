@@ -155,7 +155,7 @@ const steps = [
     color: var(--color-bg);
     box-shadow: none;
   }
-  .learning-ladder__projects { display: flex; flex-direction: column; gap: 5px; margin: 3px 0; padding: 0; list-style: none; color: var(--color-ink-2); font-size: 13px; line-height: 1.35; }
+  .learning-ladder__projects { display: flex; flex-direction: column; gap: 5px; margin: 3px 0; padding: 0; list-style: none; color: var(--color-ink-2); font-size: var(--type-small); line-height: 1.35; }
   .learning-ladder__projects li { position: relative; padding-left: 13px; }
   .learning-ladder__projects li::before { position: absolute; top: .55em; left: 1px; width: 4px; height: 4px; border-radius: 50%; background: var(--color-muted); content: ""; }
   @media (min-width: 768px) {
@@ -198,7 +198,7 @@ const steps = [
 
     .learning-ladder__marker { width: 40px; height: 40px; }
     .learning-ladder__copy { gap: 10px; }
-    .learning-ladder__copy h3 { font-size: 26px; }
+    .learning-ladder__copy h3 { font-size: var(--type-card-title); }
     .learning-ladder__step--result .learning-ladder__copy h3 { color: var(--color-ink); }
   }
 </style>

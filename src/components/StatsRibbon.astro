@@ -65,7 +65,7 @@ const { stats } = Astro.props;
     text-decoration-thickness: 1px;
     text-underline-offset: 5px;
   }
-  .stats-ribbon__item a:hover { text-decoration: underline; }
+  @media (hover: hover) { .stats-ribbon__item a:hover { text-decoration: underline; } }
   @media (max-width: 767px) {
     .stats-ribbon { padding-top: 16px; }
     .stats-ribbon__list { gap: 28px; }

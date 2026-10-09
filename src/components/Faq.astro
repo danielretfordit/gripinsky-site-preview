@@ -24,7 +24,7 @@ const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await 
         <details class:list={["faq group border-b border-line py-1", { "border-t": index === 0 }]}>
           <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
             {f.data.question}
-            <span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span>
+            <span aria-hidden="true" class="shrink-0 text-[length:var(--type-icon-lg)] font-medium text-muted transition-transform group-open:rotate-45">+</span>
           </summary>
           <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>
         </details>
@@ -37,7 +37,7 @@ const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await 
               <details class="faq group border-b border-line py-1">
                 <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">
                   {f.data.question}
-                  <span aria-hidden="true" class="shrink-0 text-[26px] font-medium text-muted transition-transform group-open:rotate-45">+</span>
+                  <span aria-hidden="true" class="shrink-0 text-[length:var(--type-icon-lg)] font-medium text-muted transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <div class="faq-answer t-body pb-5 text-ink-2"><Content /></div>
               </details>

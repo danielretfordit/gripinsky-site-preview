@@ -34,7 +34,7 @@ const stages = [
     <div class="base-explorer__panels">
       {stages.map((stage, i) => <article role="tabpanel" id={`base-panel-${i}`} aria-labelledby={`base-tab-${i}`} hidden={i !== 1} tabindex="0">
         <header><p class="t-overline">Этап 0{i} / 04</p><h3 class="t-h3">{stage.title}</h3><p class="t-body">{stage.text}</p></header>
-        {stage.example ? <figure><div class="media-frame media-frame--card"><Image src={stage.example.image} alt={stage.example.alt} widths={[480, 720, 1200]} sizes="(min-width: 900px) 60vw, 90vw" class="base-route__image" style={`object-fit:${stage.fit};object-position:${stage.example.focus}`} /></div><figcaption class="t-caption">Работа ученика: {stage.example.author}</figcaption></figure> : <div class="base-explorer__zero"><span class="t-h2">Начинаете с нуля</span><p class="t-body">Опыт в 3D не нужен. Всё необходимое разбираете в первых уроках.</p></div>}
+        {stage.example ? <figure><div class="media-frame media-frame--card"><Image src={stage.example.image} alt={stage.example.alt} widths={[480, 720, 1200]} sizes="(min-width: 1024px) 60vw, 90vw" class="base-route__image" style={`object-fit:${stage.fit};object-position:${stage.example.focus}`} /></div><figcaption class="t-caption">Работа ученика: {stage.example.author}</figcaption></figure> : <div class="base-explorer__zero"><span class="t-h2">Начинаете с нуля</span><p class="t-body">Опыт в 3D не нужен. Всё необходимое разбираете в первых уроках.</p></div>}
         <footer><div><p class="t-overline">Темы</p><ul class="base-explorer__topics">{stage.topics.map(topic => <li class="t-small">{topic}</li>)}</ul></div><div><p class="t-overline">На выходе</p><p class="t-title">{stage.result}</p></div></footer>
         {i > 0 && i < 4 && <a class="base-explorer__course link t-small" href={courses[i-1].data.legacyPath}>Программа и страница курса →</a>}
       </article>)}
@@ -100,7 +100,7 @@ const stages = [
   const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
   const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
   const activate = (index: number) => { tabs.forEach((tab, i) => { tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1; }); panels.forEach((panel, i) => panel.hidden = i !== index); };
-  tabs.forEach((tab, i) => { tab.addEventListener('click', () => { activate(i); if (matchMedia('(max-width:899px)').matches) panels[i].scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); }); tab.addEventListener('keydown', event => { let next = i; if (['ArrowDown','ArrowRight'].includes(event.key)) next = (i + 1) % tabs.length; else if (['ArrowUp','ArrowLeft'].includes(event.key)) next = (i - 1 + tabs.length) % tabs.length; else if (event.key === 'Home') next = 0; else if (event.key === 'End') next = tabs.length - 1; else return; event.preventDefault(); activate(next); tabs[next].focus(); }); });
+  tabs.forEach((tab, i) => { tab.addEventListener('click', () => { activate(i); if (matchMedia('(max-width:1023.98px)').matches) panels[i].scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); }); tab.addEventListener('keydown', event => { let next = i; if (['ArrowDown','ArrowRight'].includes(event.key)) next = (i + 1) % tabs.length; else if (['ArrowUp','ArrowLeft'].includes(event.key)) next = (i - 1 + tabs.length) % tabs.length; else if (event.key === 'Home') next = 0; else if (event.key === 'End') next = tabs.length - 1; else return; event.preventDefault(); activate(next); tabs[next].focus(); }); });
  });
 </script>
 <style>
@@ -131,17 +131,17 @@ const stages = [
 .base-explorer__topics li { padding:8px 12px; border:1px solid var(--color-line-strong); }
 .base-explorer__zero { padding:48px 32px; border-block:1px solid var(--color-line); }
 .base-explorer__zero p { color:var(--color-ink-2); }
-@media(max-width:899px) { .base-explorer__nav button { grid-template-columns:32px minmax(0,1fr) 32px; } .base-explorer__dot { display:none; } .base-explorer__arrow { display:grid; width:32px; height:32px; place-items:center; border:1px solid var(--color-line-strong); border-radius:50%; } .base-explorer__nav button[aria-selected="true"] .base-explorer__arrow { color:var(--color-bg); background:var(--color-lime); border-color:var(--color-lime); } .base-explorer { grid-template-columns:1fr; gap:20px; } .base-explorer__nav button { min-height:56px; padding:14px 16px; } }
+@media(max-width:1023.98px) { .base-explorer__nav button { grid-template-columns:32px minmax(0,1fr) 32px; } .base-explorer__dot { display:none; } .base-explorer__arrow { display:grid; width:32px; height:32px; place-items:center; border:1px solid var(--color-line-strong); border-radius:50%; } .base-explorer__nav button[aria-selected="true"] .base-explorer__arrow { color:var(--color-bg); background:var(--color-lime); border-color:var(--color-lime); } .base-explorer { grid-template-columns:1fr; gap:20px; } .base-explorer__nav button { min-height:56px; padding:14px 16px; } }
 @media(max-width:560px) { .base-explorer__panels header { padding:24px 20px; } .base-explorer__panels figcaption { padding:12px 20px; } .base-explorer__panels footer { grid-template-columns:1fr; padding:24px 20px; } .base-explorer__panels footer > div + div { border-left:0; border-top:1px solid var(--color-line); padding:20px 0 0; } }
 </style>
 
 <style>
 .base-mobile-steps { display:none; }
-@media(max-width:899px) { .base-explorer,.base-explorer__hint { display:none; } .base-mobile-steps { display:block; margin:20px 0 28px; } .base-mobile-steps article { border-top:1px solid var(--color-line); padding:20px 0; } .base-mobile-steps__row { display:grid; grid-template-columns:96px minmax(0,1fr); gap:16px; align-items:start; } .base-mobile-steps__image { width:96px; height:72px; object-fit:contain; background:var(--color-surface); border-radius:var(--radius-media); } .base-mobile-steps p { margin:0 0 10px; color:var(--color-ink-2); } .base-mobile-steps h3 { margin:0 0 10px; } .base-mobile-steps summary { cursor:pointer; min-height:44px; display:flex; align-items:center; } .base-mobile-steps ul { color:var(--color-ink-2); padding-left:20px; } }
+@media(max-width:1023.98px) { .base-explorer,.base-explorer__hint { display:none; } .base-mobile-steps { display:block; margin:20px 0 28px; } .base-mobile-steps article { border-top:1px solid var(--color-line); padding:20px 0; } .base-mobile-steps__row { display:grid; grid-template-columns:96px minmax(0,1fr); gap:16px; align-items:start; } .base-mobile-steps__image { width:96px; height:72px; object-fit:contain; background:var(--color-surface); border-radius:var(--radius-media); } .base-mobile-steps p { margin:0 0 10px; color:var(--color-ink-2); } .base-mobile-steps h3 { margin:0 0 10px; } .base-mobile-steps summary { cursor:pointer; min-height:44px; display:flex; align-items:center; } .base-mobile-steps ul { color:var(--color-ink-2); padding-left:20px; } }
 </style>
 
 <style>
-@media(min-width:900px) {
+@media(min-width:1024px) {
 .base-explorer { gap:24px; }
 .base-explorer__nav button { min-height:72px; padding:16px; }
 .base-explorer__panels header { padding:18px 24px; }

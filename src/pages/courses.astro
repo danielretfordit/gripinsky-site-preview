@@ -42,7 +42,7 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
     </div>
 
     <a href="/courses-page/visualization" class="lift media-frame mb-10 grid bg-surface-2 text-ink hover:text-ink md:grid-cols-[5fr_7fr]">
-      <Image src={vizImg} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 42vw, 100vw" class="h-[220px] w-full object-cover md:h-full" />
+      <Image src={vizImg} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 42vw, 100vw" class="h-[clamp(220px,40vw,320px)] w-full object-cover md:h-full" />
       <span class="flex flex-col gap-3 p-6 md:p-10">
         <span class="t-overline">Направление</span>
         <span class="t-h2">3D-визуализация <span class="t-accent">с нуля до заказов</span></span>
@@ -177,17 +177,20 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
   .catalog-tabs { display: flex; gap: 28px; border-bottom: 1px solid var(--color-line); overflow-x: auto; }
   .catalog-tabs button { flex: 0 0 auto; min-height: 56px; padding: 12px 0; position: relative; color: var(--color-muted); font-size: var(--type-body); font-weight: 600; cursor: pointer; }
   .catalog-tabs button span { margin-left: 5px; font-size: var(--type-meta); font-weight: 400; vertical-align: super; color: var(--color-muted); }
-  .catalog-tabs button[aria-pressed="true"], .catalog-tabs button:hover { color: var(--color-ink); }
+  .catalog-tabs button { transition: color var(--dur) ease; }
+  .catalog-tabs button[aria-pressed="true"] { color: var(--color-ink); }
+  @media (hover: hover) {
+    .catalog-tabs button:hover { color: var(--color-ink); }
+    }
   .catalog-tabs button[aria-pressed="true"]::after { content: ''; position: absolute; bottom: 0; height: 2px; left: 0; right: 0; background: var(--color-lime); }
   .catalog-controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding-top: 24px; }
   .catalog-select { display: flex; flex-direction: column; gap: 9px; min-width: 0; font: var(--type-meta) var(--font-mono); color: var(--color-muted); }
   .catalog-select select { appearance: none; color: var(--color-ink); font: var(--type-body) var(--font-sans); font-weight: 500; min-height: 52px; width: 100%; padding: 12px 44px 12px 16px; background: var(--color-surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4-4' fill='none' stroke='%23a1aaa3' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 16px center; border: 1px solid var(--color-line-strong); border-radius: var(--radius-field); cursor: pointer; text-overflow: ellipsis; }
-  .catalog-select select:hover { border-color: var(--color-muted); }
   .catalog-select option { color: var(--color-ink); background: var(--color-surface); }
   .catalog-status { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 16px; min-height: 60px; font-size: var(--type-caption); color: var(--color-muted); }
   .catalog-status p { margin: 0; }
   .catalog-status button { min-height: 44px; color: var(--color-ink); cursor: pointer; }
-  .catalog-status button span { margin-left: 12px; font-size: 20px; }
+  .catalog-status button span { margin-left: 12px; font-size: 1.25rem; }
   .catalog-note { min-height: 20px; margin: 0; max-width: 720px; color: var(--color-muted); font-size: var(--type-caption); }
   @media(max-width: 767px) {
     .catalog-tabs { gap: 22px; }

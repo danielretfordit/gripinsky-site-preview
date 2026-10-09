@@ -103,8 +103,14 @@ for (const file of files) {
       for (const m of css.matchAll(/(?<![-\w])height\s*:\s*(\d{3,})px/g)) add('fixedHeight', offset + m.index, m[0]);
     }
   }
-  for (const m of src.matchAll(/\brounded-(full|\[\d+px\])/g)) add('radius', m.index, m[0]);
-  for (const m of src.matchAll(/(?<![\w-])(?:min-)?h-\[(\d{3,})px\]/g)) add('fixedHeight', m.index, m[0]);
+  // Круг допустим только у аватаров, инициалов и ручки ползунка «до/после» (docs/design/guidelines.md)
+  for (const m of src.matchAll(/\brounded-(full|\[\d+px\])/g)) {
+    const line = src.slice(src.lastIndexOf('\n', m.index) + 1, src.indexOf('\n', m.index));
+    if (m[1] === 'full' && /<Image|initials\(|ba-handle|avatar/.test(line)) continue;
+    add('radius', m.index, m[0]);
+  }
+  // min-height допустима (блок растёт с содержимым); фиксированная высота картинки должна тянуться: aspect-ratio или clamp()
+  for (const m of src.matchAll(/(?<![\w-])h-\[(\d{3,})px\]/g)) add('fixedHeight', m.index, m[0]);
   for (const m of src.matchAll(/\b100vh\b/g)) add('vh', m.index, '100vh');
   if (!isTokens) for (const m of src.matchAll(/\btext-\[(\d+)px\]/g)) add('fontSize', m.index, m[0]);
 }

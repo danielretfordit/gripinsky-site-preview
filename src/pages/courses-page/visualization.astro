@@ -30,7 +30,7 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
 <Base title="Курсы 3D-визуализации: профессии и обучение | GRIPINSKY" description="Выберите профессию 3D-визуализатора: интерьеры, экстерьеры или модели для стоков. Основные и дополнительные курсы, работы учеников и бесплатные уроки." breadcrumbs={crumbs} jsonLd={[faqSchema]} consultContext="Направление 3D-визуализация">
   {slides[0] && <HeroWork work={slides[0]} slides={slides} kicker="Направление" id="prototype-title">
     <Breadcrumbs slot="top" items={crumbs} />
-    <h1 slot="title" id="prototype-title" class="t-hero">3D-визуализация <span class="t-accent block">от первых моделей<br />к вашим проектам</span></h1>
+    <h1 slot="title" id="prototype-title" class="t-hero"><span class="whitespace-nowrap">3D-визуализация</span> <span class="t-accent block">от первых моделей<br />к вашим проектам</span></h1>
     <p slot="lead" class="t-lead">Научитесь создавать интерьеры, экстерьеры и модели для стоков. Начните с основ или выберите курсы под свой опыт. Моделирование, свет, материалы и нейросети складываются в маршрут к выбранной профессии.</p>
     <HeroActions slot="cta" primaryHref="#profession" primaryLabel="Выбрать курсы" secondaryHref="/vizualization3_mini" secondaryLabel="Попробовать бесплатно" secondaryGoal="trial_click" />
   </HeroWork>}
@@ -125,7 +125,7 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
   .prototype-faq-plus { flex-shrink:0; color:var(--color-muted); font-size:var(--type-title); transition:transform .2s; }
   .prototype-faq details[open] .prototype-faq-plus { transform:rotate(45deg); }
   .prototype-faq details p { max-width:68ch; color:var(--color-ink-2); margin:0; padding-bottom:20px; }
-  @media(max-width:820px) { .prototype-faq-layout { grid-template-columns:1fr; gap:61px; } .prototype-faq-heading { position:static; } }
+  @media(max-width:767.98px) { .prototype-faq-layout { grid-template-columns:1fr; gap:61px; } .prototype-faq-heading { position:static; } }
   @media(max-width:560px) { .prototype-faq-layout { gap:25px; } .prototype-faq summary { min-height:59px; padding:13px 0; } }
   @media(max-width:767px){.prototype-route-grid{grid-template-columns:1fr;gap:24px;}.prototype-route-grid article{padding:16px;}}
 
@@ -155,7 +155,7 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
   .prototype-description { display:grid; grid-template-columns:3fr 2fr; gap:var(--space-sub); align-items:start; margin-bottom:var(--space-sub); }
   .prototype-description > div > p { margin:16px 0 0; max-width:56ch; }
   .prototype-description h3 { max-width:28ch; text-wrap:balance; }
-  @media(max-width:820px) { .prototype-description { grid-template-columns:1fr; gap:24px; } .prototype-result { padding-left:16px; } }
+  @media(max-width:767.98px) { .prototype-description { grid-template-columns:1fr; gap:24px; } .prototype-result { padding-left:16px; } }
   .prototype-free { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; margin-top:var(--space-head); padding:var(--pad-l); border:1px solid var(--color-line); background:var(--color-surface); }
   .prototype-proof > .prototype-free { margin-top:var(--space-sub); padding-block:var(--space-head) 0; padding-inline:var(--site-gutter); border:0; border-top:1px solid var(--color-line); background:transparent; }
   .prototype-free p { margin:0; }
@@ -194,8 +194,8 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
   .prototype-base summary { cursor:pointer; }
   .prototype-base > p { margin:20px 0; }
   .prototype-base-card { max-width:440px; }
-  @media(max-width:1100px){.prototype-course-grid,.prototype-addon-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-  @media(max-width:820px){.prototype-heading{grid-template-columns:1fr;gap:20px;}}
+  @media(max-width:1023.98px){.prototype-course-grid,.prototype-addon-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:767.98px){.prototype-heading{grid-template-columns:1fr;gap:20px;}}
   @media(max-width:767px){.prototype-heading,.prototype-course-grid,.prototype-addon-grid{grid-template-columns:1fr;}.prototype-heading{gap:20px;}}
 </style>
 
@@ -219,5 +219,5 @@ const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhny
 .prototype-panel [data-cart-select]:checked::after { visibility:visible; }
 .prototype-panel label:has([data-cart-select]:checked) { border-color:var(--color-lime); }
 .prototype-panel label:has([data-cart-select]:focus-visible) { outline:2px solid var(--color-lime); outline-offset:3px; }
-.prototype-panel label:has([data-cart-select]):hover { background:var(--color-surface-2); }
+@media (hover:hover) { .prototype-panel label:has([data-cart-select]):hover { background:var(--color-surface-2); } }
 </style>

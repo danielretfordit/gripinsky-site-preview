@@ -44,10 +44,10 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
   <SectionHead overline="После обучения" title="Результаты выпускников" id="works-title"
     lead="Кто-то пришёл с нуля, кто-то с опытом. Вот что у них получилось." hand="кем были и кем стали" />
 
-  <div class="snap-row !grid-flow-col !auto-cols-max max-w-full self-start rounded-[6px] border border-line p-1" role="tablist" aria-label="Результаты выпускников" data-tabs>
+  <div class="snap-row !grid-flow-col !auto-cols-max max-w-full self-start rounded-field border border-line p-1" role="tablist" aria-label="Результаты выпускников" data-tabs>
     {tabs.map((t, i) => (
       <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}
-        class="min-h-11 whitespace-nowrap rounded-[4px] border-0 bg-transparent px-4 t-small font-semibold text-ink aria-selected:bg-ink aria-selected:text-bg md:px-5">{t.label}</button>
+        class="min-h-11 whitespace-nowrap rounded-field border-0 bg-transparent px-4 t-small font-semibold text-ink aria-selected:bg-ink aria-selected:text-bg md:px-5">{t.label}</button>
     ))}
   </div>
 
@@ -83,11 +83,11 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         <article class="grid gap-6 md:grid-cols-[7fr_5fr] md:gap-8">
           <div class="flex flex-col gap-3">
             {large.data.works.slice(0, 1).map((r) => w(r.id) && (
-              <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[640, 960, 1440]} sizes="(min-width: 1024px) 58vw, 100vw" class="media-image h-[260px] w-full object-cover sm:h-[400px]" />
+              <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[640, 960, 1440]} sizes="(min-width: 1024px) 58vw, 100vw" class="media-image h-[clamp(260px,39.1vw,400px)] w-full object-cover " />
             ))}
             <div class="grid grid-cols-2 gap-3">
               {large.data.works.slice(1, 3).map((r) => w(r.id) && (
-                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 28vw, 50vw" class="media-image h-[120px] w-full object-cover sm:h-[170px]" style={w(r.id)!.data.focus ? `object-position:${w(r.id)!.data.focus}` : ''} />
+                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 28vw, 50vw" class="media-image h-[clamp(120px,16.6vw,170px)] w-full object-cover " style={w(r.id)!.data.focus ? `object-position:${w(r.id)!.data.focus}` : ''} />
               ))}
             </div>
           </div>
@@ -106,7 +106,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
                 <span class="t-small text-ink">{large.data.extraNote}</span>
                 <div class="grid grid-cols-3 gap-2">
                   {large.data.extraWorks.map((r) => w(r.id) && (
-                    <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480]} sizes="160px" class="media-image h-[90px] w-full object-cover sm:h-[120px]" />
+                    <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480]} sizes="160px" class="media-image h-[clamp(90px,11.7vw,120px)] w-full object-cover " />
                   ))}
                 </div>
               </div>
@@ -126,7 +126,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
           <article class="card flex flex-col gap-3.5 p-4 pb-6">
             <div class="grid grid-cols-2 gap-2.5">
               {s.data.works.slice(0, 2).map((r) => w(r.id) && (
-                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 22vw, 50vw" class="media-image h-[160px] w-full object-cover sm:h-[240px]" />
+                <Image src={w(r.id)!.data.image} alt={w(r.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 22vw, 50vw" class="media-image h-[clamp(160px,23.4vw,240px)] w-full object-cover " />
               ))}
             </div>
             <div class="flex flex-col gap-2.5 px-1.5">
@@ -153,12 +153,12 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
           return (
             <article class="card flex flex-col overflow-hidden">
               {work ? (
-                <div class="relative h-[150px]">
+                <div class="relative h-[clamp(130px,12vw,150px)]">
                   <Image src={work.data.image} alt={work.data.alt} widths={[480, 720]} sizes="(min-width: 1024px) 30vw, 100vw" class="h-full w-full object-cover" />
                   {person?.photo && <Image src={person.photo} alt={person.name} width={112} height={112} class="absolute -bottom-[22px] left-4 h-14 w-14 rounded-full border-[3px] border-bg object-cover" />}
                 </div>
               ) : (
-                <div class="flex h-[150px] items-end bg-surface-2 px-5 py-4"><blockquote class="t-quote m-0">{s.data.quote}</blockquote></div>
+                <div class="flex min-h-[150px] items-end bg-surface-2 px-5 py-4"><blockquote class="t-quote m-0">{s.data.quote}</blockquote></div>
               )}
               <div class={`flex flex-1 flex-col gap-2.5 p-5 ${work ? 'pt-8' : ''}`}>
                 <span class="chip self-start">{s.data.tag}</span>
@@ -178,7 +178,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
         <div class="grid grid-cols-2 gap-2.5">
           {votes.filter((v) => v.data.work && w(v.data.work.id)).map((v) => (
             <figure class="m-0 flex flex-col gap-1.5">
-              <Image src={w(v.data.work!.id)!.data.image} alt={w(v.data.work!.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 20vw, 50vw" class="media-image h-[200px] w-full object-cover sm:h-[300px]" />
+              <Image src={w(v.data.work!.id)!.data.image} alt={w(v.data.work!.id)!.data.alt} widths={[320, 480, 720]} sizes="(min-width: 1024px) 20vw, 50vw" class="media-image h-[clamp(200px,29.3vw,300px)] w-full object-cover " />
               <figcaption class="t-caption text-muted">{people.get(v.data.person.id)?.name}, {w(v.data.work!.id)!.data.title}</figcaption>
             </figure>
           ))}
@@ -221,7 +221,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
       <div class="grid gap-4 sm:grid-cols-3">
         {awardStrip.map((x) => x && (
           <figure class="m-0 flex flex-col gap-2">
-            <Image src={x.data.image} alt={x.data.alt} widths={[480, 720]} sizes="(min-width: 768px) 33vw, 100vw" class="media-image h-[240px] w-full object-cover sm:h-[300px]" />
+            <Image src={x.data.image} alt={x.data.alt} widths={[480, 720]} sizes="(min-width: 768px) 33vw, 100vw" class="media-image h-[clamp(240px,29.3vw,300px)] w-full object-cover " />
             <figcaption class="t-small text-muted">{people.get(x.data.author.id)?.name}, {x.data.title}</figcaption>
           </figure>
         ))}
@@ -233,7 +233,7 @@ const initials = (name: string) => name.split(' ').map((p) => p[0]).slice(0, 2).
       <div class="grid gap-5 md:grid-cols-3 md:gap-6">
         {reviews.map((r) => (
           <figure class="m-0 flex flex-col gap-4 border-t border-line pt-6">
-            <span aria-hidden="true" class="text-[44px] font-bold leading-[0.6] text-muted">“</span>
+            <span aria-hidden="true" class="text-[length:calc(var(--type-icon-lg)*1.7)] font-bold leading-[0.6] text-muted">“</span>
             <blockquote class="t-body m-0 leading-normal">{r.data.quote ?? r.data.text}</blockquote>
             <figcaption class="mt-auto flex flex-col gap-0.5"><b class="t-body">{r.data.author}</b><span class="t-small text-muted">{r.data.role}, отзыв из {({ telegram: 'Telegram', vk: 'ВКонтакте', yandex: 'Яндекс Карт', azbuka: 'Азбуки курсов', site: 'материалов учеников' })[r.data.source]}</span></figcaption>
           </figure>
