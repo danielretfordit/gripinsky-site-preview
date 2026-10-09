@@ -27,3 +27,4 @@ docs/content/screenshot-quotes.json
 
 # данные приложения (заказы Robokassa локально)
 var/
+backup/
