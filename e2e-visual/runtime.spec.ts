@@ -114,3 +114,11 @@ test.describe('Telegram', () => {
     expect(saved.ids).toEqual(['modeling1', 'ai']);
   });
 });
+
+// Регрессия 10.10.2026: на Pages главная не получала класс site-home, и блок «ИИ» оставался тёмным
+test('главная: блок «ИИ» на лаймовом поле', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('body')).toHaveClass(/site-home/);
+  const bg = await page.locator('#ai .ai-feature').evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(bg).toBe('rgb(231, 232, 69)');
+});
