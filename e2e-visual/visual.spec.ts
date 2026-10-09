@@ -26,6 +26,8 @@ export const VISUAL_PAGES: [name: string, path: string][] = [
 
 const AUDIT_DIR = path.resolve('e2e-report/visual-audit');
 const STRICT = !!process.env.AUDIT_STRICT;
+/** AUDIT_ONLY=1: только аудит раскладки, без снимков (быстро) */
+const AUDIT_ONLY = !!process.env.AUDIT_ONLY;
 
 async function prepare(page: Page) {
   await page.addInitScript(() => {
@@ -67,18 +69,35 @@ async function audit(page: Page, mobile: boolean) {
       const r = el.getBoundingClientRect();
       return r.width > 0 && r.height > 0;
     };
-    // Предок с горизонтальной прокруткой или обрезкой: вылезание внутри него намеренное (ленты, карусели)
-    const clippedByAncestor = (el: Element) => {
-      for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
+    // Ближайший предок, который обрезает или прокручивает по горизонтали
+    const clipAncestor = (el: Element) => {
+      for (let p = el.parentElement; p && p !== document.documentElement; p = p.parentElement) {
         const ox = getComputedStyle(p).overflowX;
-        if (ox !== 'visible') return true;
+        if (ox !== 'visible') return { el: p, scrolls: ox === 'auto' || ox === 'scroll' };
       }
-      return false;
+      return null;
     };
-    for (const el of document.querySelectorAll('main p, main h1, main h2, main h3, main h4, main li, main a, main button, main span, header a, header button, footer a')) {
+    for (const el of document.querySelectorAll('main p, main h1, main h2, main h3, main h4, main li, main a, main button, main span, header a, header button, footer a, footer p')) {
       if (!visible(el)) continue;
-      const r = el.getBoundingClientRect();
-      if ((r.right > vw + 1 || r.left < -1) && !clippedByAncestor(el)) out.offscreen.push(`${label(el)} ${Math.round(r.left)}..${Math.round(r.right)} из ${vw}`);
+      // Текст: меряем реальные строки (Range), а не блок
+      const rects: DOMRect[] = [];
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent?.trim() || n.parentElement?.closest('.sr-only, [hidden], [aria-hidden="true"]')) continue;
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        rects.push(...[...range.getClientRects()].filter((r) => r.width > 0));
+      }
+      const r = rects.length ? { left: Math.min(...rects.map((x) => x.left)), right: Math.max(...rects.map((x) => x.right)) } : el.getBoundingClientRect();
+      const anc = clipAncestor(el);
+      if (anc?.scrolls) continue; // ленты и карусели прокручиваются намеренно
+      const box = anc ? anc.el.getBoundingClientRect() : { left: 0, right: vw };
+      const right = Math.min(box.right, vw), left = Math.max(box.left, 0);
+      if (r.right > right + 1 || r.left < left - 1) {
+        // Скрытые слайды и элементы, целиком вне обрезки, не считаем
+        if (r.left >= right || r.right <= left) continue;
+        out.offscreen.push(`${label(el)} ${Math.round(r.left)}..${Math.round(r.right)} из ${Math.round(left)}..${Math.round(right)}`);
+      }
     }
     for (const el of document.querySelectorAll('h1, h2, h3, .btn, p')) {
       if (!visible(el)) continue;
@@ -123,6 +142,7 @@ for (const [name, url] of VISUAL_PAGES) {
       expect.soft(report.smallTargets, 'цели касания меньше 44 px').toEqual([]);
     }
 
+    if (AUDIT_ONLY) return;
     await expect(page).toHaveScreenshot(`${name}.png`, {
       fullPage: true,
       mask: [page.locator('video'), page.locator('[data-visual-mask]')],
