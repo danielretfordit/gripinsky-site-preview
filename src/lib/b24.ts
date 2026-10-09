@@ -1,4 +1,6 @@
 import { B24_WEBHOOK_URL } from 'astro:env/server';
+import { fetchJson } from './http';
+import { log } from './log';
 
 export interface Lead {
   name: string;
@@ -10,10 +12,10 @@ export interface Lead {
   utm?: Record<string, Record<string, string> | string>;
 }
 
-/** Создаёт лид в Bitrix24 через входящий вебхук (crm.lead.add). Без вебхука: режим демо. */
+/** Создаёт лид в Bitrix24 через входящий вебхук (crm.lead.add). Без вебхука: режим демо (в журнал без ПД). */
 export async function sendLead(lead: Lead): Promise<{ ok: boolean; demo?: boolean; id?: number }> {
   if (!B24_WEBHOOK_URL) {
-    console.info('[lead:demo]', JSON.stringify(lead));
+    log.info('lead:demo', { context: lead.context, page: lead.page, hasPackage: Boolean(lead.packageSummary) });
     return { ok: true, demo: true };
   }
   const isPhone = /\d{6,}/.test(lead.contact.replace(/\D/g, ''));
@@ -38,12 +40,13 @@ export async function sendLead(lead: Lead): Promise<{ ok: boolean; demo?: boolea
   };
   if (isPhone) fields.PHONE = [{ VALUE: lead.contact, VALUE_TYPE: 'WORK' }];
   const url = B24_WEBHOOK_URL.replace(/\/?$/, '/') + 'crm.lead.add.json';
-  const res = await fetch(url, {
+  const res = await fetchJson<{ result?: number }>('b24', url, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ fields, params: { REGISTER_SONET_EVENT: 'Y' } }),
   });
-  if (!res.ok) return { ok: false };
-  const data = (await res.json()) as { result?: number };
-  return { ok: Boolean(data.result), id: data.result };
+  const id = res.data?.result;
+  if (!res.ok || !id) { log.error('lead:b24_failed', { status: res.status, error: res.error }); return { ok: false }; }
+  log.info('lead:created', { id, context: lead.context });
+  return { ok: true, id };
 }

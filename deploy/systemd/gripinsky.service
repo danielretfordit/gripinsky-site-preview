@@ -1,0 +1,51 @@
+# Node-сервер сайта: /api/* (заявки, оформление, Robokassa) и /keystatic (админка).
+# Установка: sudo cp deploy/systemd/gripinsky.service /etc/systemd/system/ && sudo systemctl daemon-reload && sudo systemctl enable --now gripinsky
+[Unit]
+Description=GRIPINSKY site (Astro Node server)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gripinsky
+Group=gripinsky
+WorkingDirectory=/var/www/gripinsky/current
+# Секреты (GetCourse, Robokassa, Bitrix24, Keystatic): файл с правами 0600, владелец root
+EnvironmentFile=/etc/gripinsky/env
+Environment=NODE_ENV=production HOST=127.0.0.1 PORT=4321 ORDERS_DB=/var/lib/gripinsky/orders.db
+ExecStart=/usr/bin/node dist/server/entry.mjs
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=10
+
+# Изоляция: процесс видит систему только на чтение, пишет только в свою папку данных
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+RestrictNamespaces=true
+LockPersonality=true
+RemoveIPC=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+StateDirectory=gripinsky
+ReadWritePaths=/var/lib/gripinsky
+UMask=0077
+# Память и процессы: при утечке сервис перезапустится, а не положит сервер
+MemoryMax=512M
+TasksMax=128
+
+[Install]
+WantedBy=multi-user.target

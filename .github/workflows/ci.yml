@@ -1,0 +1,74 @@
+name: Проверки
+
+# На каждый PR и push: типы и сборка, цены и API, тексты, стили, SEO, адреса, автотесты в Chromium и WebKit, уязвимости зависимостей.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CHECKOUT_MODE: demo
+  PUBLIC_INDEXABLE: 'false'
+  PUBLIC_ANALYTICS: 'false'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - name: Уязвимости в зависимостях сайта
+        run: npm audit --omit=dev --audit-level=high
+      - name: Цены, API, интеграции, совпадение схем админки
+        run: npm test
+      - name: Стили по гайдлайну
+        run: npm run lint:css -- --strict
+      - name: Сборка (типы и схемы контента)
+        run: npm run build
+      - name: Секретов и React нет в клиентском бандле
+        run: node scripts/check-bundle.mjs
+      - run: npm run lint:copy
+      - run: npm run check:seo
+      - run: npm run check:urls
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  e2e:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npm run build
+      - name: Аудит раскладки на собранном сайте
+        run: AUDIT_ONLY=1 AUDIT_STRICT=1 ${{ matrix.browser == 'webkit' && 'PW_WEBKIT=1' || '' }} npx playwright test -c playwright.visual.config.ts ${{ matrix.browser == 'webkit' && '--project=webkit-iphone --project=webkit-ipad' || '--project=w375 --project=w768 --project=w1440' }}

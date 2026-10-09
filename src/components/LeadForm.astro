@@ -13,12 +13,12 @@ const { context = '', submitLabel = 'Записаться на консульт�
     <div class="flex flex-col gap-2">
       <label for={`${id}-name`} class="t-small font-semibold">Как к вам обращаться</label>
       <input id={`${id}-name`} name="name" type="text" class="field" autocomplete="name" required maxlength="80" aria-describedby={`${id}-name-err`} />
-      <span id={`${id}-name-err`} class="field-error t-caption hidden text-[#ff8a80]" role="alert">Напишите имя</span>
+      <span id={`${id}-name-err`} class="field-error t-caption hidden text-danger" role="alert">Напишите имя</span>
     </div>
     <div class="flex flex-col gap-2">
       <label for={`${id}-contact`} class="t-small font-semibold">Телефон или ник в Telegram</label>
       <input id={`${id}-contact`} name="contact" type="text" class="field" autocomplete="tel" required maxlength="80" placeholder="+7… или @ник" aria-describedby={`${id}-contact-err`} />
-      <span id={`${id}-contact-err`} class="field-error t-caption hidden text-[#ff8a80]" role="alert">Оставьте телефон или ник, чтобы мы могли ответить</span>
+      <span id={`${id}-contact-err`} class="field-error t-caption hidden text-danger" role="alert">Оставьте телефон или ник, чтобы мы могли ответить</span>
     </div>
   </div>
   <label class="t-small flex cursor-pointer items-start gap-3 leading-snug text-ink-2">
@@ -26,12 +26,13 @@ const { context = '', submitLabel = 'Записаться на консульт�
     <span class="check-box mt-0.5" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
     <span>Даю <a href="/soglasie" class="underline" target="_blank" rel="noopener">согласие на обработку персональных данных</a> и принимаю <a href="/politica" class="underline" target="_blank" rel="noopener">политику обработки данных</a></span>
   </label>
-  <span class="consent-error t-caption hidden text-[#ff8a80]" role="alert">Нужно согласие, иначе мы не сможем связаться с вами</span>
+  <span class="consent-error t-caption hidden text-danger" role="alert">Нужно согласие, иначе мы не сможем связаться с вами</span>
   <input type="hidden" name="context" value={context} />
   <input type="hidden" name="package" value="" />
   <input type="hidden" name="quiz" value="" />
   <input type="hidden" name="utm" value="" />
   <input type="hidden" name="page" value="" />
+  <input type="hidden" name="started" value="" />
   <div class="sr-only" aria-hidden="true" inert><label>Не заполняйте <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
   <button type="submit" class="btn btn-primary btn-lg btn-block">{submitLabel}</button>
   <div class="lead-status hidden card bg-bg p-6" role="status" aria-live="polite" tabindex="-1">
@@ -48,6 +49,7 @@ const { context = '', submitLabel = 'Записаться на консульт�
   import { reachGoal } from '../lib/analytics';
 
   for (const form of document.querySelectorAll<HTMLFormElement>('[data-lead-form]')) {
+    (form.elements.namedItem('started') as HTMLInputElement).value = String(Date.now());
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = form.elements.namedItem('name') as HTMLInputElement;

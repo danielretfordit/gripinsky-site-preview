@@ -1,4 +1,5 @@
 import { GETCOURSE_ACCOUNT, GETCOURSE_API_KEY } from 'astro:env/server';
+import { fetchJson } from './http';
 
 export interface GcCustomer { name: string; email: string; phone: string }
 export interface GcOffer { code: string; cost: number; title: string }
@@ -33,10 +34,11 @@ export async function createGcOrder(customer: GcCustomer, offers: GcOffer[], com
       },
     };
     const body = new URLSearchParams({ action: 'add', key: GETCOURSE_API_KEY, params: Buffer.from(JSON.stringify(params)).toString('base64') });
-    const res = await fetch(url, { method: 'POST', body });
-    if (!res.ok) return { ok: false, error: `getcourse_http_${res.status}` };
-    const data = (await res.json()) as { success?: boolean; result?: { success?: boolean; deal_number?: string; payment_link?: string; error_message?: string } };
-    if (!data.success || !data.result?.success) return { ok: false, error: data.result?.error_message ?? 'getcourse_error' };
+    // Повтор только для первого запроса: следующие добавляют предложения в заказ, и повтор мог бы задвоить позицию
+    const res = await fetchJson<{ success?: boolean; result?: { success?: boolean; deal_number?: string; payment_link?: string; error_message?: string } }>('getcourse', url, { method: 'POST', body }, { timeoutMs: 10_000, retries: i === 0 ? 1 : 0 });
+    const data = res.data;
+    if (!res.ok || !data) return { ok: false, error: `getcourse_${res.error ?? 'error'}` };
+    if (!data.success || !data.result?.success) return { ok: false, error: data.result?.error_message?.slice(0, 200) ?? 'getcourse_error' };
     dealNumber = data.result.deal_number ?? dealNumber;
     if (last) link = data.result.payment_link;
   }

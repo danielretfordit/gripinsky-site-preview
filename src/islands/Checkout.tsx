@@ -13,6 +13,8 @@ type Status = 'form' | 'sending' | 'demo' | 'error';
 /** Оформление заказа: состав, контакты, согласие. Сумму считает сервер по тем же правилам. */
 export default function Checkout({ cat, months = 12, telegramBot }: Props) {
   const ref = useRef<HTMLDialogElement>(null);
+  // Время открытия формы: сервер отбрасывает отправки быстрее, чем человек успел бы заполнить поля
+  const openedAt = useRef(0);
   const [detail, setDetail] = useState<Detail | null>(null);
   const [sel, setSel] = useState<Selection>($pkg.get());
   const [status, setStatus] = useState<Status>('form');
@@ -27,7 +29,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
     setStatus('form');
     setConsent(false);
     setErrors({});
-    if (ref.current && !ref.current.open) ref.current.showModal();
+    if (ref.current && !ref.current.open) { openedAt.current = Date.now(); ref.current.showModal(); }
   }), []);
 
   const q: Quote | null = !detail ? null : detail.kind === 'course' ? quoteCourse(detail, cat?.installmentMonths ?? months)
@@ -65,6 +67,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
           consent: true,
           utm: readUtm(),
           page: location.pathname,
+          started: openedAt.current || undefined,
         }),
       });
       const out = await res.json();
@@ -84,7 +87,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
       <div class="flex flex-col gap-5 p-5 sm:p-8">
         <div class="flex items-start justify-between gap-4">
           <h2 id="checkout-title" class="t-h3">{STATIC_PREVIEW ? 'Ваш выбор в демоверсии' : status === 'demo' ? 'Заявка принята' : detail?.kind === 'course' ? 'Оформление курса' : 'Оформление пакета'}</h2>
-          <button type="button" onClick={close} aria-label="Закрыть" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line-strong bg-transparent text-xl">×</button>
+          <button type="button" onClick={close} aria-label="Закрыть" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-field border border-line-strong bg-transparent text-xl">×</button>
         </div>
 
         {q && <div class="t-small flex flex-col gap-1.5 rounded-card bg-bg p-4">
@@ -128,7 +131,7 @@ export default function Checkout({ cat, months = 12, telegramBot }: Props) {
               <span class="mt-0.5"><CheckBox on={consent} /></span>
               <span>Даю <a href={sitePath('/soglasie')} class="underline" target="_blank">согласие на обработку персональных данных</a> и принимаю <a href={sitePath('/oferta')} class="underline" target="_blank">договор оферты</a></span>
             </label>
-            {errors.consent && <span class="t-caption text-[#ff8a80]" role="alert">Без согласия мы не сможем оформить заказ</span>}
+            {errors.consent && <span class="t-caption text-danger" role="alert">Без согласия мы не сможем оформить заказ</span>}
             <button type="submit" class="btn btn-primary btn-lg btn-block" disabled={status === 'sending'}>{status === 'sending' ? 'Отправляем…' : 'Перейти к оплате'}</button>
             {status === 'error' && (
               <span class="t-small text-ink-2" role="alert">Не получилось оформить заказ. Напишите нам в <a href={telegramBot} class="link">Telegram</a>, поможем.</span>
@@ -146,7 +149,7 @@ function Field({ id, name, label, type = 'text', autoComplete, error, msg }: { i
     <div class="flex flex-col gap-2">
       <label for={id} class="t-small font-semibold">{label} <span class="text-muted" aria-hidden="true">*</span></label>
       <input id={id} name={name} type={type} autoComplete={autoComplete} required aria-required="true" class="field" aria-invalid={!!error} aria-describedby={error ? `${id}-err` : undefined} />
-      {error && <span id={`${id}-err`} class="t-caption text-[#ff8a80]" role="alert">{msg}</span>}
+      {error && <span id={`${id}-err`} class="t-caption text-danger" role="alert">{msg}</span>}
     </div>
   );
 }

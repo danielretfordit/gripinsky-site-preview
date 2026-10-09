@@ -1,35 +1,34 @@
 import type { APIRoute } from 'astro';
 import { sendLead } from '../../lib/b24';
+import { leadSchema, firstIssue } from '../../lib/api-schemas';
+import { PayloadTooLarge, filledTooFast, json, readBody } from '../../lib/security';
+import { log } from '../../lib/log';
+import { API_MAX_BODY } from '../../middleware';
 
 export const prerender = false;
 
-const clip = (v: FormDataEntryValue | null, n = 500) => String(v ?? '').trim().slice(0, n);
-
+// Заявка на консультацию. Источник, тип, размер и частоту уже проверил src/middleware.ts
 export const POST: APIRoute = async ({ request }) => {
   let form: FormData;
-  try { form = await request.formData(); } catch { return json({ ok: false, error: 'bad_request' }, 400); }
+  try {
+    const raw = await readBody(request, API_MAX_BODY);
+    form = await new Response(raw, { headers: { 'content-type': request.headers.get('content-type') ?? '' } }).formData();
+  } catch (e) {
+    return e instanceof PayloadTooLarge ? json({ ok: false, error: 'too_large' }, 413) : json({ ok: false, error: 'bad_request' }, 400);
+  }
 
-  // Ловушка для ботов: настоящий посетитель это поле не видит
-  if (clip(form.get('website'))) return json({ ok: true });
+  const parsed = leadSchema.safeParse(Object.fromEntries([...form.entries()].map(([k, v]) => [k, typeof v === 'string' ? v : ''])));
+  if (!parsed.success) return json({ ok: false, error: firstIssue(parsed.error) }, 422);
+  const d = parsed.data;
 
-  const name = clip(form.get('name'), 80);
-  const contact = clip(form.get('contact'), 80);
-  if (name.length < 2 || contact.length < 4) return json({ ok: false, error: 'validation' }, 422);
-  if (form.get('consent') !== 'yes') return json({ ok: false, error: 'consent' }, 422);
+  // Ловушки для ботов: скрытое поле заполнено или форма отправлена быстрее, чем человек успел бы её прочитать.
+  // Боту отвечаем «успехом», чтобы он не подбирал обход.
+  if (d.website || filledTooFast(d.started)) {
+    log.warn('lead:bot', { honeypot: Boolean(d.website) });
+    return json({ ok: true });
+  }
 
-  let utm = {};
-  try { utm = JSON.parse(clip(form.get('utm'), 2000) || '{}'); } catch {}
-
-  const result = await sendLead({
-    name, contact, utm,
-    context: clip(form.get('context'), 120),
-    page: clip(form.get('page'), 200),
-    packageSummary: clip(form.get('package'), 600),
-    quiz: clip(form.get('quiz'), 400),
-  });
-  return json(result, result.ok ? 200 : 502);
+  const result = await sendLead({ name: d.name, contact: d.contact, utm: d.utm as never, context: d.context, page: d.page, packageSummary: d.package, quiz: d.quiz });
+  // Номер лида в CRM наружу не отдаётся
+  return json({ ok: result.ok, ...(result.demo ? { demo: true } : {}) }, result.ok ? 200 : 502);
 };
-
-function json(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json; charset=utf-8' } });
-}

@@ -1,0 +1,27 @@
+# Обновления зависимостей раз в неделю, сгруппированные в один PR.
+# preact 11 и typescript 7 не ставим: закреплены 10.x и 6.x (см. CLAUDE.md).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Moscow
+    open-pull-requests-limit: 5
+    groups:
+      astro:
+        patterns: ['astro', '@astrojs/*', '@keystatic/*']
+      dev:
+        dependency-type: development
+      prod:
+        dependency-type: production
+    ignore:
+      - dependency-name: preact
+        update-types: ['version-update:semver-major']
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
