@@ -92,7 +92,7 @@ export default defineConfig({
   // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
   // Лента новостей Tilda (/news) переехала в блог; сами статьи остались по адресам /tpost/…
   redirects: { '/courses-page': '/courses' },
-  server: { port: 4321, allowedHosts: ['.tuna.am'] },
+  server: { port: 4321, allowedHosts: ['.tuna.am', '.app.github.dev'] },
   // Панель разработчика Astro подгружает свои модули на лету и мешает стабильной работе dev-сервера
   devToolbar: { enabled: false },
   image: {

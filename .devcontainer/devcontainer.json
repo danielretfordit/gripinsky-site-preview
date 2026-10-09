@@ -1,0 +1,14 @@
+{
+  // GitHub Codespaces: сайт и админка в браузере без своего сервера.
+  // После запуска: вкладка Ports, порт 4321 (сайт), адрес /keystatic (админка).
+  "name": "GRIPINSKY site",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "hostRequirements": { "cpus": 4, "memory": "8gb" },
+  "postCreateCommand": "npm ci",
+  "postAttachCommand": "npm run dev -- --host 0.0.0.0",
+  "forwardPorts": [4321],
+  "portsAttributes": {
+    "4321": { "label": "Сайт и админка (/keystatic)", "onAutoForward": "openBrowser" }
+  },
+  "containerEnv": { "KEYSTATIC_STORAGE": "local" }
+}
