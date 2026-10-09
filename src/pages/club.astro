@@ -38,18 +38,24 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Сообщест
   </section>
 
   <section class="wrap section" aria-labelledby="club-works-title">
-    <div class="grid gap-8 border-t border-line pt-8 md:grid-cols-[1fr_auto] md:items-end">
-      <div class="flex flex-col gap-4"><p class="t-overline m-0">Результаты сообщества</p><h2 id="club-works-title" class="t-h2">Смотрите, что делают <span class="t-accent">ученики</span></h2><p class="m-0 max-w-[700px] text-ink-2">В галерее собраны учебные работы и проекты выпускников с именами авторов.</p></div>
-      <a href="/gallery" class="btn btn-secondary btn-lg self-start">Открыть галерею</a>
+    <div class="club-row border-t border-line pt-8">
+      <div><p class="t-overline m-0">Результаты сообщества</p><h2 id="club-works-title" class="t-h2">Смотрите, что делают <span class="t-accent">ученики</span></h2><p class="max-w-[700px] text-ink-2">В галерее собраны учебные работы и проекты выпускников с именами авторов.</p></div>
+      <a href="/gallery" class="btn btn-secondary">Открыть галерею <span class="arrow-long" aria-hidden="true"></span></a>
     </div>
   </section>
 
   <section class="wrap section" aria-labelledby="club-channels-title">
-    <div class="border-t border-line pt-8"><h2 id="club-channels-title" class="t-h2 mb-6">Оставайтесь <span class="t-accent">на связи</span></h2>
+    <div class="club-row border-t border-line pt-8"><h2 id="club-channels-title" class="t-h2">Оставайтесь <span class="t-accent">на связи</span></h2>
       <div class="flex flex-wrap gap-3">
-        {site.telegramChannel && <a href={site.telegramChannel} class="btn btn-secondary btn-lg" rel="noopener noreferrer" target="_blank">Telegram-канал ↗</a>}
-        {site.vk && <a href={site.vk} class="btn btn-secondary btn-lg" rel="noopener noreferrer" target="_blank">Сообщество ВКонтакте ↗</a>}
+        {site.telegramChannel && <a href={site.telegramChannel} class="btn btn-secondary" rel="noopener noreferrer" target="_blank">Telegram-канал <span aria-hidden="true">↗</span></a>}
+        {site.vk && <a href={site.vk} class="btn btn-secondary" rel="noopener noreferrer" target="_blank">Сообщество ВКонтакте <span aria-hidden="true">↗</span></a>}
       </div>
     </div>
   </section>
 </Base>
+
+<style>
+  /* Заголовок слева, действия справа по нижней линии; на узком экране действия переносятся под заголовок */
+  .club-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px 48px; }
+  .club-row > :first-child { flex: 1 1 520px; min-width: 0; }
+</style>

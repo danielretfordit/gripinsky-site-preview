@@ -417,7 +417,7 @@ const stats = [
   .site-home #ai .ai-feature__action { margin-top: 22px; padding-top: 0; font-size: var(--type-control); }
   .site-home #ai .ai-feature__visual { aspect-ratio: 16 / 10; margin-top: 28px; }
   /* Лаймовое поле: второй (после финальной консультации) цветовой акцент главной. Текст и кнопка тёмные */
-  .site-home #ai .ai-feature { border-color: transparent; background: radial-gradient(60% 120% at 90% 0%, rgb(255 255 255 / .3), transparent 60%), var(--color-lime); color: var(--color-bg); }
+  .site-home #ai .ai-feature { border-color: transparent; background: var(--color-lime); color: var(--color-bg); }
   .site-home #ai .ai-feature::before { display: none; }
   .site-home #ai .ai-feature :is(h2, .ai-feature__quote, .ai-feature__action) { color: var(--color-bg); }
   .site-home #ai .ai-feature h2 span { color: rgb(17 19 19 / .55); }
@@ -479,7 +479,6 @@ const stats = [
   }
 
   /* Вопросы */
-  .site-home #faq { padding-bottom: var(--space-section); }
   .site-home #faq > div { grid-template-columns: minmax(0, 1fr); gap: 25px; }
   .site-home #faq > div > :first-child { display: flex; flex-direction: column; gap: 0; }
   .site-home #faq > div > :first-child h2 { margin: 18px 0 0; }

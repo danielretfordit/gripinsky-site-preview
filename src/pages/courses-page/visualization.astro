@@ -191,7 +191,11 @@ const slides = await heroSlides('viz');
   .prototype-addon-grid article { padding:20px; }
 
   .prototype-course-grid > div > p { margin:0 0 12px; }
-  .prototype-base { margin-top:var(--space-head); border:1px solid var(--color-line); padding:24px; background:var(--color-surface); }
+  /* «Начинаете с нуля?»: лаймовое поле, текст тёмный; карточка базы внутри остаётся тёмной */
+  .prototype-base { margin-top:var(--space-head); border:0; padding:24px; background:var(--color-lime); color:var(--color-bg); }
+  .prototype-base > summary { color:var(--color-bg); font-weight:700; }
+  .prototype-base > p { color:rgb(17 19 19 / .78) !important; }
+  .prototype-base :focus-visible { outline-color:var(--color-bg); }
   .prototype-base summary { cursor:pointer; }
   .prototype-base > p { margin:20px 0; }
   .prototype-base-card { max-width:440px; }

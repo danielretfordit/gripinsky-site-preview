@@ -110,7 +110,9 @@ const count = String(slides.length).padStart(2, '0');
     .hero--cinema .hero__image::after { inset: 0; background: linear-gradient(90deg, rgb(10 12 12 / .9) 0%, rgb(10 12 12 / .62) 34%, rgb(10 12 12 / .08) 66%, transparent 100%), linear-gradient(0deg, rgb(10 12 12 / .85) 0%, transparent 42%); }
     .hero--cinema .hero__signature { position: absolute; top: 28px; right: var(--site-gutter); left: var(--site-gutter); z-index: 2; padding: 0; border-top: 0; color: rgb(241 241 235 / .82); text-shadow: 0 1px 12px rgb(0 0 0 / .45); }
     .hero--cinema .hero__copy { position: relative; z-index: 1; justify-content: flex-end; max-width: calc(820px + var(--site-gutter)); min-height: inherit; padding: clamp(72px, 9vh, 120px) clamp(32px, 4vw, 64px) clamp(48px, 6vw, 88px) var(--site-gutter); }
-    .hero--cinema :global(.t-hero) { max-width: 820px; font-size: clamp(3.5rem, 1.6rem + 3.4vw, 5.75rem); text-shadow: 0 2px 30px rgb(0 0 0 / .35); }
+    /* Заголовок ровно в две строки: каждая строка целиком, кегль подобран под самую длинную */
+    .hero--cinema :global(.t-hero) { max-width: none; font-size: clamp(3.25rem, 1.2rem + 3.2vw, 4.75rem); text-shadow: 0 2px 30px rgb(0 0 0 / .35); }
+    .hero--cinema :global(.t-hero > .t-accent) { white-space: nowrap; }
     .hero--cinema :global(.t-lead) { color: rgb(241 241 235 / .86); }
     .hero--cinema .hero__image figcaption { right: calc(var(--site-gutter) + 120px); bottom: clamp(48px, 6vw, 88px); left: auto; max-width: 360px; align-items: flex-end; text-align: right; }
     .hero--cinema .hero__controls { right: var(--site-gutter); bottom: calc(clamp(48px, 6vw, 88px) - 4px); }

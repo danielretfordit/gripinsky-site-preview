@@ -378,7 +378,8 @@
     padding: clamp(48px, 5.7vw, 82px) var(--site-gutter);
     border-top: 0;
     /* Стиль 04: финальный призыв на лаймовом поле, единственная залитая цветом полоса сайта */
-    background: radial-gradient(60% 120% at 85% 0%, rgb(255 255 255 / .28), transparent 60%), var(--color-lime);
+    margin-top: var(--space-section);
+    background: var(--color-lime);
     color: var(--color-bg);
   }
   #consult.consult-home::before { display: none; }
@@ -545,20 +546,24 @@ body:has(dialog[open]) { overflow: hidden; }
   .site-header__telegram:hover,
   .site-header__menu summary:hover { border-color: var(--color-line-strong); }
 }
-.site-header__consult {
+/* Консультация в шапке: светлая залитая кнопка без обводки (жёлтая остаётся главной кнопкой экрана) */
+.site-header__consult.btn {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 48px;
-  padding: 10px 14px;
-  border-color: var(--color-ink);
+  min-height: 42px;
+  padding: 8px 16px;
+  border: 0;
   border-radius: var(--radius-field);
+  background: var(--color-ink);
+  color: var(--color-bg);
   font-size: var(--type-control);
-  font-weight: 550;
+  font-weight: 650;
   white-space: nowrap;
 }
+@media (hover: hover) { .site-header__consult.btn:hover { background: var(--color-white); color: var(--color-bg); } }
 .site-header__consult-arrow { font-size: 16px; line-height: 1; }
 .site-header__consult-short { display: none; }
 .site-header__menu { position: relative; display: block; flex: 0 0 auto; }
@@ -630,7 +635,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .site-header__inner { justify-content: space-between; gap: 12px; }
   .site-header__nav--desktop { display: none; }
   .site-header__menu { display: block; }
-  .site-header__consult { min-height: var(--tap); padding: 9px 12px; font-size: var(--type-control); }
+  .site-header__consult.btn { min-height: var(--tap); padding: 8px 14px; }
   .site-header__consult-arrow { display: none; }
   .site-header__menu-nav {
     /* Шапка (container query и стекло) служит контейнером для fixed-потомков: меню встаёт сразу под ней на всю ширину */
@@ -677,7 +682,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .site-header__inner { gap: 8px; }
   .site-header__brand img { width: clamp(112px, 34cqi, 136px); }
   .site-header__actions { gap: 6px; }
-  .site-header__consult { padding: 8px 10px; }
+  .site-header__consult.btn { padding: 8px 12px; }
   .site-header__consult-full { display: none; }
   .site-header__consult-short { display: inline; }
   .site-header__telegram,
@@ -688,7 +693,7 @@ body:has(dialog[open]) { overflow: hidden; }
   .site-header__inner { gap: 4px; }
   .site-header__brand img { width: clamp(92px, 30cqi, 110px); }
   .site-header__actions { gap: 2px; }
-  .site-header__consult { padding-inline: 6px; letter-spacing: -.01em; }
+  .site-header__consult.btn { padding-inline: 8px; letter-spacing: -.01em; }
 }
 
 /* Появление при прокрутке: заголовки секций, карточки и работы мягко поднимаются и проявляются.
