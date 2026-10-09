@@ -1,0 +1,75 @@
+---
+// Живая витрина стиля 04 «Студийный свет»: настоящие токены и примитивы из global.css.
+// Правила: docs/design/guidelines.md. Закрыта от индексации и не входит в sitemap.
+import Base from '../layouts/Base.astro';
+
+const colors = [
+  ['--color-bg', 'Фон'], ['--color-surface', 'Поверхность'], ['--color-surface-2', 'Поверхность 2'],
+  ['--color-ink', 'Заголовки'], ['--color-ink-2', 'Абзацы'], ['--color-muted', 'Подписи'],
+  ['--color-heading-muted', 'Вторая строка'], ['--color-lime', 'Сигнал'], ['--color-line-strong', 'Линия'],
+];
+const roles = [
+  ['t-hero', 'H1 первого экрана'], ['t-display', 'H1 страницы'], ['t-h2', 'H2 секции'], ['t-h3', 'H3 карточки'],
+  ['t-title', 'Подзаголовок'], ['t-lead', 'Лид'], ['t-body', 'Основной текст'], ['t-small', 'Мелкий текст'],
+];
+---
+<Base title="Стиль сайта GRIPINSKY" description="Витрина токенов и компонентов сайта Академии 3D GRIPINSKY." noindex consult={false}>
+  <section class="wrap section">
+    <p class="t-overline">Стиль 04 / Студийный свет</p>
+    <h1 class="t-display">Гайдлайн <span class="t-accent">сайта</span></h1>
+    <p class="t-lead">Живые токены и компоненты. Правила и запреты: docs/design/guidelines.md. Админка: раздел «Сайт», пункт «Стиль сайта».</p>
+  </section>
+
+  <section class="wrap section" aria-labelledby="sg-colors">
+    <div class="head"><p class="t-overline">01 / Цвет</p><h2 id="sg-colors" class="t-h2">Графит <span class="t-accent">и сигнал</span></h2></div>
+    <ul class="sg-swatches">
+      {colors.map(([v, name]) => <li><span style={`background:var(${v})`}></span><b class="t-small">{name}</b><code class="t-meta">{v}</code></li>)}
+    </ul>
+  </section>
+
+  <section class="wrap section" aria-labelledby="sg-type">
+    <div class="head"><p class="t-overline">02 / Текст</p><h2 id="sg-type" class="t-h2">Роли <span class="t-accent">текста</span></h2></div>
+    <div class="sg-type">
+      {roles.map(([cls, name]) => <div><code class="t-meta">.{cls} / {name}</code><p class={cls}>Курсы 3D-графики</p></div>)}
+      <div><code class="t-meta">.t-overline / надзаголовок</code><p class="t-overline">Основатель академии</p></div>
+      <div><code class="t-meta">.t-meta / метаданные рендера</code><p class="t-meta">Курс / 66 уроков</p></div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="sg-blocks">
+    <div class="head"><p class="t-overline">03 / Примитивы</p><h2 id="sg-blocks" class="t-h2">Кнопки, цитаты, <span class="t-accent">цифры</span></h2></div>
+    <div class="sg-row">
+      <a class="btn btn-primary" href="#sg-blocks">Выбрать курс <span aria-hidden="true">↗</span></a>
+      <a class="btn btn-secondary" href="#sg-blocks">Подобрать курс <span class="arrow-long" aria-hidden="true"></span></a>
+      <a class="btn btn-signal" href="#sg-blocks">Все педагоги <span class="arrow-long" aria-hidden="true"></span></a>
+      <a class="link" href="#sg-blocks">Смотреть галерею →</a>
+    </div>
+    <blockquote class="quote quote--signal sg-gap"><p>«Основная цель занятий — научить вас <strong>думать</strong>, а не повторять действия»</p></blockquote>
+    <blockquote class="sg-gap"><p class="t-body">Обычная цитата ученика: серая черта, текст без правок.</p></blockquote>
+    <dl class="facts sg-gap"><div><dt>выпускников</dt><dd>10 000<span class="num-plus">+</span></dd></div><div><dt>учим по своей системе</dt><dd>20 лет</dd></div><div><dt>на Яндекс Картах</dt><dd>5,0</dd></div></dl>
+  </section>
+
+  <section class="wrap section" aria-labelledby="sg-rhythm">
+    <div class="head"><p class="t-overline">04 / Ритм</p><h2 id="sg-rhythm" class="t-h2">Воздух <span class="t-accent">между блоками</span></h2></div>
+    <ul class="sg-rhythm t-small">
+      <li><span style="width:var(--stack-eyebrow)"></span>от надзаголовка до заголовка: --stack-eyebrow</li>
+      <li><span style="width:var(--stack-lead)"></span>от заголовка до текста: --stack-lead</li>
+      <li><span style="width:var(--stack-action)"></span>от текста до действия: --stack-action</li>
+      <li><span style="width:var(--space-head)"></span>от заголовка секции до содержимого: --space-head</li>
+      <li><span style="width:var(--space-section)"></span>между секциями: --space-section</li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .sg-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+  .sg-swatches li { display: grid; gap: 6px; }
+  .sg-swatches span { height: 72px; border: 1px solid var(--color-line); border-radius: var(--radius-card); }
+  .sg-type { display: grid; gap: 28px; }
+  .sg-type > div { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--color-line); }
+  .sg-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
+  .sg-gap { margin-top: var(--space-head); max-width: 640px; }
+  .sg-rhythm { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; color: var(--color-ink-2); }
+  .sg-rhythm li { display: flex; align-items: center; gap: 16px; }
+  .sg-rhythm span { height: 10px; background: var(--color-lime); }
+</style>

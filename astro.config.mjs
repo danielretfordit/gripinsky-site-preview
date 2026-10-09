@@ -105,7 +105,7 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         const pathname = new URL(page).pathname.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
-        return isIndexable && !page.includes('/oplata/') && !page.includes('/keystatic') && !page.includes('/design/')
+        return isIndexable && !page.includes('/oplata/') && !page.includes('/styleguide') && !page.includes('/keystatic') && !page.includes('/design/')
           && !hiddenCoursePaths.has(pathname) && !seoNoindexPaths.has(pathname);
       },
     }),
@@ -157,6 +157,8 @@ export default defineConfig({
     },
   },
   vite: {
+    // Режим хранения админки нужен и серверу, и браузеру: подставляем значение при сборке (в браузере нет process.env)
+    define: { 'process.env.KEYSTATIC_STORAGE': JSON.stringify(process.env.KEYSTATIC_STORAGE ?? 'local') },
     plugins: [tailwindcss()],
     // Все браузерные зависимости собираем заранее при старте dev-сервера.
     // Иначе Vite находит их на лету, пересобирает и отдаёт 504 «Outdated Optimize Dep»:

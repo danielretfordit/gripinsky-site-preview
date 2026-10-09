@@ -10,7 +10,7 @@ const { primaryHref, primaryLabel, secondaryHref, secondaryLabel, secondaryGoal 
 ---
 <div class="hero-actions">
   <a href={primaryHref} class="btn btn-primary btn-lg">{primaryLabel} <span aria-hidden="true">↗</span></a>
-  <a href={secondaryHref} class="btn btn-secondary btn-lg" data-goal={secondaryGoal}>{secondaryLabel} <span aria-hidden="true">→</span></a>
+  <a href={secondaryHref} class="btn btn-secondary btn-lg" data-goal={secondaryGoal}>{secondaryLabel} <span class="arrow-long" aria-hidden="true"></span></a>
 </div>
 <style>
   .hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; max-width:100%; }

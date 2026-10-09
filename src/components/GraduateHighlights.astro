@@ -16,8 +16,8 @@ const illustratedAwards=awards.filter(a=>(a.data.work && works.has(a.data.work.i
 <div class="story-content"><span class="t-overline">{s.data.tag}</span><h3 class="t-h3">{people.get(s.data.person.id)?.name}</h3>
 <dl class="t-small"><div class="story-stage"><dt>Было</dt><dd>{s.data.before}</dd></div><div class="story-stage"><dt>Стало</dt><dd>{s.data.after}</dd></div></dl>
 {expanded && s.data.courses && <div><h4 class="t-title">Как достиг результата</h4><p class="t-body">{s.data.courses}</p></div>}
-{expanded && s.data.highlights.length>0 && <ul class="t-small">{s.data.highlights.map(text=><li>{text}</li>)}</ul>}
-{expanded && s.data.extraNote && <p class="t-small">{s.data.extraNote}</p>}
+{expanded && s.data.highlights.length>0 && <ul class="story-steps t-body">{s.data.highlights.map(text=><li>{text}</li>)}</ul>}
+{expanded && s.data.extraNote && <p class="story-note t-small">{s.data.extraNote}</p>}
 {s.data.quote && <div><h4 class="t-title">Об академии</h4><blockquote class="t-body">{s.data.quote}</blockquote></div>}
 </div></article>})}</div></section>
 </div>
@@ -32,6 +32,10 @@ const illustratedAwards=awards.filter(a=>(a.data.work && works.has(a.data.work.i
  .story-content h4 { margin-bottom:10px; }
  .story-stage { padding:16px;background:var(--color-surface);border-radius:2px; }
  .story-content dl { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .story-steps { display:grid;gap:10px;margin:0;padding:0;list-style:none;color:var(--color-ink-2); }
+ .story-steps li { position:relative;padding-left:22px; }
+ .story-steps li::before { position:absolute;top:.8em;left:0;width:12px;height:1px;background:var(--color-line-strong);content:""; }
+ .story-note { margin:0;color:var(--color-muted); }
  .story-content blockquote { color:var(--color-ink-2); }
  @media(max-width:767px){.stories-expanded .graduate-grid{grid-template-columns:1fr}}
 </style>

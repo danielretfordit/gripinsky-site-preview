@@ -2,6 +2,8 @@
 interface Stat { value: string; label: string; href?: string | null }
 interface Props { stats: Stat[] }
 const { stats } = Astro.props;
+// «10 000+»: плюс выделяется лаймом
+const split = (v: string) => (v.endsWith('+') ? [v.slice(0, -1), '+'] : [v, '']);
 ---
 <section class="wrap stats-ribbon" aria-label="Академия в цифрах">
   <dl class="stats-ribbon__list" tabindex="0" aria-label="Пять показателей академии; на узком экране листайте горизонтально">
@@ -11,8 +13,8 @@ const { stats } = Astro.props;
         <dt>{stat.label}</dt>
         <dd>
           {stat.href
-            ? <a href={stat.href} rel="noopener" aria-label={`${stat.value}, ${stat.label}`}>{stat.value}</a>
-            : stat.value}
+            ? <a href={stat.href} rel="noopener" aria-label={`${stat.value}, ${stat.label}`}>{split(stat.value)[0]}{split(stat.value)[1] && <span class="num-plus">+</span>}</a>
+            : <>{split(stat.value)[0]}{split(stat.value)[1] && <span class="num-plus">+</span>}</>}
         </dd>
       </div>
     ))}

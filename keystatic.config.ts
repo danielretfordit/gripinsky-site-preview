@@ -1,4 +1,5 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
+import { createElement, Fragment } from 'react';
 
 // Админка контента: /keystatic. Локально правки пишутся в файлы проекта; на боевом сервере (KEYSTATIC_STORAGE=github)
 // каждое сохранение становится коммитом в репозиторий, после чего сайт собирается и выкладывается (docs/admin-guide.md).
@@ -23,12 +24,43 @@ const windowFields = {
   active: fields.checkbox({ label: 'Включено', defaultValue: true }),
 };
 
+/** Знак в шапке админки плюс фирменная тема поверх Keystar UI (переменные --kui-*). Без внешних шрифтов и CDN. */
+const ADMIN_THEME = `
+:root, .kui-theme { --kui-typography-font-family-base: Inter, system-ui, sans-serif !important; }
+/* Акцент Keystar (индиго) заменяем фирменным лаймом; текст на лайме тёмный */
+:root, .kui-theme, .kui-scheme--light, .kui-scheme--dark {
+  --kui-color-scale-indigo8: #C9CA35 !important;
+  --kui-color-scale-indigo9: #E7E845 !important;
+  --kui-color-scale-indigo10: #D6D73C !important;
+  --kui-color-foreground-on-emphasis: #111313 !important;
+  --kui-color-alias-focus-ring: #E7E845 !important;
+}
+.kui-scheme--light, .kui-scheme--light .kui-theme { --kui-color-scale-indigo11: #5F600C !important; }
+.kui-scheme--dark, .kui-scheme--dark .kui-theme { --kui-color-scale-indigo11: #E7E845 !important; }
+/* Тёмная схема: графит сайта вместо серо-синего */
+.kui-scheme--dark, .kui-scheme--dark .kui-theme {
+  --kui-color-scale-slate1: #111313 !important;
+  --kui-color-scale-slate2: #161A1A !important;
+  --kui-color-scale-slate3: #191D1D !important;
+  --kui-color-scale-slate4: #202525 !important;
+  --kui-color-scale-slate5: #272D2D !important;
+}
+.gr-admin-mark { display: inline-grid; width: 28px; height: 28px; place-items: center; border-radius: 4px; background: #111313; }
+.gr-admin-mark img { width: 22px; height: 22px; }
+`;
+function BrandMark() {
+  return createElement(Fragment, null,
+    createElement('style', null, ADMIN_THEME),
+    createElement('span', { className: 'gr-admin-mark' }, createElement('img', { src: '/favicon.svg', alt: '' })));
+}
+
 export default config({
   storage: process.env.KEYSTATIC_STORAGE === 'github'
     ? { kind: 'github', repo: { owner: 'gripinskya-bit', name: 'gripinsky-site' }, branchPrefix: 'admin/' }
     : { kind: 'local' },
   ui: {
-    brand: { name: 'GRIPINSKY' },
+    // Админка в стиле сайта: знак «3D», графит, лаймовый сигнал на главных кнопках и фокусе
+    brand: { name: 'GRIPINSKY: админка', mark: BrandMark },
     navigation: {
       'Витрина': ['home', 'heroSlides', 'banners', 'promotions'],
       'Продажи': ['courses', 'tariffs', 'professions', 'gameProfessions'],

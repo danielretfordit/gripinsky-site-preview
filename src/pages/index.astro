@@ -346,12 +346,16 @@ const stats = [
   .site-home .stats-ribbon__list::before { position: absolute; right: 0; bottom: 0; left: 0; height: 1px; background: var(--color-line); content: ""; }
   .site-home .stats-ribbon__list::after { position: absolute; bottom: -1px; left: 0; width: 42px; height: 2px; background: var(--color-lime); content: ""; }
   .site-home .stats-ribbon__item { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 0; border: 0; }
-  .site-home .stats-ribbon__item dt { order: 2; max-width: 20ch; color: var(--color-muted); font-size: var(--type-meta); line-height: 1.35; }
+  .site-home .stats-ribbon__item dt { order: 2; max-width: 20ch; color: var(--color-muted); font-size: var(--type-label); font-weight: 600; line-height: 1.5; letter-spacing: .12em; text-transform: uppercase; }
   .site-home .stats-ribbon__item dd { order: 1; }
   .site-home .stats-ribbon__item a { color: inherit; }
+  .site-home .stats-ribbon__item { gap: 8px; }
   @media (min-width: 560px) {
-    .site-home .stats-ribbon__list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(16px, 3vw, 42px); }
-    .site-home .stats-ribbon__item dt { font-size: var(--type-small); }
+    /* Как цифры основателя: колонки через тонкие линии */
+    .site-home .stats-ribbon__list { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+    .site-home .stats-ribbon__item { padding-inline: clamp(12px, 2vw, 28px); }
+    .site-home .stats-ribbon__item:first-child { padding-left: 0; }
+    .site-home .stats-ribbon__item + .stats-ribbon__item { border-left: 1px solid var(--color-line); }
   }
 
   /* Заголовки секций главной: надзаголовок, H2 в две строки, пояснение справа (от 768 px) */
@@ -364,12 +368,11 @@ const stats = [
   }
   .site-home #directions .head { gap: 0; }
   .site-home :is(#directions .head h2, .home-works .head h2, #ai .ai-feature h2, #club .community-feature__copy h2, #faq .t-h2) {
-    margin-top: 18px; font-size: var(--type-section); line-height: 1.03; letter-spacing: -.057em;
+    margin-top: 18px; font-size: var(--type-section); line-height: .98; letter-spacing: -.044em;
   }
   .site-home :is(#directions .head h2, .home-works .head h2) span { display: block; color: var(--color-heading-muted); }
   .site-home #directions .head h2 { grid-column: 1; grid-row: 2; }
   .site-home :is(.directions-intro, #directions .head > :last-child) { display: none; }
-  .site-home :is(#ai .ai-feature__eyebrow, #club .community-feature__eyebrow)::before,
   .site-home :is(.ai-feature__dot, .community-feature__eyebrow span, .eyebrow i) { display: none; }
   @media (min-width: 768px) {
     .site-home :is(#directions .head, .home-works > .head) { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 0; }
@@ -404,7 +407,7 @@ const stats = [
 
   /* Курс «ИИ в 3D» и сообщество: одна рамка на поверхности */
   .site-home #ai { margin-top: var(--space-section); padding-top: 0; }
-  .site-home #ai .ai-feature { position: relative; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 0; padding: clamp(26px, 4.4vw, 64px) clamp(20px, 4.4vw, 64px); border: 1px solid var(--color-line); background: var(--color-surface); }
+  .site-home #ai .ai-feature { position: relative; grid-template-columns: minmax(0, 1fr); align-items: center; gap: 0; padding: clamp(26px, 4.4vw, 64px) clamp(20px, 4.4vw, 64px); border: 1px solid var(--color-line); background: var(--glow-studio), var(--color-surface); }
   .site-home #ai .ai-feature::before { position: absolute; top: -1px; left: 0; width: 42px; height: 2px; background: var(--color-lime); content: ""; }
   .site-home #ai .ai-feature__copy { gap: 0; padding: 0; }
   .site-home #ai .ai-feature h2 { margin: 18px 0; }
@@ -412,11 +415,10 @@ const stats = [
   .site-home #ai .ai-feature__quote { margin: 0 0 12px; font-size: var(--type-lead); font-weight: 600; line-height: 1.3; }
   .site-home #ai .ai-feature__body { line-height: 1.6; }
   .site-home #ai .ai-feature__action { margin-top: 22px; padding-top: 0; font-size: var(--type-control); }
-  .site-home #ai .ai-feature__symbol { min-height: clamp(180px, 21vw, 300px); margin-top: 24px; border-top: 1px solid var(--color-line); border-left: 0; background: transparent; }
-  .site-home #ai .ai-feature__symbol > span { font-size: clamp(150px, 19vw, 260px); color: transparent; -webkit-text-stroke: 1px var(--color-muted); }
+  .site-home #ai .ai-feature__visual { aspect-ratio: 16 / 10; margin-top: 28px; }
   @media (min-width: 768px) {
     .site-home #ai .ai-feature { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(28px, 5vw, 74px); }
-    .site-home #ai .ai-feature__symbol { margin-top: 0; border-top: 0; border-left: 1px solid var(--color-line); }
+    .site-home #ai .ai-feature__visual { align-self: stretch; aspect-ratio: auto; min-height: 340px; margin-top: 0; }
   }
 
   /* Работы учеников */
@@ -427,7 +429,7 @@ const stats = [
   .site-home .home-works .head > :last-child > a { display: inline-flex; align-items: center; min-height: var(--tap); margin-top: 4px; }
   .site-home .home-works > figure .work-feature__photo { height: clamp(260px, 40vw, 520px); aspect-ratio: auto; border-radius: var(--radius-media); }
   .site-home .home-works > figure figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; min-height: 51px; padding-block: 12px; color: var(--color-muted); font-size: var(--type-small); }
-  .site-home .home-works > figure figcaption > span:first-child { width: 100%; color: var(--color-muted); font: var(--type-meta) var(--font-mono); letter-spacing: .1em; }
+  .site-home .home-works > figure figcaption > span:first-child { width: 100%; color: var(--color-muted); font-size: var(--type-label); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; }
   .site-home .home-works > figure figcaption > span:nth-child(2) { flex: 1; min-width: 0; }
   .site-home .home-works > figure figcaption a { display: grid; width: var(--tap); height: var(--tap); margin-left: auto; place-items: center; color: var(--color-ink); font-size: var(--type-lead); }
   .site-home .home-works .work-feature__index,
@@ -440,35 +442,27 @@ const stats = [
     .site-home .home-works > figure figcaption > span:first-child { width: auto; }
   }
 
-  /* Основатель и отзывы (TrustBlock) */
-  .site-home #founder .founder__eyebrow { display: none; }
-  .site-home #founder .founder__copy > h2 { margin: 18px 0 20px; font-size: var(--type-section); line-height: 1.03; letter-spacing: -.057em; }
-  .site-home #founder .founder__quote { gap: 13px; font-size: var(--type-lead); line-height: 1.55; }
 
   /* Сообщество */
-  .site-home #club { margin-top: var(--space-section); padding-top: 0; }
-  .site-home #club .community-feature { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; padding: clamp(26px, 4.4vw, 64px) clamp(20px, 4.4vw, 64px); border: 1px solid var(--color-line); background: var(--color-surface); }
+  .site-home #club { margin-top: var(--space-section); padding-top: clamp(30px, 3.7vw, 52px); border-top: 1px solid var(--color-line); }
+  .site-home #club .community-feature { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; overflow: visible; padding: 0; border: 0; background: transparent; }
   .site-home #club .community-feature__main { display: block; min-width: 0; }
   .site-home #club .community-feature__copy { display: block; padding: 0; }
   .site-home #club .community-feature__copy h2 { margin: 18px 0 0; }
   .site-home #club .community-feature__copy h2 span { display: block; color: var(--color-heading-muted); }
-  .site-home #club .community-feature__lead { max-width: 530px; margin: 0; font-size: var(--type-lead); line-height: 1.55; }
-  .site-home #club .community-feature__copy > a { margin-top: 26px; }
-  .site-home #club .community-feature__symbol { flex-direction: column; gap: 3px; min-height: 130px; max-width: 390px; margin-top: 34px; border: 0; background: transparent; }
-  .site-home #club .community-feature__symbol > span { font-size: clamp(90px, 9vw, 128px); line-height: .9; }
-  .site-home #club .community-feature__symbol small { position: static; font-size: var(--type-meta); white-space: nowrap; }
+  .site-home #club .community-feature__lead { max-width: 530px; margin: clamp(16px, 1.6vw, 22px) 0 0; font-size: var(--type-lead); line-height: 1.55; }
+  .site-home #club .community-feature__copy > a { margin-top: 28px; }
+  /* Декоративный знак «МЫ» на главной не нужен: смысл несут заголовок и три темы справа */
+  .site-home #club .community-feature__symbol { display: none; }
   .site-home #club .community-feature__topics { display: block; margin-top: 0; padding: 0; border-top: 1px solid var(--color-line); }
   .site-home #club .community-feature__topics > div { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 7px 12px; padding-block: 21px; border-top: 0; border-bottom: 1px solid var(--color-line); }
   .site-home #club .community-feature__topics > div > span { grid-column: 1; grid-row: 1 / span 2; }
   .site-home #club .community-feature__topics :is(h3, p) { grid-column: 2; }
-  .site-home #club .community-feature__topics h3 { margin: 0; font-size: var(--type-body); line-height: 1.5; }
+  .site-home #club .community-feature__topics h3 { margin: 0; font-size: var(--type-title); line-height: 1.35; }
   .site-home #club .community-feature__topics p { max-width: none; font-size: var(--type-body); line-height: 1.55; }
   @media (min-width: 768px) {
     .site-home #club .community-feature { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
     .site-home #club .community-feature__topics { grid-column: 2; margin-top: 9px; }
-  }
-  @media (min-width: 1024px) {
-    .site-home #club .community-feature { border: 0; background: transparent; }
   }
 
   /* Вопросы */
@@ -476,7 +470,7 @@ const stats = [
   .site-home #faq > div { grid-template-columns: minmax(0, 1fr); gap: 25px; }
   .site-home #faq > div > :first-child { display: flex; flex-direction: column; gap: 0; }
   .site-home #faq > div > :first-child h2 { margin: 18px 0 0; }
-  .site-home #faq > div > :first-child > p:last-child { max-width: 360px; margin: 0 0 14px; font-size: var(--type-small); line-height: 1.5; }
+  .site-home #faq > div > :first-child > p:last-child { max-width: 360px; margin: 16px 0 14px; font-size: var(--type-small); line-height: 1.5; }
   .site-home #faq details { padding-block: 0; border-color: var(--color-line); }
   .site-home #faq summary { min-height: 60px; padding-block: 13px; font-size: var(--type-body); line-height: 1.5; }
   @media (min-width: 768px) {

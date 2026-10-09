@@ -1,0 +1,44 @@
+---
+// Карточка записи блога: обложка 16:10, метаданные, заголовок, описание. Вся карточка кликабельна.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { postHref } from '../lib/blog';
+import { typo } from '../lib/format';
+import { assetPath } from '../lib/deployment';
+
+interface Props { post: CollectionEntry<'blog'>; kind?: string; eager?: boolean }
+const { post, kind, eager = false } = Astro.props;
+const d = post.data;
+const date = d.date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<li class="post-card relative flex flex-col">
+  <div class="post-card__media media-frame">
+    {d.cover ? (
+      <Image src={d.cover} alt="" widths={[480, 720, 960]} sizes="(min-width: 1024px) 31vw, (min-width: 768px) 46vw, 92vw" loading={eager ? 'eager' : 'lazy'} class="post-card__img" />
+    ) : (
+      <span class="post-card__placeholder" aria-hidden="true"><img src={assetPath('/brand/academy.svg')} alt="" width="2048" height="328" loading="lazy" decoding="async" /></span>
+    )}
+  </div>
+  <p class="t-meta post-card__meta">{kind && <span>{kind}</span>}<time datetime={d.date.toISOString()}>{date}</time></p>
+  <h2 class="t-h3 post-card__title"><a href={postHref(post)} class="after:absolute after:inset-0">{typo(d.title)}</a></h2>
+  {d.description && d.description !== d.title && <p class="post-card__text">{typo(d.description)}</p>}
+</li>
+
+<style>
+  .post-card { gap: 10px; }
+  .post-card__media { position: relative; aspect-ratio: 16 / 10; margin-bottom: 8px; overflow: hidden; border-radius: var(--radius-media); background: var(--color-surface); }
+  .post-card__img { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale var(--dur) var(--ease-out); }
+  /* Запись без обложки: знак академии на тонкой сетке, без выдуманной картинки */
+  .post-card__placeholder { display: grid; height: 100%; place-items: center; background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px); background-position: center; background-size: 48px 48px; }
+  .post-card__placeholder img { width: min(52%, 220px); height: auto; opacity: .55; }
+  .post-card__meta { margin: 0; }
+  .post-card__title { margin: 0; text-wrap: balance; }
+  .post-card__title a { color: var(--color-ink); text-decoration: none; }
+  .post-card__text { display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-ink-2); -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-wrap: pretty; }
+  .post-card:focus-within .post-card__title a { text-decoration: underline; text-underline-offset: 4px; }
+  @media (hover: hover) {
+    .post-card:hover .post-card__img { scale: 1.03; }
+    .post-card:hover .post-card__title a { color: var(--color-white); }
+  }
+  @media (prefers-reduced-motion: reduce) { .post-card__img { transition: none; } }
+</style>

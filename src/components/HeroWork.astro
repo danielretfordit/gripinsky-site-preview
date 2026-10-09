@@ -45,12 +45,14 @@ const count = String(slides.length).padStart(2, '0');
 <style>
   /* Выбранный вариант 03: текстовая панель слева, работа ученика справа (от 1024 px); ниже работа идёт под текстом.
      Кегль заголовка берётся из общей плавной роли --type-hero, высоты привязаны к ширине, а не к точкам перелома. */
-  .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; background: var(--color-bg); }
+  .hero { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); overflow: hidden; background: radial-gradient(50% 60% at 18% 45%, rgb(241 241 235 / .05), transparent 70%), var(--color-bg); }
   .hero__copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: center; padding: clamp(32px, 6vw, 56px) var(--site-gutter) 0; }
   /* Хлебные крошки отделены от надзаголовка: иначе «…/ 3D-визуализация» и «Направление» читаются одной строкой */
   .hero__top { margin-bottom: clamp(20px, 3vw, 36px); }
   .hero__visual { display: flex; min-width: 0; min-height: 0; flex-direction: column; }
-  .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.058em; }
+  .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.044em; }
+  /* Длинный заголовок направления: в две колонки чуть мельче, чтобы уложиться в четыре строки */
+  @media (min-width: 1024px) { .hero :global(.t-hero--long) { font-size: min(var(--type-hero), 3.375rem); } }
   .hero :global(.t-lead) { max-width: 570px; color: var(--color-ink-2); font-size: var(--type-lead); line-height: 1.55; }
   .hero :global(.hero__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--hero-mobile-focus, var(--hero-focus, 50% 50%)); }
   .hero__image { position: relative; flex: 0 0 auto; min-width: 0; margin: 0 var(--site-gutter); aspect-ratio: 4 / 3; max-height: min(520px, 64svh); overflow: hidden; background: var(--color-surface); touch-action: pan-y; }
@@ -59,7 +61,7 @@ const count = String(slides.length).padStart(2, '0');
   .hero__slide[aria-hidden="true"] { pointer-events: none; }
   .hero__image::after { position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgb(8 10 10 / .8)); content: ""; pointer-events: none; }
   .hero__image figcaption { position: absolute; z-index: 1; right: 116px; bottom: 16px; left: 16px; display: flex; flex-direction: column; gap: 4px; color: var(--color-ink); font-size: var(--type-small); line-height: 1.4; }
-  .hero__image figcaption span { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }
+  .hero__image figcaption span { color: rgb(255 255 255 / .72); font-size: var(--type-label); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; }
   .hero__controls { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: flex; gap: 6px; }
   .hero__controls button { display: grid; width: var(--tap); height: var(--tap); place-items: center; border: 1px solid rgb(241 241 235 / .64); border-radius: var(--radius-field); background: rgb(17 19 19 / .32); color: var(--color-ink); font-size: var(--type-icon); line-height: 1; transition: color var(--dur) ease, border-color var(--dur) ease, background var(--dur) ease; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   .hero__controls button:focus-visible { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); }
@@ -76,17 +78,26 @@ const count = String(slides.length).padStart(2, '0');
   }
   /* Широкий экран: две колонки 3:2, кадр на всю высоту первого экрана */
   @media (min-width: 1024px) {
-    .hero { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); min-height: clamp(570px, 48vw, 680px); padding-top: var(--header-h); }
+    .hero { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); min-height: clamp(570px, 48vw, 760px); padding-top: var(--header-h); }
     .hero__copy { padding: clamp(48px, 7vw, 104px) clamp(32px, 5vw, 76px) 54px var(--site-gutter); }
     .hero :global(.t-hero) { max-width: 750px; }
     .hero :global(.hero__img) { object-position: var(--hero-focus, 50% 50%); }
-    .hero__visual { height: clamp(570px, 48vw, 680px); }
+    /* Кадр выровнен по правому полю контейнера, как текст по левому: без «приклеивания» к краю экрана */
+    .hero__visual { height: clamp(570px, 48vw, 760px); padding-right: var(--site-gutter); }
     .hero__signature { margin: 0; padding: 13px clamp(16px, 2vw, 24px); }
     .hero__image { flex: 1 1 auto; margin: 0; aspect-ratio: auto; max-height: none; }
     .hero__image figcaption { right: 120px; bottom: 23px; left: 24px; }
     .hero__controls { right: 20px; bottom: calc(var(--sticky-bar-h, 0px) + 20px); }
   }
-  @media (prefers-reduced-motion: reduce) { .hero__slide, .hero__controls button { transition: none; } }
+  /* Широкий экран: работа ученика почти на половину ширины, она главная картинка страницы */
+  @media (min-width: 1280px) {
+    .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+    .hero__copy { padding-right: clamp(40px, 4vw, 72px); }
+  }
+  /* Смена кадра: лёгкое приближение вместе с проявлением */
+  .hero__slide :global(.hero__img) { transform: scale(1.025); transition: transform 6s var(--ease-out); }
+  .hero__slide[data-active] :global(.hero__img) { transform: scale(1); }
+  @media (prefers-reduced-motion: reduce) { .hero__slide, .hero__controls button, .hero__slide :global(.hero__img) { transition: none; transform: none; } }
 </style>
 
 <script>

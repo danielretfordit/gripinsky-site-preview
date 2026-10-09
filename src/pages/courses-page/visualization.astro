@@ -30,7 +30,7 @@ const slides = await heroSlides('viz');
 <Base title="Курсы 3D-визуализации: профессии и обучение | GRIPINSKY" description="Выберите профессию 3D-визуализатора: интерьеры, экстерьеры или модели для стоков. Основные и дополнительные курсы, работы учеников и бесплатные уроки." breadcrumbs={crumbs} jsonLd={[faqSchema]} consultContext="Направление 3D-визуализация">
   {slides[0] && <HeroWork work={slides[0]} slides={slides} kicker="Направление" id="prototype-title">
     <Breadcrumbs slot="top" items={crumbs} />
-    <h1 slot="title" id="prototype-title" class="t-hero"><span class="whitespace-nowrap">3D-визуализация</span> <span class="t-accent block">от первых моделей<br />к вашим проектам</span></h1>
+    <h1 slot="title" id="prototype-title" class="t-hero t-hero--long"><span class="whitespace-nowrap">3D-визуализация</span> <span class="t-accent block">от первых моделей<br />к вашим проектам</span></h1>
     <p slot="lead" class="t-lead">Научитесь создавать интерьеры, экстерьеры и модели для стоков. Начните с основ или выберите курсы под свой опыт. Моделирование, свет, материалы и нейросети складываются в маршрут к выбранной профессии.</p>
     <HeroActions slot="cta" primaryHref="#profession" primaryLabel="Выбрать курсы" secondaryHref="/vizualization3_mini" secondaryLabel="Попробовать бесплатно" secondaryGoal="trial_click" />
   </HeroWork>}

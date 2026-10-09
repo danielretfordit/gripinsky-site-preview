@@ -11,23 +11,17 @@ const reviews = reviewIds.map(id => collection.find(r => r.id === id)).filter(Bo
 ---
 <div class:list={['trust','trust--journal']}>
  <div class="trust-top"><span class="t-overline">GRIPINSKY / Подход к обучению</span><span class="t-meta">Метод / Основатель / Опыт учеников</span></div>
- <div class="trust-body"><div class="method"><span class="chapter t-overline">01 / Во что мы верим</span><WhyGripinsky/></div><div class="person"><span class="chapter t-overline">02 / Кто за этим стоит</span><FounderFeature refined/></div></div>
- <section id="reviews" class="voices" aria-labelledby="voices-title"><div class="voices-head"><div><p class="t-overline">03 / Подтверждают ученики и заказчики</p><h2 id="voices-title" class="t-h2">Подход виден<br/><span class="text-heading-muted">в их опыте.</span></h2></div><a href="/otzyvy" class="link t-small">Все отзывы →</a></div><div class="review-grid">{reviews.map(r=><figure><blockquote class="t-body">«{r!.data.quote ?? r!.data.text}»</blockquote><figcaption class="t-small"><b>{r!.data.author}</b><span class="text-muted">{r!.data.role}</span></figcaption><a class="link t-small" href="/otzyvy#quotes">Читать отзывы →</a></figure>)}</div></section>
+ <div class="trust-body"><div class="method"><span class="chapter t-overline">01 / Во что мы верим</span><WhyGripinsky/></div><div class="person"><span class="chapter t-overline">02 / Кто за этим стоит</span><FounderFeature/></div></div>
+ <section id="reviews" class="voices" aria-labelledby="voices-title"><div class="voices-head"><div><p class="t-overline">03 / Подтверждают ученики и заказчики</p><h2 id="voices-title" class="t-h2">Подход виден<br/><span class="text-heading-muted">в их опыте.</span></h2></div><a href="/otzyvy" class="link t-small">Все отзывы →</a></div><div class="review-grid">{reviews.map(r=><figure><blockquote class="t-body">«{r!.data.quote ?? r!.data.text}»</blockquote><figcaption class="t-small"><b>{r!.data.author}</b><span class="text-muted">{r!.data.role}</span></figcaption></figure>)}</div></section>
 </div>
 <style>
 /* Блок доверия главной: метод, основатель, отзывы. Один вариант «журнал» (выбран 08.10.2026). */
-.trust :global(#founder .founder__eyebrow){display:block}
-.trust :global(#founder .founder__copy > h2){font-size:var(--type-section);line-height:1.03;margin:0 0 24px;letter-spacing:-.06em}
-.trust :global(#founder .founder__quote){line-height:1.5}
-.trust{width:min(100% - 2 * var(--gutter), var(--container));box-sizing:border-box;margin:0 auto var(--space-sub);padding:clamp(24px, 3vw, 40px);background:var(--color-surface);border-top:1px solid var(--color-line-strong)}
+.trust{--trust-pad:clamp(24px, 3vw, 40px);position:relative;overflow:hidden;width:min(100% - 2 * var(--gutter), var(--container));box-sizing:border-box;margin:var(--space-section) auto 0;padding:var(--trust-pad);background:var(--glow-studio),var(--color-surface);border-top:1px solid var(--color-line-strong)}
 .trust-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;padding-bottom:28px;border-bottom:1px solid var(--color-line)}
 .chapter{display:none}
 .method :global(.why-gripinsky){width:100%;margin:40px 0 0;padding:0;border:0;gap:clamp(24px, 3vw, 40px);grid-template-columns:1fr}
 .method :global(ol){display:block}
-.person :global(.founder){width:100%;margin-top:48px;padding:0}
-.person :global(.founder__composition){grid-template-columns:1fr}
-.person :global(.founder__copy){min-height:0;padding:24px 0}
-.person :global(.founder__portrait){height:auto;min-height:0;aspect-ratio:4 / 5;max-height:530px}
+.person{margin-top:clamp(40px, 5vw, 64px)}
 .voices{margin-top:48px;padding-top:32px;border-top:1px solid var(--color-line)}
 .voices-head{display:block}
 .voices-head>a{display:inline-flex;align-items:center;min-height:var(--tap);margin-top:12px}
@@ -40,14 +34,16 @@ const reviews = reviewIds.map(id => collection.find(r => r.id === id)).filter(Bo
 @media(min-width:768px){
   .trust-top>span:last-child{display:inline}
   .method :global(.why-gripinsky){grid-template-columns:1fr 2fr}
-  .person :global(.founder__composition){grid-template-columns:1fr 1fr}
-  .person :global(.founder__copy){padding:32px 32px 32px 0}
-  .person :global(.founder__portrait){aspect-ratio:auto;height:100%;max-height:none;min-height:min(530px, 60vw)}
   .voices-head{display:flex;align-items:end;justify-content:space-between;gap:24px}
   .voices-head>a{margin-top:0}
   .review-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px, 2.4vw, 32px)}
 }
+@media(min-width:768px){
+  /* Заголовок метода остаётся на виду, пока читаются шесть пунктов */
+  .method :global(.why-gripinsky__heading){position:sticky;top:calc(var(--header-h) + 24px);align-self:start}
+}
 @media(min-width:1024px){
   .method :global(ol){display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+  .method :global(li:nth-child(2)){padding-top:0}
 }
 </style>

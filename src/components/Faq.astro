@@ -33,7 +33,7 @@ const rendered = await Promise.all(items.map(async (f) => ({ f, Content: (await 
         const list = rendered.filter((r) => r.f.data.group === g.id);
         return list.length > 0 && (
           <div class="flex flex-col">
-            <h3 class="t-overline mb-1">{g.label}</h3>
+            <h3 class="t-overline mb-3">{g.label}</h3>
             {list.map(({ f, Content }) => (
               <details class="faq group border-b border-line py-1">
                 <summary class="t-title flex min-h-16 items-center justify-between gap-6 py-3">

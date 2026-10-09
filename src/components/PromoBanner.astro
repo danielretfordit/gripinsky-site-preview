@@ -13,7 +13,7 @@ const b = banner?.data;
 {b && (
   <aside class:list={['promo-banner', `promo-banner--${b.tone}`, cls]} aria-label="Объявление" data-banner data-dismiss-key={b.dismissible ? dismissKey(banner!) : undefined} {...scheduleAttrs(b)}>
     <p class="promo-banner__text">{b.text}</p>
-    {b.href && <a href={b.href} class="btn btn-secondary promo-banner__cta">{b.linkLabel || 'Подробнее'} <span aria-hidden="true">→</span></a>}
+    {b.href && <a href={b.href} class="btn btn-secondary promo-banner__cta">{b.linkLabel || 'Подробнее'} <span class="arrow-long" aria-hidden="true"></span></a>}
     {b.dismissible && <button type="button" class="promo-banner__close" data-banner-close aria-label="Скрыть">×</button>}
   </aside>
 )}
