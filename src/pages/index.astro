@@ -73,7 +73,7 @@ const stats = [
   consultContext="Главная"
 >
   {hero && (
-    <HeroWork work={hero} slides={slides.length ? slides : [hero]} kicker={page.hero.kicker} id="home-title">
+    <HeroWork work={hero} slides={slides.length ? slides : [hero]} kicker={page.hero.kicker} id="home-title" class="hero--cinema">
       <h1 slot="title" id="home-title" class="t-hero">{typo(page.hero.title)} {page.hero.accent && <span class="t-accent block">{typo(page.hero.accent)}</span>}</h1>
       <p slot="lead" class="t-lead m-0 max-w-[540px]">{page.hero.lead}</p>
       <Fragment slot="cta">
@@ -323,7 +323,7 @@ const stats = [
   .site-home main > :is(#directions, #quiz, .home-works, #faq) {
     position: relative;
     margin-top: var(--space-section);
-    padding-top: clamp(30px, 3.7vw, 52px);
+    padding-top: clamp(24px, 2.6vw, 40px);
     border-top: 1px solid var(--color-line);
   }
   .site-home main > #directions { margin-top: 0; padding-top: var(--space-section); border-top: 0; }
@@ -368,7 +368,7 @@ const stats = [
   }
   .site-home #directions .head { gap: 0; }
   .site-home :is(#directions .head h2, .home-works .head h2, #ai .ai-feature h2, #club .community-feature__copy h2, #faq .t-h2) {
-    margin-top: 18px; font-size: var(--type-section); line-height: .98; letter-spacing: -.044em;
+    margin-top: 18px; font-size: var(--type-section); line-height: .98; letter-spacing: -.038em;
   }
   .site-home :is(#directions .head h2, .home-works .head h2) span { display: block; color: var(--color-heading-muted); }
   .site-home #directions .head h2 { grid-column: 1; grid-row: 2; }
@@ -388,10 +388,10 @@ const stats = [
   .site-home #directions #pick-dir > article .media-frame::after { position: absolute; inset: 42% 0 0; background: linear-gradient(transparent, rgb(0 0 0 / .43)); content: ""; }
   .site-home #directions .direction-number { position: absolute; z-index: 1; bottom: 16px; left: 16px; color: var(--color-ink); font: var(--type-meta) var(--font-mono); letter-spacing: .1em; }
   .site-home #directions .direction-arrow { position: absolute; z-index: 2; right: 16px; bottom: 16px; display: grid; width: var(--tap); height: var(--tap); place-items: center; border: 1px solid rgb(241 241 235 / .65); color: var(--color-ink); font-size: 1.375rem; transition: border-color var(--dur) ease, background var(--dur) ease, color var(--dur) ease; }
-  .site-home #directions #pick-dir > article > div:last-child { display: flex; flex: 1; flex-direction: column; padding: clamp(24px, 3vw, 40px); }
+  .site-home #directions #pick-dir > article > div:last-child { display: flex; flex: 1; flex-direction: column; padding: clamp(20px, 2.4vw, 32px); }
   .site-home #directions .direction-meta { margin: 0; line-height: 1.6; }
-  .site-home #directions #pick-dir h3 { margin: 18px 0 12px; }
-  .site-home #directions .direction-cta { margin-top: auto; padding-top: 22px; border-top-color: var(--color-line); }
+  .site-home #directions #pick-dir h3 { margin: 12px 0 8px; }
+  .site-home #directions .direction-cta { margin-top: auto; padding-top: 16px; border-top-color: var(--color-line); }
   .site-home #directions .direction-cta b { display: inline-block; transition: transform var(--dur) var(--ease-out); }
   @media (hover: hover) {
     .site-home #directions #pick-dir > article:hover .direction-arrow { border-color: var(--color-lime); background: rgb(17 19 19 / .6); color: var(--color-lime); }
@@ -416,6 +416,19 @@ const stats = [
   .site-home #ai .ai-feature__body { line-height: 1.6; }
   .site-home #ai .ai-feature__action { margin-top: 22px; padding-top: 0; font-size: var(--type-control); }
   .site-home #ai .ai-feature__visual { aspect-ratio: 16 / 10; margin-top: 28px; }
+  /* Лаймовое поле: второй (после финальной консультации) цветовой акцент главной. Текст и кнопка тёмные */
+  .site-home #ai .ai-feature { border-color: transparent; background: radial-gradient(60% 120% at 90% 0%, rgb(255 255 255 / .3), transparent 60%), var(--color-lime); color: var(--color-bg); }
+  .site-home #ai .ai-feature::before { display: none; }
+  .site-home #ai .ai-feature :is(h2, .ai-feature__quote, .ai-feature__action) { color: var(--color-bg); }
+  .site-home #ai .ai-feature h2 span { color: rgb(17 19 19 / .55); }
+  .site-home #ai .ai-feature__eyebrow { color: rgb(17 19 19 / .72); }
+  .site-home #ai .ai-feature__eyebrow::before { background: var(--color-bg); }
+  .site-home #ai .ai-feature__body { color: rgb(17 19 19 / .8); }
+  .site-home #ai .ai-feature .btn-primary { background: var(--color-bg); color: var(--color-lime); }
+  @media (hover: hover) { .site-home #ai .ai-feature .btn-primary:hover { color: var(--color-lime); box-shadow: 0 12px 30px -12px rgb(17 19 19 / .7); } }
+  .site-home #ai .ai-feature :focus-visible { outline-color: var(--color-bg); }
+  .site-home #ai .ai-feature__visual { box-shadow: 0 24px 60px -24px rgb(17 19 19 / .55); }
+  .site-home #ai .ai-feature__split { background: var(--color-bg); }
   @media (min-width: 768px) {
     .site-home #ai .ai-feature { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(28px, 5vw, 74px); }
     .site-home #ai .ai-feature__visual { align-self: stretch; aspect-ratio: auto; min-height: 340px; margin-top: 0; }
@@ -444,7 +457,7 @@ const stats = [
 
 
   /* Сообщество */
-  .site-home #club { margin-top: var(--space-section); padding-top: clamp(30px, 3.7vw, 52px); border-top: 1px solid var(--color-line); }
+  .site-home #club { margin-top: var(--space-section); padding-top: clamp(24px, 2.6vw, 40px); border-top: 1px solid var(--color-line); }
   .site-home #club .community-feature { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); align-items: start; overflow: visible; padding: 0; border: 0; background: transparent; }
   .site-home #club .community-feature__main { display: block; min-width: 0; }
   .site-home #club .community-feature__copy { display: block; padding: 0; }

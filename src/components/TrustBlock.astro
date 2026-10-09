@@ -28,8 +28,8 @@ const reviews = reviewIds.map(id => collection.find(r => r.id === id)).filter(Bo
 .voices-head h2{margin:18px 0 0}
 .review-grid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:32px}
 .review-grid figure{margin:0;border-top:1px solid var(--color-line);padding-top:20px;display:flex;flex-direction:column}
-.review-grid blockquote{margin:0 0 24px;color:var(--color-ink-2)}
-.review-grid figcaption{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+.review-grid blockquote{margin:0 0 20px;color:var(--color-ink-2)}
+.review-grid figcaption{display:flex;flex-direction:column;gap:6px}
 .trust-top>span:last-child{display:none}
 @media(min-width:768px){
   .trust-top>span:last-child{display:inline}

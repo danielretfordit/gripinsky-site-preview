@@ -1,0 +1,58 @@
+---
+// Кнопка «наверх»: закреплена справа внизу, появляется после первого экрана, не перекрывает корзину и cookie
+---
+<a href="#main" class="to-top" data-to-top aria-label="Наверх страницы" hidden>
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M6 11l6-6 6 6" /></svg>
+</a>
+
+<style>
+  .to-top {
+    position: fixed;
+    right: max(var(--gutter-min), env(safe-area-inset-right, 0px));
+    bottom: calc(max(var(--sticky-bar-h, 0px), var(--cookie-h, 0px)) + 20px + env(safe-area-inset-bottom, 0px));
+    z-index: 35;
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 50%;
+    background: rgb(17 19 19 / .82);
+    color: var(--color-ink);
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity var(--dur) var(--ease-out), translate var(--dur) var(--ease-out), border-color var(--dur) ease, color var(--dur) ease;
+  }
+  .to-top[hidden] { display: grid; visibility: hidden; }
+  .to-top.is-shown { opacity: 1; translate: 0 0; visibility: visible; }
+  .to-top svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .to-top { background: rgb(17 19 19 / .6); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  }
+  @media (hover: hover) { .to-top:hover { border-color: var(--color-lime); color: var(--color-lime); } }
+  .to-top:focus-visible { border-color: var(--color-lime); }
+  /* Пока печатают в поле на телефоне, кнопка не мешает */
+  :global(html.is-typing) .to-top { display: none; }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLAnchorElement>('[data-to-top]');
+  if (btn) {
+    let shown = false;
+    const update = () => {
+      const show = window.scrollY > window.innerHeight * 1.2;
+      if (show === shown) return;
+      shown = show;
+      btn.hidden = !show;
+      btn.classList.toggle('is-shown', show);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      (document.querySelector('main') as HTMLElement | null)?.focus({ preventScroll: true });
+    });
+  }
+</script>

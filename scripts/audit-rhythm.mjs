@@ -50,6 +50,21 @@ for (const p of PAGES) {
       const min = isHead ? 12 : h.matches('.t-overline') ? 8 : 4;
       if (gap < min) out.push({ kind: `тесно ${gap}px`, text: (h.innerText || '').replace(/\s+/g, ' ').slice(0, 50) + ' ⟶ ' + (n.innerText || n.tagName).replace(/\s+/g, ' ').slice(0, 40), tag: h.tagName.toLowerCase() + '.' + String(h.className).split(' ')[0] });
     }
+    // 3. Слишком большой промежуток: между соседними блоками больше 160 px, внутри карточки больше 56 px
+    const isBox = (el) => el.matches('article, li, figure, .card, .content-card') ;
+    for (const el of document.querySelectorAll('main *')) {
+      if (!visible(el) || el.closest('[aria-hidden="true"], .sr-only, svg, picture')) continue;
+      const cs = getComputedStyle(el); if (cs.position === 'absolute' || cs.position === 'fixed') continue;
+      let n = el.nextElementSibling;
+      while (n && (!visible(n) || ['absolute', 'fixed'].includes(getComputedStyle(n).position))) n = n.nextElementSibling;
+      if (!n) continue;
+      const a = el.getBoundingClientRect(), b = n.getBoundingClientRect();
+      if (b.top < a.bottom - 1 || Math.abs(b.left - a.left) > 60) continue;
+      const gap = Math.round(b.top - a.bottom);
+      const inBox = !!el.parentElement && (isBox(el.parentElement) || !!el.parentElement.closest('article, .card, .content-card'));
+      const max = inBox ? 56 : 160;
+      if (gap > max) out.push({ kind: `много ${gap}px`, text: (el.innerText || el.tagName).replace(/\s+/g, ' ').slice(0, 40) + ' ⟶ ' + (n.innerText || n.tagName).replace(/\s+/g, ' ').slice(0, 40), tag: el.tagName.toLowerCase() + '.' + String(el.className).split(' ')[0] });
+    }
     return out;
   });
   if (found.length) { console.log(`\n${p} (${width})`); for (const f of found) console.log(`  [${f.kind}] ${f.tag}: ${f.text}`); }

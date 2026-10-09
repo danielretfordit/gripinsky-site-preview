@@ -45,6 +45,8 @@ const consultHref = consult ? '#consult' : '/#consult';
           {nav.map((n) => (
             <a href={n.href} aria-current={current === n.href ? 'page' : undefined}>{n.label}</a>
           ))}
+          <a href={consultHref} class="site-header__menu-cta">{navigation.consultLabel}</a>
+          <a href={site.telegramBot} class="site-header__menu-tg">Написать в Telegram</a>
         </nav>
       </details>
     </div>

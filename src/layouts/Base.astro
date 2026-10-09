@@ -11,6 +11,7 @@ import { getPageSeo } from '../lib/page-seo';
 import Header from '../components/Header.astro';
 import AnnouncementBar from '../components/AnnouncementBar.astro';
 import Footer from '../components/Footer.astro';
+import ToTop from '../components/ToTop.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import Analytics from '../components/Analytics.astro';
 import ConsultSection from '../components/ConsultSection.astro';
@@ -87,6 +88,7 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     </main>
     <slot name="after-main" />
     <Footer consult={consult} />
+    <ToTop />
     <SiteCart client:load cat={cartCatalog} discountGuide={["/design/visualization/professions", "/courses-page/visualization", "/courses-page/gamedev"].includes(Astro.url.pathname)} />
     <Checkout client:load cat={cartCatalog} telegramBot={site.telegramBot} />
     <CookieBanner />

@@ -7,6 +7,8 @@ import type { HeroSlide } from '../lib/hero';
 interface Props { work: HeroSlide; slides?: HeroSlide[]; kicker: string; id: string; class?: string }
 const { work, slides = [work], kicker, id, class: cls = '' } = Astro.props;
 const carousel = slides.length > 1;
+// Кинематографичный первый экран: кадр на всю ширину, нужны крупные версии картинки
+const cinema = cls.includes('hero--cinema');
 const count = String(slides.length).padStart(2, '0');
 ---
 <section class={`hero ${cls}`} aria-labelledby={id} data-hero-carousel={carousel ? 'true' : undefined}>
@@ -28,7 +30,7 @@ const count = String(slides.length).padStart(2, '0');
       {slides.map((slide, index) => (
         <figure class="hero__slide" data-hero-slide data-active={index === 0 ? 'true' : undefined} aria-hidden={index === 0 ? undefined : 'true'}>
           <Image src={slide.image} alt={slide.alt} class="hero__img" style={`--hero-focus:${slide.focus};--hero-mobile-focus:${slide.mobileFocus ?? slide.focus}`}
-            widths={[640, 960, 1280, 1600]} sizes="(min-width: 1024px) 40vw, 100vw" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} />
+            widths={cinema ? [960, 1440, 1920, 2400] : [640, 960, 1280, 1600]} sizes={cinema ? "100vw" : "(min-width: 1024px) 40vw, 100vw"} loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} />
           <figcaption><span>{slide.label ?? 'Работа ученика'}</span>{slide.captionOverride ?? workCaption(slide)}</figcaption>
         </figure>
       ))}
@@ -50,7 +52,7 @@ const count = String(slides.length).padStart(2, '0');
   /* Хлебные крошки отделены от надзаголовка: иначе «…/ 3D-визуализация» и «Направление» читаются одной строкой */
   .hero__top { margin-bottom: clamp(20px, 3vw, 36px); }
   .hero__visual { display: flex; min-width: 0; min-height: 0; flex-direction: column; }
-  .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.044em; }
+  .hero :global(.t-hero) { max-width: 16ch; margin: 22px 0 16px; font-size: var(--type-hero); line-height: 1.02; letter-spacing: -.038em; }
   /* Длинный заголовок направления: в две колонки чуть мельче, чтобы уложиться в четыре строки */
   @media (min-width: 1024px) { .hero :global(.t-hero--long) { font-size: min(var(--type-hero), 3.375rem); } }
   .hero :global(.t-lead) { max-width: 570px; color: var(--color-ink-2); font-size: var(--type-lead); line-height: 1.55; }
@@ -94,6 +96,26 @@ const count = String(slides.length).padStart(2, '0');
     .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
     .hero__copy { padding-right: clamp(40px, 4vw, 72px); }
   }
+  /* Кинематографичный вариант (главная, правки 10.10.2026): работа ученика на весь первый экран,
+     заголовок и кнопки поверх затемнённой левой части кадра, подпись и стрелки справа внизу */
+  @media (max-width: 1023.98px) {
+    .hero--cinema .hero__image { margin-inline: 0; aspect-ratio: 4 / 3.4; }
+    .hero--cinema .hero__signature { margin-bottom: 14px; }
+  }
+  @media (min-width: 1024px) {
+    /* Высота: экран минус шапка (кадр начинается под ней), чтобы кнопки всегда были видны без прокрутки */
+    .hero--cinema { grid-template-columns: minmax(0, 1fr); min-height: clamp(560px, calc(100svh - var(--header-h)), 900px); padding-top: 0; background: var(--color-bg); }
+    .hero--cinema .hero__visual { position: absolute; inset: 0; z-index: 0; height: auto; padding: 0; }
+    .hero--cinema .hero__image { position: absolute; inset: 0; }
+    .hero--cinema .hero__image::after { inset: 0; background: linear-gradient(90deg, rgb(10 12 12 / .9) 0%, rgb(10 12 12 / .62) 34%, rgb(10 12 12 / .08) 66%, transparent 100%), linear-gradient(0deg, rgb(10 12 12 / .85) 0%, transparent 42%); }
+    .hero--cinema .hero__signature { position: absolute; top: 28px; right: var(--site-gutter); left: var(--site-gutter); z-index: 2; padding: 0; border-top: 0; color: rgb(241 241 235 / .82); text-shadow: 0 1px 12px rgb(0 0 0 / .45); }
+    .hero--cinema .hero__copy { position: relative; z-index: 1; justify-content: flex-end; max-width: calc(820px + var(--site-gutter)); min-height: inherit; padding: clamp(72px, 9vh, 120px) clamp(32px, 4vw, 64px) clamp(48px, 6vw, 88px) var(--site-gutter); }
+    .hero--cinema :global(.t-hero) { max-width: 820px; font-size: clamp(3.5rem, 1.6rem + 3.4vw, 5.75rem); text-shadow: 0 2px 30px rgb(0 0 0 / .35); }
+    .hero--cinema :global(.t-lead) { color: rgb(241 241 235 / .86); }
+    .hero--cinema .hero__image figcaption { right: calc(var(--site-gutter) + 120px); bottom: clamp(48px, 6vw, 88px); left: auto; max-width: 360px; align-items: flex-end; text-align: right; }
+    .hero--cinema .hero__controls { right: var(--site-gutter); bottom: calc(clamp(48px, 6vw, 88px) - 4px); }
+  }
+
   /* Смена кадра: лёгкое приближение вместе с проявлением */
   .hero__slide :global(.hero__img) { transform: scale(1.025); transition: transform 6s var(--ease-out); }
   .hero__slide[data-active] :global(.hero__img) { transform: scale(1); }
