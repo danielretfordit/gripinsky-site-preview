@@ -55,6 +55,7 @@ const slides = await heroSlides('viz');
       <h3 id={i === 0 ? "additional" : undefined} class="t-title prototype-section-title">Дополнительные курсы</h3>
       <p class="t-small text-ink-2">Усильте навыки под свои задачи. Выберите нужные инструменты, остальные можно добавить позже.</p>
       <div class="prototype-addon-grid">{p.addons.map(a => <article>
+        {a.course.data.badges.length > 0 && <div class="addon-badges">{a.course.data.badges.map(b => <span class:list={['addon-badge', `addon-badge--${b.tone}`]}>{b.text}</span>)}</div>}
         <p class="t-overline">По желанию</p><h4 class="t-title"><a href={courseHref(a.course.id,a.course.data)} class="link">{a.course.data.title} ↗</a></h4>
         <p class="t-small text-ink-2">{a.text}</p><a href={courseHref(a.course.id,a.course.data)} class="link t-small">Программа курса →</a>
         <div class="prototype-addon-buy"><b class="t-title">{rub(a.course.data.price)}</b><label class="prototype-course-select t-small"><input type="checkbox" data-cart-select={a.course.id} disabled /><span>Выбрать курс</span></label></div>
@@ -199,6 +200,12 @@ const slides = await heroSlides('viz');
   .prototype-base summary { cursor:pointer; }
   .prototype-base > p { margin:20px 0; }
   .prototype-base-card { max-width:440px; }
+  /* Плашки дополнительного курса из админки («Рекомендуем», «Высокий рейтинг») */
+  .addon-badges { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .addon-badge { display:inline-flex; align-items:center; min-height:26px; padding:3px 10px; border-radius:var(--radius-chip); font-size:var(--type-label); font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  .addon-badge--lime { background:var(--color-lime); color:var(--color-bg); }
+  .addon-badge--light { background:var(--color-ink); color:var(--color-bg); }
+  .addon-badge--dark { border:1px solid var(--color-line-strong); color:var(--color-ink); }
   @media(max-width:1023.98px){.prototype-course-grid,.prototype-addon-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
   @media(max-width:767.98px){.prototype-heading{grid-template-columns:1fr;gap:20px;}}
   @media(max-width:767px){.prototype-heading,.prototype-course-grid,.prototype-addon-grid{grid-template-columns:1fr;}.prototype-heading{gap:20px;}}

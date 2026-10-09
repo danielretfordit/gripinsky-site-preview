@@ -188,6 +188,10 @@ const courses = defineCollection({
     courseFaq: z.array(z.object({ question: z.string().min(1), answer: z.string() })).default([]),
     trialDescription: z.string().default(''),
     studentWorks: z.array(reference('works')).default([]),
+    /** Отзывы для блока «Работы учеников и отзывы» на странице курса (модерация в админке) */
+    reviews: z.array(reference('reviews')).default([]),
+    /** Плашки на карточке курса: «Рекомендуем», «Высокий рейтинг» и т. п. «На скидке» только при реальной скидке */
+    badges: z.array(z.object({ text: z.string().trim().min(1).max(24), tone: z.enum(['lime', 'light', 'dark']).default('lime') })).default([]),
     testimonials: z.array(z.object({ author: z.string(), text: z.string(), context: z.string().default(''), consent: z.boolean().default(false) })).default([]),
 
     includes: z.array(reference('courses')).default([]),

@@ -350,6 +350,11 @@ export default config({
         courseFaq: fields.array(fields.object({ question: fields.text({ label: 'Вопрос', validation: { isRequired: true } }), answer: fields.text({ label: 'Ответ', multiline: true }) }), { label: 'Вопросы о курсе', itemLabel: (p) => p.fields.question.value }),
         trialDescription: fields.text({ label: 'Что попробовать в бесплатном уроке', multiline: true }),
         studentWorks: fields.array(fields.relationship({ label: 'Работа именно этого курса', collection: 'works' }), { label: 'Работы учеников курса', itemLabel: (p) => p.value ?? '' }),
+        reviews: fields.array(fields.relationship({ label: 'Отзыв', collection: 'reviews' }), { label: 'Отзывы для страницы курса', description: 'Блок «Работы учеников и отзывы». Пусто: показываются отзывы об этом курсе или общие отзывы академии.', itemLabel: (p) => p.value ?? '' }),
+        badges: fields.array(fields.object({
+          text: fields.text({ label: 'Текст плашки', description: 'До 24 знаков: «Рекомендуем», «Высокий рейтинг», «Лучшие отзывы». «На скидке» только при реальной скидке.', validation: { isRequired: true, length: { min: 1, max: 24 } } }),
+          tone: fields.select({ label: 'Цвет', options: [{ label: 'Лайм', value: 'lime' }, { label: 'Светлая', value: 'light' }, { label: 'Тёмная', value: 'dark' }], defaultValue: 'lime' }),
+        }), { label: 'Плашки на карточке', itemLabel: (p) => p.fields.text.value || 'Плашка' }),
         testimonials: fields.array(fields.object({ author: fields.text({ label: 'Имя автора' }), text: fields.text({ label: 'Дословный отзыв', multiline: true }), context: fields.text({ label: 'Как связан с курсом' }), consent: fields.checkbox({ label: 'Получено разрешение на публикацию', defaultValue: false }) }), { label: 'Отзывы об этом курсе', itemLabel: (p) => p.fields.author.value }),
 
         includes: fields.array(fields.relationship({ label: 'Курс', collection: 'courses' }), { label: 'Входит в пакет', itemLabel: (p) => p.value ?? '' }),

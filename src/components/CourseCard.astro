@@ -31,6 +31,7 @@ const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().t
     <div class="course-art-top">
       {level && <span class="art-label">{level}</span>}
       {c.isNew && <span class="art-label art-new">Новый курс</span>}
+      {c.badges.map((b) => <span class:list={['art-label', 'art-badge', `art-badge--${b.tone}`]}>{b.text}</span>)}
     </div>
     {software.length > 0 && <div class="course-art-bottom" aria-label="Программы">
       {software.slice(0, 2).map((name) => <span class="art-software">{name}</span>)}
@@ -75,6 +76,11 @@ const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().t
   .art-label, .art-software { padding: 6px 9px; border-radius: var(--radius-chip); font-size: var(--type-meta); line-height: 1.25; font-weight: 600; color: var(--color-ink); background: rgb(17 19 19 / .9); }
   .art-label { background: var(--color-ink); color: var(--color-bg); }
   .art-new { margin-left: auto; background: var(--color-lime); }
+  /* Плашки из админки: «Рекомендуем», «Высокий рейтинг»; лаймовая по умолчанию */
+  .art-badge--lime { background: var(--color-lime); color: var(--color-bg); }
+  .art-badge--light { background: var(--color-ink); color: var(--color-bg); }
+  .art-badge--dark { background: rgb(17 19 19 / .86); color: var(--color-ink); }
+  .course-art-top > .art-badge:first-child, .art-label:not(.art-badge):not(.art-new) + .art-badge { margin-left: auto; }
   .art-software { box-shadow: inset 0 0 0 1px var(--color-line-strong); }
   .course-body { display: flex; flex: 1; flex-direction: column; padding: 20px 0 22px; gap: 10px; }
   .course-description { margin: 0; color: var(--color-ink-2); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
