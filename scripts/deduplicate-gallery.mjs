@@ -5,7 +5,8 @@ const dir='src/content/works';
 const records=fs.readdirSync(dir).filter(f=>f.endsWith('.json')).map(f=>({id:f.slice(0,-5),data:JSON.parse(fs.readFileSync(path.join(dir,f))),file:path.join(dir,f)}));
 const manifest=JSON.parse(fs.readFileSync('docs/content/student-import-manifest.json')).items;
 const sources=new Map(manifest.map(m=>['import-'+m.hash.slice(0,16),m]));
-const selected=new Set(fs.readFileSync('src/lib/hero-covers.ts', 'utf8').match(/import-[a-f0-9]{16}/g));
+// Слайды первого экрана теперь в src/content/hero-slides
+const selected=new Set(fs.readdirSync('src/content/hero-slides').map(f=>JSON.parse(fs.readFileSync('src/content/hero-slides/'+f,'utf8')).work));
 const excluded=new Map();
 const beforePaths=new Set(records.flatMap(r=>[r.data.beforeImage,...(r.data.processImages??[])].filter(Boolean)));
 for(const r of records){const source=sources.get(r.id);if(beforePaths.has(r.data.image)|| /сермат|sermat|grey|gray|clay|wireframe/i.test(source?.path.split('/').at(-1)??''))excluded.set(r.id,{reason:'process-image'});}

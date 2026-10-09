@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import HeroWork from '../../components/HeroWork.astro';
+import { heroSlides } from '../../lib/hero';
 import HeroActions from '../../components/HeroActions.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import CourseCard from '../../components/CourseCard.astro';
@@ -10,7 +11,6 @@ import VizReviews from '../../components/viz/VizReviews.astro';
 import { courseHref } from '../../lib/categories';
 import { rub } from '../../lib/format';
 import PrototypeCartHint from '../../islands/PrototypeCartHint';
-import { workViews } from '../../lib/works';
 import { getCatalog } from '../../lib/catalog';
 import { faqLd } from '../../lib/views';
 
@@ -24,8 +24,8 @@ const panels = await Promise.all(professions.map(async p => ({ ...p,
 })));
 const base = (await getEntry('courses','baza'))!;
 const freeCourses = await Promise.all(['vizualization3_mini', 'interiorpro_mini'].map(id => getEntry('courses', id)));
-const wv = await workViews();
-const slides = wv.pick(['filatov-interer','zaytseva-dom-v-lesu','merkulova-kuhnya','gushchina-house','bugaeva-interior','budnik-osenniy-dom-1']);
+// Слайды первого экрана редактируются в админке: «Слайды первого экрана»
+const slides = await heroSlides('viz');
 ---
 <Base title="Курсы 3D-визуализации: профессии и обучение | GRIPINSKY" description="Выберите профессию 3D-визуализатора: интерьеры, экстерьеры или модели для стоков. Основные и дополнительные курсы, работы учеников и бесплатные уроки." breadcrumbs={crumbs} jsonLd={[faqSchema]} consultContext="Направление 3D-визуализация">
   {slides[0] && <HeroWork work={slides[0]} slides={slides} kicker="Направление" id="prototype-title">

@@ -261,6 +261,9 @@ const blog = defineCollection({
     /** Адрес статьи на Tilda (/tpost/…): перенесённая статья собирается по нему */
     legacyPath: z.string().nullish(),
     draft: z.boolean().default(false),
+    /** Тип записи: статья, новость академии или анонс (лента /news показывает новости и анонсы) */
+    kind: z.enum(['article', 'news', 'announcement']).default('article'),
+    tags: z.array(z.string().trim().min(1)).default([]),
   }),
 });
 
@@ -299,4 +302,136 @@ const gameProfessions = defineCollection({
   }),
 });
 
-export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, gameProfessions, blog, legal, pageSeo };
+
+// ================= Динамический контент из админки =================
+
+/** Адрес страницы сайта: «/» в начале, без слэша на конце */
+const sitePathSchema = z.string().trim().regex(/^\/(?!\/)[^?#\s]*$/).refine((p) => p === '/' || !p.endsWith('/'), 'Адрес без «/» на конце');
+/** Ссылка: адрес страницы, якорь или внешний https */
+const hrefSchema = z.union([sitePathSchema, z.string().regex(/^#[\w-]+$/), z.string().regex(/^\/[^\s]*#[\w-]+$/), z.url()]);
+/** Даты показа: с начала дня start до конца дня end (по Москве), пусто = без ограничения */
+const windowSchema = { start: z.coerce.date().nullish(), end: z.coerce.date().nullish(), active: z.boolean().default(true) };
+
+/** Баннеры и полоса объявлений */
+const banners = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/banners' }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    text: z.string().trim().min(1).max(160),
+    linkLabel: z.string().trim().max(40).nullish(),
+    href: hrefSchema.nullish(),
+    placement: z.enum(['announcement-bar', 'home-below-hero', 'catalog-top', 'course-aside']),
+    /** Пусто: все страницы. Иначе адреса, можно с * на конце (/courses-page/*) */
+    pages: z.array(z.string().trim().regex(/^\/[^\s?#]*\*?$/)).default([]),
+    tone: z.enum(['neutral', 'signal']).default('neutral'),
+    dismissible: z.boolean().default(true),
+    priority: z.number().int().default(0),
+    ...windowSchema,
+  }),
+});
+
+/** Акции: реальная цена курса из каталога зачёркивается, действует акционная. Без таймеров обратного отсчёта. */
+const promotions = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/promotions' }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    label: z.string().trim().max(24).default('Акция'),
+    description: z.string().trim().max(400).nullish(),
+    terms: z.string().trim().max(600).nullish(),
+    items: z.array(z.object({ course: reference('courses'), price: z.number().int().positive() })).min(1),
+    start: z.coerce.date(),
+    end: z.coerce.date(),
+    active: z.boolean().default(true),
+  }).refine((p) => p.end >= p.start, 'Дата окончания раньше начала'),
+});
+
+/** Слайды первого экрана (работы учеников) */
+const heroSlides = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/hero-slides' }),
+  schema: z.object({
+    title: z.string().trim().min(1),
+    work: reference('works'),
+    pages: z.array(z.enum(['home', 'viz', 'games'])).min(1),
+    label: z.string().trim().max(40).default('Работа ученика'),
+    caption: z.string().trim().max(160).nullish(),
+    mobileFocus: z.string().trim().regex(/^\d{1,3}% \d{1,3}%$/).nullish(),
+    order: z.number().default(0),
+    ...windowSchema,
+  }),
+});
+
+const link = z.object({ label: z.string().trim().min(1).max(60), href: hrefSchema });
+
+/** Меню в шапке и колонки подвала */
+const navigation = defineCollection({
+  loader: file('src/content/navigation.json', { parser: (text) => ({ main: JSON.parse(text) }) }),
+  schema: z.object({
+    header: z.array(link).min(1).max(8),
+    consultLabel: z.string().trim().min(1).max(40),
+    consultShort: z.string().trim().min(1).max(20),
+    footerTagline: z.string().trim().max(200),
+    footerColumns: z.array(z.object({ title: z.string().trim().min(1), links: z.array(link).min(1) })).max(5),
+  }),
+});
+
+/** Тексты главной страницы */
+const home = defineCollection({
+  loader: file('src/content/home.json', { parser: (text) => ({ main: JSON.parse(text) }) }),
+  schema: z.object({
+    hero: z.object({
+      kicker: z.string().trim().min(1).max(60),
+      title: z.string().trim().min(1).max(60),
+      accent: z.string().trim().max(60),
+      lead: z.string().trim().min(1).max(260),
+      primary: link,
+      secondary: link,
+    }),
+    statLabels: z.object({ graduates: z.string(), years: z.string(), videos: z.string(), rating: z.string(), subscribers: z.string() }),
+    directions: z.array(z.object({
+      title: z.string().trim().min(1),
+      text: z.string().trim().min(1).max(200),
+      meta: z.string().trim().max(40),
+      cta: z.string().trim().min(1).max(40),
+      href: sitePathSchema,
+      work: reference('works').nullish(),
+    })).min(1).max(4),
+    faq: z.array(reference('faq')).max(8).default([]),
+    trustReviews: z.array(reference('reviews')).max(6).default([]),
+    ai: z.object({ eyebrow: z.string(), title: z.string(), accent: z.string(), quote: z.string(), body: z.string(), cta: z.string() }),
+    community: z.object({
+      eyebrow: z.string(), title: z.string(), accent: z.string(), lead: z.string(), cta: z.string(),
+      topics: z.array(z.object({ title: z.string(), text: z.string() })).min(1).max(4),
+    }),
+  }),
+});
+
+/** Несекретные настройки интеграций (ключи и пароли только в переменных окружения сервера) */
+const integrations = defineCollection({
+  loader: file('src/content/integrations.json', { parser: (text) => ({ main: JSON.parse(text) }) }),
+  schema: z.object({
+    getcourse: z.object({ account: z.string().trim().regex(/^[a-z0-9-]*$/i).default(''), group: z.string().trim().default('') }),
+    bitrix24: z.object({
+      entity: z.enum(['lead', 'deal']).default('lead'),
+      categoryId: z.number().int().nonnegative().nullish(),
+      stageId: z.string().trim().default(''),
+      assignedById: z.number().int().positive().nullish(),
+      sourceId: z.string().trim().default('WEB'),
+      titleTemplate: z.string().trim().default('Заявка с сайта: {context}'),
+    }),
+    robokassa: z.object({
+      sno: z.enum(['usn_income', 'usn_income_outcome', 'osn', 'patent', 'esn']).default('usn_income'),
+      tax: z.enum(['none', 'vat0', 'vat10', 'vat20']).default('none'),
+      paymentMethod: z.enum(['full_payment', 'full_prepayment']).default('full_payment'),
+      paymentObject: z.enum(['service', 'intellectual_activity']).default('service'),
+    }),
+    checkout: z.object({ successPath: z.string().default('/oplata/uspeh'), failPath: z.string().default('/oplata/oshibka') }),
+  }),
+});
+
+/** Баннер cookie */
+const cookie = defineCollection({
+  loader: file('src/content/cookie.json', { parser: (text) => ({ main: JSON.parse(text) }) }),
+  schema: z.object({ text: z.string().trim().min(1).max(400), accept: z.string().trim().min(1).max(24), necessary: z.string().trim().min(1).max(24) }),
+});
+
+export const collections = { settings, people, works, stories, awards, reviews, faq, courses, tariffs, professions, gameProfessions, blog, legal, pageSeo, banners, promotions, heroSlides, navigation, home, cookie, integrations };

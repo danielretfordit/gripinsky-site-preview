@@ -2,11 +2,11 @@
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import HeroWork from '../../components/HeroWork.astro';
+import { heroSlides } from '../../lib/hero';
 import HeroActions from '../../components/HeroActions.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import CourseCard from '../../components/CourseCard.astro';
 import DirectionSupport from '../../components/games/DirectionSupport.astro';
-import { workViews } from '../../lib/works';
 import { courseHref } from '../../lib/categories';
 import { rub } from '../../lib/format';
 import { getCatalog } from '../../lib/catalog';
@@ -25,8 +25,8 @@ const panels = await Promise.all(professions.map(async p => ({
     alternative: a.alternative ? await getEntry('courses', a.alternative.id) : null,
   }))),
 })));
-const wv = await workViews();
-const slides = wv.pick(['bagirov-korabl', 'gitsuk-korabl']);
+// Слайды первого экрана редактируются в админке: «Слайды первого экрана»
+const slides = await heroSlides('games');
 const hero = slides[0];
 const shortLabels: Record<string, string> = { props: 'Предметы', environment: 'Окружение', character: 'Персонажи', foliage: 'Растительность', 'hard-surface': 'Hard Surface', unreal: 'Unreal' };
 ---

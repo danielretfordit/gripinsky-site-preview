@@ -1,5 +1,6 @@
 import { GETCOURSE_ACCOUNT, GETCOURSE_API_KEY } from 'astro:env/server';
 import { fetchJson } from './http';
+import { getEntry } from 'astro:content';
 
 export interface GcCustomer { name: string; email: string; phone: string }
 export interface GcOffer { code: string; cost: number; title: string }
@@ -13,15 +14,18 @@ export interface GcOffer { code: string; cost: number; title: string }
  * Проверить на тестовом предложении до запуска: формат ответа зависит от настроек аккаунта.
  */
 export async function createGcOrder(customer: GcCustomer, offers: GcOffer[], comment: string, utm: Record<string, string> = {}): Promise<{ ok: boolean; link?: string; dealNumber?: string; error?: string }> {
-  if (!GETCOURSE_ACCOUNT || !GETCOURSE_API_KEY) return { ok: false, error: 'getcourse_not_configured' };
+  // Аккаунт: переменная окружения или «Интеграции» в админке; ключ API только в окружении сервера
+  const settings = (await getEntry('integrations', 'main'))!.data.getcourse;
+  const account = GETCOURSE_ACCOUNT || settings.account;
+  if (!account || !GETCOURSE_API_KEY) return { ok: false, error: 'getcourse_not_configured' };
   if (!offers.length || offers.some((o) => !o.code)) return { ok: false, error: 'offer_code_missing' };
-  const url = `https://${GETCOURSE_ACCOUNT}.getcourse.ru/pl/api/deals`;
+  const url = `https://${account}.getcourse.ru/pl/api/deals`;
   let dealNumber: string | undefined;
   let link: string | undefined;
   for (let i = 0; i < offers.length; i++) {
     const last = i === offers.length - 1;
     const params = {
-      user: { email: customer.email, phone: customer.phone, first_name: customer.name },
+      user: { email: customer.email, phone: customer.phone, first_name: customer.name, ...(settings.group ? { group_name: [settings.group] } : {}) },
       system: { refresh_if_exists: 1, return_deal_number: 1, ...(last ? { return_payment_link: 1 } : {}), ...(dealNumber ? { multiple_offers: 1 } : {}) },
       session: { utm_source: utm.utm_source, utm_medium: utm.utm_medium, utm_campaign: utm.utm_campaign, utm_content: utm.utm_content, utm_term: utm.utm_term },
       deal: {

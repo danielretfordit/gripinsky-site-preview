@@ -1,4 +1,5 @@
 ---
+import PromoBanner from '../components/PromoBanner.astro';
 import { Image } from 'astro:assets';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -41,6 +42,7 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы' }];
       <p class="t-lead">Выберите курсы и соберите свой пакет. Корзина сохранит выбор и автоматически рассчитает скидку.</p>
     </div>
 
+    <PromoBanner placement="catalog-top" class="mb-8" />
     <a href="/courses-page/visualization" class="lift media-frame mb-10 grid bg-surface-2 text-ink hover:text-ink md:grid-cols-[5fr_7fr]">
       <Image src={vizImg} alt="«Остров», работа ученицы Юлии Большуновой" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 42vw, 100vw" class="h-[clamp(220px,40vw,320px)] w-full object-cover md:h-full" />
       <span class="flex flex-col gap-3 p-6 md:p-10">

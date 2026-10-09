@@ -1,31 +1,160 @@
 import { config, collection, singleton, fields } from '@keystatic/core';
 
-// Админка контента: http://localhost:4321/keystatic (только при локальной работе).
+// Админка контента: /keystatic. Локально правки пишутся в файлы проекта; на боевом сервере (KEYSTATIC_STORAGE=github)
+// каждое сохранение становится коммитом в репозиторий, после чего сайт собирается и выкладывается (docs/admin-guide.md).
 // Поля повторяют схемы из src/content.config.ts: если поменять одно, поменяйте и другое,
 // иначе `npm run build` остановится с понятной ошибкой.
 
 const workImage = (label: string) => fields.image({ label, directory: 'src/assets/works', publicPath: '../../assets/works/' });
+const workImageRequired = (label: string) => fields.image({ label, directory: 'src/assets/works', publicPath: '../../assets/works/', description: 'JPG или WebP до 3 МБ, длинная сторона 1600–2400 px.', validation: { isRequired: true } });
+/** Адрес страницы сайта: с «/» в начале, без слэша на конце и без домена */
+const pagePath = (label: string, isRequired = false) => fields.text({ label, description: 'Например /interiorpro. Без домена и без «/» на конце.', validation: { isRequired, pattern: { regex: /^\/[\w\-/]*[\w-]$|^\/$/, message: 'Адрес начинается с «/» и не заканчивается «/»' } } });
+
+
+/** Ссылка: адрес страницы сайта, якорь (#quiz) или внешний адрес https */
+const linkFields = (label: string) => fields.object({
+  label: fields.text({ label: 'Текст ссылки', validation: { isRequired: true, length: { max: 60 } } }),
+  href: fields.text({ label: 'Куда ведёт', description: 'Адрес страницы (/courses), якорь (#quiz) или полный адрес https://…', validation: { isRequired: true } }),
+}, { label });
+/** Даты показа: пусто = без ограничения; границы по Москве (с начала первого дня до конца последнего) */
+const windowFields = {
+  start: fields.date({ label: 'Показывать с', description: 'Пусто: сразу после публикации.' }),
+  end: fields.date({ label: 'Показывать до (включительно)', description: 'Пусто: без срока. После этой даты исчезает сам.' }),
+  active: fields.checkbox({ label: 'Включено', defaultValue: true }),
+};
 
 export default config({
-  storage: { kind: 'local' },
+  storage: process.env.KEYSTATIC_STORAGE === 'github'
+    ? { kind: 'github', repo: { owner: 'gripinskya-bit', name: 'gripinsky-site' }, branchPrefix: 'admin/' }
+    : { kind: 'local' },
   ui: {
     brand: { name: 'GRIPINSKY' },
     navigation: {
-      'Продажи': ['courses', 'tariffs', 'professions'],
+      'Витрина': ['home', 'heroSlides', 'banners', 'promotions'],
+      'Продажи': ['courses', 'tariffs', 'professions', 'gameProfessions'],
       'Доказательства': ['works', 'awards', 'stories', 'reviews', 'people'],
-      'Тексты': ['faq', 'blog', 'legal'],
-      'Настройки': ['settings'],
+      'Тексты': ['faq', 'blog', 'legal', 'cookie'],
+      'Сайт': ['navigation', 'settings', 'integrations', 'styleGuide'],
       'SEO страниц': ['pageSeo'],
     },
   },
   singletons: {
+    home: singleton({
+      label: 'Главная страница',
+      path: 'src/content/home',
+      format: { data: 'json' },
+      schema: {
+        hero: fields.object({
+          kicker: fields.text({ label: 'Надзаголовок', validation: { isRequired: true, length: { max: 60 } } }),
+          title: fields.text({ label: 'Заголовок, первая строка', validation: { isRequired: true, length: { max: 60 } } }),
+          accent: fields.text({ label: 'Заголовок, вторая строка (серая)', validation: { length: { max: 60 } } }),
+          lead: fields.text({ label: 'Подзаголовок', multiline: true, validation: { isRequired: true, length: { max: 260 } } }),
+          primary: linkFields('Главная кнопка (лаймовая)'),
+          secondary: linkFields('Вторая кнопка'),
+        }, { label: 'Первый экран' }),
+        statLabels: fields.object({
+          graduates: fields.text({ label: 'Подпись к числу выпускников' }),
+          years: fields.text({ label: 'Подпись к годам' }),
+          videos: fields.text({ label: 'Подпись к видеоурокам' }),
+          rating: fields.text({ label: 'Подпись к оценке' }),
+          subscribers: fields.text({ label: 'Подпись к подписчикам' }),
+        }, { label: 'Подписи к цифрам (сами цифры в «Настройках сайта»)' }),
+        directions: fields.array(fields.object({
+          title: fields.text({ label: 'Название', validation: { isRequired: true } }),
+          text: fields.text({ label: 'Описание', multiline: true, validation: { isRequired: true, length: { max: 200 } } }),
+          meta: fields.text({ label: 'Метка (например «3 профессии»)' }),
+          cta: fields.text({ label: 'Текст действия', validation: { isRequired: true } }),
+          href: fields.text({ label: 'Адрес страницы', validation: { isRequired: true } }),
+          work: fields.relationship({ label: 'Картинка: работа ученика', collection: 'works' }),
+        }), { label: 'Карточки направлений', itemLabel: (p) => p.fields.title.value, validation: { length: { min: 1, max: 4 } } }),
+        faq: fields.array(fields.relationship({ label: 'Вопрос', collection: 'faq' }), { label: 'Вопросы на главной', itemLabel: (p) => p.value ?? '', validation: { length: { max: 8 } } }),
+        trustReviews: fields.array(fields.relationship({ label: 'Отзыв', collection: 'reviews' }), { label: 'Отзывы в блоке доверия', itemLabel: (p) => p.value ?? '', validation: { length: { max: 6 } } }),
+        ai: fields.object({
+          eyebrow: fields.text({ label: 'Надзаголовок' }), title: fields.text({ label: 'Заголовок' }), accent: fields.text({ label: 'Вторая строка' }),
+          quote: fields.text({ label: 'Цитата', multiline: true }), body: fields.text({ label: 'Текст', multiline: true }), cta: fields.text({ label: 'Кнопка' }),
+        }, { label: 'Блок «ИИ в 3D»' }),
+        community: fields.object({
+          eyebrow: fields.text({ label: 'Надзаголовок' }), title: fields.text({ label: 'Заголовок' }), accent: fields.text({ label: 'Вторая строка' }),
+          lead: fields.text({ label: 'Текст', multiline: true }), cta: fields.text({ label: 'Кнопка' }),
+          topics: fields.array(fields.object({ title: fields.text({ label: 'Заголовок' }), text: fields.text({ label: 'Текст', multiline: true }) }), { label: 'Темы', itemLabel: (p) => p.fields.title.value, validation: { length: { min: 1, max: 4 } } }),
+        }, { label: 'Блок «Сообщество»' }),
+      },
+    }),
+    navigation: singleton({
+      label: 'Меню и подвал',
+      path: 'src/content/navigation',
+      format: { data: 'json' },
+      schema: {
+        header: fields.array(linkFields('Пункт меню'), { label: 'Меню в шапке', description: 'До 6 пунктов помещаются в строку на компьютере; на телефоне меню раскрывается.', itemLabel: (p) => p.fields.label.value, validation: { length: { min: 1, max: 8 } } }),
+        consultLabel: fields.text({ label: 'Кнопка консультации', validation: { isRequired: true, length: { max: 40 } } }),
+        consultShort: fields.text({ label: 'Кнопка консультации на телефоне', validation: { isRequired: true, length: { max: 20 } } }),
+        footerTagline: fields.text({ label: 'Подпись под логотипом в подвале', multiline: true }),
+        footerColumns: fields.array(fields.object({
+          title: fields.text({ label: 'Заголовок колонки', validation: { isRequired: true } }),
+          links: fields.array(linkFields('Ссылка'), { label: 'Ссылки', itemLabel: (p) => p.fields.label.value }),
+        }), { label: 'Колонки подвала', description: 'Колонка «Связь» собирается из «Настроек сайта».', itemLabel: (p) => p.fields.title.value, validation: { length: { max: 5 } } }),
+      },
+    }),
+    integrations: singleton({
+      label: 'Интеграции',
+      path: 'src/content/integrations',
+      format: { data: 'json' },
+      schema: {
+        getcourse: fields.object({
+          account: fields.text({ label: 'Аккаунт GetCourse', description: 'Имя аккаунта из адреса ИМЯ.getcourse.ru. Ключ API хранится только на сервере (GETCOURSE_API_KEY), сюда его не писать.' }),
+          group: fields.text({ label: 'Группа для покупателей с сайта', description: 'Необязательно: название группы в GetCourse.' }),
+        }, { label: 'GetCourse', description: 'Коды предложений задаются в карточках курсов и форматов обучения.' }),
+        bitrix24: fields.object({
+          entity: fields.select({ label: 'Куда создавать заявки', options: [{ label: 'Лид', value: 'lead' }, { label: 'Сделка (CRM без лидов)', value: 'deal' }], defaultValue: 'lead' }),
+          categoryId: fields.integer({ label: 'Воронка сделок (CATEGORY_ID)', description: 'Только для сделок. Пусто: общая воронка.' }),
+          stageId: fields.text({ label: 'Стадия (STAGE_ID / STATUS_ID)', description: 'Пусто: первая стадия.' }),
+          assignedById: fields.integer({ label: 'Ответственный (ID пользователя)' }),
+          sourceId: fields.text({ label: 'Источник (SOURCE_ID)', defaultValue: 'WEB' }),
+          titleTemplate: fields.text({ label: 'Название заявки', description: '{context} заменится на место заявки, например «Главная».', defaultValue: 'Заявка с сайта: {context}' }),
+        }, { label: 'Bitrix24', description: 'Адрес входящего вебхука с ключом хранится только на сервере (B24_WEBHOOK_URL).' }),
+        robokassa: fields.object({
+          sno: fields.select({ label: 'Система налогообложения (чек 54-ФЗ)', options: [
+            { label: 'УСН доходы', value: 'usn_income' }, { label: 'УСН доходы минус расходы', value: 'usn_income_outcome' }, { label: 'ОСН', value: 'osn' }, { label: 'Патент', value: 'patent' }, { label: 'ЕСХН', value: 'esn' },
+          ], defaultValue: 'usn_income' }),
+          tax: fields.select({ label: 'НДС', options: [{ label: 'Без НДС', value: 'none' }, { label: '0%', value: 'vat0' }, { label: '10%', value: 'vat10' }, { label: '20%', value: 'vat20' }], defaultValue: 'none' }),
+          paymentMethod: fields.select({ label: 'Признак способа расчёта', options: [{ label: 'Полный расчёт', value: 'full_payment' }, { label: 'Предоплата 100%', value: 'full_prepayment' }], defaultValue: 'full_payment' }),
+          paymentObject: fields.select({ label: 'Предмет расчёта', options: [{ label: 'Услуга', value: 'service' }, { label: 'Результат интеллектуальной деятельности', value: 'intellectual_activity' }], defaultValue: 'service' }),
+        }, { label: 'Robokassa', description: 'Логин и пароли магазина хранятся только на сервере (ROBOKASSA_*).' }),
+        checkout: fields.object({
+          successPath: fields.text({ label: 'Страница после оплаты', defaultValue: '/oplata/uspeh' }),
+          failPath: fields.text({ label: 'Страница при ошибке оплаты', defaultValue: '/oplata/oshibka' }),
+        }, { label: 'Оформление' }),
+      },
+    }),
+    styleGuide: singleton({
+      label: 'Стиль сайта',
+      path: 'src/content/style-guide',
+      format: { data: 'json' },
+      schema: {
+        notes: fields.text({
+          label: 'Заметки для дизайнера',
+          multiline: true,
+          description: 'Правила оформления: docs/design/guidelines.md, живая витрина компонентов: /styleguide. Цвета, шрифты и размеры здесь не меняются: так дизайн остаётся цельным. Для баннеров выбирается тон «Спокойный» или «Сигнал».',
+        }),
+      },
+    }),
+    cookie: singleton({
+      label: 'Баннер cookie',
+      path: 'src/content/cookie',
+      format: { data: 'json' },
+      schema: {
+        text: fields.text({ label: 'Текст', multiline: true, validation: { isRequired: true, length: { max: 400 } } }),
+        accept: fields.text({ label: 'Кнопка согласия', validation: { isRequired: true, length: { max: 24 } } }),
+        necessary: fields.text({ label: 'Кнопка «только необходимые»', validation: { isRequired: true, length: { max: 24 } } }),
+      },
+    }),
     settings: singleton({
       label: 'Настройки сайта',
       path: 'src/content/settings',
       format: { data: 'json' },
       schema: {
         brand: fields.text({ label: 'Название' }),
-        telegramBot: fields.url({ label: 'Telegram-бот для вопросов' }),
+        telegramBot: fields.url({ label: 'Telegram-бот для вопросов', validation: { isRequired: true } }),
         telegramChannel: fields.url({ label: 'Telegram-канал' }),
         youtube: fields.url({ label: 'YouTube' }),
         vk: fields.url({ label: 'ВКонтакте' }),
@@ -50,7 +179,7 @@ export default config({
           tiers: fields.array(fields.object({
             min: fields.integer({ label: 'От курсов в наборе', validation: { isRequired: true, min: 2 } }),
             pct: fields.integer({ label: 'Скидка, %', validation: { isRequired: true, min: 0, max: 50 } }),
-          }), { label: 'Ступени скидки', itemLabel: (p) => `${p.fields.min.value} курса: ${p.fields.pct.value}%` }),
+          }), { label: 'Ступени скидки', itemLabel: (p) => `${p.fields.min.value} курса: ${p.fields.pct.value}%`, validation: { length: { min: 1 } } }),
         }, { label: 'Скидка за набор курсов' }),
         requisites: fields.text({ label: 'Реквизиты в подвале' }),
         certificateNote: fields.text({ label: 'Примечание о сертификате' }),
@@ -61,6 +190,67 @@ export default config({
     }),
   },
   collections: {
+    banners: collection({
+      label: 'Баннеры и объявления',
+      path: 'src/content/banners/*',
+      format: { data: 'json' },
+      slugField: 'title',
+      columns: ['placement', 'start', 'end'],
+      schema: {
+        title: fields.slug({ name: { label: 'Внутреннее название', description: 'Видно только в админке.' } }),
+        text: fields.text({ label: 'Текст', multiline: true, validation: { isRequired: true, length: { max: 160 } } }),
+        linkLabel: fields.text({ label: 'Текст ссылки', description: 'Пусто: «Подробнее».', validation: { length: { max: 40 } } }),
+        href: fields.text({ label: 'Куда ведёт', description: 'Адрес страницы (/ai), якорь или https://…' }),
+        placement: fields.select({ label: 'Где показывать', options: [
+          { label: 'Полоса над шапкой (все страницы)', value: 'announcement-bar' },
+          { label: 'Главная, под первым экраном', value: 'home-below-hero' },
+          { label: 'Каталог, сверху', value: 'catalog-top' },
+          { label: 'Страница курса, под первым экраном', value: 'course-aside' },
+        ], defaultValue: 'announcement-bar' }),
+        pages: fields.array(fields.text({ label: 'Адрес' }), { label: 'Только на страницах', description: 'Пусто: на всех страницах места. Раздел целиком: /courses-page/*', itemLabel: (p) => p.value }),
+        tone: fields.select({ label: 'Тон', description: '«Сигнал» добавляет лаймовую метку. Лаймовой заливки нет по правилам бренда.', options: [{ label: 'Спокойный', value: 'neutral' }, { label: 'Сигнал', value: 'signal' }], defaultValue: 'neutral' }),
+        dismissible: fields.checkbox({ label: 'Можно закрыть', defaultValue: true }),
+        priority: fields.integer({ label: 'Приоритет', description: 'Если на месте несколько баннеров, показывается с большим числом.', defaultValue: 0 }),
+        ...windowFields,
+      },
+    }),
+    promotions: collection({
+      label: 'Акции',
+      path: 'src/content/promotions/*',
+      format: { data: 'json' },
+      slugField: 'title',
+      columns: ['start', 'end', 'active'],
+      schema: {
+        title: fields.slug({ name: { label: 'Название акции' } }),
+        label: fields.text({ label: 'Метка на карточке', defaultValue: 'Акция', validation: { length: { max: 24 } } }),
+        description: fields.text({ label: 'Описание', multiline: true }),
+        terms: fields.text({ label: 'Условия', multiline: true }),
+        items: fields.array(fields.object({
+          course: fields.relationship({ label: 'Курс', collection: 'courses', validation: { isRequired: true } }),
+          price: fields.integer({ label: 'Цена по акции, ₽', description: 'Должна быть ниже цены в каталоге. Зачёркивается настоящая цена курса.', validation: { isRequired: true, min: 1 } }),
+        }), { label: 'Курсы и цены', itemLabel: (p) => `${p.fields.course.value ?? ''}: ${p.fields.price.value ?? ''} ₽`, validation: { length: { min: 1 } } }),
+        start: fields.date({ label: 'Начало', validation: { isRequired: true } }),
+        end: fields.date({ label: 'Окончание (включительно)', description: 'На сайте пишется «до …». Таймеры обратного отсчёта не используем.', validation: { isRequired: true } }),
+        active: fields.checkbox({ label: 'Включено', defaultValue: true }),
+      },
+    }),
+    heroSlides: collection({
+      label: 'Слайды первого экрана',
+      path: 'src/content/hero-slides/*',
+      format: { data: 'json' },
+      slugField: 'title',
+      columns: ['work', 'order'],
+      schema: {
+        title: fields.slug({ name: { label: 'Название слайда', description: 'Для списка в админке, например «Главная 05».' } }),
+        work: fields.relationship({ label: 'Работа ученика', collection: 'works', validation: { isRequired: true } }),
+        pages: fields.multiselect({ label: 'На каких страницах', options: [{ label: 'Главная', value: 'home' }, { label: '3D-визуализация', value: 'viz' }, { label: '3D для игр', value: 'games' }], defaultValue: ['home'] }),
+        label: fields.text({ label: 'Метка над подписью', defaultValue: 'Работа ученика', validation: { length: { max: 40 } } }),
+        caption: fields.text({ label: 'Своя подпись', description: 'Пусто: «Автор, название. Награда» из карточки работы.', validation: { length: { max: 160 } } }),
+        mobileFocus: fields.text({ label: 'Кадр на телефоне', description: 'Точка, которая остаётся в кадре на узком экране: «50% 60%» (по горизонтали и вертикали).' }),
+        order: fields.integer({ label: 'Порядок', description: 'Меньше: раньше. Первый слайд виден при загрузке.', defaultValue: 100 }),
+        ...windowFields,
+      },
+    }),
     pageSeo: collection({
       label: 'SEO страниц',
       path: 'src/content/page-seo/*',
@@ -170,7 +360,7 @@ export default config({
         short: fields.text({ label: 'Коротко' }),
         lead: fields.text({ label: 'Описание', multiline: true }),
         income: fields.text({ label: 'Доход (только подтверждённые данные)' }),
-        image: workImage('Картинка'),
+        image: workImageRequired('Картинка'),
         imageAlt: fields.text({ label: 'Описание картинки' }),
         imageFit: fields.select({ label: 'Картинка', options: [{ label: 'Заполнить', value: 'cover' }, { label: 'Вписать', value: 'contain' }], defaultValue: 'cover' }),
         imagePos: fields.text({ label: 'Фокус картинки', defaultValue: '50% 50%' }),
@@ -218,7 +408,7 @@ export default config({
       schema: {
         title: fields.slug({ name: { label: 'Название работы' } }),
         author: fields.relationship({ label: 'Автор', collection: 'people', validation: { isRequired: true } }),
-        image: workImage('Рендер'),
+        image: workImageRequired('Рендер'),
         beforeImage: workImage('Та же сцена в сером материале (для слайдера до/после)'),
         reviewText: fields.text({ label: 'Отзыв об этой работе', multiline: true }),
         reviewQuote: fields.text({ label: 'Точная цитата об академии из отзыва', multiline: true }),
@@ -234,6 +424,7 @@ export default config({
         ] }),
         sourceUrl: fields.url({ label: 'Ссылка на 3DDD' }),
         focus: fields.text({ label: 'Фокус картинки (например 50% 40%)' }),
+        isProcessImage: fields.checkbox({ label: 'Это промежуточный кадр процесса (сермат, этап)', description: 'Такие кадры не показываются как самостоятельные работы.', defaultValue: false }),
         inGallery: fields.checkbox({ label: 'Показывать в галерее', defaultValue: true }),
         order: fields.integer({ label: 'Порядок', defaultValue: 100 }),
       },
@@ -319,7 +510,7 @@ export default config({
       schema: {
         question: fields.slug({ name: { label: 'Вопрос' } }),
         group: fields.select({ label: 'Группа', options: [{ label: 'Деньги', value: 'money' }, { label: 'Перед стартом', value: 'start' }, { label: 'Учёба', value: 'study' }, { label: 'После курса', value: 'after' }], defaultValue: 'start' }),
-        pages: fields.multiselect({ label: 'Где показывать', options: [{ label: 'Направление «3D-визуализация»', value: 'viz' }, { label: 'Главная', value: 'home' }] }),
+        pages: fields.multiselect({ label: 'Где показывать', options: [{ label: 'Направление «3D-визуализация»', value: 'viz' }, { label: 'Главная', value: 'home' }], defaultValue: ['viz'] }),
         order: fields.integer({ label: 'Порядок', defaultValue: 100 }),
         answer: fields.markdoc({ label: 'Ответ' }),
       },
@@ -332,12 +523,14 @@ export default config({
       schema: {
         title: fields.slug({ name: { label: 'Заголовок' } }),
         description: fields.text({ label: 'Коротко (для поиска и соцсетей)', multiline: true }),
-        date: fields.date({ label: 'Дата' }),
+        date: fields.date({ label: 'Дата', defaultValue: { kind: 'today' }, validation: { isRequired: true } }),
         cover: fields.image({ label: 'Обложка', directory: 'src/assets/blog', publicPath: '../../assets/blog/' }),
         coverAlt: fields.text({ label: 'Описание обложки' }),
         related: fields.array(fields.relationship({ label: 'Курс', collection: 'courses' }), { label: 'Курсы по теме', itemLabel: (p) => p.value ?? '' }),
         legacyPath: fields.text({ label: 'Адрес на старом сайте', description: 'Только для статей, перенесённых с Tilda (/tpost/…). У новых статей пусто.' }),
         draft: fields.checkbox({ label: 'Черновик', defaultValue: false }),
+        kind: fields.select({ label: 'Тип записи', description: 'Новости и анонсы попадают ещё и в ленту /news.', options: [{ label: 'Статья', value: 'article' }, { label: 'Новость', value: 'news' }, { label: 'Анонс', value: 'announcement' }], defaultValue: 'article' }),
+        tags: fields.array(fields.text({ label: 'Тег' }), { label: 'Теги', itemLabel: (p) => p.value }),
         body: fields.markdoc({ label: 'Текст' }),
       },
     }),
@@ -348,7 +541,7 @@ export default config({
       slugField: 'title',
       schema: {
         title: fields.slug({ name: { label: 'Название' } }),
-        path: fields.text({ label: 'Адрес страницы' }),
+        path: pagePath('Адрес страницы', true),
         updated: fields.text({ label: 'Дата редакции' }),
         body: fields.markdoc({ label: 'Текст' }),
       },

@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { heroCoverIds } from '../../../lib/hero-covers';
+import { heroSlides as loadHeroSlides } from '../../../lib/hero';
 import HeroWork from '../../../components/HeroWork.astro';
 import HeroActions from '../../../components/HeroActions.astro';
 import StatsRibbon from '../../../components/StatsRibbon.astro';
@@ -30,7 +30,7 @@ const cat = await getCatalog();
 const [tariffs, faq] = await Promise.all([tariffViews(), faqLd('viz')]);
 const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Курсы', href: '/courses' }, { name: '3D-визуализация' }];
 const wv = await workViews();
-const heroSlides = wv.pick(heroCoverIds);
+const heroSlides = await loadHeroSlides('home');
 const hero = heroSlides[0] ?? wv.work('bolshunova-banya-1') ?? wv.work('bolshunova-ostrov-1')!;
 const st = site.stats;
 const stats = [

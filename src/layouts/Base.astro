@@ -9,6 +9,7 @@ import { PUBLIC_INDEXABLE } from 'astro:env/client';
 import { getEntry } from 'astro:content';
 import { getPageSeo } from '../lib/page-seo';
 import Header from '../components/Header.astro';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import Analytics from '../components/Analytics.astro';
@@ -78,6 +79,7 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
   <body class:list={{ 'site-home': Astro.url.pathname === '/' }}>
     <a class="skip-link" href="#main">К содержанию</a>
     {STATIC_PREVIEW && <div class="border-b border-line bg-surface px-5 py-2 text-center t-small text-ink-2" role="note">Промежуточная версия сайта. Заявки и оплата пока не подключены.</div>}
+    <AnnouncementBar />
     <Header consult={consult} />
     <main id="main" tabindex="-1" class="flex-1">
       <slot />
@@ -90,6 +92,19 @@ const ld = [organizationLd(site), ...(breadcrumbs?.length ? [breadcrumbLd(breadc
     <CookieBanner />
     <Analytics />
     <script>
+      // Баннеры из админки: скрыть истёкшие или ещё не начавшиеся (сайт пересобирается ночью, а это срабатывает сразу)
+      // и закрытые посетителем (ключ меняется вместе с текстом баннера)
+      const now = Date.now();
+      document.querySelectorAll<HTMLElement>('[data-start], [data-end], [data-dismiss-key]').forEach((el) => {
+        const start = Number(el.dataset.start ?? 0), end = Number(el.dataset.end ?? Infinity);
+        let dismissed = false;
+        try { dismissed = !!el.dataset.dismissKey && localStorage.getItem(el.dataset.dismissKey) === '1'; } catch {}
+        if (now < start || now > end || dismissed) el.hidden = true;
+        el.querySelector('[data-banner-close]')?.addEventListener('click', () => {
+          el.hidden = true;
+          try { if (el.dataset.dismissKey) localStorage.setItem(el.dataset.dismissKey, '1'); } catch {}
+        });
+      });
       // Телефон: пока открыта клавиатура (фокус в поле), нижние панели прячутся и не закрывают поле и кнопку
       const fields = 'input:not([type=checkbox]):not([type=radio]):not([type=hidden]), textarea, select';
       if (matchMedia('(pointer: coarse)').matches) {

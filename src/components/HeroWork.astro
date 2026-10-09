@@ -1,11 +1,10 @@
 ---
 // Первый экран: работа ученика на всю ширину, заголовок поверх неё, сверху «метаданные рендера»
-import { heroMobileFocus } from '../lib/hero-covers';
 import { Image } from 'astro:assets';
 import { workCaption } from '../lib/works';
-import type { WorkView } from '../lib/works';
+import type { HeroSlide } from '../lib/hero';
 
-interface Props { work: WorkView; slides?: WorkView[]; kicker: string; id: string; class?: string }
+interface Props { work: HeroSlide; slides?: HeroSlide[]; kicker: string; id: string; class?: string }
 const { work, slides = [work], kicker, id, class: cls = '' } = Astro.props;
 const carousel = slides.length > 1;
 const count = String(slides.length).padStart(2, '0');
@@ -28,9 +27,9 @@ const count = String(slides.length).padStart(2, '0');
     <div class="hero__image" role={carousel ? 'group' : undefined} aria-roledescription={carousel ? 'карусель' : undefined} aria-label={carousel ? 'Работы учеников' : undefined}>
       {slides.map((slide, index) => (
         <figure class="hero__slide" data-hero-slide data-active={index === 0 ? 'true' : undefined} aria-hidden={index === 0 ? undefined : 'true'}>
-          <Image src={slide.image} alt={slide.alt} class="hero__img" style={`--hero-focus:${slide.focus};--hero-mobile-focus:${heroMobileFocus[slide.id] ?? slide.focus}`}
+          <Image src={slide.image} alt={slide.alt} class="hero__img" style={`--hero-focus:${slide.focus};--hero-mobile-focus:${slide.mobileFocus ?? slide.focus}`}
             widths={[640, 960, 1280, 1600]} sizes="(min-width: 1024px) 40vw, 100vw" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} />
-          <figcaption><span>РАБОТА УЧЕНИКА</span>{workCaption(slide)}</figcaption>
+          <figcaption><span>{slide.label ?? 'Работа ученика'}</span>{slide.captionOverride ?? workCaption(slide)}</figcaption>
         </figure>
       ))}
       {carousel && (
@@ -60,7 +59,7 @@ const count = String(slides.length).padStart(2, '0');
   .hero__slide[aria-hidden="true"] { pointer-events: none; }
   .hero__image::after { position: absolute; inset: 45% 0 0; background: linear-gradient(transparent, rgb(8 10 10 / .8)); content: ""; pointer-events: none; }
   .hero__image figcaption { position: absolute; z-index: 1; right: 116px; bottom: 16px; left: 16px; display: flex; flex-direction: column; gap: 4px; color: var(--color-ink); font-size: var(--type-small); line-height: 1.4; }
-  .hero__image figcaption span { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; }
+  .hero__image figcaption span { color: rgb(255 255 255 / .72); font: var(--type-meta) var(--font-mono), monospace; letter-spacing: .1em; text-transform: uppercase; }
   .hero__controls { position: absolute; z-index: 2; right: 14px; bottom: 14px; display: flex; gap: 6px; }
   .hero__controls button { display: grid; width: var(--tap); height: var(--tap); place-items: center; border: 1px solid rgb(241 241 235 / .64); border-radius: var(--radius-field); background: rgb(17 19 19 / .32); color: var(--color-ink); font-size: var(--type-icon); line-height: 1; transition: color var(--dur) ease, border-color var(--dur) ease, background var(--dur) ease; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
   .hero__controls button:focus-visible { border-color: var(--color-lime); background: rgb(17 19 19 / .78); color: var(--color-lime); }

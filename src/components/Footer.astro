@@ -1,44 +1,12 @@
 ---
-import { Image } from 'astro:assets';
 import { getEntry } from 'astro:content';
 import { assetPath } from '../lib/deployment';
 
 const site = (await getEntry('settings', 'site'))!.data;
-const OLD = 'https://gripinsky.ru';
-const cols = [
-  {
-    title: 'Обучение',
-    links: [
-      { href: '/courses-page/visualization', label: '3D-визуализация' },
-      { href: '/courses-page/interior', label: 'Визуализатор интерьеров' },
-      { href: '/courses-page/exterior', label: 'Экстерьеры и ЖК' },
-      { href: '/courses-page/stocks', label: 'Модели под стоки' },
-      { href: '/courses', label: 'Все курсы' },
-      { href: '/vizualization3_mini', label: 'Бесплатные уроки' },
-    ],
-  },
-  {
-    title: 'Академия',
-    links: [
-      { href: '/gallery', label: 'Работы учеников' },
-      { href: '/otzyvy', label: 'Отзывы и истории' },
-      { href: '/club', label: 'Сообщество' },
-      { href: '/blog', label: 'Блог' },
-      { href: `${OLD}/academy`, label: 'Об академии' },
-      { href: `${OLD}/teachers`, label: 'Педагоги' },
-      { href: `${OLD}/contacts`, label: 'Контакты' },
-    ],
-  },
-  {
-    title: 'Документы',
-    links: [
-      { href: '/oferta', label: 'Договор оферты' },
-      { href: '/politica', label: 'Политика обработки данных' },
-      { href: '/soglasie', label: 'Согласие на обработку данных' },
-      { href: '/yur', label: 'Юридическим лицам' },
-    ],
-  },
-];
+// Колонки и подпись редактируются в админке: «Меню и подвал»
+const navigation = (await getEntry('navigation', 'main'))!.data;
+const cols = navigation.footerColumns;
+const external = (href: string) => /^https?:/.test(href);
 const social = [
   { href: site.telegramBot, label: 'Telegram: задать вопрос' },
   site.telegramChannel && { href: site.telegramChannel, label: 'Telegram-канал' },
@@ -53,13 +21,13 @@ const { consult = true } = Astro.props as { consult?: boolean };
   <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
     <div class="flex flex-col gap-4">
       <a href="/" aria-label="На главную"><img src={assetPath('/brand/academy.svg')} alt="Академия трёхмерных искусств GRIPINSKY" width="228" height="37" loading="lazy" decoding="async" class="block h-auto w-[228px] max-w-full" /></a>
-      <p class="m-0 max-w-[280px] leading-relaxed">Онлайн-курсы 3D-визуализации и 3D-графики. Учим думать, а не повторять действия.</p>
+      <p class="m-0 max-w-[280px] leading-relaxed">{navigation.footerTagline}</p>
       <a href={consult ? '#consult' : '/#consult'} class="link-muted">Бесплатная консультация</a>
     </div>
     {cols.map((c) => (
       <nav aria-label={c.title} class="flex flex-col gap-3">
         <span class="t-overline">{c.title}</span>
-        {c.links.map((l) => <a href={l.href} class="text-muted hover:text-white">{l.label}</a>)}
+        {c.links.map((l) => <a href={l.href} class="text-muted hover:text-white" rel={external(l.href) ? 'noopener' : undefined}>{l.label}</a>)}
       </nav>
     ))}
     <nav aria-label="Связь" class="flex flex-col gap-3">

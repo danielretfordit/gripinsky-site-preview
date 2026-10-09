@@ -1,0 +1,116 @@
+{
+  "header": [
+    {
+      "label": "3D-визуализация",
+      "href": "/courses-page/visualization"
+    },
+    {
+      "label": "Все курсы",
+      "href": "/courses"
+    },
+    {
+      "label": "Работы учеников",
+      "href": "/gallery"
+    },
+    {
+      "label": "Сообщество",
+      "href": "/club"
+    },
+    {
+      "label": "Отзывы",
+      "href": "/otzyvy"
+    },
+    {
+      "label": "Блог",
+      "href": "/blog"
+    }
+  ],
+  "consultLabel": "Бесплатная консультация",
+  "consultShort": "Консультация",
+  "footerTagline": "Онлайн-курсы 3D-визуализации и 3D-графики. Учим думать, а не повторять действия.",
+  "footerColumns": [
+    {
+      "title": "Обучение",
+      "links": [
+        {
+          "label": "3D-визуализация",
+          "href": "/courses-page/visualization"
+        },
+        {
+          "label": "Визуализатор интерьеров",
+          "href": "/courses-page/interior"
+        },
+        {
+          "label": "Экстерьеры и ЖК",
+          "href": "/courses-page/exterior"
+        },
+        {
+          "label": "Модели под стоки",
+          "href": "/courses-page/stocks"
+        },
+        {
+          "label": "Все курсы",
+          "href": "/courses"
+        },
+        {
+          "label": "Бесплатные уроки",
+          "href": "/vizualization3_mini"
+        }
+      ]
+    },
+    {
+      "title": "Академия",
+      "links": [
+        {
+          "label": "Работы учеников",
+          "href": "/gallery"
+        },
+        {
+          "label": "Отзывы и истории",
+          "href": "/otzyvy"
+        },
+        {
+          "label": "Сообщество",
+          "href": "/club"
+        },
+        {
+          "label": "Блог",
+          "href": "/blog"
+        },
+        {
+          "label": "Педагоги",
+          "href": "/teachers"
+        },
+        {
+          "label": "Об академии",
+          "href": "https://gripinsky.ru/academy"
+        },
+        {
+          "label": "Контакты",
+          "href": "https://gripinsky.ru/contacts"
+        }
+      ]
+    },
+    {
+      "title": "Документы",
+      "links": [
+        {
+          "label": "Договор оферты",
+          "href": "/oferta"
+        },
+        {
+          "label": "Политика обработки данных",
+          "href": "/politica"
+        },
+        {
+          "label": "Согласие на обработку данных",
+          "href": "/soglasie"
+        },
+        {
+          "label": "Юридическим лицам",
+          "href": "/yur"
+        }
+      ]
+    }
+  ]
+}

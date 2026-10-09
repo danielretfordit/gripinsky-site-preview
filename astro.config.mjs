@@ -11,8 +11,10 @@ import { existsSync, readdirSync, readFileSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { loadEnv } from 'vite';
 
-// Keystatic (админка контента) нужна только при локальной работе: в продакшен-сборку не попадает.
+// Keystatic (админка контента): локально всегда, на боевом сервере при KEYSTATIC_STORAGE=github
+// (правки становятся коммитами в репозиторий). В промежуточную публикацию на GitHub Pages не попадает.
 const isDev = process.argv.includes('dev');
+const withAdmin = isDev || (process.env.KEYSTATIC_STORAGE ?? '') === 'github';
 const configEnv = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
 const isIndexable = (process.env.PUBLIC_INDEXABLE ?? configEnv.PUBLIC_INDEXABLE ?? 'false') === 'true';
 const githubPagesSite = process.env.GITHUB_PAGES_SITE;
@@ -89,7 +91,7 @@ export default defineConfig({
   },
   // На старом сайте /courses-page отдаёт 301 на /courses: повторяем (на хостинге заменить на 301 в nginx)
   // Лента новостей Tilda (/news) переехала в блог; сами статьи остались по адресам /tpost/…
-  redirects: { '/courses-page': '/courses', '/news': '/blog' },
+  redirects: { '/courses-page': '/courses' },
   server: { port: 4321, allowedHosts: ['.tuna.am'] },
   // Панель разработчика Astro подгружает свои модули на лету и мешает стабильной работе dev-сервера
   devToolbar: { enabled: false },
@@ -107,7 +109,7 @@ export default defineConfig({
           && !hiddenCoursePaths.has(pathname) && !seoNoindexPaths.has(pathname);
       },
     }),
-    ...(isDev ? [react({ exclude: ['**/islands/**'] }), keystatic()] : []),
+    ...(withAdmin ? [react({ exclude: ['**/islands/**'] }), keystatic()] : []),
   ],
   fonts: [
     // Inter: основной шрифт. Локально (без CDN), только latin и cyrillic, с метриками запасного шрифта,

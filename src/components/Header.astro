@@ -4,14 +4,9 @@ import { assetPath } from '../lib/deployment';
 import { canonicalPath } from '../lib/seo';
 
 const site = (await getEntry('settings', 'site'))!.data;
-const nav = [
-  { href: '/courses-page/visualization', label: '3D-визуализация' },
-  { href: '/courses', label: 'Все курсы' },
-  { href: '/gallery', label: 'Работы учеников' },
-  { href: '/club', label: 'Сообщество' },
-  { href: '/otzyvy', label: 'Отзывы' },
-  { href: '/blog', label: 'Блог' },
-];
+// Меню и подписи редактируются в админке: «Меню и подвал»
+const navigation = (await getEntry('navigation', 'main'))!.data;
+const nav = navigation.header;
 const current = canonicalPath(Astro.url.pathname);
 // На страницах без формы консультации ссылка ведёт к форме на главной.
 const { consult = true } = Astro.props as { consult?: boolean };
@@ -30,9 +25,9 @@ const consultHref = consult ? '#consult' : '/#consult';
     </nav>
 
     <div class="site-header__actions">
-      <a href={consultHref} class="site-header__consult btn btn-secondary btn-sm" aria-label="Бесплатная консультация">
-        <span class="site-header__consult-full">Бесплатная консультация</span>
-        <span class="site-header__consult-short" aria-hidden="true">Консультация</span>
+      <a href={consultHref} class="site-header__consult btn btn-secondary btn-sm" aria-label={navigation.consultLabel}>
+        <span class="site-header__consult-full">{navigation.consultLabel}</span>
+        <span class="site-header__consult-short" aria-hidden="true">{navigation.consultShort}</span>
         <span class="site-header__consult-arrow" aria-hidden="true">↗</span>
       </a>
       <a href={site.telegramBot} class="site-header__telegram" aria-label="Задать вопрос в Telegram" title="Telegram">

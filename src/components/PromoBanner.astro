@@ -1,0 +1,27 @@
+---
+// Баннер внутри страницы (главная под первым экраном, каталог сверху, страница курса).
+// Задаётся в админке: «Баннеры». Тон «Сигнал» добавляет лаймовую метку, без лаймовой заливки (правило бренда).
+import { bannersFor, dismissKey, type Placement } from '../lib/banners';
+import { scheduleAttrs } from '../lib/schedule';
+import { canonicalPath } from '../lib/seo';
+
+interface Props { placement: Exclude<Placement, 'announcement-bar'>; class?: string }
+const { placement, class: cls = '' } = Astro.props;
+const [banner] = await bannersFor(placement, canonicalPath(Astro.url.pathname));
+const b = banner?.data;
+---
+{b && (
+  <aside class:list={['promo-banner', `promo-banner--${b.tone}`, cls]} aria-label="Объявление" data-banner data-dismiss-key={b.dismissible ? dismissKey(banner!) : undefined} {...scheduleAttrs(b)}>
+    <p class="promo-banner__text">{b.text}</p>
+    {b.href && <a href={b.href} class="btn btn-secondary promo-banner__cta">{b.linkLabel || 'Подробнее'} <span aria-hidden="true">→</span></a>}
+    {b.dismissible && <button type="button" class="promo-banner__close" data-banner-close aria-label="Скрыть">×</button>}
+  </aside>
+)}
+
+<style>
+  .promo-banner { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding: clamp(18px, 2.4vw, 28px) clamp(20px, 3vw, 36px); padding-right: calc(var(--tap) + 16px); border: 1px solid var(--color-line); border-radius: var(--radius-card); background: var(--color-surface); }
+  .promo-banner--signal::before { position: absolute; top: -1px; left: 0; width: 42px; height: 2px; background: var(--color-lime); content: ''; }
+  .promo-banner__text { flex: 1 1 320px; max-width: 68ch; margin: 0; color: var(--color-ink); font-size: var(--type-lead); font-weight: 550; line-height: 1.45; }
+  .promo-banner__close { position: absolute; top: 4px; right: 4px; display: grid; width: var(--tap); height: var(--tap); place-items: center; border: 0; background: transparent; color: var(--color-muted); font-size: 1.25rem; }
+  @media (hover: hover) { .promo-banner__close:hover { color: var(--color-ink); } }
+</style>

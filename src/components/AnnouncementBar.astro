@@ -1,0 +1,35 @@
+---
+// Полоса объявлений над шапкой. Текст, ссылка, страницы и даты задаются в админке: «Баннеры», место «Полоса над шапкой».
+import { bannersFor, dismissKey } from '../lib/banners';
+import { scheduleAttrs } from '../lib/schedule';
+import { canonicalPath } from '../lib/seo';
+
+const [banner] = await bannersFor('announcement-bar', canonicalPath(Astro.url.pathname));
+const b = banner?.data;
+---
+{b && (
+  <div class:list={['announce', `announce--${b.tone}`]} role="region" aria-label="Объявление" data-banner data-dismiss-key={b.dismissible ? dismissKey(banner!) : undefined} {...scheduleAttrs(b)}>
+    <div class="announce__inner">
+      <p class="announce__text">
+        {b.tone === 'signal' && <span class="announce__dot" aria-hidden="true"></span>}
+        <span>{b.text}</span>
+        {b.href && <a href={b.href} class="announce__link">{b.linkLabel || 'Подробнее'}&nbsp;→</a>}
+      </p>
+      {b.dismissible && <button type="button" class="announce__close" data-banner-close aria-label="Закрыть объявление">×</button>}
+    </div>
+  </div>
+)}
+
+<style>
+  .announce { position: relative; z-index: 41; border-bottom: 1px solid var(--color-line); background: var(--color-surface); padding-inline: var(--site-gutter); }
+  .announce__inner { display: flex; align-items: center; gap: 12px; width: min(100%, var(--container)); min-height: 44px; margin-inline: auto; }
+  .announce__text { flex: 1; margin: 0; padding-block: 8px; color: var(--color-ink-2); font-size: var(--type-small); line-height: 1.45; text-wrap: pretty; }
+  .announce__dot { display: inline-block; width: 7px; height: 7px; margin-right: 10px; vertical-align: 0.1em; background: var(--color-lime); }
+  .announce--signal .announce__text { color: var(--color-ink); }
+  .announce__link { display: inline-block; margin-left: 12px; padding-block: 4px; white-space: nowrap; color: var(--color-ink); font-weight: 650; text-decoration: underline; text-decoration-color: var(--color-line-strong); text-underline-offset: 4px; }
+  .announce__close { display: grid; width: var(--tap); height: var(--tap); flex-shrink: 0; place-items: center; margin-right: -12px; border: 0; background: transparent; color: var(--color-muted); font-size: 1.25rem; }
+  @media (hover: hover) {
+    .announce__link:hover { text-decoration-color: currentColor; }
+    .announce__close:hover { color: var(--color-ink); }
+  }
+</style>

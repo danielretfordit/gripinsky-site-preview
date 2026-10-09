@@ -6,6 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CourseCard from '../components/CourseCard.astro';
 import CourseContent from '../components/CourseContent.astro';
 import CourseVisualContent from '../components/CourseVisualContent.astro';
+import PromoBanner from '../components/PromoBanner.astro';
 import CourseHero from '../components/CourseHero.astro';
 import { TYPE_LABEL, isListed } from '../lib/categories';
 import { personMap } from '../lib/people';
@@ -76,6 +77,7 @@ const meta = [c.meta, c.lessons && !c.meta ? `${c.lessons} видеоуроко�
     </div>
   </section>}
 
+  <div class="wrap"><PromoBanner placement="course-aside" class="mt-8" /></div>
   <Content course={c} teachers={teachers}>
     <section slot="price" id="course-price" class:list={["wrap section", visualCourse && "course-visual-price"]} aria-labelledby="course-price-title">
       <div class="grid gap-8 md:grid-cols-[4fr_8fr] md:gap-12">

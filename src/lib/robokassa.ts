@@ -14,10 +14,16 @@ export interface RkItem { name: string; sum: number }
  * Receipt в подписи берётся в URL-кодированном виде, а в адресе кодируется ещё раз.
  * Номер счёта (invId) выдаёт хранилище заказов (src/lib/orders.ts): он уникален и по нему сверяется сумма.
  */
-export function robokassaUrl(opts: { invId: number; total: number; description: string; email: string; items: RkItem[]; shp?: Record<string, string> }): string {
+export interface ReceiptSettings { sno: string; tax: string; paymentMethod: string; paymentObject: string }
+const DEFAULT_RECEIPT: ReceiptSettings = { sno: 'usn_income', tax: 'none', paymentMethod: 'full_payment', paymentObject: 'service' };
+
+export function robokassaUrl(opts: { invId: number; total: number; description: string; email: string; items: RkItem[]; shp?: Record<string, string>; receipt?: ReceiptSettings }): string {
+  const r = opts.receipt ?? DEFAULT_RECEIPT;
   const outSum = opts.total.toFixed(2);
+  // Чек 54-ФЗ: система налогообложения и НДС из «Интеграций» в админке
   const receipt = encodeURIComponent(JSON.stringify({
-    items: opts.items.map((i) => ({ name: i.name.slice(0, 128), quantity: 1, sum: i.sum, payment_method: 'full_payment', payment_object: 'service', tax: 'none' })),
+    sno: r.sno,
+    items: opts.items.map((i) => ({ name: i.name.slice(0, 128), quantity: 1, sum: i.sum, payment_method: r.paymentMethod, payment_object: r.paymentObject, tax: r.tax })),
   }));
   const shp = opts.shp ?? {};
   const signature = paymentSignature(alg(), { login: ROBOKASSA_LOGIN!, outSum, invId: opts.invId, receipt, pass1: ROBOKASSA_PASS1!, shp });

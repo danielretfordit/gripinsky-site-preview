@@ -13,7 +13,7 @@
     "preview": "astro preview --port 4322",
     "preview:lan": "astro preview --host --port 4322",
     "check": "astro check",
-    "test": "node --test tests/*.test.ts",
+    "test": "node --test tests/*.test.ts && node scripts/check-schema-parity.mjs",
     "lint:copy": "node scripts/lint-copy.mjs",
     "check:urls": "node scripts/check-urls.mjs",
     "check:seo": "node scripts/check-seo.mjs",
@@ -23,7 +23,9 @@
     "lint:css": "node scripts/lint-css.mjs",
     "visual": "playwright test -c playwright.visual.config.ts",
     "visual:update": "playwright test -c playwright.visual.config.ts --update-snapshots",
-    "visual:audit": "node scripts/visual-audit-summary.mjs"
+    "visual:audit": "node scripts/visual-audit-summary.mjs",
+    "check:schema": "node scripts/check-schema-parity.mjs",
+    "check:bundle": "node scripts/check-bundle.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "2.0.9",

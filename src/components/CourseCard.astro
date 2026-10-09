@@ -5,10 +5,14 @@ import type { CollectionEntry } from 'astro:content';
 import { TYPE_LABEL, courseHref } from '../lib/categories';
 import { softwareName } from '../lib/software';
 import { rub, plural, typo } from '../lib/format';
+import { activePromoPrices } from '../lib/promotions';
 
 interface Props { selectable?: boolean; course: CollectionEntry<'courses'>; headingLevel?: 'h2' | 'h3'; framed?: boolean; work?: WorkView; result?: string }
 const { course, headingLevel: H = 'h3', framed = false, selectable = false, work, result } = Astro.props;
 const c = course.data;
+// Акция из админки: акционная цена, реальная каталожная зачёркнута, срок «до …» без таймеров
+const promo = (await activePromoPrices()).get(course.id);
+const price = promo?.price ?? c.price;
 const href = courseHref(course.id, c);
 const filters = [c.type, ...c.professions, ...c.software].join('|').toLowerCase();
 const level = c.level?.includes(',') ? 'Любой уровень' : c.level;
@@ -19,7 +23,7 @@ const moreLabel = c.type === 'course' ? 'Программа курса' : c.type
 // Описание, которое повторяет название, не показываем
 const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().toLowerCase() ? c.short : '';
 ---
-<article class:list={["catalog-card group relative flex flex-col", { "content-card catalog-card--framed": framed }]} data-course data-type={course.id === 'baza' ? 'course' : c.type} data-tags={filters} data-price={c.price}
+<article class:list={["catalog-card group relative flex flex-col", { "content-card catalog-card--framed": framed }]} data-course data-type={course.id === 'baza' ? 'course' : c.type} data-tags={filters} data-price={price}
   data-new={Number(c.isNew)} data-published={c.publishedAt ?? ''} data-popularity={c.popularityRank ?? ''}>
   <a href={href} class="course-card-link absolute inset-0 z-[1]" aria-label={c.title} tabindex="-1" aria-hidden="true"></a>
   <div class="course-art">
@@ -42,8 +46,9 @@ const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().t
     <a href={href} class="link t-small relative z-10 self-start">{moreLabel}&nbsp;→</a>
     <div class="course-footer">
       <span class="course-price">
-        <b class="t-title">{course.id === 'baza' ? 'от ' : ''}{c.price > 0 ? rub(c.price) : 'Бесплатно'}</b>
-        {c.oldPrice && c.oldPrice > c.price && (separatePrice
+        <b class="t-title">{course.id === 'baza' ? 'от ' : ''}{price > 0 ? rub(price) : 'Бесплатно'}</b>
+        {promo && <span class="course-promo"><s>{rub(c.price)}</s> {promo.label} {promo.until}</span>}
+        {!promo && c.oldPrice && c.oldPrice > c.price && (separatePrice
           ? <span>по отдельности {rub(c.oldPrice)}</span>
           : <s>{rub(c.oldPrice)}</s>)}
       </span>
@@ -76,6 +81,8 @@ const description = c.short && c.short.trim().toLowerCase() !== c.title.trim().t
   .course-footer { display: flex; gap: 16px; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 12px; }
   .course-price { display: flex; flex-direction: column; gap: 4px; }
   .course-price span, .course-price s { font-size: var(--type-meta); color: var(--color-muted); }
+  .course-promo { color: var(--color-ink-2) !important; }
+  .course-promo s { margin-right: 6px; }
   .course-select { display:flex; align-items:center; gap:10px; min-height:44px; padding:0 12px; border:1px solid var(--color-line-strong); border-radius:var(--radius-card); cursor:pointer; font-weight:600; }
   .course-select input { width:18px; height:18px; accent-color:var(--color-lime); cursor:pointer; }
   .course-select:has(:checked) { border-color:var(--color-lime); }

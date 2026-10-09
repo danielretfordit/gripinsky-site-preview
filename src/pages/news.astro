@@ -1,0 +1,34 @@
+---
+// Новости и анонсы академии: записи блога с типом «Новость» или «Анонс» (выбирается в админке).
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { postHref } from '../lib/blog';
+const posts = (await getCollection('blog', (p) => !p.data.draft && p.data.kind !== 'article')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Блог', href: '/blog' }, { name: 'Новости' }];
+const fmt = (d: Date) => d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+const KIND = { news: 'Новость', announcement: 'Анонс', article: 'Статья' } as const;
+---
+<Base title="Новости Академии 3D GRIPINSKY: анонсы курсов, стримов и встреч" description="Новости Академии 3D GRIPINSKY: старт потоков, новые курсы, стримы GRIPINSKY TV, итоги конкурсов и встреч сообщества." breadcrumbs={crumbs} consultContext="Новости">
+  <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="news-title">
+    <Breadcrumbs items={crumbs} class="mb-6" />
+    <h1 id="news-title" class="t-display mb-10">Новости <span class="t-accent">академии</span></h1>
+    {posts.length ? (
+      <ul class="m-0 grid list-none gap-5 p-0 md:grid-cols-2">
+        {posts.map((p) => (
+          <li class="card lift relative flex flex-col gap-3 p-6 md:p-8">
+            <p class="t-meta"><span>{KIND[p.data.kind]}</span><time datetime={p.data.date.toISOString()}>{fmt(p.data.date)}</time></p>
+            <h2 class="t-h3"><a href={postHref(p)} class="text-ink after:absolute after:inset-0">{p.data.title}</a></h2>
+            <p class="m-0 text-ink-2">{p.data.description}</p>
+            <span class="mt-auto font-semibold text-ink" data-cta>Читать&nbsp;→</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <div class="card flex flex-col items-start gap-4 p-6 md:p-8">
+        <p class="m-0 text-ink-2">Свежих новостей пока нет. Статьи о 3D, обзоры программ и истории учеников собраны в блоге.</p>
+        <a href="/blog" class="btn btn-secondary">Читать блог <span aria-hidden="true">→</span></a>
+      </div>
+    )}
+  </section>
+</Base>

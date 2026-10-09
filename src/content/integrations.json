@@ -1,0 +1,24 @@
+{
+  "getcourse": {
+    "account": "",
+    "group": ""
+  },
+  "bitrix24": {
+    "entity": "lead",
+    "categoryId": null,
+    "stageId": "",
+    "assignedById": null,
+    "sourceId": "WEB",
+    "titleTemplate": "Заявка с сайта: {context}"
+  },
+  "robokassa": {
+    "sno": "usn_income",
+    "tax": "none",
+    "paymentMethod": "full_payment",
+    "paymentObject": "service"
+  },
+  "checkout": {
+    "successPath": "/oplata/uspeh",
+    "failPath": "/oplata/oshibka"
+  }
+}

@@ -1,5 +1,6 @@
 import { getCollection, getEntry } from 'astro:content';
 import { selfPriceRule, type Catalog, type ProfId, type TariffId } from './pricing';
+import { activePromoPrices } from './promotions';
 
 /** Собирает данные для расчёта пакета из коллекций контента (только на сервере / при сборке) */
 export async function getCatalog(): Promise<Catalog> {
@@ -14,9 +15,16 @@ export async function getCatalog(): Promise<Catalog> {
   const includedIds = base.includes.map((r) => r.id);
 
   // Курсы, которые продаются по отдельности и собираются в набор: цена с чатом поддержки и без поддержки
+  // Акции из админки: акционная цена вместо каталожной (даты проверяются в момент расчёта)
+  const promos = await activePromoPrices();
   const setCourses = Object.fromEntries(
     [...courses].filter(([, c]) => c.type === 'course' && c.status === 'active' && c.price > 0)
-      .map(([id, c]) => [id, { id, name: c.title, price: c.price, selfPrice: c.selfPrice ?? selfPriceRule(c.price) }]),
+      .map(([id, c]) => {
+        const promo = promos.get(id)?.price;
+        const price = promo ?? c.price;
+        const selfPrice = Math.min(price, c.selfPrice ?? selfPriceRule(c.price), promo ? selfPriceRule(promo) : Infinity);
+        return [id, { id, name: c.title, price, selfPrice }];
+      }),
   );
 
   const tariffs = (await getCollection('tariffs'))

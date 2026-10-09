@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import { CHECKOUT_MODE } from 'astro:env/server';
 import { getCatalog } from '../../lib/catalog';
 import { quoteSet, quote, quoteBaseOnly, quoteCourse, summarize, type Quote, type Selection, type TariffId, type ProfId } from '../../lib/pricing';
@@ -82,7 +82,8 @@ export const POST: APIRoute = async ({ request, url }) => {
         // Номер счёта выдаёт хранилище заказов: по нему на Result URL сверяется сумма, повтор не создаёт второй оплаты
         const invId = orderStore(ORDERS_DB).create(q.total, summary, customer.email);
         const items = q.lines.filter((l) => l.price > 0).map((l) => ({ name: l.name, sum: l.price }));
-        const redirect = robokassaUrl({ invId, total: q.total, description: 'Обучение в Академии 3D GRIPINSKY', email: customer.email, items, shp: { Shp_items: q.items.join(',').slice(0, 200) } });
+        const receipt = (await getEntry('integrations', 'main'))!.data.robokassa;
+        const redirect = robokassaUrl({ invId, total: q.total, description: 'Обучение в Академии 3D GRIPINSKY', email: customer.email, items, shp: { Shp_items: q.items.join(',').slice(0, 200) }, receipt });
         await sendLead({ name: customer.name, contact: customer.phone, context: `Переход к оплате Robokassa, счёт ${invId}`, page, packageSummary: `${summary}; ${customer.email}`, utm: body.utm as never });
         return json({ ok: true, mode: 'robokassa', total: q.total, redirect });
       } catch (e) {

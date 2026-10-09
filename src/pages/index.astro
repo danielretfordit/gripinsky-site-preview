@@ -3,11 +3,12 @@ import { Image } from 'astro:assets';
 import { isListed } from '../lib/categories';
 import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { heroCoverIds } from '../lib/hero-covers';
+import { heroSlides } from '../lib/hero';
 import HeroWork from '../components/HeroWork.astro';
 import HeroActions from '../components/HeroActions.astro';
 import TrustBlock from '../components/TrustBlock.astro';
 import StatsRibbon from '../components/StatsRibbon.astro';
+import PromoBanner from '../components/PromoBanner.astro';
 import WorksShowcase from '../components/WorksShowcase.astro';
 import AiFeature from '../components/AiFeature.astro';
 import CommunityFeature from '../components/CommunityFeature.astro';
@@ -17,7 +18,7 @@ import { getCatalog } from '../lib/catalog';
 import { faqLd } from '../lib/views';
 import { websiteLd } from '../lib/seo';
 import { workViews } from '../lib/works';
-import { rub, plural } from '../lib/format';
+import { rub, plural, typo } from '../lib/format';
 
 // Программы: иконка, подпись и значение фильтра каталога (/courses?soft=…)
 const SOFTWARE = {
@@ -42,26 +43,27 @@ const programs = (Object.keys(SOFTWARE) as SoftId[])
   .filter((program) => program.count > 0);
 
 const site = (await getEntry('settings', 'site'))!.data;
+// Тексты главной редактируются в админке: «Главная страница»
+const page = (await getEntry('home', 'main'))!.data;
 const s = site.stats;
 const cat = await getCatalog();
-const homeFaqIds = ['s-chego-nachat', 'risovat', 'vremya', 'oplata', 'vozvrat'];
+const homeFaqIds = page.faq.map((f) => f.id);
 const faq = await faqLd('home', homeFaqIds);
 const wv = await workViews();
 // Первый кадр повторяет референс; дальше автоматически сменяются другие опубликованные работы учеников.
-const heroSlides = wv.pick(heroCoverIds);
-const hero = heroSlides[0] ?? wv.work('bolshunova-ostrov-1') ?? wv.pick(['tveritin-druzhba', 'rossoshansky-gostinaya'])[0];
+const slides = await heroSlides('home');
+const hero = slides[0] ?? wv.work('bolshunova-ostrov-1') ?? wv.pick(['tveritin-druzhba', 'rossoshansky-gostinaya'])[0];
 const wide = wv.work('tveritin-druzhba');
 const trio = wv.pick(['kamola-kuhnya', 'korotovskaya-shale', 'shesterikova-loft']);
 
-const dirViz = wv.work('bolshunova-banya-1') ?? wv.work('bolshunova-ostrov-1') ?? wv.work('rossoshansky-gostinaya');
-const dirGame = wv.work('gitsuk-korabl') ?? wv.work('bagirov-korabl');
+const directions = page.directions.map((d) => ({ ...d, w: d.work ? wv.work(d.work.id) : null }));
 const ai = (await getEntry('courses', 'ai'))!.data;
 const stats = [
-  { value: s.graduates, label: 'выпускников' },
-  { value: s.years, label: 'учим по своей системе' },
-  { value: s.videos, label: 'видеоуроков' },
-  { value: s.rating, label: 'на Яндекс Картах', href: site.yandexMaps },
-  { value: s.subscribers, label: 'подписчиков на YouTube', href: site.youtube },
+  { value: s.graduates, label: page.statLabels.graduates },
+  { value: s.years, label: page.statLabels.years },
+  { value: s.videos, label: page.statLabels.videos },
+  { value: s.rating, label: page.statLabels.rating, href: site.yandexMaps },
+  { value: s.subscribers, label: page.statLabels.subscribers, href: site.youtube },
 ];
 ---
 <Base
@@ -71,16 +73,17 @@ const stats = [
   consultContext="Главная"
 >
   {hero && (
-    <HeroWork work={hero} slides={heroSlides.length ? heroSlides : [hero]} kicker="Онлайн-школа 3D-графики" id="home-title">
-      <h1 slot="title" id="home-title" class="t-hero">Курсы <span class="whitespace-nowrap">3D-графики</span> <span class="t-accent block">с нуля до заказов</span></h1>
-      <p slot="lead" class="t-lead m-0 max-w-[540px]">Визуализация интерьеров и экстерьеров, 3D для игр и нейросети в работе. В своём темпе, без опыта и умения рисовать.</p>
+    <HeroWork work={hero} slides={slides.length ? slides : [hero]} kicker={page.hero.kicker} id="home-title">
+      <h1 slot="title" id="home-title" class="t-hero">{typo(page.hero.title)} {page.hero.accent && <span class="t-accent block">{typo(page.hero.accent)}</span>}</h1>
+      <p slot="lead" class="t-lead m-0 max-w-[540px]">{page.hero.lead}</p>
       <Fragment slot="cta">
-        <HeroActions primaryHref="#directions" primaryLabel="Выбрать направление" secondaryHref="#quiz" secondaryLabel="Подобрать курс за 1 минуту" />
+        <HeroActions primaryHref={page.hero.primary.href} primaryLabel={page.hero.primary.label} secondaryHref={page.hero.secondary.href} secondaryLabel={page.hero.secondary.label} />
       </Fragment>
     </HeroWork>
   )}
 
   <StatsRibbon stats={stats} />
+  <div class="home-banner"><PromoBanner placement="home-below-hero" /></div>
 
   <section id="directions" class="wrap section" aria-labelledby="dir-title">
     <div id="programs" class="head">
@@ -97,10 +100,7 @@ const stats = [
     </div>
 
     <div role="tabpanel" id="pick-dir" aria-labelledby="pick-tab-dir" class="grid gap-x-[var(--gap-grid)] gap-y-12 md:grid-cols-2">
-      {[
-        { w: dirViz, href: '/courses-page/visualization', title: '3D-визуализация', text: 'Фотореалистичные интерьеры и экстерьеры в 3ds Max и Corona.', meta: '3 профессии', cta: 'Выбрать профессию' },
-        { w: dirGame, href: '/courses-page/gamedev', title: '3D для игр', text: 'Предметы, локации и персонажи в Blender, ZBrush и Unreal Engine.', meta: '6 профессий', cta: 'Выбрать профессию' },
-      ].map((d, index) => (
+      {directions.map((d, index) => (
         <article class="content-card zoom relative flex flex-col gap-5">
           <a href={d.href} class="absolute inset-0 z-20" aria-label={d.title}><span class="sr-only">{d.title}</span></a>
           {d.w && (
@@ -152,7 +152,7 @@ const stats = [
   </section>
 
   <section id="ai" class="wrap subsection" aria-labelledby="ai-title">
-    <AiFeature price={rub(ai.price)} />
+    <AiFeature price={rub(ai.price)} text={page.ai} />
   </section>
 
   <WorksShowcase wide={wide} trio={trio} id="hw-title" class="subsection home-works">
@@ -168,10 +168,10 @@ const stats = [
     </Fragment>
   </WorksShowcase>
 
-  <TrustBlock />
+  <TrustBlock reviewIds={page.trustReviews.map((r) => r.id)} />
 
   <section id="club" class="wrap subsection" aria-labelledby="club-title">
-    <CommunityFeature />
+    <CommunityFeature text={page.community} />
   </section>
 
   <Faq page="home" title="Вопросы" ids={homeFaqIds} compact spacing="section" />
@@ -315,7 +315,7 @@ const stats = [
      (global.css): здесь только композиция секций главной. */
   .site-home main { background: var(--color-bg); }
   .site-home main > :is(#directions, #quiz, #ai, .home-works, #club, #faq),
-  .site-home .stats-ribbon {
+  .site-home .stats-ribbon, .site-home .home-banner {
     width: min(100% - 2 * var(--gutter), var(--container));
     margin-inline: auto;
     padding-inline: 0;
@@ -327,6 +327,8 @@ const stats = [
     border-top: 1px solid var(--color-line);
   }
   .site-home main > #directions { margin-top: 0; padding-top: var(--space-section); border-top: 0; }
+
+  .site-home .home-banner:has(aside) { margin-top: clamp(24px, 3vw, 40px); }
 
   /* Пять цифр под первым экраном */
   .site-home .stats-ribbon { margin-top: clamp(22px, 2.4vw, 34px); padding-top: 0; }

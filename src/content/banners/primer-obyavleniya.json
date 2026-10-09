@@ -1,0 +1,12 @@
+{
+  "title": "primer-obyavleniya",
+  "text": "Пример объявления: старт потока «ИИ в 3D: Лаборатория». Включите и поменяйте текст и даты.",
+  "linkLabel": "Подробнее",
+  "href": "/ai",
+  "placement": "announcement-bar",
+  "pages": [],
+  "tone": "signal",
+  "dismissible": true,
+  "priority": 0,
+  "active": false
+}

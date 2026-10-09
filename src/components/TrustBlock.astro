@@ -5,7 +5,9 @@ import { getCollection } from 'astro:content';
 import { personMap } from '../lib/people';
 const people = await personMap();
 const collection = await getCollection('reviews', r => !r.data.person || people.has(r.data.person.id));
-const reviews = ['import-358432c2ea002ddd', 'import-50d9ba80d3a63d36', 'import-fb4c17a43c5fcd68'].map(id => collection.find(r => r.id === id)).filter(Boolean);
+// Отзывы выбираются в админке («Главная страница»)
+const { reviewIds = ['import-358432c2ea002ddd', 'import-50d9ba80d3a63d36', 'import-fb4c17a43c5fcd68'] } = Astro.props as { reviewIds?: string[] };
+const reviews = reviewIds.map(id => collection.find(r => r.id === id)).filter(Boolean);
 ---
 <div class:list={['trust','trust--journal']}>
  <div class="trust-top"><span class="t-overline">GRIPINSKY / Подход к обучению</span><span class="t-meta">Метод / Основатель / Опыт учеников</span></div>

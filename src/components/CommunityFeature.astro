@@ -1,10 +1,24 @@
+---
+interface Text { eyebrow: string; title: string; accent: string; lead: string; cta: string; topics: { title: string; text: string }[] }
+// Тексты по умолчанию; на главной приходят из админки («Главная страница», блок «Сообщество»)
+const DEFAULT: Text = {
+  eyebrow: 'Сообщество академии', title: 'РАСТЁМ В 3D', accent: 'ВМЕСТЕ', cta: 'Узнать о сообществе',
+  lead: 'Учёба продолжается и за пределами уроков: встречаемся на эфирах, разбираем работы и следим за успехами друг друга.',
+  topics: [
+    { title: 'GRIPINSKY TV', text: 'Прямые эфиры по средам: разборы работ учеников и встречи с профессионалами индустрии.' },
+    { title: '«Рендер дня»', text: 'Показываем работы учеников и отмечаем лучшие на стримах академии.' },
+    { title: 'Люди рядом', text: 'Выпускники, ученики и педагоги остаются на связи и делятся опытом.' },
+  ],
+};
+const { text = DEFAULT } = Astro.props as { text?: Text };
+---
 <div class="community-feature">
   <div class="community-feature__main">
     <div class="community-feature__copy">
-      <p class="community-feature__eyebrow t-overline"><span aria-hidden="true"></span> Сообщество академии</p>
-      <h2 id="club-title" class="t-h2">РАСТЁМ В 3D <span>ВМЕСТЕ</span></h2>
-      <p class="community-feature__lead t-lead">Учёба продолжается и за пределами уроков: встречаемся на эфирах, разбираем работы и следим за успехами друг друга.</p>
-      <a href="/club" class="btn btn-secondary btn-lg">Узнать о сообществе ↗</a>
+      <p class="community-feature__eyebrow t-overline"><span aria-hidden="true"></span> {text.eyebrow}</p>
+      <h2 id="club-title" class="t-h2">{text.title} <span>{text.accent}</span></h2>
+      <p class="community-feature__lead t-lead">{text.lead}</p>
+      <a href="/club" class="btn btn-secondary btn-lg">{text.cta} <span aria-hidden="true">↗</span></a>
     </div>
     <div class="community-feature__symbol" aria-hidden="true">
       <span>МЫ</span>
@@ -12,9 +26,7 @@
     </div>
   </div>
   <div class="community-feature__topics">
-    <div><span class="t-meta">01</span><h3 class="t-title">GRIPINSKY TV</h3><p class="t-body">Прямые эфиры по средам: разборы работ учеников и встречи с профессионалами индустрии.</p></div>
-    <div><span class="t-meta">02</span><h3 class="t-title">«Рендер дня»</h3><p class="t-body">Показываем работы учеников и отмечаем лучшие на стримах академии.</p></div>
-    <div><span class="t-meta">03</span><h3 class="t-title">Люди рядом</h3><p class="t-body">Выпускники, ученики и педагоги остаются на связи и делятся опытом.</p></div>
+    {text.topics.map((t, i) => <div><span class="t-meta">{String(i + 1).padStart(2, '0')}</span><h3 class="t-title">{t.title}</h3><p class="t-body">{t.text}</p></div>)}
   </div>
 </div>
 

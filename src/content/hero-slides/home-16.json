@@ -1,0 +1,11 @@
+{
+  "title": "Главная 16",
+  "work": "import-17dcd4db8ee2b5b7",
+  "pages": [
+    "home"
+  ],
+  "label": "Работа ученика",
+  "order": 160,
+  "active": true,
+  "mobileFocus": "50% 60%"
+}

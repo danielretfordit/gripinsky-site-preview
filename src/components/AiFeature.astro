@@ -1,15 +1,21 @@
 ---
-interface Props { price: string }
-const { price } = Astro.props;
+interface Text { eyebrow: string; title: string; accent: string; quote: string; body: string; cta: string }
+interface Props { price: string; text?: Text }
+// Тексты по умолчанию; на главной приходят из админки («Главная страница», блок «ИИ в 3D»)
+const DEFAULT: Text = {
+  eyebrow: 'Новый курс / ИИ в 3D', title: 'ИИ', accent: 'ИЛИ УМРИ', quote: 'ИИ не заменит 3D-художника. Его заменит художник с ИИ',
+  body: 'Нейросети во всём пайплайне: референсы, 3D-модель по фото, ретопология, текстуры и сцена. Рутину отдаёте ИИ, качество доводите сами. Курс входит в «Базу 3D-визуализатора».', cta: 'Смотреть курс',
+};
+const { price, text = DEFAULT } = Astro.props;
 ---
 
 <div class="ai-feature">
   <div class="ai-feature__copy">
-    <p class="ai-feature__eyebrow t-overline"><span class="ai-feature__dot" aria-hidden="true"></span> Новый курс / ИИ в 3D</p>
-    <h2 id="ai-title" class="t-h2">ИИ <span>ИЛИ УМРИ</span></h2>
-    <p class="ai-feature__quote t-quote">ИИ не заменит 3D-художника. Его заменит художник с ИИ</p>
-    <p class="ai-feature__body t-body">Нейросети во всём пайплайне: референсы, 3D-модель по фото, ретопология, текстуры и сцена. Рутину отдаёте ИИ, качество доводите сами. Курс входит в «Базу 3D-визуализатора».</p>
-    <div class="ai-feature__action"><a href="/ai" class="btn btn-primary btn-lg">Смотреть курс ↗</a><span>от {price}</span></div>
+    <p class="ai-feature__eyebrow t-overline"><span class="ai-feature__dot" aria-hidden="true"></span> {text.eyebrow}</p>
+    <h2 id="ai-title" class="t-h2">{text.title} <span>{text.accent}</span></h2>
+    <p class="ai-feature__quote t-quote">{text.quote}</p>
+    <p class="ai-feature__body t-body">{text.body}</p>
+    <div class="ai-feature__action"><a href="/ai" class="btn btn-primary btn-lg">{text.cta} <span aria-hidden="true">↗</span></a><span>от {price}</span></div>
   </div>
   <div class="ai-feature__symbol" aria-hidden="true"><span>ИИ</span><small>3D × AI<br />Человек решает</small></div>
 </div>

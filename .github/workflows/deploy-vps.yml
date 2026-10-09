@@ -1,0 +1,93 @@
+name: Выкладка на сервер
+
+# Коммит в main (в том числе сохранение из админки Keystatic) → проверки → сборка → выкладка на VPS с откатом.
+# Ночью сайт пересобирается сам: баннеры, акции и слайды включаются и выключаются по датам из админки.
+# Секреты репозитория (Settings → Secrets → Actions): VPS_HOST, VPS_USER, VPS_SSH_KEY, VPS_KNOWN_HOSTS.
+# Пока VPS_HOST не задан, задание выкладки пропускается.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '5 21 * * *' # 00:05 по Москве
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
+
+env:
+  PUBLIC_INDEXABLE: 'true'
+  PUBLIC_ANALYTICS: 'true'
+  KEYSTATIC_STORAGE: github
+  PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${{ vars.PUBLIC_KEYSTATIC_GITHUB_APP_SLUG }}
+  PUBLIC_BUILD_SHA: ${{ github.sha }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.21.0
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: node scripts/check-bundle.mjs
+      - run: npm run lint:copy
+      - run: npm run check:seo
+      - name: Архив релиза
+        run: tar -czf release.tgz dist deploy package.json package-lock.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: release
+          path: release.tgz
+          retention-days: 7
+
+  deploy:
+    needs: build
+    if: ${{ vars.VPS_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: release
+      - name: SSH-ключ
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Загрузка, переключение, проверка, откат при ошибке
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USER }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          R=/var/www/gripinsky/releases/$SHA
+          scp release.tgz "$USER@$HOST:/tmp/release-$SHA.tgz"
+          ssh "$USER@$HOST" bash -s <<EOF
+          set -euo pipefail
+          mkdir -p $R && tar -xzf /tmp/release-$SHA.tgz -C $R && rm /tmp/release-$SHA.tgz
+          cd $R && npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+          PREV=\$(readlink -f /var/www/gripinsky/current || true)
+          ln -sfn $R /var/www/gripinsky/current
+          sudo /bin/systemctl restart gripinsky
+          for i in \$(seq 1 20); do curl -fsS http://127.0.0.1:4321/api/health >/dev/null && break; sleep 1; done
+          if ! curl -fsS http://127.0.0.1:4321/api/health >/dev/null; then
+            echo "Проверка не прошла, откат на \$PREV"
+            [ -n "\$PREV" ] && ln -sfn "\$PREV" /var/www/gripinsky/current && sudo /bin/systemctl restart gripinsky
+            exit 1
+          fi
+          sudo /usr/sbin/nginx -t && sudo /bin/systemctl reload nginx
+          ls -1dt /var/www/gripinsky/releases/* | tail -n +6 | xargs -r rm -rf
+          EOF
