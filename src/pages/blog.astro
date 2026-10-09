@@ -10,7 +10,7 @@ const crumbs = [{ name: 'Главная', href: '/' }, { name: 'Блог' }];
   <section class="wrap pb-16 pt-5 md:pt-7" aria-labelledby="blog-title">
     <Breadcrumbs items={crumbs} class="mb-6" />
     <h1 id="blog-title" class="t-display mb-10">Блог <span class="t-accent">академии</span></h1>
-    <ul class="post-grid m-0 list-none p-0">
+    <ul class="post-grid m-0 list-none">
       {posts.map((p, i) => <PostCard post={p} eager={i < 2} />)}
     </ul>
   </section>

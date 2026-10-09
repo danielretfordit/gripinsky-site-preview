@@ -51,6 +51,8 @@ const people = defineCollection({
     photo: image().nullish(),
     bio: z.string().nullish(),
     teaches: z.array(z.string()).default([]),
+    /** Педагог на странице /teachers: показ и порядок (педагоги показываются без отдельного согласия, кроме явного отказа) */
+    teacherPage: z.object({ show: z.boolean().default(true), order: z.number().int().default(100) }).default({ show: true, order: 100 }),
     consent: z.enum(['yes', 'pending', 'no']).default('pending'),
   }),
 });

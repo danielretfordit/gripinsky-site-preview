@@ -1,44 +1,56 @@
 ---
-// Карточка записи блога: обложка 16:10, метаданные, заголовок, описание. Вся карточка кликабельна.
-import { Image } from 'astro:assets';
+// Плитка записи блога или новости: без картинки (картинки только внутри статьи). Сетка «шахматка»: см. .post-grid в global.css
 import type { CollectionEntry } from 'astro:content';
 import { postHref } from '../lib/blog';
 import { typo } from '../lib/format';
-import { assetPath } from '../lib/deployment';
 
 interface Props { post: CollectionEntry<'blog'>; kind?: string; eager?: boolean }
-const { post, kind, eager = false } = Astro.props;
+const { post, kind } = Astro.props;
 const d = post.data;
 const date = d.date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+const KIND = { news: 'Новость', announcement: 'Анонс', article: 'Статья' } as const;
+const label = kind ?? KIND[d.kind] ?? 'Статья';
 ---
-<li class="post-card relative flex flex-col">
-  <div class="post-card__media media-frame">
-    {d.cover ? (
-      <Image src={d.cover} alt="" widths={[480, 720, 960]} sizes="(min-width: 1024px) 31vw, (min-width: 768px) 46vw, 92vw" loading={eager ? 'eager' : 'lazy'} class="post-card__img" />
-    ) : (
-      <span class="post-card__placeholder" aria-hidden="true"><img src={assetPath('/brand/academy.svg')} alt="" width="2048" height="328" loading="lazy" decoding="async" /></span>
-    )}
-  </div>
-  <p class="t-meta post-card__meta">{kind && <span>{kind}</span>}<time datetime={d.date.toISOString()}>{date}</time></p>
-  <h2 class="t-h3 post-card__title"><a href={postHref(post)} class="after:absolute after:inset-0">{typo(d.title)}</a></h2>
-  {d.description && d.description !== d.title && <p class="post-card__text">{typo(d.description)}</p>}
+<li class="post-tile">
+  <p class="post-tile__meta"><span>{label}</span><time datetime={d.date.toISOString()}>{date}</time></p>
+  <h2 class="post-tile__title"><a href={postHref(post)}>{typo(d.title)}</a></h2>
+  {d.description && d.description !== d.title && <p class="post-tile__text">{typo(d.description)}</p>}
+  <span class="post-tile__more" aria-hidden="true">Читать <span class="arrow-long"></span></span>
 </li>
 
 <style>
-  .post-card { gap: 10px; }
-  .post-card__media { position: relative; aspect-ratio: 16 / 10; margin-bottom: 8px; overflow: hidden; border-radius: var(--radius-media); background: var(--color-surface); }
-  .post-card__img { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale var(--dur) var(--ease-out); }
-  /* Запись без обложки: знак академии на тонкой сетке, без выдуманной картинки */
-  .post-card__placeholder { display: grid; height: 100%; place-items: center; background-image: linear-gradient(var(--color-line) 1px, transparent 1px), linear-gradient(90deg, var(--color-line) 1px, transparent 1px); background-position: center; background-size: 48px 48px; }
-  .post-card__placeholder img { width: min(52%, 220px); height: auto; opacity: .55; }
-  .post-card__meta { margin: 0; }
-  .post-card__title { margin: 0; text-wrap: balance; }
-  .post-card__title a { color: var(--color-ink); text-decoration: none; }
-  .post-card__text { display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-ink-2); -webkit-line-clamp: 3; -webkit-box-orient: vertical; text-wrap: pretty; }
-  .post-card:focus-within .post-card__title a { text-decoration: underline; text-underline-offset: 4px; }
-  @media (hover: hover) {
-    .post-card:hover .post-card__img { scale: 1.03; }
-    .post-card:hover .post-card__title a { color: var(--color-white); }
+  .post-tile { position: relative; display: flex; flex-direction: column; gap: 14px; min-width: 0; min-height: clamp(240px, 22vw, 300px); padding: clamp(22px, 2.4vw, 34px); background: var(--color-bg); transition: background-color var(--dur) ease; }
+  .post-tile__meta { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; color: var(--color-muted); font-size: var(--type-label); font-weight: 600; letter-spacing: var(--tracking-label); text-transform: uppercase; }
+  .post-tile__title { margin: 0; font-size: clamp(1.25rem, 1.05rem + .6vw, 1.625rem); font-weight: 750; line-height: 1.18; letter-spacing: -.02em; text-wrap: balance; }
+  .post-tile__title a { color: var(--color-ink); text-decoration: none; }
+  /* Вся плитка кликабельна */
+  .post-tile__title a::after { position: absolute; inset: 0; content: ""; }
+  .post-tile__text { display: -webkit-box; margin: 0; overflow: hidden; color: var(--color-ink-2); font-size: var(--type-small); line-height: 1.55; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+  .post-tile__more { display: inline-flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 8px; color: var(--color-ink); font-size: var(--type-small); font-weight: 650; }
+  .post-tile__more .arrow-long { transition: translate var(--dur) var(--ease-out); }
+  .post-tile:focus-within { outline: 2px solid var(--color-lime); outline-offset: -2px; }
+  .post-tile__title a:focus-visible { outline: none; }
+  /* Шахматка: клетки чередуют графит и поверхность; первая (свежая) запись крупная на лаймовом поле */
+  .post-tile:nth-child(even) { background: var(--color-surface); }
+  @media (min-width: 768px) {
+    .post-tile:nth-child(n + 2) { background: var(--color-bg); }
+    .post-tile:nth-child(4n + 2), .post-tile:nth-child(4n + 5) { background: var(--color-surface); }
   }
-  @media (prefers-reduced-motion: reduce) { .post-card__img { transition: none; } }
+  @media (min-width: 1024px) {
+    .post-tile:nth-child(n + 2) { background: var(--color-bg); }
+    .post-tile:nth-child(odd):not(:first-child) { background: var(--color-surface); }
+  }
+  .post-tile:first-child { background: var(--color-lime); }
+  .post-tile:first-child :is(.post-tile__meta, .post-tile__title a, .post-tile__text, .post-tile__more) { color: var(--color-bg); }
+  .post-tile:first-child .post-tile__meta { opacity: .72; }
+  .post-tile:first-child:focus-within { outline-color: var(--color-bg); }
+  @media (min-width: 768px) {
+    .post-tile:first-child { min-height: clamp(260px, 24vw, 340px); }
+    .post-tile:first-child .post-tile__title { max-width: 26ch; font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem); line-height: 1.08; }
+    .post-tile:first-child .post-tile__text { max-width: 60ch; font-size: var(--type-body); }
+  }
+  @media (hover: hover) {
+    .post-tile:hover .post-tile__more .arrow-long { translate: 6px 0; }
+    .post-tile:hover .post-tile__title a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+  }
 </style>

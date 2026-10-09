@@ -310,9 +310,13 @@
     .btn:hover > .arrow-long { translate: 5px 0; }
   }
 
-  /* Сетка записей блога и новостей: 1, 2, 3 колонки */
-  .post-grid { display: grid; gap: var(--space-head) clamp(16px, 2vw, 28px); }
-  @media (min-width: 768px) { .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  /* Блог и новости: «шахматка» без картинок. Плитки в сетке без зазоров, фон чередуется как клетки доски,
+     первая (свежая) запись крупная на лаймовом поле. Тонкая рамка сетки собирает плитки в одно поле. */
+  .post-grid { display: grid; gap: 1px; padding: 1px; background: var(--color-line); }
+  @media (min-width: 768px) {
+    .post-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .post-grid > :first-child { grid-column: span 2; }
+  }
   @media (min-width: 1024px) { .post-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
   /* ============ Поверхности: линии вместо подложек ============ */

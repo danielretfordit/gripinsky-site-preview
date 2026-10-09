@@ -535,7 +535,11 @@ export default config({
         roles: fields.multiselect({ label: 'Роли', options: [{ label: 'Ученик', value: 'student' }, { label: 'Выпускник', value: 'graduate' }, { label: 'Педагог', value: 'teacher' }, { label: 'Автор', value: 'author' }] }),
         photo: fields.image({ label: 'Фото', directory: 'src/assets/people', publicPath: '../../assets/people/' }),
         bio: fields.text({ label: 'О человеке', multiline: true }),
-        teaches: fields.array(fields.text({ label: 'Курс' }), { label: 'Ведёт курсы', itemLabel: (p) => p.value }),
+        teaches: fields.array(fields.text({ label: 'Направление' }), { label: 'Специализации педагога', description: 'Короткие подписи на странице педагогов. Какие курсы ведёт педагог, задаётся в карточке курса: «Продажи → Курсы → Педагоги».', itemLabel: (p) => p.value }),
+        teacherPage: fields.object({
+          show: fields.checkbox({ label: 'Показывать на странице «Педагоги»', defaultValue: true }),
+          order: fields.integer({ label: 'Порядок (меньше выше)', defaultValue: 100 }),
+        }, { label: 'Страница педагогов' }),
         consent: fields.select({ label: 'Согласие на публикацию', options: [{ label: 'Есть', value: 'yes' }, { label: 'Ждём', value: 'pending' }, { label: 'Отказ', value: 'no' }], defaultValue: 'pending' }),
       },
     }),

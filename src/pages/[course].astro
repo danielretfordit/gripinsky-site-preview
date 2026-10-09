@@ -29,7 +29,10 @@ const site = (await getEntry('settings', 'site'))!.data;
 const people = await personMap();
 const months = site.installment.months;
 const includes = (await Promise.all(c.includes.map((r) => getEntry('courses', r.id)))).filter(Boolean);
-const teachers = c.teachers.map((t) => people.get(t.id)).filter(Boolean);
+// Педагоги курса публичны (как на странице «Педагоги»): все, кроме явного отказа
+const allPeople = await getCollection('people');
+const teachers = c.teachers.map((t) => allPeople.find((p) => p.id === t.id)).filter((p) => p && p.data.consent !== 'no' && p.data.teacherPage.show)
+  .map((p) => ({ id: p!.id, name: p!.data.name, photo: p!.data.photo, consent: p!.data.consent }));
 const vizRelated = c.professions.some((p) => ['Визуализация', 'Интерьер', 'Экстерьер', 'ЖК', 'Стоки', 'Коммерческая визуализация'].includes(p));
 const allCourses = await getCollection('courses', (x) => isListed(x.data) && x.id !== id);
 const related = (c.related.length

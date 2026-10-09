@@ -3,9 +3,8 @@ import Base from '../layouts/Base.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import { personMap } from '../lib/people';
-const visible=await personMap();
-const teachers=(await getCollection('people')).filter(p=>p.data.roles.includes('teacher')&&visible.has(p.id)).sort((a,b)=>a.id==='gripinsky'?-1:b.id==='gripinsky'?1:a.data.name.localeCompare(b.data.name,'ru'));
+// Педагоги академии публичны: показываются все, кроме явного отказа и снятых в админке («Люди → Страница педагогов»)
+const teachers=(await getCollection('people')).filter(p=>p.data.roles.includes('teacher')&&p.data.consent!=='no'&&p.data.teacherPage.show).sort((a,b)=>a.id==='gripinsky'?-1:b.id==='gripinsky'?1:(a.data.teacherPage.order-b.data.teacherPage.order)||a.data.name.localeCompare(b.data.name,'ru'));
 const courses=await getCollection('courses',c=>c.data.status==='active'&&c.data.type==='course');
 const linked=(id:string)=>courses.filter(c=>c.data.teachers.some(t=>t.id===id));
 const initials=(name:string)=>name.split(' ').slice(0,2).map(n=>n[0]).join('');
